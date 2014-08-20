@@ -3314,7 +3314,7 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["form_renderer/templates/fields/" + this.field_type](this)));
+      _print(_safe(JST["fields/" + this.field_type](this)));
     
       _print(_safe('\n'));
     
@@ -3436,27 +3436,27 @@ window.JST["partials/response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["form_renderer/templates/partials/label"](this)));
+      _print(_safe(JST["partials/label"](this)));
     
       _print(_safe('\n'));
     
-      _print(_safe(JST["form_renderer/templates/fields/" + this.field_type](this)));
+      _print(_safe(JST["fields/" + this.field_type](this)));
     
       _print(_safe('\n\n<div class=\'clear\' />\n\n'));
     
-      _print(_safe(JST["form_renderer/templates/partials/length_validations"](this)));
+      _print(_safe(JST["partials/length_validations"](this)));
     
       _print(_safe('\n'));
     
-      _print(_safe(JST["form_renderer/templates/partials/min_max_validations"](this)));
+      _print(_safe(JST["partials/min_max_validations"](this)));
     
       _print(_safe('\n'));
     
-      _print(_safe(JST["form_renderer/templates/partials/error"](this)));
+      _print(_safe(JST["partials/error"](this)));
     
       _print(_safe('\n'));
     
-      _print(_safe(JST["form_renderer/templates/partials/description"](this)));
+      _print(_safe(JST["partials/description"](this)));
     
       _print(_safe('\n'));
     

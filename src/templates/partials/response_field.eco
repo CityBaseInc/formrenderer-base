@@ -1,9 +1,9 @@
-<%- JST["form_renderer/templates/partials/label"](@) %>
-<%- JST["form_renderer/templates/fields/#{@field_type}"](@) %>
+<%- JST["partials/label"](@) %>
+<%- JST["fields/#{@field_type}"](@) %>
 
 <div class='clear' />
 
-<%- JST["form_renderer/templates/partials/length_validations"](@) %>
-<%- JST["form_renderer/templates/partials/min_max_validations"](@) %>
-<%- JST["form_renderer/templates/partials/error"](@) %>
-<%- JST["form_renderer/templates/partials/description"](@) %>
+<%- JST["partials/length_validations"](@) %>
+<%- JST["partials/min_max_validations"](@) %>
+<%- JST["partials/error"](@) %>
+<%- JST["partials/description"](@) %>

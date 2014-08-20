@@ -1,1 +1,1 @@
-<%- JST["form_renderer/templates/fields/#{@field_type}"](@) %>
+<%- JST["fields/#{@field_type}"](@) %>

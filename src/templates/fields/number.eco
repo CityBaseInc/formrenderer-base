@@ -1,0 +1,10 @@
+<input type="text"
+       id="<%= @getDomId() %>"
+       class="rf-size-<%= @model.get('field_options.size') %>"
+       data-rv-input='model.value' />
+
+<% if @model.get('field_options.units'): %>
+  <span class='units'>
+    <%= @model.get('field_options.units') %>
+  </span>
+<% end %>

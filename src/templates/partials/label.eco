@@ -1,0 +1,4 @@
+<label for="<%= @getDomId() %>">
+  <%= @model.get('label') %>
+  <% if @model.get('required'): %><abbr title='required'>*</abbr><% end %>
+</label>

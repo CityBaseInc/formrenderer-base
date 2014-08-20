@@ -1,0 +1,39 @@
+<table class='border_all'>
+  <thead>
+    <tr>
+      <% for column in @model.getColumns(): %>
+        <th><%= column.label %></th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for i in [0..(@model.numRows - 1)]: %>
+      <tr>
+        <% for column, j in @model.getColumns(): %>
+          <td>
+            <textarea <% if @model.getPresetValue(column.label, i): %>readonly<% end %>
+                      data-col='<%= j %>'
+                      data-row='<%= i %>'
+                      data-rv-input='model.value.<%= j %>.<%= i %>'
+                      rows='1' />
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+
+  <% if @model.get('field_options.column_totals'): %>
+    <tfoot>
+      <tr>
+        <% for column, j in @model.getColumns(): %>
+          <td data-rv-text='model.columnTotals.<%= j %>'></td>
+        <% end %>
+      </tr>
+    </tfoot>
+  <% end %>
+</table>
+
+<div class='margin_th margin_bh'>
+  <a class='uppercase add_another_row'><i class='icon-plus-sign'></i> Add another row</a>
+</div>

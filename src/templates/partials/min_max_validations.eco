@@ -1,0 +1,11 @@
+<% if @model.hasMinMaxValidations(): %>
+  <div class='min_max'>
+    <% if @model.get('field_options.min') && @model.get('field_options.max'): %>
+      Between <%= @model.get('field_options.min') %> and <%= @model.get('field_options.max') %>.
+    <% else if @model.get('field_options.min'): %>
+      More than <%= @model.get('field_options.min') %>.
+    <% else if @model.get('field_options.max'): %>
+      Less than <%= @model.get('field_options.max') %>.
+    <% end %>
+  </div>
+<% end %>

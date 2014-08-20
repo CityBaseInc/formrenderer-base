@@ -1,0 +1,17 @@
+<div class='map_marker_field_map_wrapper'>
+  <div class='map_marker_field_map' />
+
+  <div class='map_marker_field_cover'>
+    Click to set location
+  </div>
+
+  <div class='map_marker_field_toolbar cf'>
+    <strong>Coordinates:</strong>
+    <span data-rv-show='model.value.lat'>
+      <span data-rv-text='model.value.lat' />,
+      <span data-rv-text='model.value.lng' />
+    </span>
+    <span data-rv-hide='model.value.lat' class='none'>N/A</span>
+    <a class='map_marker_field_disable' data-rv-show='model.value.lat'>Clear</a>
+  </div>
+</div>

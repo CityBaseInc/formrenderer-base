@@ -1,0 +1,5 @@
+<input type="text"
+       id="<%= @getDomId() %>"
+       class="rf-size-<%= @model.get('field_options.size') %>"
+       data-rv-input='model.value'
+       placeholder='http://' />

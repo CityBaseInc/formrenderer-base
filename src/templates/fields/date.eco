@@ -1,0 +1,27 @@
+<div class='input-line'>
+  <span class='month'>
+    <input type="text"
+           id="<%= @getDomId() %>"
+           data-rv-input='model.value.month'
+           maxlength='2' />
+    <label>MM</label>
+  </span>
+
+  <span class='above-line'>/</span>
+
+  <span class='day'>
+    <input type="text"
+           data-rv-input='model.value.day'
+           maxlength='2' />
+    <label>DD</label>
+  </span>
+
+  <span class='above-line'>/</span>
+
+  <span class='year'>
+    <input type="text"
+           data-rv-input='model.value.year'
+           maxlength='4' />
+    <label>YYYY</label>
+  </span>
+</div>

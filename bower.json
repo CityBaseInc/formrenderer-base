@@ -1,0 +1,28 @@
+{
+  "name": "formrenderer-base",
+  "version": "0.0.0",
+  "authors": [
+    "ajb <adam@dobt.co>"
+  ],
+  "description": "Base components of DOBT's form renderer.",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "underscore": "~1.6.0",
+    "underscore.string": "~2.3.3",
+    "underscore.simpleformat.js": "https://gist.githubusercontent.com/ajb/e1c8fabcf58482d60c2e/raw/49eaf02ec55c7a594bbb8822d257fa262014111f/underscore.simpleformat.js",
+    "underscore.toboolean.js": "https://gist.githubusercontent.com/ajb/66d27966a32ad0174eb7/raw/0903f2960ef56180bd130a84873669e96dade621/underscore.toboolean.js",
+    "sanitize.js": "*",
+    "underscore.sanitize.js": "https://gist.githubusercontent.com/ajb/ce667b9934d70806b564/raw/9fce10f6246994a0d02ed9237a49e411ab700885/underscore.sanitize.js",
+    "backbone-deep-model": "~0.10.4",
+    "rivets": "0.5.12",
+    "allcountries.js": "https://gist.githubusercontent.com/ajb/614a410ec3474032ac39/raw/db0507b23806514505190c155c8249b5e5362af0/allcountries.js"
+  }
+}

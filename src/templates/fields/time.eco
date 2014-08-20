@@ -1,0 +1,36 @@
+<div class='input-line'>
+  <span class='hours'>
+    <input type="text"
+           id="<%= @getDomId() %>"
+           data-rv-input='model.value.hours'
+           maxlength='2' />
+    <label>HH</label>
+  </span>
+
+  <span class='above-line'>:</span>
+
+  <span class='minutes'>
+    <input type="text"
+           data-rv-input='model.value.minutes'
+           maxlength='2' />
+    <label>MM</label>
+  </span>
+
+  <% unless @model.get('field_options.disable_seconds'): %>
+    <span class='above-line'>:</span>
+
+    <span class='seconds'>
+      <input type="text"
+             data-rv-input='model.value.seconds'
+             maxlength='2' />
+      <label>SS</label>
+    </span>
+  <% end %>
+
+  <span class='am_pm'>
+    <select data-rv-value='model.value.am_pm'>
+      <option value='AM'>AM</option>
+      <option value='PM'>PM</option>
+    </select>
+  </span>
+</div>

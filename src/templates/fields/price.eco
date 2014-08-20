@@ -1,0 +1,19 @@
+<div class='input-line'>
+  <span class='above-line'>$</span>
+  <span class='dollars'>
+    <input type="text"
+           id="<%= @getDomId() %>"
+           data-rv-input='model.value.dollars' />
+    <label>Dollars</label>
+  </span>
+
+  <% unless @model.get('field_options.disable_cents'): %>
+    <span class='above-line'>.</span>
+    <span class='cents'>
+      <input type="text"
+             data-rv-input='model.value.cents'
+             maxlength='2' />
+      <label>Cents</label>
+    </span>
+  <% end %>
+</div>

@@ -1,0 +1,9 @@
+<select id="<%= @getDomId() %>" data-rv-value='model.value'>
+  <% if @model.get('field_options.include_blank_option'): %>
+    <option></option>
+  <% end %>
+
+  <% for option in @model.getOptions(): %>
+    <option value="<%= option.label %>"><%= option.label %></option>
+  <% end %>
+</select>

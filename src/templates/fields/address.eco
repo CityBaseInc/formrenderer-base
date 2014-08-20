@@ -1,0 +1,39 @@
+<div class='input-line'>
+  <span class='street'>
+    <input type="text"
+           id="<%= @getDomId() %>"
+           data-rv-input='model.value.street' />
+    <label>Address</label>
+  </span>
+</div>
+
+<div class='input-line'>
+  <span class='city'>
+    <input type="text"
+           data-rv-input='model.value.city' />
+    <label>City</label>
+  </span>
+
+  <span class='state'>
+    <input type="text"
+           data-rv-input='model.value.state' />
+    <label>State / Province / Region</label>
+  </span>
+</div>
+
+<div class='input-line'>
+  <span class='zip'>
+    <input type="text"
+           data-rv-input='model.value.zipcode' />
+    <label>Zipcode</label>
+  </span>
+
+  <span class='country'>
+    <select data-rv-value='model.value.country'>
+      <% for k, v of allCountries: %>
+        <option value='<%= k %>'><%= v %></option>
+      <% end %>
+    </select>
+    <label>Country</label>
+  </span>
+</div>

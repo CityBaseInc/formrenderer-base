@@ -1,0 +1,42 @@
+<div class='bottom_status_bar cf'>
+  <div class='ninety_wrapper'>
+    <div class='align_left'>
+      <div class='saved_status_indicator <% if @form_renderer.state.get('hasServerErrors'): %>error<% else if @form_renderer.state.get('hasChanges'): %>saving<% end %>'>
+        <span class='icon_wrapper'>
+          <i class='icon-cloud'></i>
+          <i class='icon-ok'></i>
+        </span>
+
+        <span class='status_wrapper'>
+          <span class='saving'>Saving...</span>
+          <span class='saved'>Saved</span>
+          <span class='error'>Error saving</span>
+        </span>
+      </div>
+    </div>
+
+    <div class='align_right'>
+      <div class='button_wrapper'>
+        <% if @firstPage(): %>
+          <a class='button arrow_l darker_gray lap_show_i' href='<%= @form_renderer.options.backToProjectUrl %>'>
+            Back to project
+          </a>
+        <% else: %>
+          <a class='button arrow_l darker_gray go_back_button lap_show_i'>
+            Back to page <%= @previousPage() %>
+          </a>
+        <% end %>
+
+        <% if @form_renderer.state.get('submitting'): %>
+          <a class='button arrow info continue_button disabled'>
+            Loading preview...
+          </a>
+        <% else: %>
+          <a class='button arrow info continue_button'>
+            <% if @lastPage(): %>Preview and submit<% else: %>Next page<% end %>
+          </a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<% if @form_renderer.numPages > 1: %>
+  <ul class='formbuilder_form_pages_list cf'>
+    <% for i in [1..(@form_renderer.numPages)]: %>
+      <% if (i == @form_renderer.state.get('activePage')): %>
+        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><span><%= i %></span></li>
+      <% else: %>
+        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><a data-activate-page="<%= i %>"><%= i %></a></li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,0 +1,5 @@
+<% if @model.getError(): %>
+  <span class='help-block validation-message-wrapper'>
+    <%= @model.getError() %>
+  </span>
+<% end %>

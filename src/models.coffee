@@ -283,5 +283,5 @@ class FormRenderer.Models.ResponseFieldWebsite extends FormRenderer.Models.Respo
   field_type: 'website'
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  class FormRenderer.Models["ResponseField#{_.classify(i)}"] extends FormRenderer.Models.NonInputResponseField
+  class FormRenderer.Models["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Models.NonInputResponseField
     field_type: i

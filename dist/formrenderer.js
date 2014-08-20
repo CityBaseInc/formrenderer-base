@@ -84,11 +84,11 @@
     };
 
     FormRenderer.prototype.events = {
-      'click [data-activate-page]': Honeybadger.wrap(function(e) {
+      'click [data-activate-page]': function(e) {
         return this.activatePage($(e.currentTarget).data('activate-page'), {
           silent: true
         });
-      })
+      }
     };
 
     function FormRenderer(options) {
@@ -120,7 +120,7 @@
       this.response_fields = new FormRenderer.Collection;
       for (_i = 0, _len = responseFieldsJSON.length; _i < _len; _i++) {
         rf = responseFieldsJSON[_i];
-        model = new FormRenderer.Models["ResponseField" + (_.classify(rf.field_type))](rf);
+        model = new FormRenderer.Models["ResponseField" + (_.str.classify(rf.field_type))](rf);
         if (model.input_field) {
           model.setExistingValue(this.options.response.responses[model.get('id')]);
         }
@@ -1270,7 +1270,7 @@
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_.classify(i))] = (function(_super) {
+    FormRenderer.Models["ResponseField" + (_.str.classify(i))] = (function(_super) {
       __extends(_Class, _super);
 
       function _Class() {
@@ -1306,7 +1306,7 @@
     };
 
     Pagination.prototype.render = function() {
-      this.$el.html(JST['form_renderer/templates/partials/pagination'](this));
+      this.$el.html(JST['partials/pagination'](this));
       return this;
     };
 
@@ -1327,7 +1327,7 @@
     };
 
     ErrorAlertBar.prototype.render = function() {
-      this.$el.html(JST['form_renderer/templates/partials/error_alert_bar'](this));
+      this.$el.html(JST['partials/error_alert_bar'](this));
       if (!this.form_renderer.areAllPagesValid()) {
         window.scrollTo(0, 0);
       }
@@ -1356,7 +1356,7 @@
     };
 
     BottomStatusBar.prototype.render = function() {
-      this.$el.html(JST['form_renderer/templates/partials/bottom_status_bar'](this));
+      this.$el.html(JST['partials/bottom_status_bar'](this));
       return this;
     };
 
@@ -1376,21 +1376,21 @@
       return this.form_renderer.state.get('activePage') + 1;
     };
 
-    BottomStatusBar.prototype.handleBack = Honeybadger.wrap(function(e) {
+    BottomStatusBar.prototype.handleBack = function(e) {
       e.preventDefault();
       return this.form_renderer.activatePage(this.previousPage(), {
         silent: true
       });
-    });
+    };
 
-    BottomStatusBar.prototype.handleContinue = Honeybadger.wrap(function(e) {
+    BottomStatusBar.prototype.handleContinue = function(e) {
       e.preventDefault();
       if (this.lastPage()) {
         return this.form_renderer.submit();
       } else {
         return this.form_renderer.activatePage(this.nextPage());
       }
-    });
+    };
 
     return BottomStatusBar;
 
@@ -1417,7 +1417,7 @@
       _ref = this.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        view = new FormRenderer.Views["ResponseField" + (_.classify(rf.field_type))]({
+        view = new FormRenderer.Views["ResponseField" + (_.str.classify(rf.field_type))]({
           model: rf,
           form_renderer: this.form_renderer
         });
@@ -1496,7 +1496,7 @@
 
     ResponseField.prototype.render = function() {
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
-      this.$el.html(JST['form_renderer/templates/partials/response_field'](this));
+      this.$el.html(JST['partials/response_field'](this));
       rivets.bind(this.$el, {
         model: this.model
       });
@@ -1516,7 +1516,7 @@
 
     NonInputResponseField.prototype.render = function() {
       this.$el.addClass("response_field_" + this.field_type);
-      this.$el.html(JST['form_renderer/templates/partials/non_input_response_field'](this));
+      this.$el.html(JST['partials/non_input_response_field'](this));
       return this;
     };
 
@@ -1560,12 +1560,12 @@
 
     ResponseFieldTable.prototype.initExpanding = function() {};
 
-    ResponseFieldTable.prototype.addRow = Honeybadger.wrap(function() {
+    ResponseFieldTable.prototype.addRow = function() {
       this.model.numRows++;
       return this.render();
-    });
+    };
 
-    ResponseFieldTable.prototype.handleKeydown = Honeybadger.wrap(function(e) {
+    ResponseFieldTable.prototype.handleKeydown = function(e) {
       var $ta, col, row, _ref;
       if (_ref = e.which.toString(), __indexOf.call(_.keys(this.constructor.KEY_DIRECTIONS), _ref) < 0) {
         return;
@@ -1604,7 +1604,7 @@
       }
       e.preventDefault();
       return $ta.closest('table').find("tbody tr:eq(" + row + ") td:eq(" + col + ") textarea").focus();
-    });
+    };
 
     return ResponseFieldTable;
 
@@ -1730,7 +1730,7 @@
   _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Views["ResponseField" + (_.classify(i))] = (function(_super) {
+    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = (function(_super) {
       __extends(_Class, _super);
 
       function _Class() {
@@ -1747,7 +1747,7 @@
   _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
     i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_.classify(i))] = (function(_super) {
+    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = (function(_super) {
       __extends(_Class, _super);
 
       function _Class() {

@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
+    "jquery": "*",
     "backbone": "~1.1.2",
     "underscore": "~1.6.0",
     "underscore.string": "~2.3.3",
@@ -23,6 +24,7 @@
     "underscore.sanitize.js": "https://gist.githubusercontent.com/ajb/ce667b9934d70806b564/raw/9fce10f6246994a0d02ed9237a49e411ab700885/underscore.sanitize.js",
     "backbone-deep-model": "~0.10.4",
     "rivets": "0.5.12",
-    "allcountries.js": "https://gist.githubusercontent.com/ajb/614a410ec3474032ac39/raw/db0507b23806514505190c155c8249b5e5362af0/allcountries.js"
+    "allcountries.js": "https://gist.githubusercontent.com/ajb/614a410ec3474032ac39/raw/db0507b23806514505190c155c8249b5e5362af0/allcountries.js",
+    "before_unload.js": "https://gist.githubusercontent.com/ajb/daa1f7cdbedf6767a5ca/raw/ce1374c537ef5fc942ead76969453e7b6261781d/before_unload.js"
   }
 }

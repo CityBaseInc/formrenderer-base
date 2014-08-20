@@ -49,11 +49,13 @@ module.exports = (grunt) ->
         files:
           '<%= distFolder %>/formrenderer.js': '<%= compiledFolder %>/*.js'
           '<%= vendorFolder %>/js/vendor.js': [
-            'bower_components/backbone/backbone.js'
+            'bower_components/jquery/dist/jquery.js'
             'bower_components/underscore/underscore.js'
+            'bower_components/backbone/backbone.js'
             'bower_components/underscore.string/dist/underscore.string.min.js'
             'bower_components/underscore.simpleformat/index.js'
             'bower_components/underscore.toboolean/index.js'
+            'bower_components/before_unload.js/index.js'
             'bower_components/sanitize.js/lib/sanitize.js'
             'bower_components/underscore.sanitize/index.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'

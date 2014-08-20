@@ -43,7 +43,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     edit_in_place: false
 
   events:
-    'click [data-activate-page]': Honeybadger.wrap (e) ->
+    'click [data-activate-page]': (e) ->
       @activatePage $(e.currentTarget).data('activate-page'), silent: true
 
   constructor: (options) ->
@@ -57,7 +57,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     @subviews = { pages: {} }
 
     # Currently there's nothing in this template...
-    # @$el.html JST['form_renderer/templates/main'](@)
+    # @$el.html JST['main'](@)
 
     @constructResponseFields(@options.response_fields)
     @constructPages()
@@ -76,7 +76,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     @response_fields = new FormRenderer.Collection
 
     for rf in responseFieldsJSON
-      model = new FormRenderer.Models["ResponseField#{_.classify(rf.field_type)}"](rf)
+      model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](rf)
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
 

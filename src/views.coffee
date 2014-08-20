@@ -5,7 +5,7 @@ class FormRenderer.Views.Pagination extends Backbone.View
     @listenTo @form_renderer, 'afterValidate', @render
 
   render: ->
-    @$el.html JST['form_renderer/templates/partials/pagination'](@)
+    @$el.html JST['partials/pagination'](@)
     @
 
 class FormRenderer.Views.ErrorAlertBar extends Backbone.View
@@ -14,7 +14,7 @@ class FormRenderer.Views.ErrorAlertBar extends Backbone.View
     @listenTo @form_renderer, 'afterValidate', @render
 
   render: ->
-    @$el.html JST['form_renderer/templates/partials/error_alert_bar'](@)
+    @$el.html JST['partials/error_alert_bar'](@)
     window.scrollTo(0, 0) unless @form_renderer.areAllPagesValid()
     @
 
@@ -28,7 +28,7 @@ class FormRenderer.Views.BottomStatusBar extends Backbone.View
     @listenTo @form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', @render
 
   render: ->
-    @$el.html JST['form_renderer/templates/partials/bottom_status_bar'](@)
+    @$el.html JST['partials/bottom_status_bar'](@)
     @
 
   firstPage: ->
@@ -43,11 +43,11 @@ class FormRenderer.Views.BottomStatusBar extends Backbone.View
   nextPage: ->
     @form_renderer.state.get('activePage') + 1
 
-  handleBack: Honeybadger.wrap (e) ->
+  handleBack: (e) ->
     e.preventDefault()
     @form_renderer.activatePage @previousPage(), silent: true
 
-  handleContinue: Honeybadger.wrap (e) ->
+  handleContinue: (e) ->
     e.preventDefault()
 
     if @lastPage()
@@ -67,7 +67,7 @@ class FormRenderer.Views.Page extends Backbone.View
     @hide()
 
     for rf in @models
-      view = new FormRenderer.Views["ResponseField#{_.classify(rf.field_type)}"](model: rf, form_renderer: @form_renderer)
+      view = new FormRenderer.Views["ResponseField#{_.str.classify(rf.field_type)}"](model: rf, form_renderer: @form_renderer)
       @$el.append view.render().el
       @views.push view
 
@@ -102,14 +102,14 @@ class FormRenderer.Views.ResponseField extends Backbone.View
 
   render: ->
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
-    @$el.html JST['form_renderer/templates/partials/response_field'](@)
+    @$el.html JST['partials/response_field'](@)
     rivets.bind @$el, { model: @model }
     @
 
 class FormRenderer.Views.NonInputResponseField extends FormRenderer.Views.ResponseField
   render: ->
     @$el.addClass "response_field_#{@field_type}"
-    @$el.html JST['form_renderer/templates/partials/non_input_response_field'](@)
+    @$el.html JST['partials/non_input_response_field'](@)
     @
 
 class FormRenderer.Views.ResponseFieldTable extends FormRenderer.Views.ResponseField
@@ -139,12 +139,12 @@ class FormRenderer.Views.ResponseFieldTable extends FormRenderer.Views.ResponseF
     # Temporarily remove -- this is a major performance hit.
     # @$el.find('textarea').expanding()
 
-  addRow: Honeybadger.wrap ->
+  addRow: ->
     @model.numRows++
     @render()
 
   # @todo maybe this is trying to be too fancy?
-  handleKeydown: Honeybadger.wrap (e) ->
+  handleKeydown: (e) ->
     return unless e.which.toString() in _.keys(@constructor.KEY_DIRECTIONS)
 
     $ta = $(e.currentTarget)
@@ -239,9 +239,9 @@ class FormRenderer.Views.ResponseFieldMapMarker extends FormRenderer.Views.Respo
     @model.set 'value.lng', ''
 
 for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker')
-  class FormRenderer.Views["ResponseField#{_.classify(i)}"] extends FormRenderer.Views.ResponseField
+  class FormRenderer.Views["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Views.ResponseField
     field_type: i
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  class FormRenderer.Views["ResponseField#{_.classify(i)}"] extends FormRenderer.Views.NonInputResponseField
+  class FormRenderer.Views["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Views.NonInputResponseField
     field_type: i

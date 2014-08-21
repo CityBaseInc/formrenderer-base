@@ -70,20 +70,16 @@
 
     FormRenderer.prototype.defaults = {
       enableAutosave: true,
+      warnBeforeUnload: true,
       enablePages: true,
-      enableTopErrorBar: true,
+      enableErrorAlertBar: true,
+      enableBottomStatusBar: true,
+      saveDraftIdToLocalstorage: true,
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
       ignoreUser: false,
-      editInPlace: false,
-      afterSubmit: void 0,
-      response_fields: void 0,
-      response: {
-        id: void 0,
-        responses: {}
-      },
-      project_id: void 0
+      editInPlace: false
     };
 
     FormRenderer.prototype.events = {
@@ -96,10 +92,10 @@
 
     function FormRenderer(options) {
       this.options = $.extend({}, this.defaults, options);
-      this.state = new Backbone.Model;
-      this.state.set('hasChanges', false);
+      this.state = new Backbone.Model({
+        hasChanges: false
+      });
       this.setElement($(this.options.target));
-      this.$el.html('');
       this.$el.addClass('form_renderer_form');
       this.$el.data('form-renderer', this);
       this.subviews = {
@@ -111,12 +107,24 @@
           _this.$el.find('.form_renderer_main_loading').remove();
           _this.constructResponseFields();
           _this.constructPages();
-          _this.constructPagination();
-          _this.constructBottomStatusBar();
-          _this.constructErrorAlertBar();
+          if (_this.options.enablePages) {
+            _this.constructPagination();
+          } else {
+            _this.disablePagination();
+          }
+          if (_this.options.enableBottomStatusBar) {
+            _this.constructBottomStatusBar();
+          }
+          if (_this.options.enableErrorAlertBar) {
+            _this.constructErrorAlertBar();
+          }
           _this.subviews.pages[_this.state.get('activePage')].show();
-          _this.initAutosave();
-          _this.initBeforeUnload();
+          if (_this.options.enableAutosave) {
+            _this.initAutosave();
+          }
+          if (_this.options.warnBeforeUnload) {
+            _this.initBeforeUnload();
+          }
           if (_this.options.validateImmediately) {
             return _this.validateAllPages();
           }
@@ -244,6 +252,17 @@
         form_renderer: this
       });
       return this.$el.prepend(this.subviews.pagination.render().el);
+    };
+
+    FormRenderer.prototype.disablePagination = function() {
+      var page, pageNumber, _ref, _results;
+      _ref = this.subviews.pages;
+      _results = [];
+      for (pageNumber in _ref) {
+        page = _ref[pageNumber];
+        _results.push(page.show());
+      }
+      return _results;
     };
 
     FormRenderer.prototype.constructBottomStatusBar = function() {
@@ -3059,7 +3078,7 @@ window.JST["partials/error_alert_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'error_alert\'>Your response has validation errors.</div>\n'));
+        _print(_safe('\n  <div class=\'form_renderer_error_alert_bar\'>Your response has validation errors.</div>\n'));
       }
     
       _print(_safe('\n'));

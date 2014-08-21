@@ -31,19 +31,22 @@ window.FormRenderer = class FormRenderer extends Backbone.View
 
   defaults:
     enableAutosave: true
+    warnBeforeUnload: true
     enablePages: true
-    enableTopErrorBar: true
+    enableErrorAlertBar: true
+    enableBottomStatusBar: true
+    saveDraftIdToLocalstorage: true
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
     ignoreUser: false
     editInPlace: false
-    afterSubmit: undefined
-    response_fields: undefined
-    response:
-      id: undefined
-      responses: {}
-    project_id: undefined
+    # afterSubmit: undefined
+    # response_fields: undefined
+    # response:
+    #   id:
+    #   responses:
+    # project_id: undefined
 
   events:
     'click [data-activate-page]': (e) ->
@@ -52,9 +55,8 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   constructor: (options) ->
     @options = $.extend({}, @defaults, options)
     @state = new Backbone.Model
-    @state.set 'hasChanges', false
+      hasChanges: false
     @setElement $(@options.target)
-    @$el.html('')
     @$el.addClass 'form_renderer_form'
     @$el.data('form-renderer', @)
     @subviews = { pages: {} }
@@ -66,15 +68,19 @@ window.FormRenderer = class FormRenderer extends Backbone.View
       @$el.find('.form_renderer_main_loading').remove()
       @constructResponseFields()
       @constructPages()
-      @constructPagination()
-      @constructBottomStatusBar()
-      @constructErrorAlertBar()
+
+      if @options.enablePages
+        @constructPagination()
+      else
+        @disablePagination()
+
+      @constructBottomStatusBar() if @options.enableBottomStatusBar
+      @constructErrorAlertBar() if @options.enableErrorAlertBar
 
       @subviews.pages[@state.get('activePage')].show()
 
-      @initAutosave()
-      @initBeforeUnload()
-
+      @initAutosave() if @options.enableAutosave
+      @initBeforeUnload() if @options.warnBeforeUnload
       @validateAllPages() if @options.validateImmediately
 
   loadFromServer: (cb) ->
@@ -148,6 +154,10 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   constructPagination: ->
     @subviews.pagination = new FormRenderer.Views.Pagination(form_renderer: @)
     @$el.prepend @subviews.pagination.render().el
+
+  disablePagination: ->
+    for pageNumber, page of @subviews.pages
+      page.show()
 
   constructBottomStatusBar: ->
     @subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar(form_renderer: @)

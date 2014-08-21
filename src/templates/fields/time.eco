@@ -1,4 +1,4 @@
-<div class='input-line'>
+<div class='form_renderer_input_line'>
   <span class='hours'>
     <input type="text"
            id="<%= @getDomId() %>"

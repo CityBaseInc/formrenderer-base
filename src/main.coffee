@@ -30,17 +30,20 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   @Validators: {}
 
   defaults:
+    enableAutosave: true
+    enablePages: true
+    enableTopErrorBar: true
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
-    afterSubmit: undefined
     validateImmediately: false
+    ignoreUser: false
+    editInPlace: false
+    afterSubmit: undefined
     response_fields: undefined
     response:
       id: undefined
       responses: {}
     project_id: undefined
-    ignore_user: undefined
-    edit_in_place: false
 
   events:
     'click [data-activate-page]': (e) ->
@@ -59,7 +62,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     # Currently there's nothing in this template...
     # @$el.html JST['main'](@)
 
-    @getResponseFields =>
+    @loadFromServer =>
       @constructResponseFields()
       @constructPages()
       @constructPagination()
@@ -73,11 +76,16 @@ window.FormRenderer = class FormRenderer extends Backbone.View
 
       @validateAllPages() if @options.validateImmediately
 
-  getResponseFields: (cb) ->
-    return cb() if @options.response_fields?
+  loadFromServer: (cb) ->
+    return cb() if @options.response_fields? && @options.response.responses?
 
-    $.getJSON "#{@options.screendoorBase}/api/form_renderer/load_project?project_id=#{@options.project_id}&v=0", (data) =>
-      @options.response_fields = data.response_fields
+    $.getJSON "#{@options.screendoorBase}/api/form_renderer/load",
+      project_id: @options.project_id
+      response_id: @options.response.id
+      v: 0
+    , (data) =>
+      @options.response_fields ||= data.project.response_fields
+      @options.response.responses ||= (data.response?.responses || {})
       cb()
 
   constructResponseFields: ->

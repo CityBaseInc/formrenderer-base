@@ -69,18 +69,21 @@
     FormRenderer.Validators = {};
 
     FormRenderer.prototype.defaults = {
-      url: 'https://screendoor.dobt.co/responses/save',
+      enableAutosave: true,
+      enablePages: true,
+      enableTopErrorBar: true,
+      screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
-      afterSubmit: void 0,
       validateImmediately: false,
+      ignoreUser: false,
+      editInPlace: false,
+      afterSubmit: void 0,
       response_fields: void 0,
       response: {
         id: void 0,
         responses: {}
       },
-      project_id: void 0,
-      ignore_user: void 0,
-      edit_in_place: false
+      project_id: void 0
     };
 
     FormRenderer.prototype.events = {
@@ -102,7 +105,7 @@
       this.subviews = {
         pages: {}
       };
-      this.getResponseFields((function(_this) {
+      this.loadFromServer((function(_this) {
         return function() {
           _this.constructResponseFields();
           _this.constructPages();
@@ -119,13 +122,19 @@
       })(this));
     }
 
-    FormRenderer.prototype.getResponseFields = function(cb) {
-      if (this.options.response_fields != null) {
+    FormRenderer.prototype.loadFromServer = function(cb) {
+      if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
       }
-      return $.getJSON("http://screendoor.dobt.dev/api/form_renderer/load_project?project_id=2&v=0", (function(_this) {
+      return $.getJSON("" + this.options.screendoorBase + "/api/form_renderer/load", {
+        project_id: this.options.project_id,
+        response_id: this.options.response.id,
+        v: 0
+      }, (function(_this) {
         return function(data) {
-          _this.options.response_fields = data.response_fields;
+          var _base, _base1, _ref;
+          (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
+          (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
           return cb();
         };
       })(this));
@@ -297,7 +306,7 @@
       }
       this.isSaving = true;
       return $.ajax({
-        url: this.options.url,
+        url: "" + this.options.screendoorBase + "/responses/save",
         type: 'post',
         dataType: 'json',
         data: _.extend(this.saveParams(), {
@@ -1770,11 +1779,11 @@ window.JST["fields/address"] = function(__obj) {
     (function() {
       var k, v;
     
-      _print(_safe('<div class=\'input-line\'>\n  <span class=\'street\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'street\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </span>\n</div>\n\n<div class=\'input-line\'>\n  <span class=\'city\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </span>\n\n  <span class=\'state\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </span>\n</div>\n\n<div class=\'input-line\'>\n  <span class=\'zip\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </span>\n\n  <span class=\'country\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
+      _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </span>\n</div>\n\n<div class=\'form_renderer_input_line\'>\n  <span class=\'city\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </span>\n\n  <span class=\'state\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </span>\n</div>\n\n<div class=\'form_renderer_input_line\'>\n  <span class=\'zip\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </span>\n\n  <span class=\'country\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
     
       for (k in allCountries) {
         v = allCountries[k];
@@ -1946,7 +1955,7 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'input-line\'>\n  <span class=\'month\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'month\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
@@ -2380,7 +2389,7 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'input-line\'>\n  <span class=\'above-line\'>$</span>\n  <span class=\'dollars\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'above-line\'>$</span>\n  <span class=\'dollars\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
@@ -2715,7 +2724,7 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'input-line\'>\n  <span class=\'hours\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'hours\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     

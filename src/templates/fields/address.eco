@@ -1,4 +1,4 @@
-<div class='input-line'>
+<div class='form_renderer_input_line'>
   <span class='street'>
     <input type="text"
            id="<%= @getDomId() %>"
@@ -7,7 +7,7 @@
   </span>
 </div>
 
-<div class='input-line'>
+<div class='form_renderer_input_line'>
   <span class='city'>
     <input type="text"
            data-rv-input='model.value.city' />
@@ -21,7 +21,7 @@
   </span>
 </div>
 
-<div class='input-line'>
+<div class='form_renderer_input_line'>
   <span class='zip'>
     <input type="text"
            data-rv-input='model.value.zipcode' />

@@ -13,10 +13,12 @@
   <div id='form'></div>
 
   <script src="../vendor/js/vendor.js"></script>
+  <script src="../vendor/js/purl.js"></script>
   <script src="../dist/formrenderer.js"></script>
 
   <script>
     $(function(){
+      var url = $.url().param('dev') ? 'http://screendoor.dobt.dev/responses/save' : undefined;
       new FormRenderer({
         "response_fields": [{
           "id": "1",
@@ -25,7 +27,8 @@
         }],
         "response": {
           "responses": {}
-        }
+        },
+        "url": url
       });
     });
   </script>

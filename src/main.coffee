@@ -30,7 +30,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   @Validators: {}
 
   defaults:
-    url: '/responses/save'
+    url: 'https://screendoor.dobt.co/responses/save'
     target: '#form'
     afterSubmit: undefined
     validateImmediately: false

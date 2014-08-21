@@ -69,7 +69,7 @@
     FormRenderer.Validators = {};
 
     FormRenderer.prototype.defaults = {
-      url: '/responses/save',
+      url: 'https://screendoor.dobt.co/responses/save',
       target: '#form',
       afterSubmit: void 0,
       validateImmediately: false,

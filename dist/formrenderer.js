@@ -70,7 +70,7 @@
 
     FormRenderer.prototype.defaults = {
       url: 'https://screendoor.dobt.co/responses/save',
-      target: '#form',
+      target: '[data-formrenderer]',
       afterSubmit: void 0,
       validateImmediately: false,
       response_fields: [],

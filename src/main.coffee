@@ -31,7 +31,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
 
   defaults:
     url: 'https://screendoor.dobt.co/responses/save'
-    target: '#form'
+    target: '[data-formrenderer]'
     afterSubmit: undefined
     validateImmediately: false
     response_fields: []

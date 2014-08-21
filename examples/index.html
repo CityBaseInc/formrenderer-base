@@ -2,18 +2,33 @@
 <html>
 <head>
   <title>formrenderer-base</title>
+  <link rel="stylesheet" href="css/cardinal.css" />
   <link rel="stylesheet" href="../dist/formrenderer.css" />
   <style>
   * {
     box-sizing: border-box;
   }
+
+  body {
+    background-color: #eee;
+  }
+
+  #container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #fff;
+    padding: 1rem;
+    margin: 1rem auto;
+  }
   </style>
 </head>
 <body>
-  <div id='form'></div>
+  <div id='container'>
+    <div data-formrenderer></div>
+  </div>
 
   <script src="../vendor/js/vendor.js"></script>
-  <script src="../vendor/js/purl.js"></script>
+  <script src="js/purl.js"></script>
   <script src="../dist/formrenderer.js"></script>
 
   <script>

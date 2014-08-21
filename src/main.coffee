@@ -59,10 +59,11 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     @$el.data('form-renderer', @)
     @subviews = { pages: {} }
 
-    # Currently there's nothing in this template...
-    # @$el.html JST['main'](@)
+    # Loading state
+    @$el.html JST['main'](@)
 
     @loadFromServer =>
+      @$el.find('.form_renderer_main_loading').remove()
       @constructResponseFields()
       @constructPages()
       @constructPagination()

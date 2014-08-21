@@ -105,8 +105,10 @@
       this.subviews = {
         pages: {}
       };
+      this.$el.html(JST['main'](this));
       this.loadFromServer((function(_this) {
         return function() {
+          _this.$el.find('.form_renderer_main_loading').remove();
           _this.constructResponseFields();
           _this.constructPages();
           _this.constructPagination();
@@ -2832,7 +2834,7 @@ window.JST["main"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-    
+      _print(_safe('<div class=\'form_renderer_main_loading\'>\n  Loading form...\n</div>'));
     
     }).call(this);
     
@@ -2877,41 +2879,39 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'bottom_status_bar cf\'>\n  <div class=\'ninety_wrapper\'>\n    <div class=\'align_left\'>\n      <div class=\'saved_status_indicator '));
+      _print(_safe('<div class=\'form_renderer_bottom_bar cf\'>\n  <div class=\'form_renderer_bottom_bar_left\'>\n    '));
     
       if (this.form_renderer.state.get('hasServerErrors')) {
-        _print(_safe('error'));
+        _print(_safe('\n      Error saving\n    '));
       } else if (this.form_renderer.state.get('hasChanges')) {
-        _print(_safe('saving'));
-      }
-    
-      _print(_safe('\'>\n        <span class=\'icon_wrapper\'>\n          <i class=\'icon-cloud\'></i>\n          <i class=\'icon-ok\'></i>\n        </span>\n\n        <span class=\'status_wrapper\'>\n          <span class=\'saving\'>Saving...</span>\n          <span class=\'saved\'>Saved</span>\n          <span class=\'error\'>Error saving</span>\n        </span>\n      </div>\n    </div>\n\n    <div class=\'align_right\'>\n      <div class=\'button_wrapper\'>\n        '));
-    
-      if (this.firstPage()) {
-        _print(_safe('\n          <a class=\'button arrow_l darker_gray lap_show_i\' href=\''));
-        _print(this.form_renderer.options.backToProjectUrl);
-        _print(_safe('\'>\n            Back to project\n          </a>\n        '));
+        _print(_safe('\n      Saving...\n    '));
       } else {
-        _print(_safe('\n          <a class=\'button arrow_l darker_gray go_back_button lap_show_i\'>\n            Back to page '));
-        _print(this.previousPage());
-        _print(_safe('\n          </a>\n        '));
+        _print(_safe('\n      Saved\n    '));
       }
     
-      _print(_safe('\n\n        '));
+      _print(_safe('\n  </div>\n\n  <div class=\'form_renderer_bottom_bar_right\'>\n    '));
+    
+      if (!this.firstPage()) {
+        _print(_safe('\n      <button class=\'button go_back_button\'>\n        Back to page '));
+        _print(this.previousPage());
+        _print(_safe('\n      </button>\n    '));
+      }
+    
+      _print(_safe('\n\n    '));
     
       if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n          <a class=\'button arrow info continue_button disabled\'>\n            Loading preview...\n          </a>\n        '));
+        _print(_safe('\n      <button class=\'button button-primary continue_button disabled\'>\n        Submitting...\n      </button>\n    '));
       } else {
-        _print(_safe('\n          <a class=\'button arrow info continue_button\'>\n            '));
+        _print(_safe('\n      <button class=\'button button-primary continue_button\'>\n        '));
         if (this.lastPage()) {
-          _print(_safe('Preview and submit'));
+          _print(_safe('Submit'));
         } else {
           _print(_safe('Next page'));
         }
-        _print(_safe('\n          </a>\n        '));
+        _print(_safe('\n      </button>\n    '));
       }
     
-      _print(_safe('\n      </div>\n    </div>\n  </div>\n</div>\n'));
+      _print(_safe('\n  </div>\n</div>\n'));
     
     }).call(this);
     

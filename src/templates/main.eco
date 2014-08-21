@@ -1,1 +1,3 @@
-<% # this is a placeholder for now... %>
+<div class='form_renderer_main_loading'>
+  Loading form...
+</div>

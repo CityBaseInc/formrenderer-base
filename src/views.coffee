@@ -178,22 +178,22 @@ class FormRenderer.Views.ResponseFieldFile extends FormRenderer.Views.ResponseFi
   render: ->
     super
 
-    if @form_renderer
-      @$el.find('.pretty_file_input').prettyFileInput
-        action: @form_renderer.options.url
-        method: 'post'
-        name: "raw_responses[#{@model.get('id')}][]"
-        additional_parameters: @form_renderer.saveParams()
-        beforeRemove: =>
-          @model.set 'value', {}, silent: true
-        beforeUpload: (filename, pfi) =>
-          pfi.options.additional_parameters = @form_renderer.saveParams()
-          @model.set 'value.filename', filename, silent: true
-        onUploadError: =>
-          @model.set 'value.filename', '', silent: true
-        onUploadSuccess: (data) =>
-          @form_renderer.options.response.id = data.response_id
-          @form_renderer.trigger 'afterSave'
+    # if @form_renderer
+      # @$el.find('.pretty_file_input').prettyFileInput
+      #   action: @form_renderer.options.url
+      #   method: 'post'
+      #   name: "raw_responses[#{@model.get('id')}][]"
+      #   additional_parameters: @form_renderer.saveParams()
+      #   beforeRemove: =>
+      #     @model.set 'value', {}, silent: true
+      #   beforeUpload: (filename, pfi) =>
+      #     pfi.options.additional_parameters = @form_renderer.saveParams()
+      #     @model.set 'value.filename', filename, silent: true
+      #   onUploadError: =>
+      #     @model.set 'value.filename', '', silent: true
+      #   onUploadSuccess: (data) =>
+      #     @form_renderer.options.response.id = data.response_id
+      #     @form_renderer.trigger 'afterSave'
 
     return @
 

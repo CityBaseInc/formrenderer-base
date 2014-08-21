@@ -30,11 +30,11 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   @Validators: {}
 
   defaults:
-    url: 'https://screendoor.dobt.co/responses/save'
+    screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     afterSubmit: undefined
     validateImmediately: false
-    response_fields: []
+    response_fields: undefined
     response:
       id: undefined
       responses: {}
@@ -59,23 +59,31 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     # Currently there's nothing in this template...
     # @$el.html JST['main'](@)
 
-    @constructResponseFields(@options.response_fields)
-    @constructPages()
-    @constructPagination()
-    @constructBottomStatusBar()
-    @constructErrorAlertBar()
+    @getResponseFields =>
+      @constructResponseFields()
+      @constructPages()
+      @constructPagination()
+      @constructBottomStatusBar()
+      @constructErrorAlertBar()
 
-    @subviews.pages[@state.get('activePage')].show()
+      @subviews.pages[@state.get('activePage')].show()
 
-    @initAutosave()
-    @initBeforeUnload()
+      @initAutosave()
+      @initBeforeUnload()
 
-    @validateAllPages() if @options.validateImmediately
+      @validateAllPages() if @options.validateImmediately
 
-  constructResponseFields: (responseFieldsJSON) ->
+  getResponseFields: (cb) ->
+    return cb() if @options.response_fields?
+
+    $.getJSON "#{@options.screendoorBase}/api/form_renderer/load_project?project_id=#{@options.project_id}&v=0", (data) =>
+      @options.response_fields = data.response_fields
+      cb()
+
+  constructResponseFields: ->
     @response_fields = new FormRenderer.Collection
 
-    for rf in responseFieldsJSON
+    for rf in @options.response_fields
       model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](rf)
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
@@ -171,7 +179,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     @isSaving = true
 
     $.ajax
-      url: @options.url
+      url: "#{@options.screendoorBase}/responses/save"
       type: 'post'
       dataType: 'json'
       data: _.extend(@saveParams(), {

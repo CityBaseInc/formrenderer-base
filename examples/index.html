@@ -33,17 +33,11 @@
 
   <script>
     $(function(){
-      var url = $.url().param('dev') ? 'http://screendoor.dobt.dev/responses/save' : undefined;
       new FormRenderer({
-        "response_fields": [{
-          "id": "1",
-          "label": "foo",
-          "field_type": "text"
-        }],
         "response": {
           "responses": {}
         },
-        "url": url
+        "screendoorBase": $.url().param('dev') ? 'http://screendoor.dobt.dev' : undefined
       });
     });
   </script>

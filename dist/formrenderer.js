@@ -73,7 +73,7 @@
       target: '[data-formrenderer]',
       afterSubmit: void 0,
       validateImmediately: false,
-      response_fields: [],
+      response_fields: void 0,
       response: {
         id: void 0,
         responses: {}
@@ -102,24 +102,41 @@
       this.subviews = {
         pages: {}
       };
-      this.constructResponseFields(this.options.response_fields);
-      this.constructPages();
-      this.constructPagination();
-      this.constructBottomStatusBar();
-      this.constructErrorAlertBar();
-      this.subviews.pages[this.state.get('activePage')].show();
-      this.initAutosave();
-      this.initBeforeUnload();
-      if (this.options.validateImmediately) {
-        this.validateAllPages();
-      }
+      this.getResponseFields((function(_this) {
+        return function() {
+          _this.constructResponseFields();
+          _this.constructPages();
+          _this.constructPagination();
+          _this.constructBottomStatusBar();
+          _this.constructErrorAlertBar();
+          _this.subviews.pages[_this.state.get('activePage')].show();
+          _this.initAutosave();
+          _this.initBeforeUnload();
+          if (_this.options.validateImmediately) {
+            return _this.validateAllPages();
+          }
+        };
+      })(this));
     }
 
-    FormRenderer.prototype.constructResponseFields = function(responseFieldsJSON) {
-      var model, rf, _i, _len;
+    FormRenderer.prototype.getResponseFields = function(cb) {
+      if (this.options.response_fields != null) {
+        return cb();
+      }
+      return $.getJSON("http://screendoor.dobt.dev/api/form_renderer/load_project?project_id=2&v=0", (function(_this) {
+        return function(data) {
+          _this.options.response_fields = data.response_fields;
+          return cb();
+        };
+      })(this));
+    };
+
+    FormRenderer.prototype.constructResponseFields = function() {
+      var model, rf, _i, _len, _ref;
       this.response_fields = new FormRenderer.Collection;
-      for (_i = 0, _len = responseFieldsJSON.length; _i < _len; _i++) {
-        rf = responseFieldsJSON[_i];
+      _ref = this.options.response_fields;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        rf = _ref[_i];
         model = new FormRenderer.Models["ResponseField" + (_.str.classify(rf.field_type))](rf);
         if (model.input_field) {
           model.setExistingValue(this.options.response.responses[model.get('id')]);
@@ -1621,42 +1638,6 @@
 
     ResponseFieldFile.prototype.render = function() {
       ResponseFieldFile.__super__.render.apply(this, arguments);
-      if (this.form_renderer) {
-        this.$el.find('.pretty_file_input').prettyFileInput({
-          action: this.form_renderer.options.url,
-          method: 'post',
-          name: "raw_responses[" + (this.model.get('id')) + "][]",
-          additional_parameters: this.form_renderer.saveParams(),
-          beforeRemove: (function(_this) {
-            return function() {
-              return _this.model.set('value', {}, {
-                silent: true
-              });
-            };
-          })(this),
-          beforeUpload: (function(_this) {
-            return function(filename, pfi) {
-              pfi.options.additional_parameters = _this.form_renderer.saveParams();
-              return _this.model.set('value.filename', filename, {
-                silent: true
-              });
-            };
-          })(this),
-          onUploadError: (function(_this) {
-            return function() {
-              return _this.model.set('value.filename', '', {
-                silent: true
-              });
-            };
-          })(this),
-          onUploadSuccess: (function(_this) {
-            return function(data) {
-              _this.form_renderer.options.response.id = data.response_id;
-              return _this.form_renderer.trigger('afterSave');
-            };
-          })(this)
-        });
-      }
       return this;
     };
 

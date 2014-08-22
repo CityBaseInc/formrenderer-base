@@ -35,7 +35,9 @@
 
   <script>
     $(function(){
-      new FormRenderer(Fixtures.FormRendererOptions.KITCHEN_SINK())
+      new FormRenderer(_.extend(Fixtures.FormRendererOptions.KITCHEN_SINK(), {
+        "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
+      }))
     });
   </script>
 

@@ -36,7 +36,7 @@
     $(function(){
       new FormRenderer({
         "project_id": 2,
-        "screendoorBase": $.url().param('dev') ? 'http://screendoor.dobt.dev' : undefined
+        "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
       });
     });
   </script>

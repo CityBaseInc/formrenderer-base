@@ -26,6 +26,7 @@
     "rivets": "0.5.12",
     "allcountries.js": "https://gist.githubusercontent.com/ajb/614a410ec3474032ac39/raw/db0507b23806514505190c155c8249b5e5362af0/allcountries.js",
     "before_unload.js": "https://gist.githubusercontent.com/ajb/daa1f7cdbedf6767a5ca/raw/ce1374c537ef5fc942ead76969453e7b6261781d/before_unload.js",
-    "store.js": "~1.3.16"
+    "store.js": "~1.3.16",
+    "font-awesome": "3.2.1"
   }
 }

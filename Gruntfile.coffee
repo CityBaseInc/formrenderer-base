@@ -10,6 +10,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
   grunt.loadNpmTasks('grunt-karma')
+  grunt.loadNpmTasks('grunt-text-replace')
 
   grunt.initConfig
 
@@ -43,6 +44,15 @@ module.exports = (grunt) ->
             '<%= testFolder %>/support/fixtures.coffee'
           ]
 
+    replace:
+      font_awesome:
+        src: ['bower_components/font-awesome/css/font-awesome.css']
+        dest: '<%= compiledFolder %>/font-awesome.css'
+        replacements: [
+          from: "url('../"
+          to: "url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/"
+        ]
+
     concat:
       all:
         files:
@@ -63,6 +73,7 @@ module.exports = (grunt) ->
             'bower_components/rivets/dist/rivets.js'
             'bower_components/allcountries.js/index.js'
           ]
+          '<%= vendorFolder %>/css/vendor.css': '<%= compiledFolder %>/*.css'
 
     stylus:
       all:
@@ -105,7 +116,7 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'stylus:all', 'clean:compiled']
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'replace:font_awesome', 'concat:all', 'stylus:all', 'clean:compiled']
   grunt.registerTask 'dist', ['default', 'cssmin:dist', 'uglify:dist']
   grunt.registerTask 'test', ['default', 'karma:main']
   grunt.registerTask 'release', ['default', 'dist', 'test', 'release']

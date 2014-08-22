@@ -3,3 +3,5 @@ mocha.setup ui: 'bdd'
 
 # Create another global variable for simpler syntax.
 window.expect = chai.expect
+
+FormRenderer.prototype.defaults.screendoorBase = 'http://localhost'

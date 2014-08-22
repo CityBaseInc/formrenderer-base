@@ -3,12 +3,7 @@ before ->
 
 describe 'state', ->
   before ->
-    @fr = new FormRenderer
-      project_id: 1
-      response_fields: []
-      response:
-        id: 'xxx'
-        responses: {}
+    @fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()
 
   describe 'hasChanges', ->
     it 'initially does not have changes', ->
@@ -34,33 +29,18 @@ describe '#loadFromServer', ->
     @server.restore()
 
   it 'loads just the project', ->
-    @fr = new FormRenderer
-      project_id: 1
-      response:
-        responses: { '1': 'hey' }
+    @fr = new FormRenderer Fixtures.FormRendererOptions.RESPONSE_LOADED()
 
     @server.requests[0].respond 200, { "Content-Type": "application/json" }, JSON.stringify(
       project:
         id: 1
-        response_fields: [
-          id: 1
-          label: 'Name'
-          field_type: 'text'
-        ]
+        response_fields: [ _.clone(Fixtures.RESPONSE_FIELD) ]
     )
 
     expect($('input[type=text]').val()).to.equal('hey')
 
   it 'loads just the draft', ->
-    @fr = new FormRenderer
-      project_id: 1
-      response_fields: [
-        id: 1,
-        label: 'Name',
-        field_type: 'text'
-      ]
-      response:
-        id: 'xxx'
+    @fr = new FormRenderer Fixtures.FormRendererOptions.PROJECT_LOADED()
 
     @server.requests[0].respond 200, { "Content-Type": "application/json" }, JSON.stringify(
       response:
@@ -72,10 +52,7 @@ describe '#loadFromServer', ->
     expect($('input[type=text]').val()).to.equal('Adam')
 
   it 'loads both project and draft', ->
-    @fr = new FormRenderer
-      project_id: 1
-      response:
-        id: 'xxx'
+    @fr = new FormRenderer Fixtures.FormRendererOptions.NOT_LOADED()
 
     @server.requests[0].respond 200, { "Content-Type": "application/json" }, JSON.stringify(
       response:
@@ -84,22 +61,14 @@ describe '#loadFromServer', ->
           '1': 'Adam'
       project:
         id: 1
-        response_fields: [
-          id: 1
-          label: 'Name'
-          field_type: 'text'
-        ]
+        response_fields: [ _.clone(Fixtures.RESPONSE_FIELD) ]
     )
 
     expect($('label').text()).to.have.string('Name')
     expect($('input[type=text]').val()).to.equal('Adam')
 
   it 'removes the draft ID on error', ->
-    @fr = new FormRenderer
-      project_id: 1
-      response_fields: []
-      response:
-        id: 'xxx'
+    @fr = new FormRenderer Fixtures.FormRendererOptions.PROJECT_LOADED()
 
     storeSpy =
       remove: sinon.spy()

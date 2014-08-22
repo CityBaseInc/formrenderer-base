@@ -22,10 +22,10 @@ describe 'DateValidator', ->
     @validator = new FormRenderer.Validators.DateValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.DATE.valid
+    for x in Fixtures.Validation.DATE.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.DATE.invalid
+    for x in Fixtures.Validation.DATE.invalid
       @assertInvalid.call @, x
 
 describe 'EmailValidator', ->
@@ -34,10 +34,10 @@ describe 'EmailValidator', ->
     @validator = new FormRenderer.Validators.EmailValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.EMAIL.valid
+    for x in Fixtures.Validation.EMAIL.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.EMAIL.invalid
+    for x in Fixtures.Validation.EMAIL.invalid
       @assertInvalid.call @, x
 
 describe 'NumberValidator', ->
@@ -46,10 +46,10 @@ describe 'NumberValidator', ->
     @validator = new FormRenderer.Validators.NumberValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.NUMBER.valid
+    for x in Fixtures.Validation.NUMBER.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.NUMBER.invalid
+    for x in Fixtures.Validation.NUMBER.invalid
       @assertInvalid.call @, x
 
 describe 'PriceValidator', ->
@@ -58,10 +58,10 @@ describe 'PriceValidator', ->
     @validator = new FormRenderer.Validators.PriceValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.PRICE.valid
+    for x in Fixtures.Validation.PRICE.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.PRICE.invalid
+    for x in Fixtures.Validation.PRICE.invalid
       @assertInvalid.call @, x
 
 describe 'TimeValidator', ->
@@ -70,10 +70,10 @@ describe 'TimeValidator', ->
     @validator = new FormRenderer.Validators.TimeValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.TIME.valid
+    for x in Fixtures.Validation.TIME.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.TIME.invalid
+    for x in Fixtures.Validation.TIME.invalid
       @assertInvalid.call @, x
 
 describe 'MinMaxLengthValidator', ->
@@ -86,10 +86,10 @@ describe 'MinMaxLengthValidator', ->
       @model.set('field_options', minlength: '5', maxlength: '10')
 
     it 'validates properly', ->
-      for x in ValidationFixtures.MIN_MAX_LENGTH_CHARACTERS.valid
+      for x in Fixtures.Validation.MIN_MAX_LENGTH_CHARACTERS.valid
         @assertValid.call @, x
 
-      for x in ValidationFixtures.MIN_MAX_LENGTH_CHARACTERS.invalid
+      for x in Fixtures.Validation.MIN_MAX_LENGTH_CHARACTERS.invalid
         @assertInvalid.call @, x
 
   describe 'words', ->
@@ -97,10 +97,10 @@ describe 'MinMaxLengthValidator', ->
       @model.set('field_options', minlength: '2', maxlength: '3', min_max_length_units: 'words')
 
     it 'validates properly', ->
-      for x in ValidationFixtures.MIN_MAX_LENGTH_WORDS.valid
+      for x in Fixtures.Validation.MIN_MAX_LENGTH_WORDS.valid
         @assertValid.call @, x
 
-      for x in ValidationFixtures.MIN_MAX_LENGTH_WORDS.invalid
+      for x in Fixtures.Validation.MIN_MAX_LENGTH_WORDS.invalid
         @assertInvalid.call @, x
 
 describe 'MinMaxValidator', ->
@@ -112,10 +112,10 @@ describe 'MinMaxValidator', ->
     @validator = new FormRenderer.Validators.MinMaxValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.MIN_MAX.valid
+    for x in Fixtures.Validation.MIN_MAX.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.MIN_MAX.invalid
+    for x in Fixtures.Validation.MIN_MAX.invalid
       @assertInvalid.call @, x
 
 describe 'IntegerValidator', ->
@@ -127,8 +127,8 @@ describe 'IntegerValidator', ->
     @validator = new FormRenderer.Validators.IntegerValidator(@model)
 
   it 'validates properly', ->
-    for x in ValidationFixtures.INTEGER.valid
+    for x in Fixtures.Validation.INTEGER.valid
       @assertValid.call @, x
 
-    for x in ValidationFixtures.INTEGER.invalid
+    for x in Fixtures.Validation.INTEGER.invalid
       @assertInvalid.call @, x

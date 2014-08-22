@@ -1,6 +1,8 @@
 ## These need to be kept in-sync with Screendoor for the time being
 
-window.ValidationFixtures =
+window.Fixtures ||= {}
+
+Fixtures.Validation =
   MIN_MAX_LENGTH_CHARACTERS:
     valid: ['Boooo', '   Boooo        ', ' Boooooooo  ', ';oooo:']
     invalid: ['Boo', 'Boooooooooooooooooooo']
@@ -64,3 +66,40 @@ window.ValidationFixtures =
   NUMBER:
     invalid: ['a', 'a123', '123+']
     valid: ['123', '1,23', '1.23', '1-23', '+15107671234']
+
+Fixtures.RESPONSE_FIELD =
+  id: 1
+  label: 'Name'
+  field_type: 'text'
+
+Fixtures.FormRendererOptions =
+  LOADED: ->
+    {
+      project_id: 1
+      response_fields: []
+      response:
+        id: 'xxx'
+        responses: {}
+    }
+
+  RESPONSE_LOADED: ->
+    {
+      project_id: 1
+      response:
+        responses: { '1': 'hey' }
+    }
+
+  PROJECT_LOADED: ->
+    {
+      project_id: 1
+      response_fields: [ _.clone(Fixtures.RESPONSE_FIELD) ]
+      response:
+        id: 'xxx'
+    }
+
+  NOT_LOADED: ->
+    {
+      project_id: 1
+      response:
+        id: 'xxx'
+    }

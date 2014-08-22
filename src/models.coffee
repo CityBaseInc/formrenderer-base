@@ -1,4 +1,4 @@
-class FormRenderer.Models.ResponseField extends Backbone.DeepModel
+FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   input_field: true
   field_type: undefined
   validators: []
@@ -85,12 +85,12 @@ class FormRenderer.Models.ResponseField extends Backbone.DeepModel
     @set @columnOrOptionKeypath(), opts
     @trigger 'change'
 
-class FormRenderer.Models.NonInputResponseField extends Backbone.DeepModel
+FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend
   input_field: false
   field_type: undefined
   sync: ->
 
-class FormRenderer.Models.ResponseFieldMapMarker extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend
   field_type: 'map_marker'
   hasValue: ->
     _.every ['lat', 'lng'], (key) =>
@@ -102,15 +102,15 @@ class FormRenderer.Models.ResponseFieldMapMarker extends FormRenderer.Models.Res
     if (lat = @get('field_options.default_lat')) && (lng = @get('field_options.default_lng'))
       [lat, lng]
 
-class FormRenderer.Models.ResponseFieldAddress extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend
   field_type: 'address'
   setExistingValue: (x) ->
-    super
+    FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     @set('value.country', 'US') unless x?.country
   hasValue: ->
     @hasValueHashKey ['street', 'city', 'state', 'zipcode']
 
-class FormRenderer.Models.ResponseFieldCheckboxes extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
   setExistingValue: (x) ->
     @set 'value', _.tap {}, (h) =>
@@ -140,7 +140,7 @@ class FormRenderer.Models.ResponseFieldCheckboxes extends FormRenderer.Models.Re
   hasValue: ->
     @hasAnyValueInHash()
 
-class FormRenderer.Models.ResponseFieldRadio extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend
   field_type: 'radio'
   setExistingValue: (x) ->
     if x?.selected
@@ -158,11 +158,11 @@ class FormRenderer.Models.ResponseFieldRadio extends FormRenderer.Models.Respons
   hasValue: ->
     !!@get('value.selected')
 
-class FormRenderer.Models.ResponseFieldDropdown extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend
   field_type: 'dropdown'
   setExistingValue: (x) ->
     if x?
-      super
+      FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     else
       checkedOption = _.find @getOptions(), ( (option) -> _.toBoolean(option.checked) )
 
@@ -174,10 +174,10 @@ class FormRenderer.Models.ResponseFieldDropdown extends FormRenderer.Models.Resp
       else
         @unset 'value'
 
-class FormRenderer.Models.ResponseFieldTable extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.extend
   field_type: 'table'
   initialize: ->
-    super
+    FormRenderer.Models.ResponseField::initialize.apply @, arguments
 
     if @get('field_options.column_totals')
       @listenTo @, 'change:value.*', @calculateColumnTotals
@@ -227,7 +227,7 @@ class FormRenderer.Models.ResponseFieldTable extends FormRenderer.Models.Respons
 
       @set "columnTotals.#{j}", if columnSum > 0 then parseFloat(columnSum.toFixed(10)) else ''
 
-class FormRenderer.Models.ResponseFieldFile extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
   # Remove value, we're setting this immediately, not on total form save
   getValue: ->
@@ -235,17 +235,17 @@ class FormRenderer.Models.ResponseFieldFile extends FormRenderer.Models.Response
   hasValue: ->
     @hasValueHashKey ['id', 'filename']
 
-class FormRenderer.Models.ResponseFieldDate extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   field_type: 'date'
   validators: [FormRenderer.Validators.DateValidator]
   hasValue: ->
     @hasValueHashKey ['month', 'day', 'year']
 
-class FormRenderer.Models.ResponseFieldEmail extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.EmailValidator]
   field_type: 'email'
 
-class FormRenderer.Models.ResponseFieldNumber extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend
   validators: [
     FormRenderer.Validators.NumberValidator
     FormRenderer.Validators.MinMaxValidator
@@ -253,11 +253,11 @@ class FormRenderer.Models.ResponseFieldNumber extends FormRenderer.Models.Respon
   ]
   field_type: 'number'
 
-class FormRenderer.Models.ResponseFieldParagraph extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend
   field_type: 'paragraph'
   validators: [FormRenderer.Validators.MinMaxLengthValidator]
 
-class FormRenderer.Models.ResponseFieldPrice extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend
   validators: [
     FormRenderer.Validators.PriceValidator
     FormRenderer.Validators.MinMaxValidator
@@ -266,22 +266,22 @@ class FormRenderer.Models.ResponseFieldPrice extends FormRenderer.Models.Respons
   hasValue: ->
     @hasValueHashKey ['dollars', 'cents']
 
-class FormRenderer.Models.ResponseFieldText extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend
   field_type: 'text'
   validators: [FormRenderer.Validators.MinMaxLengthValidator]
 
-class FormRenderer.Models.ResponseFieldTime extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.TimeValidator]
   field_type: 'time'
   hasValue: ->
     @hasValueHashKey ['hours', 'minutes', 'seconds']
   setExistingValue: (x) ->
-    super
+    FormRenderer.Models::ResponseField.setExistingValue.apply @, arguments
     @set('value.am_pm', 'AM') unless x?.am_pm
 
-class FormRenderer.Models.ResponseFieldWebsite extends FormRenderer.Models.ResponseField
+FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend
   field_type: 'website'
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  class FormRenderer.Models["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Models.NonInputResponseField
+  FormRenderer.Models["ResponseField#{_.str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
     field_type: i

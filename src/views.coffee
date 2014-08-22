@@ -1,4 +1,4 @@
-class FormRenderer.Views.Pagination extends Backbone.View
+FormRenderer.Views.Pagination = Backbone.View.extend
   initialize: (options) ->
     @form_renderer = options.form_renderer
     @listenTo @form_renderer.state, 'change:activePage', @render
@@ -8,7 +8,7 @@ class FormRenderer.Views.Pagination extends Backbone.View
     @$el.html JST['partials/pagination'](@)
     @
 
-class FormRenderer.Views.ErrorAlertBar extends Backbone.View
+FormRenderer.Views.ErrorAlertBar = Backbone.View.extend
   initialize: (options) ->
     @form_renderer = options.form_renderer
     @listenTo @form_renderer, 'afterValidate', @render
@@ -18,7 +18,7 @@ class FormRenderer.Views.ErrorAlertBar extends Backbone.View
     window.scrollTo(0, 0) unless @form_renderer.areAllPagesValid()
     @
 
-class FormRenderer.Views.BottomStatusBar extends Backbone.View
+FormRenderer.Views.BottomStatusBar = Backbone.View.extend
   events:
     'click .go_back_button': 'handleBack'
     'click .continue_button': 'handleContinue'
@@ -55,7 +55,7 @@ class FormRenderer.Views.BottomStatusBar extends Backbone.View
     else
       @form_renderer.activatePage(@nextPage())
 
-class FormRenderer.Views.Page extends Backbone.View
+FormRenderer.Views.Page = Backbone.View.extend
   className: 'form_renderer_page'
 
   initialize: (options) ->
@@ -88,7 +88,7 @@ class FormRenderer.Views.Page extends Backbone.View
     for view in @views
       view.render()
 
-class FormRenderer.Views.ResponseField extends Backbone.View
+FormRenderer.Views.ResponseField = Backbone.View.extend
   field_type: undefined
   className: 'form_renderer_response_field'
 
@@ -106,32 +106,26 @@ class FormRenderer.Views.ResponseField extends Backbone.View
     rivets.bind @$el, { model: @model }
     @
 
-class FormRenderer.Views.NonInputResponseField extends FormRenderer.Views.ResponseField
+FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend
   render: ->
     @$el.addClass "response_field_#{@field_type}"
     @$el.html JST['partials/non_input_response_field'](@)
     @
 
-class FormRenderer.Views.ResponseFieldTable extends FormRenderer.Views.ResponseField
-  @KEY_DIRECTIONS:
-    '37': 'left'
-    '38': 'up'
-    '39': 'right'
-    '40': 'down'
-
+FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'
   events:
     'click .add_another_row': 'addRow'
     'keydown textarea': 'handleKeydown'
 
   initialize: ->
-    super
+    FormRenderer.Views::ResponseField.initialize.apply @, arguments
 
     @on 'shown', ->
       @initExpanding()
 
   render: ->
-    super
+    FormRenderer.Views.ResponseField::render.apply @, arguments
     @initExpanding()
     @
 
@@ -172,11 +166,17 @@ class FormRenderer.Views.ResponseFieldTable extends FormRenderer.Views.ResponseF
     return if (col < 0) || (row < 0)
     e.preventDefault()
     $ta.closest('table').find("tbody tr:eq(#{row}) td:eq(#{col}) textarea").focus()
+,
+  KEY_DIRECTIONS:
+    '37': 'left'
+    '38': 'up'
+    '39': 'right'
+    '40': 'down'
 
-class FormRenderer.Views.ResponseFieldFile extends FormRenderer.Views.ResponseField
+FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   field_type: 'file'
   render: ->
-    super
+    FormRenderer.Views.ResponseField::render.apply @, arguments
 
     # if @form_renderer
       # @$el.find('.pretty_file_input').prettyFileInput
@@ -197,14 +197,14 @@ class FormRenderer.Views.ResponseFieldFile extends FormRenderer.Views.ResponseFi
 
     return @
 
-class FormRenderer.Views.ResponseFieldMapMarker extends FormRenderer.Views.ResponseField
+FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'
   events:
     'click .map_marker_field_cover': 'enable'
     'click .map_marker_field_disable': 'disable'
 
   render: ->
-    super
+    FormRenderer.Views.ResponseField::render.apply @, arguments
     @$cover = @$el.find('.map_marker_field_cover')
     requireOnce App.MAP_JS_URL, =>
       @initMap()
@@ -239,9 +239,9 @@ class FormRenderer.Views.ResponseFieldMapMarker extends FormRenderer.Views.Respo
     @model.set 'value.lng', ''
 
 for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker')
-  class FormRenderer.Views["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Views.ResponseField
+  FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  class FormRenderer.Views["ResponseField#{_.str.classify(i)}"] extends FormRenderer.Views.NonInputResponseField
+  FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.NonInputResponseField.extend
     field_type: i

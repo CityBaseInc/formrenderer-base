@@ -49,26 +49,10 @@
 }).call(this);
 
 (function() {
-  var FormRenderer,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var FormRenderer;
 
-  window.FormRenderer = FormRenderer = (function(_super) {
-    __extends(FormRenderer, _super);
-
-    FormRenderer.INPUT_FIELD_TYPES = ['address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
-
-    FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
-
-    FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
-
-    FormRenderer.Views = {};
-
-    FormRenderer.Models = {};
-
-    FormRenderer.Validators = {};
-
-    FormRenderer.prototype.defaults = {
+  window.FormRenderer = FormRenderer = Backbone.View.extend({
+    defaults: {
       enableAutosave: true,
       warnBeforeUnload: true,
       enablePages: true,
@@ -81,21 +65,18 @@
       ignoreUser: false,
       editInPlace: false,
       response: {}
-    };
-
-    FormRenderer.prototype.events = {
+    },
+    events: {
       'click [data-activate-page]': function(e) {
         return this.activatePage($(e.currentTarget).data('activate-page'), {
           skipValidation: true
         });
       }
-    };
-
-    FormRenderer.prototype.draftIdStorageKey = function() {
+    },
+    draftIdStorageKey: function() {
       return "project-" + this.options.project_id + "-response-id";
-    };
-
-    function FormRenderer(options) {
+    },
+    constructor: function(options) {
       this.options = $.extend({}, this.defaults, options);
       this.state = new Backbone.Model({
         hasChanges: false
@@ -110,7 +91,7 @@
       if (this.options.saveDraftIdToLocalstorage) {
         this.initLocalstorage();
       }
-      this.loadFromServer((function(_this) {
+      return this.loadFromServer((function(_this) {
         return function() {
           _this.$el.find('.form_renderer_main_loading').remove();
           _this.constructResponseFields();
@@ -137,17 +118,15 @@
           }
         };
       })(this));
-    }
-
-    FormRenderer.prototype.initLocalstorage = function() {
+    },
+    initLocalstorage: function() {
       var _base;
       (_base = this.options.response).id || (_base.id = store.get(this.draftIdStorageKey()));
       return this.listenTo(this, 'afterSave', function() {
         return store.set(this.draftIdStorageKey(), this.options.response.id);
       });
-    };
-
-    FormRenderer.prototype.loadFromServer = function(cb) {
+    },
+    loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
       }
@@ -174,11 +153,10 @@
           };
         })(this)
       });
-    };
-
-    FormRenderer.prototype.constructResponseFields = function() {
+    },
+    constructResponseFields: function() {
       var model, rf, _i, _len, _ref;
-      this.response_fields = new FormRenderer.Collection;
+      this.response_fields = new Backbone.Collection;
       _ref = this.options.response_fields;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
@@ -193,16 +171,14 @@
           return this.state.set('hasChanges', true);
         }
       });
-    };
-
-    FormRenderer.prototype.validateCurrentPage = function() {
+    },
+    validateCurrentPage: function() {
       this.trigger("beforeValidate beforeValidate:" + (this.state.get('activePage')));
       this.subviews.pages[this.state.get('activePage')].validate();
       this.trigger("afterValidate afterValidate:" + (this.state.get('activePage')));
       return this.isPageValid(this.state.get('activePage'));
-    };
-
-    FormRenderer.prototype.validateAllPages = function() {
+    },
+    validateAllPages: function() {
       var page, pageNumber, _ref;
       this.trigger('beforeValidate beforeValidate:all');
       _ref = this.subviews.pages;
@@ -212,15 +188,13 @@
       }
       this.trigger('afterValidate afterValidate:all');
       return this.areAllPagesValid();
-    };
-
-    FormRenderer.prototype.isPageValid = function(pageNumber) {
+    },
+    isPageValid: function(pageNumber) {
       return !_.find(this.subviews.pages[pageNumber].models, (function(rf) {
         return rf.input_field && rf.errors.length > 0;
       }));
-    };
-
-    FormRenderer.prototype.areAllPagesValid = function() {
+    },
+    areAllPagesValid: function() {
       var _i, _ref, _results;
       return _.every((function() {
         _results = [];
@@ -231,15 +205,13 @@
           return _this.isPageValid(x);
         };
       })(this));
-    };
-
-    FormRenderer.prototype.numValidationErrors = function() {
+    },
+    numValidationErrors: function() {
       return this.response_fields.filter(function(rf) {
         return rf.input_field && rf.errors.length > 0;
       }).length;
-    };
-
-    FormRenderer.prototype.constructPages = function() {
+    },
+    constructPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
       addPage = (function(_this) {
         return function() {
@@ -271,17 +243,15 @@
         _results.push(this.$el.append(page.render().el));
       }
       return _results;
-    };
-
-    FormRenderer.prototype.constructPagination = function() {
+    },
+    constructPagination: function() {
       this.subviews.pagination = new FormRenderer.Views.Pagination({
         form_renderer: this
       });
       this.$el.prepend(this.subviews.pagination.render().el);
       return this.subviews.pages[this.state.get('activePage')].show();
-    };
-
-    FormRenderer.prototype.disablePagination = function() {
+    },
+    disablePagination: function() {
       var page, pageNumber, _ref, _results;
       _ref = this.subviews.pages;
       _results = [];
@@ -290,23 +260,20 @@
         _results.push(page.show());
       }
       return _results;
-    };
-
-    FormRenderer.prototype.constructBottomStatusBar = function() {
+    },
+    constructBottomStatusBar: function() {
       this.subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar({
         form_renderer: this
       });
       return this.$el.append(this.subviews.bottomStatusBar.render().el);
-    };
-
-    FormRenderer.prototype.constructErrorAlertBar = function() {
+    },
+    constructErrorAlertBar: function() {
       this.subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar({
         form_renderer: this
       });
       return this.$el.prepend(this.subviews.errorAlertBar.render().el);
-    };
-
-    FormRenderer.prototype.activatePage = function(newPageNumber, opts) {
+    },
+    activatePage: function(newPageNumber, opts) {
       if (opts == null) {
         opts = {};
       }
@@ -316,9 +283,8 @@
       this.subviews.pages[this.state.get('activePage')].hide();
       this.subviews.pages[newPageNumber].show();
       return this.state.set('activePage', newPageNumber);
-    };
-
-    FormRenderer.prototype.getValue = function() {
+    },
+    getValue: function() {
       return _.tap({}, (function(_this) {
         return function(h) {
           return _this.response_fields.each(function(rf) {
@@ -336,9 +302,8 @@
           });
         };
       })(this));
-    };
-
-    FormRenderer.prototype.saveParams = function() {
+    },
+    saveParams: function() {
       return {
         response_id: this.options.response.id,
         project_id: this.options.project_id,
@@ -346,9 +311,8 @@
         ignore_user: this.options.ignoreUser,
         background_submit: true
       };
-    };
-
-    FormRenderer.prototype.save = function(options) {
+    },
+    save: function(options) {
       if (options == null) {
         options = {};
       }
@@ -392,9 +356,8 @@
           };
         })(this)
       });
-    };
-
-    FormRenderer.prototype.initAutosave = function() {
+    },
+    initAutosave: function() {
       return setInterval((function(_this) {
         return function() {
           if (_this.state.get('hasChanges') && !_this.isSaving) {
@@ -402,17 +365,15 @@
           }
         };
       })(this), 5000);
-    };
-
-    FormRenderer.prototype.initBeforeUnload = function() {
+    },
+    initBeforeUnload: function() {
       return BeforeUnload.enable((function(_this) {
         return function() {
           return _this.state.get('hasChanges');
         };
       })(this), 'You have unsaved changes. Are you sure you want to leave this page?');
-    };
-
-    FormRenderer.prototype.submit = function(opts) {
+    },
+    submit: function(opts) {
       var afterSubmit, cb;
       if (opts == null) {
         opts = {};
@@ -441,28 +402,20 @@
       } else {
         return cb.apply(this);
       }
-    };
-
-    return FormRenderer;
-
-  })(Backbone.View);
-
-}).call(this);
-
-(function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Collection = (function(_super) {
-    __extends(Collection, _super);
-
-    function Collection() {
-      return Collection.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    return Collection;
+  FormRenderer.INPUT_FIELD_TYPES = ['address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
 
-  })(Backbone.Collection);
+  FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
+
+  FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
+
+  FormRenderer.Views = {};
+
+  FormRenderer.Models = {};
+
+  FormRenderer.Validators = {};
 
 }).call(this);
 
@@ -732,33 +685,20 @@
 }).call(this);
 
 (function() {
-  var i, _i, _len, _ref,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var i, _i, _len, _ref;
 
-  FormRenderer.Models.ResponseField = (function(_super) {
-    __extends(ResponseField, _super);
-
-    function ResponseField() {
-      return ResponseField.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseField.prototype.input_field = true;
-
-    ResponseField.prototype.field_type = void 0;
-
-    ResponseField.prototype.validators = [];
-
-    ResponseField.prototype.sync = function() {};
-
-    ResponseField.prototype.initialize = function() {
+  FormRenderer.Models.ResponseField = Backbone.DeepModel.extend({
+    input_field: true,
+    field_type: void 0,
+    validators: [],
+    sync: function() {},
+    initialize: function() {
       this.errors = [];
       if (this.hasLengthValidations()) {
         return this.listenTo(this, 'change:value', this.calculateLength);
       }
-    };
-
-    ResponseField.prototype.validate = function() {
+    },
+    validate: function() {
       var newError, v, validator, validatorName, _ref, _results;
       this.errors = [];
       if (!this.hasValue()) {
@@ -780,80 +720,66 @@
         }
       }
       return _results;
-    };
-
-    ResponseField.prototype.getError = function() {
+    },
+    getError: function() {
       if (this.errors.length > 0) {
         return this.errors.join('. ');
       }
-    };
-
-    ResponseField.prototype.hasLengthValidations = function() {
+    },
+    hasLengthValidations: function() {
       return this.get('field_options.minlength') || this.get('field_options.maxlength');
-    };
-
-    ResponseField.prototype.calculateLength = function() {
+    },
+    calculateLength: function() {
       var v;
       v = new FormRenderer.Validators.MinMaxLengthValidator(this);
       return this.set('currentLength', v[this.getLengthValidationUnits() === 'words' ? 'countWords' : 'countCharacters']());
-    };
-
-    ResponseField.prototype.hasMinMaxValidations = function() {
+    },
+    hasMinMaxValidations: function() {
       return this.get('field_options.min') || this.get('field_options.max');
-    };
-
-    ResponseField.prototype.getLengthValidationUnits = function() {
+    },
+    getLengthValidationUnits: function() {
       return this.get('field_options.min_max_length_units') || 'characters';
-    };
-
-    ResponseField.prototype.setExistingValue = function(x) {
+    },
+    setExistingValue: function(x) {
       if (x) {
         this.set('value', x);
       }
       if (this.hasLengthValidations()) {
         return this.calculateLength();
       }
-    };
-
-    ResponseField.prototype.getValue = function() {
+    },
+    getValue: function() {
       return this.get('value');
-    };
-
-    ResponseField.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return !!this.get('value');
-    };
-
-    ResponseField.prototype.hasAnyValueInHash = function() {
+    },
+    hasAnyValueInHash: function() {
       return _.some(this.get('value'), function(v, k) {
         return !!v;
       });
-    };
-
-    ResponseField.prototype.hasValueHashKey = function(keys) {
+    },
+    hasValueHashKey: function(keys) {
       return _.some(keys, (function(_this) {
         return function(key) {
           return !!_this.get("value." + key);
         };
       })(this));
-    };
-
-    ResponseField.prototype.getOptions = function() {
+    },
+    getOptions: function() {
       return this.get('field_options.options') || [];
-    };
-
-    ResponseField.prototype.getColumns = function() {
+    },
+    getColumns: function() {
       return this.get('field_options.columns') || [];
-    };
-
-    ResponseField.prototype.columnOrOptionKeypath = function() {
+    },
+    columnOrOptionKeypath: function() {
       if (this.field_type === 'table') {
         return 'field_options.columns';
       } else {
         return 'field_options.options';
       }
-    };
-
-    ResponseField.prototype.addOptionOrColumnAtIndex = function(i) {
+    },
+    addOptionOrColumnAtIndex: function(i) {
       var newOpt, opts;
       opts = this.field_type === 'table' ? this.getColumns() : this.getOptions();
       newOpt = {
@@ -869,105 +795,60 @@
       }
       this.set(this.columnOrOptionKeypath(), opts);
       return this.trigger('change');
-    };
-
-    ResponseField.prototype.removeOptionOrColumnAtIndex = function(i) {
+    },
+    removeOptionOrColumnAtIndex: function(i) {
       var opts;
       opts = this.get(this.columnOrOptionKeypath());
       opts.splice(i, 1);
       this.set(this.columnOrOptionKeypath(), opts);
       return this.trigger('change');
-    };
-
-    return ResponseField;
-
-  })(Backbone.DeepModel);
-
-  FormRenderer.Models.NonInputResponseField = (function(_super) {
-    __extends(NonInputResponseField, _super);
-
-    function NonInputResponseField() {
-      return NonInputResponseField.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    NonInputResponseField.prototype.input_field = false;
+  FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend({
+    input_field: false,
+    field_type: void 0,
+    sync: function() {}
+  });
 
-    NonInputResponseField.prototype.field_type = void 0;
-
-    NonInputResponseField.prototype.sync = function() {};
-
-    return NonInputResponseField;
-
-  })(Backbone.DeepModel);
-
-  FormRenderer.Models.ResponseFieldMapMarker = (function(_super) {
-    __extends(ResponseFieldMapMarker, _super);
-
-    function ResponseFieldMapMarker() {
-      return ResponseFieldMapMarker.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseFieldMapMarker.prototype.field_type = 'map_marker';
-
-    ResponseFieldMapMarker.prototype.hasValue = function() {
+  FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
+    field_type: 'map_marker',
+    hasValue: function() {
       return _.every(['lat', 'lng'], (function(_this) {
         return function(key) {
           return !!_this.get("value." + key);
         };
       })(this));
-    };
-
-    ResponseFieldMapMarker.prototype.latLng = function() {
+    },
+    latLng: function() {
       if (this.hasValue()) {
         return [this.get('value.lat'), this.get('value.lng')];
       }
-    };
-
-    ResponseFieldMapMarker.prototype.defaultLatLng = function() {
+    },
+    defaultLatLng: function() {
       var lat, lng;
       if ((lat = this.get('field_options.default_lat')) && (lng = this.get('field_options.default_lng'))) {
         return [lat, lng];
       }
-    };
-
-    return ResponseFieldMapMarker;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldAddress = (function(_super) {
-    __extends(ResponseFieldAddress, _super);
-
-    function ResponseFieldAddress() {
-      return ResponseFieldAddress.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldAddress.prototype.field_type = 'address';
-
-    ResponseFieldAddress.prototype.setExistingValue = function(x) {
-      ResponseFieldAddress.__super__.setExistingValue.apply(this, arguments);
+  FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend({
+    field_type: 'address',
+    setExistingValue: function(x) {
+      FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       if (!(x != null ? x.country : void 0)) {
         return this.set('value.country', 'US');
       }
-    };
-
-    ResponseFieldAddress.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
-    };
-
-    return ResponseFieldAddress;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldCheckboxes = (function(_super) {
-    __extends(ResponseFieldCheckboxes, _super);
-
-    function ResponseFieldCheckboxes() {
-      return ResponseFieldCheckboxes.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldCheckboxes.prototype.field_type = 'checkboxes';
-
-    ResponseFieldCheckboxes.prototype.setExistingValue = function(x) {
+  FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
+    field_type: 'checkboxes',
+    setExistingValue: function(x) {
       return this.set('value', _.tap({}, (function(_this) {
         return function(h) {
           var i, option, _i, _j, _len, _len1, _ref, _ref1, _results;
@@ -992,9 +873,8 @@
           }
         };
       })(this)));
-    };
-
-    ResponseFieldCheckboxes.prototype.getValue = function() {
+    },
+    getValue: function() {
       var k, returnValue, v, _ref;
       returnValue = {};
       _ref = this.get('value');
@@ -1003,26 +883,15 @@
         returnValue[k] = v === true ? 'on' : v;
       }
       return returnValue;
-    };
-
-    ResponseFieldCheckboxes.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return this.hasAnyValueInHash();
-    };
-
-    return ResponseFieldCheckboxes;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldRadio = (function(_super) {
-    __extends(ResponseFieldRadio, _super);
-
-    function ResponseFieldRadio() {
-      return ResponseFieldRadio.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldRadio.prototype.field_type = 'radio';
-
-    ResponseFieldRadio.prototype.setExistingValue = function(x) {
+  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend({
+    field_type: 'radio',
+    setExistingValue: function(x) {
       var defaultOption;
       if (x != null ? x.selected : void 0) {
         return this.set('value', x);
@@ -1033,9 +902,8 @@
       } else {
         return this.set('value', {});
       }
-    };
-
-    ResponseFieldRadio.prototype.getValue = function() {
+    },
+    getValue: function() {
       return _.tap({
         merge: true
       }, (function(_this) {
@@ -1044,29 +912,18 @@
           return h["" + (_this.get('id')) + "_other"] = _this.get('value.other');
         };
       })(this));
-    };
-
-    ResponseFieldRadio.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return !!this.get('value.selected');
-    };
-
-    return ResponseFieldRadio;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldDropdown = (function(_super) {
-    __extends(ResponseFieldDropdown, _super);
-
-    function ResponseFieldDropdown() {
-      return ResponseFieldDropdown.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldDropdown.prototype.field_type = 'dropdown';
-
-    ResponseFieldDropdown.prototype.setExistingValue = function(x) {
+  FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
+    field_type: 'dropdown',
+    setExistingValue: function(x) {
       var checkedOption;
       if (x != null) {
-        return ResponseFieldDropdown.__super__.setExistingValue.apply(this, arguments);
+        return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       } else {
         checkedOption = _.find(this.getOptions(), (function(option) {
           return _.toBoolean(option.checked);
@@ -1080,29 +937,18 @@
           return this.unset('value');
         }
       }
-    };
-
-    return ResponseFieldDropdown;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldTable = (function(_super) {
-    __extends(ResponseFieldTable, _super);
-
-    function ResponseFieldTable() {
-      return ResponseFieldTable.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldTable.prototype.field_type = 'table';
-
-    ResponseFieldTable.prototype.initialize = function() {
-      ResponseFieldTable.__super__.initialize.apply(this, arguments);
+  FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.extend({
+    field_type: 'table',
+    initialize: function() {
+      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
       if (this.get('field_options.column_totals')) {
         return this.listenTo(this, 'change:value.*', this.calculateColumnTotals);
       }
-    };
-
-    ResponseFieldTable.prototype.setExistingValue = function(x) {
+    },
+    setExistingValue: function(x) {
       var firstColumnLength, minRows, _ref;
       firstColumnLength = ((_ref = _.find(x, (function() {
         return true;
@@ -1129,22 +975,19 @@
           return _results;
         };
       })(this)));
-    };
-
-    ResponseFieldTable.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return _.some(this.get('value'), function(colVals, colNumber) {
         return _.some(colVals, function(v, k) {
           return !!v;
         });
       });
-    };
-
-    ResponseFieldTable.prototype.getPresetValue = function(columnLabel, rowIndex) {
+    },
+    getPresetValue: function(columnLabel, rowIndex) {
       var _ref;
       return (_ref = this.get("field_options.preset_values." + columnLabel)) != null ? _ref[rowIndex] : void 0;
-    };
-
-    ResponseFieldTable.prototype.getValue = function() {
+    },
+    getValue: function() {
       var column, i, j, returnValue, _i, _j, _len, _ref, _ref1;
       returnValue = {};
       for (i = _i = 0, _ref = this.numRows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -1156,9 +999,8 @@
         }
       }
       return returnValue;
-    };
-
-    ResponseFieldTable.prototype.calculateColumnTotals = function() {
+    },
+    calculateColumnTotals: function() {
       var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
       _ref = this.getColumns();
       _results = [];
@@ -1178,315 +1020,162 @@
         _results.push(this.set("columnTotals." + j, columnSum > 0 ? parseFloat(columnSum.toFixed(10)) : ''));
       }
       return _results;
-    };
-
-    return ResponseFieldTable;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldFile = (function(_super) {
-    __extends(ResponseFieldFile, _super);
-
-    function ResponseFieldFile() {
-      return ResponseFieldFile.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldFile.prototype.field_type = 'file';
-
-    ResponseFieldFile.prototype.getValue = function() {
+  FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
+    field_type: 'file',
+    getValue: function() {
       return '';
-    };
-
-    ResponseFieldFile.prototype.hasValue = function() {
+    },
+    hasValue: function() {
       return this.hasValueHashKey(['id', 'filename']);
-    };
-
-    return ResponseFieldFile;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldDate = (function(_super) {
-    __extends(ResponseFieldDate, _super);
-
-    function ResponseFieldDate() {
-      return ResponseFieldDate.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldDate.prototype.field_type = 'date';
-
-    ResponseFieldDate.prototype.validators = [FormRenderer.Validators.DateValidator];
-
-    ResponseFieldDate.prototype.hasValue = function() {
+  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
+    field_type: 'date',
+    validators: [FormRenderer.Validators.DateValidator],
+    hasValue: function() {
       return this.hasValueHashKey(['month', 'day', 'year']);
-    };
-
-    return ResponseFieldDate;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldEmail = (function(_super) {
-    __extends(ResponseFieldEmail, _super);
-
-    function ResponseFieldEmail() {
-      return ResponseFieldEmail.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldEmail.prototype.validators = [FormRenderer.Validators.EmailValidator];
+  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.EmailValidator],
+    field_type: 'email'
+  });
 
-    ResponseFieldEmail.prototype.field_type = 'email';
+  FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
+    field_type: 'number'
+  });
 
-    return ResponseFieldEmail;
+  FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
+    field_type: 'paragraph',
+    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+  });
 
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldNumber = (function(_super) {
-    __extends(ResponseFieldNumber, _super);
-
-    function ResponseFieldNumber() {
-      return ResponseFieldNumber.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseFieldNumber.prototype.validators = [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator];
-
-    ResponseFieldNumber.prototype.field_type = 'number';
-
-    return ResponseFieldNumber;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldParagraph = (function(_super) {
-    __extends(ResponseFieldParagraph, _super);
-
-    function ResponseFieldParagraph() {
-      return ResponseFieldParagraph.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseFieldParagraph.prototype.field_type = 'paragraph';
-
-    ResponseFieldParagraph.prototype.validators = [FormRenderer.Validators.MinMaxLengthValidator];
-
-    return ResponseFieldParagraph;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldPrice = (function(_super) {
-    __extends(ResponseFieldPrice, _super);
-
-    function ResponseFieldPrice() {
-      return ResponseFieldPrice.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseFieldPrice.prototype.validators = [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator];
-
-    ResponseFieldPrice.prototype.field_type = 'price';
-
-    ResponseFieldPrice.prototype.hasValue = function() {
+  FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
+    field_type: 'price',
+    hasValue: function() {
       return this.hasValueHashKey(['dollars', 'cents']);
-    };
-
-    return ResponseFieldPrice;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldText = (function(_super) {
-    __extends(ResponseFieldText, _super);
-
-    function ResponseFieldText() {
-      return ResponseFieldText.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldText.prototype.field_type = 'text';
+  FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
+    field_type: 'text',
+    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+  });
 
-    ResponseFieldText.prototype.validators = [FormRenderer.Validators.MinMaxLengthValidator];
-
-    return ResponseFieldText;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldTime = (function(_super) {
-    __extends(ResponseFieldTime, _super);
-
-    function ResponseFieldTime() {
-      return ResponseFieldTime.__super__.constructor.apply(this, arguments);
-    }
-
-    ResponseFieldTime.prototype.validators = [FormRenderer.Validators.TimeValidator];
-
-    ResponseFieldTime.prototype.field_type = 'time';
-
-    ResponseFieldTime.prototype.hasValue = function() {
+  FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.TimeValidator],
+    field_type: 'time',
+    hasValue: function() {
       return this.hasValueHashKey(['hours', 'minutes', 'seconds']);
-    };
-
-    ResponseFieldTime.prototype.setExistingValue = function(x) {
-      ResponseFieldTime.__super__.setExistingValue.apply(this, arguments);
+    },
+    setExistingValue: function(x) {
+      FormRenderer.Models.prototype.ResponseField.setExistingValue.apply(this, arguments);
       if (!(x != null ? x.am_pm : void 0)) {
         return this.set('value.am_pm', 'AM');
       }
-    };
-
-    return ResponseFieldTime;
-
-  })(FormRenderer.Models.ResponseField);
-
-  FormRenderer.Models.ResponseFieldWebsite = (function(_super) {
-    __extends(ResponseFieldWebsite, _super);
-
-    function ResponseFieldWebsite() {
-      return ResponseFieldWebsite.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldWebsite.prototype.field_type = 'website';
-
-    return ResponseFieldWebsite;
-
-  })(FormRenderer.Models.ResponseField);
+  FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
+    field_type: 'website'
+  });
 
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_.str.classify(i))] = (function(_super) {
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.field_type = i;
-
-      return _Class;
-
-    })(FormRenderer.Models.NonInputResponseField);
+    FormRenderer.Models["ResponseField" + (_.str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
+      field_type: i
+    });
   }
 
 }).call(this);
 
 (function() {
   var i, _i, _j, _len, _len1, _ref, _ref1,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  FormRenderer.Views.Pagination = (function(_super) {
-    __extends(Pagination, _super);
-
-    function Pagination() {
-      return Pagination.__super__.constructor.apply(this, arguments);
-    }
-
-    Pagination.prototype.initialize = function(options) {
+  FormRenderer.Views.Pagination = Backbone.View.extend({
+    initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.listenTo(this.form_renderer.state, 'change:activePage', this.render);
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
-    };
-
-    Pagination.prototype.render = function() {
+    },
+    render: function() {
       this.$el.html(JST['partials/pagination'](this));
       return this;
-    };
-
-    return Pagination;
-
-  })(Backbone.View);
-
-  FormRenderer.Views.ErrorAlertBar = (function(_super) {
-    __extends(ErrorAlertBar, _super);
-
-    function ErrorAlertBar() {
-      return ErrorAlertBar.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ErrorAlertBar.prototype.initialize = function(options) {
+  FormRenderer.Views.ErrorAlertBar = Backbone.View.extend({
+    initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
-    };
-
-    ErrorAlertBar.prototype.render = function() {
+    },
+    render: function() {
       this.$el.html(JST['partials/error_alert_bar'](this));
       if (!this.form_renderer.areAllPagesValid()) {
         window.scrollTo(0, 0);
       }
       return this;
-    };
-
-    return ErrorAlertBar;
-
-  })(Backbone.View);
-
-  FormRenderer.Views.BottomStatusBar = (function(_super) {
-    __extends(BottomStatusBar, _super);
-
-    function BottomStatusBar() {
-      return BottomStatusBar.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    BottomStatusBar.prototype.events = {
+  FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
+    events: {
       'click .go_back_button': 'handleBack',
       'click .continue_button': 'handleContinue'
-    };
-
-    BottomStatusBar.prototype.initialize = function(options) {
+    },
+    initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', this.render);
-    };
-
-    BottomStatusBar.prototype.render = function() {
+    },
+    render: function() {
       this.$el.html(JST['partials/bottom_status_bar'](this));
       return this;
-    };
-
-    BottomStatusBar.prototype.firstPage = function() {
+    },
+    firstPage: function() {
       return this.form_renderer.state.get('activePage') === 1;
-    };
-
-    BottomStatusBar.prototype.lastPage = function() {
+    },
+    lastPage: function() {
       return this.form_renderer.state.get('activePage') === this.form_renderer.numPages;
-    };
-
-    BottomStatusBar.prototype.previousPage = function() {
+    },
+    previousPage: function() {
       return this.form_renderer.state.get('activePage') - 1;
-    };
-
-    BottomStatusBar.prototype.nextPage = function() {
+    },
+    nextPage: function() {
       return this.form_renderer.state.get('activePage') + 1;
-    };
-
-    BottomStatusBar.prototype.handleBack = function(e) {
+    },
+    handleBack: function(e) {
       e.preventDefault();
       return this.form_renderer.activatePage(this.previousPage(), {
         skipValidation: true
       });
-    };
-
-    BottomStatusBar.prototype.handleContinue = function(e) {
+    },
+    handleContinue: function(e) {
       e.preventDefault();
       if (this.lastPage() || !this.form_renderer.options.enablePages) {
         return this.form_renderer.submit();
       } else {
         return this.form_renderer.activatePage(this.nextPage());
       }
-    };
-
-    return BottomStatusBar;
-
-  })(Backbone.View);
-
-  FormRenderer.Views.Page = (function(_super) {
-    __extends(Page, _super);
-
-    function Page() {
-      return Page.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    Page.prototype.className = 'form_renderer_page';
-
-    Page.prototype.initialize = function(options) {
+  FormRenderer.Views.Page = Backbone.View.extend({
+    className: 'form_renderer_page',
+    initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.models = [];
       return this.views = [];
-    };
-
-    Page.prototype.render = function() {
+    },
+    render: function() {
       var rf, view, _i, _len, _ref;
       this.hide();
       _ref = this.models;
@@ -1500,9 +1189,8 @@
         this.views.push(view);
       }
       return this;
-    };
-
-    Page.prototype.hide = function() {
+    },
+    hide: function() {
       var view, _i, _len, _ref, _results;
       this.$el.hide();
       _ref = this.views;
@@ -1512,9 +1200,8 @@
         _results.push(view.trigger('hidden'));
       }
       return _results;
-    };
-
-    Page.prototype.show = function() {
+    },
+    show: function() {
       var view, _i, _len, _ref, _results;
       this.$el.show();
       _ref = this.views;
@@ -1524,9 +1211,8 @@
         _results.push(view.trigger('shown'));
       }
       return _results;
-    };
-
-    Page.prototype.validate = function() {
+    },
+    validate: function() {
       var rf, view, _i, _j, _len, _len1, _ref, _ref1, _results;
       _ref = _.filter(this.models, (function(rf) {
         return rf.input_field;
@@ -1542,105 +1228,61 @@
         _results.push(view.render());
       }
       return _results;
-    };
-
-    return Page;
-
-  })(Backbone.View);
-
-  FormRenderer.Views.ResponseField = (function(_super) {
-    __extends(ResponseField, _super);
-
-    function ResponseField() {
-      return ResponseField.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseField.prototype.field_type = void 0;
-
-    ResponseField.prototype.className = 'form_renderer_response_field';
-
-    ResponseField.prototype.initialize = function(options) {
+  FormRenderer.Views.ResponseField = Backbone.View.extend({
+    field_type: void 0,
+    className: 'form_renderer_response_field',
+    initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.model = options.model;
       return this.$el.addClass("response_field_" + this.field_type);
-    };
-
-    ResponseField.prototype.getDomId = function() {
+    },
+    getDomId: function() {
       return this.model.cid;
-    };
-
-    ResponseField.prototype.render = function() {
+    },
+    render: function() {
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
       this.$el.html(JST['partials/response_field'](this));
       rivets.bind(this.$el, {
         model: this.model
       });
       return this;
-    };
-
-    return ResponseField;
-
-  })(Backbone.View);
-
-  FormRenderer.Views.NonInputResponseField = (function(_super) {
-    __extends(NonInputResponseField, _super);
-
-    function NonInputResponseField() {
-      return NonInputResponseField.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    NonInputResponseField.prototype.render = function() {
+  FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
+    render: function() {
       this.$el.addClass("response_field_" + this.field_type);
       this.$el.html(JST['partials/non_input_response_field'](this));
       return this;
-    };
-
-    return NonInputResponseField;
-
-  })(FormRenderer.Views.ResponseField);
-
-  FormRenderer.Views.ResponseFieldTable = (function(_super) {
-    __extends(ResponseFieldTable, _super);
-
-    function ResponseFieldTable() {
-      return ResponseFieldTable.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldTable.KEY_DIRECTIONS = {
-      '37': 'left',
-      '38': 'up',
-      '39': 'right',
-      '40': 'down'
-    };
-
-    ResponseFieldTable.prototype.field_type = 'table';
-
-    ResponseFieldTable.prototype.events = {
+  FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
+    field_type: 'table',
+    events: {
       'click .add_another_row': 'addRow',
       'keydown textarea': 'handleKeydown'
-    };
-
-    ResponseFieldTable.prototype.initialize = function() {
-      ResponseFieldTable.__super__.initialize.apply(this, arguments);
+    },
+    initialize: function() {
+      FormRenderer.Views.prototype.ResponseField.initialize.apply(this, arguments);
       return this.on('shown', function() {
         return this.initExpanding();
       });
-    };
-
-    ResponseFieldTable.prototype.render = function() {
-      ResponseFieldTable.__super__.render.apply(this, arguments);
+    },
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.initExpanding();
       return this;
-    };
-
-    ResponseFieldTable.prototype.initExpanding = function() {};
-
-    ResponseFieldTable.prototype.addRow = function() {
+    },
+    initExpanding: function() {},
+    addRow: function() {
       this.model.numRows++;
       return this.render();
-    };
-
-    ResponseFieldTable.prototype.handleKeydown = function(e) {
+    },
+    handleKeydown: function(e) {
       var $ta, col, row, _ref;
       if (_ref = e.which.toString(), __indexOf.call(_.keys(this.constructor.KEY_DIRECTIONS), _ref) < 0) {
         return;
@@ -1679,46 +1321,32 @@
       }
       e.preventDefault();
       return $ta.closest('table').find("tbody tr:eq(" + row + ") td:eq(" + col + ") textarea").focus();
-    };
-
-    return ResponseFieldTable;
-
-  })(FormRenderer.Views.ResponseField);
-
-  FormRenderer.Views.ResponseFieldFile = (function(_super) {
-    __extends(ResponseFieldFile, _super);
-
-    function ResponseFieldFile() {
-      return ResponseFieldFile.__super__.constructor.apply(this, arguments);
     }
+  }, {
+    KEY_DIRECTIONS: {
+      '37': 'left',
+      '38': 'up',
+      '39': 'right',
+      '40': 'down'
+    }
+  });
 
-    ResponseFieldFile.prototype.field_type = 'file';
-
-    ResponseFieldFile.prototype.render = function() {
-      ResponseFieldFile.__super__.render.apply(this, arguments);
+  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
+    field_type: 'file',
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       return this;
-    };
-
-    return ResponseFieldFile;
-
-  })(FormRenderer.Views.ResponseField);
-
-  FormRenderer.Views.ResponseFieldMapMarker = (function(_super) {
-    __extends(ResponseFieldMapMarker, _super);
-
-    function ResponseFieldMapMarker() {
-      return ResponseFieldMapMarker.__super__.constructor.apply(this, arguments);
     }
+  });
 
-    ResponseFieldMapMarker.prototype.field_type = 'map_marker';
-
-    ResponseFieldMapMarker.prototype.events = {
+  FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
+    field_type: 'map_marker',
+    events: {
       'click .map_marker_field_cover': 'enable',
       'click .map_marker_field_disable': 'disable'
-    };
-
-    ResponseFieldMapMarker.prototype.render = function() {
-      ResponseFieldMapMarker.__super__.render.apply(this, arguments);
+    },
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.map_marker_field_cover');
       requireOnce(App.MAP_JS_URL, (function(_this) {
         return function() {
@@ -1729,9 +1357,8 @@
         };
       })(this));
       return this;
-    };
-
-    ResponseFieldMapMarker.prototype.initMap = function() {
+    },
+    initMap: function() {
       this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || App.DEFAULT_LAT_LNG, 13);
       this.$el.find('.map_marker_field_map').data('map', this.map);
       L.tileLayer(App.MAP_TILE_URL, {
@@ -1747,57 +1374,34 @@
           return _this.model.set('value.lng', center.lng.toFixed(7));
         };
       })(this));
-    };
-
-    ResponseFieldMapMarker.prototype.enable = function() {
+    },
+    enable: function() {
       this.map.addLayer(this.marker);
       this.$cover.hide();
       return this.map.fire('move');
-    };
-
-    ResponseFieldMapMarker.prototype.disable = function() {
+    },
+    disable: function() {
       this.map.removeLayer(this.marker);
       this.$el.find('.map_marker_field_cover').show();
       this.model.set('value.lat', '');
       return this.model.set('value.lng', '');
-    };
-
-    return ResponseFieldMapMarker;
-
-  })(FormRenderer.Views.ResponseField);
+    }
+  });
 
   _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = (function(_super) {
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.field_type = i;
-
-      return _Class;
-
-    })(FormRenderer.Views.ResponseField);
+    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.ResponseField.extend({
+      field_type: i
+    });
   }
 
   _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
     i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = (function(_super) {
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.field_type = i;
-
-      return _Class;
-
-    })(FormRenderer.Views.NonInputResponseField);
+    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
+      field_type: i
+    });
   }
 
 }).call(this);

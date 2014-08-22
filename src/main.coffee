@@ -1,34 +1,4 @@
-window.FormRenderer = class FormRenderer extends Backbone.View
-  @INPUT_FIELD_TYPES: [
-    'address'
-    'checkboxes'
-    'date'
-    'dropdown'
-    'email'
-    'file'
-    'number'
-    'paragraph'
-    'price'
-    'radio'
-    'table'
-    'text'
-    'time'
-    'website'
-    'map_marker'
-  ]
-
-  @NON_INPUT_FIELD_TYPES: [
-    'block_of_text'
-    'page_break'
-    'section_break'
-  ]
-
-  @FIELD_TYPES = _.union @INPUT_FIELD_TYPES, @NON_INPUT_FIELD_TYPES
-
-  @Views: {}
-  @Models: {}
-  @Validators: {}
-
+window.FormRenderer = FormRenderer = Backbone.View.extend
   defaults:
     enableAutosave: true
     warnBeforeUnload: true
@@ -106,7 +76,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
         store.remove @draftIdStorageKey()
 
   constructResponseFields: ->
-    @response_fields = new FormRenderer.Collection
+    @response_fields = new Backbone.Collection
 
     for rf in @options.response_fields
       model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](rf)
@@ -258,3 +228,33 @@ window.FormRenderer = class FormRenderer extends Backbone.View
       @save success: cb
     else
       cb.apply @
+
+FormRenderer.INPUT_FIELD_TYPES = [
+  'address'
+  'checkboxes'
+  'date'
+  'dropdown'
+  'email'
+  'file'
+  'number'
+  'paragraph'
+  'price'
+  'radio'
+  'table'
+  'text'
+  'time'
+  'website'
+  'map_marker'
+]
+
+FormRenderer.NON_INPUT_FIELD_TYPES = [
+  'block_of_text'
+  'page_break'
+  'section_break'
+]
+
+FormRenderer.FIELD_TYPES = _.union FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES
+
+FormRenderer.Views = {}
+FormRenderer.Models = {}
+FormRenderer.Validators = {}

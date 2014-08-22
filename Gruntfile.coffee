@@ -37,7 +37,6 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/scripts.js': [
             '<%= configFolder %>/rivets.coffee'
             '<%= srcFolder %>/main.coffee'
-            '<%= srcFolder %>/collection.coffee'
             '<%= srcFolder %>/validators/base_validator.coffee'
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'

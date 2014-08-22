@@ -16,7 +16,7 @@ class FormRenderer.Validators.MinMaxLengthValidator extends FormRenderer.Validat
       'is too long'
 
   countWords: ->
-    (_.trim(@model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
+    (_.str.trim(@model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
 
   countCharacters: ->
-    _.trim(@model.get('value')).replace(/\s/g, '').length
+    _.str.trim(@model.get('value')).replace(/\s/g, '').length

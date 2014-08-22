@@ -542,11 +542,11 @@
     };
 
     MinMaxLengthValidator.prototype.countWords = function() {
-      return (_.trim(this.model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+      return (_.str.trim(this.model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
     };
 
     MinMaxLengthValidator.prototype.countCharacters = function() {
-      return _.trim(this.model.get('value')).replace(/\s/g, '').length;
+      return _.str.trim(this.model.get('value')).replace(/\s/g, '').length;
     };
 
     return MinMaxLengthValidator;

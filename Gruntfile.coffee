@@ -94,13 +94,18 @@ module.exports = (grunt) ->
         npm: false
 
     karma:
-      all:
+      main:
         options:
           configFile: '<%= testFolder %>/karma.conf.coffee'
           singleRun: true
           reporters: 'dots'
+      dev:
+        options:
+          configFile: '<%= testFolder %>/karma.conf.coffee'
+          reporters: 'dots'
+          autoWatch: true
 
   grunt.registerTask 'default', ALL_TASKS
   grunt.registerTask 'dist', ['default', 'cssmin:dist', 'uglify:dist']
-  grunt.registerTask 'test', ['default', 'karma']
+  grunt.registerTask 'test', ['default', 'karma:main']
   grunt.registerTask 'release', ['default', 'dist', 'test', 'release']

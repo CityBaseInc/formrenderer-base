@@ -1432,7 +1432,7 @@
 
     BottomStatusBar.prototype.handleContinue = function(e) {
       e.preventDefault();
-      if (this.lastPage()) {
+      if (this.lastPage() || !this.form_renderer.options.enablePages) {
         return this.form_renderer.submit();
       } else {
         return this.form_renderer.activatePage(this.nextPage());

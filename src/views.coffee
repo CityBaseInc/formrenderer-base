@@ -50,7 +50,7 @@ class FormRenderer.Views.BottomStatusBar extends Backbone.View
   handleContinue: (e) ->
     e.preventDefault()
 
-    if @lastPage()
+    if @lastPage() || !@form_renderer.options.enablePages
       @form_renderer.submit()
     else
       @form_renderer.activatePage(@nextPage())

@@ -119,7 +119,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     'keydown textarea': 'handleKeydown'
 
   initialize: ->
-    FormRenderer.Views::ResponseField.initialize.apply @, arguments
+    FormRenderer.Views.ResponseField::initialize.apply @, arguments
 
     @on 'shown', ->
       @initExpanding()
@@ -206,9 +206,9 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$cover = @$el.find('.map_marker_field_cover')
-    requireOnce App.MAP_JS_URL, =>
-      @initMap()
-      if @model.latLng() then @enable()
+    # requireOnce App.MAP_JS_URL, =>
+    #   @initMap()
+    #   if @model.latLng() then @enable()
     @
 
   initMap: ->

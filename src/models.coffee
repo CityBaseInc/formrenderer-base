@@ -276,7 +276,7 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   hasValue: ->
     @hasValueHashKey ['hours', 'minutes', 'seconds']
   setExistingValue: (x) ->
-    FormRenderer.Models::ResponseField.setExistingValue.apply @, arguments
+    FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     @set('value.am_pm', 'AM') unless x?.am_pm
 
 FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend

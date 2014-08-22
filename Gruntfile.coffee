@@ -42,6 +42,9 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/models.coffee'
             '<%= srcFolder %>/views.coffee'
           ]
+          '<%= testFolder %>/support/fixtures.js': [
+            '<%= testFolder %>/support/fixtures.coffee'
+          ]
 
     concat:
       all:

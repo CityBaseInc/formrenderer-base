@@ -1076,7 +1076,7 @@
       return this.hasValueHashKey(['hours', 'minutes', 'seconds']);
     },
     setExistingValue: function(x) {
-      FormRenderer.Models.prototype.ResponseField.setExistingValue.apply(this, arguments);
+      FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       if (!(x != null ? x.am_pm : void 0)) {
         return this.set('value.am_pm', 'AM');
       }
@@ -1267,7 +1267,7 @@
       'keydown textarea': 'handleKeydown'
     },
     initialize: function() {
-      FormRenderer.Views.prototype.ResponseField.initialize.apply(this, arguments);
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
         return this.initExpanding();
       });
@@ -1348,14 +1348,6 @@
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.map_marker_field_cover');
-      requireOnce(App.MAP_JS_URL, (function(_this) {
-        return function() {
-          _this.initMap();
-          if (_this.model.latLng()) {
-            return _this.enable();
-          }
-        };
-      })(this));
       return this;
     },
     initMap: function() {

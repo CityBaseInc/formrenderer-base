@@ -1,6 +1,3 @@
-# This order is very important!
-ALL_TASKS = ['eco:all', 'coffee:all', 'concat:all', 'stylus:all', 'clean:compiled']
-
 module.exports = (grunt) ->
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
@@ -89,7 +86,7 @@ module.exports = (grunt) ->
     watch:
       all:
         files: ['<%= srcFolder %>/**/*.{coffee,eco,styl}']
-        tasks: ALL_TASKS
+        tasks: 'default'
 
     # # To test, run `grunt --no-write -v release`
     release:
@@ -108,7 +105,7 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ALL_TASKS
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'stylus:all', 'clean:compiled']
   grunt.registerTask 'dist', ['default', 'cssmin:dist', 'uglify:dist']
   grunt.registerTask 'test', ['default', 'karma:main']
   grunt.registerTask 'release', ['default', 'dist', 'test', 'release']

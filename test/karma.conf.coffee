@@ -13,8 +13,6 @@ module.exports = (config) ->
         'test/vendor/js/chai.js'
         'test/vendor/js/sinon.js'
         'test/vendor/js/chai-jquery.js'
-        'test/vendor/js/chai-changes.js'
-        'test/vendor/js/chai-backbone.js'
         'test/vendor/js/sinon-chai.js'
 
         'test/support/*.coffee'

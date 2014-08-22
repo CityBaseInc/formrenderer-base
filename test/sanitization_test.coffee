@@ -1,8 +1,8 @@
-beforeEach ->
+before ->
   $('body').html('<div data-formrenderer />')
 
 describe 'sanitization', ->
-  beforeEach ->
+  before ->
     @fr = new FormRenderer
       project_id: 1
       response:

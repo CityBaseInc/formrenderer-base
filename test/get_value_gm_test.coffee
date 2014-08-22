@@ -1,4 +1,4 @@
-beforeEach ->
+before ->
   $('body').html('<div data-formrenderer />')
 
 describe '#getValue', ->

@@ -1,4 +1,4 @@
-beforeEach ->
+before ->
   @fr = new FormRenderer
     project_id: 2
     response:
@@ -9,15 +9,15 @@ beforeEach ->
   @assertValid = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    expect(@validator.validate()).to.be(undefined)
+    expect(@validator.validate()).to.equal(undefined)
 
   @assertInvalid = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    expect(@validator.validate()).not.to.be(undefined)
+    expect(@validator.validate()).not.to.equal(undefined)
 
 describe 'DateValidator', ->
-  beforeEach ->
+  before ->
     @model = new FormRenderer.Models.ResponseFieldDate
     @validator = new FormRenderer.Validators.DateValidator(@model)
 

@@ -50,6 +50,7 @@ module.exports = (grunt) ->
           '<%= distFolder %>/formrenderer.js': '<%= compiledFolder %>/*.js'
           '<%= vendorFolder %>/js/vendor.js': [
             'bower_components/jquery/dist/jquery.js'
+            'bower_components/store.js/store.js'
             'bower_components/underscore/underscore.js'
             'bower_components/backbone/backbone.js'
             'bower_components/underscore.string/dist/underscore.string.min.js'

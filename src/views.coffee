@@ -45,7 +45,7 @@ class FormRenderer.Views.BottomStatusBar extends Backbone.View
 
   handleBack: (e) ->
     e.preventDefault()
-    @form_renderer.activatePage @previousPage(), silent: true
+    @form_renderer.activatePage @previousPage(), skipValidation: true
 
   handleContinue: (e) ->
     e.preventDefault()

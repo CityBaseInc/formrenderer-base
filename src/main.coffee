@@ -41,59 +41,69 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     validateImmediately: false
     ignoreUser: false
     editInPlace: false
-    # afterSubmit: undefined
-    # response_fields: undefined
+    response: {}
+    # afterSubmit:
+    # response_fields:
     # response:
     #   id:
     #   responses:
-    # project_id: undefined
+    # project_id:
 
   events:
     'click [data-activate-page]': (e) ->
-      @activatePage $(e.currentTarget).data('activate-page'), silent: true
+      @activatePage $(e.currentTarget).data('activate-page'), skipValidation: true
+
+  draftIdStorageKey: ->
+    "project-#{@options.project_id}-response-id"
 
   constructor: (options) ->
-    @options = $.extend({}, @defaults, options)
+    @options = $.extend {}, @defaults, options
     @state = new Backbone.Model
       hasChanges: false
     @setElement $(@options.target)
     @$el.addClass 'form_renderer_form'
-    @$el.data('form-renderer', @)
+    @$el.data 'form-renderer', @
     @subviews = { pages: {} }
 
     # Loading state
     @$el.html JST['main'](@)
 
+    @initLocalstorage() if @options.saveDraftIdToLocalstorage
+
     @loadFromServer =>
       @$el.find('.form_renderer_main_loading').remove()
       @constructResponseFields()
       @constructPages()
-
-      if @options.enablePages
-        @constructPagination()
-      else
-        @disablePagination()
-
+      if @options.enablePages then @constructPagination() else @disablePagination()
       @constructBottomStatusBar() if @options.enableBottomStatusBar
       @constructErrorAlertBar() if @options.enableErrorAlertBar
-
-      @subviews.pages[@state.get('activePage')].show()
-
       @initAutosave() if @options.enableAutosave
       @initBeforeUnload() if @options.warnBeforeUnload
       @validateAllPages() if @options.validateImmediately
 
+  initLocalstorage: ->
+    @options.response.id ||= store.get(@draftIdStorageKey())
+
+    @listenTo @, 'afterSave', ->
+      store.set @draftIdStorageKey(), @options.response.id
+
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
 
-    $.getJSON "#{@options.screendoorBase}/api/form_renderer/load",
-      project_id: @options.project_id
-      response_id: @options.response.id
-      v: 0
-    , (data) =>
-      @options.response_fields ||= data.project.response_fields
-      @options.response.responses ||= (data.response?.responses || {})
-      cb()
+    $.ajax
+      url: "#{@options.screendoorBase}/api/form_renderer/load"
+      type: 'get'
+      dataType: 'json'
+      data:
+        project_id: @options.project_id
+        response_id: @options.response.id
+        v: 0
+      success: (data) =>
+        @options.response_fields ||= data.project.response_fields
+        @options.response.responses ||= (data.response?.responses || {})
+        cb()
+      error: =>
+        store.remove @draftIdStorageKey()
 
   constructResponseFields: ->
     @response_fields = new FormRenderer.Collection
@@ -154,6 +164,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
   constructPagination: ->
     @subviews.pagination = new FormRenderer.Views.Pagination(form_renderer: @)
     @$el.prepend @subviews.pagination.render().el
+    @subviews.pages[@state.get('activePage')].show()
 
   disablePagination: ->
     for pageNumber, page of @subviews.pages
@@ -168,7 +179,7 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     @$el.prepend @subviews.errorAlertBar.render().el
 
   activatePage: (newPageNumber, opts = {}) ->
-    return unless opts.silent || @validateCurrentPage()
+    return unless opts.skipValidation || @validateCurrentPage()
     @subviews.pages[@state.get('activePage')].hide()
     @subviews.pages[newPageNumber].show()
     @state.set 'activePage', newPageNumber
@@ -189,8 +200,8 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     {
       response_id: @options.response.id
       project_id: @options.project_id
-      edit_in_place: @options.edit_in_place
-      ignore_user: @options.ignore_user
+      edit_in_place: @options.editInPlace
+      ignore_user: @options.ignoreUser
       background_submit: true
     }
 
@@ -201,21 +212,21 @@ window.FormRenderer = class FormRenderer extends Backbone.View
       url: "#{@options.screendoorBase}/responses/save"
       type: 'post'
       dataType: 'json'
-      data: _.extend(@saveParams(), {
-        raw_responses: @getValue()
-      })
+      data: _.extend @saveParams(), { raw_responses: @getValue() }
       complete: =>
         @isSaving = false
         options.complete?.apply(@, arguments)
         @trigger 'afterSave'
       success: (data) =>
-        @state.set 'hasChanges', false
-        @state.set 'hasServerErrors', false
+        @state.set
+          hasChanges: false
+          hasServerErrors: false
         @options.response.id = data.response_id
         options.success?.apply(@, arguments)
       error: =>
-        @state.set 'hasServerErrors', true
-        @state.set 'submitting', false
+        @state.set
+          hasServerErrors: true
+          submitting: false
         options.error?.apply(@, arguments)
 
   initAutosave: ->
@@ -229,20 +240,21 @@ window.FormRenderer = class FormRenderer extends Backbone.View
     , 'You have unsaved changes. Are you sure you want to leave this page?'
 
   submit: (opts = {}) ->
-    return unless opts.silent || @validateAllPages()
+    return unless opts.skipValidation || @validateAllPages()
     afterSubmit = opts.afterSubmit || @options.afterSubmit
     @state.set('submitting', true)
 
-    if typeof afterSubmit == 'function'
-      cb = afterSubmit
-    else if typeof afterSubmit == 'string'
-      cb = =>
+    cb = =>
+      store.remove @draftIdStorageKey()
+
+      if typeof afterSubmit == 'function'
+        afterSubmit()
+      else if typeof afterSubmit == 'string'
         window.location = afterSubmit
-    else
-      cb = =>
+      else
         console.log '[FormRenderer] Not sure what to do...'
 
     if @state.get('hasChanges')
-      @save(success: cb)
+      @save success: cb
     else
-      cb.apply(@)
+      cb.apply @

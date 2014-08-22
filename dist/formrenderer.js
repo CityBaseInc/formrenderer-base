@@ -79,15 +79,20 @@
       target: '[data-formrenderer]',
       validateImmediately: false,
       ignoreUser: false,
-      editInPlace: false
+      editInPlace: false,
+      response: {}
     };
 
     FormRenderer.prototype.events = {
       'click [data-activate-page]': function(e) {
         return this.activatePage($(e.currentTarget).data('activate-page'), {
-          silent: true
+          skipValidation: true
         });
       }
+    };
+
+    FormRenderer.prototype.draftIdStorageKey = function() {
+      return "project-" + this.options.project_id + "-response-id";
     };
 
     function FormRenderer(options) {
@@ -102,6 +107,9 @@
         pages: {}
       };
       this.$el.html(JST['main'](this));
+      if (this.options.saveDraftIdToLocalstorage) {
+        this.initLocalstorage();
+      }
       this.loadFromServer((function(_this) {
         return function() {
           _this.$el.find('.form_renderer_main_loading').remove();
@@ -118,7 +126,6 @@
           if (_this.options.enableErrorAlertBar) {
             _this.constructErrorAlertBar();
           }
-          _this.subviews.pages[_this.state.get('activePage')].show();
           if (_this.options.enableAutosave) {
             _this.initAutosave();
           }
@@ -132,22 +139,41 @@
       })(this));
     }
 
+    FormRenderer.prototype.initLocalstorage = function() {
+      var _base;
+      (_base = this.options.response).id || (_base.id = store.get(this.draftIdStorageKey()));
+      return this.listenTo(this, 'afterSave', function() {
+        return store.set(this.draftIdStorageKey(), this.options.response.id);
+      });
+    };
+
     FormRenderer.prototype.loadFromServer = function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
       }
-      return $.getJSON("" + this.options.screendoorBase + "/api/form_renderer/load", {
-        project_id: this.options.project_id,
-        response_id: this.options.response.id,
-        v: 0
-      }, (function(_this) {
-        return function(data) {
-          var _base, _base1, _ref;
-          (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-          (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
-          return cb();
-        };
-      })(this));
+      return $.ajax({
+        url: "" + this.options.screendoorBase + "/api/form_renderer/load",
+        type: 'get',
+        dataType: 'json',
+        data: {
+          project_id: this.options.project_id,
+          response_id: this.options.response.id,
+          v: 0
+        },
+        success: (function(_this) {
+          return function(data) {
+            var _base, _base1, _ref;
+            (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
+            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
+            return cb();
+          };
+        })(this),
+        error: (function(_this) {
+          return function() {
+            return store.remove(_this.draftIdStorageKey());
+          };
+        })(this)
+      });
     };
 
     FormRenderer.prototype.constructResponseFields = function() {
@@ -251,7 +277,8 @@
       this.subviews.pagination = new FormRenderer.Views.Pagination({
         form_renderer: this
       });
-      return this.$el.prepend(this.subviews.pagination.render().el);
+      this.$el.prepend(this.subviews.pagination.render().el);
+      return this.subviews.pages[this.state.get('activePage')].show();
     };
 
     FormRenderer.prototype.disablePagination = function() {
@@ -283,7 +310,7 @@
       if (opts == null) {
         opts = {};
       }
-      if (!(opts.silent || this.validateCurrentPage())) {
+      if (!(opts.skipValidation || this.validateCurrentPage())) {
         return;
       }
       this.subviews.pages[this.state.get('activePage')].hide();
@@ -315,8 +342,8 @@
       return {
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        edit_in_place: this.options.edit_in_place,
-        ignore_user: this.options.ignore_user,
+        edit_in_place: this.options.editInPlace,
+        ignore_user: this.options.ignoreUser,
         background_submit: true
       };
     };
@@ -346,8 +373,10 @@
         success: (function(_this) {
           return function(data) {
             var _ref;
-            _this.state.set('hasChanges', false);
-            _this.state.set('hasServerErrors', false);
+            _this.state.set({
+              hasChanges: false,
+              hasServerErrors: false
+            });
             _this.options.response.id = data.response_id;
             return (_ref = options.success) != null ? _ref.apply(_this, arguments) : void 0;
           };
@@ -355,8 +384,10 @@
         error: (function(_this) {
           return function() {
             var _ref;
-            _this.state.set('hasServerErrors', true);
-            _this.state.set('submitting', false);
+            _this.state.set({
+              hasServerErrors: true,
+              submitting: false
+            });
             return (_ref = options.error) != null ? _ref.apply(_this, arguments) : void 0;
           };
         })(this)
@@ -386,26 +417,23 @@
       if (opts == null) {
         opts = {};
       }
-      if (!(opts.silent || this.validateAllPages())) {
+      if (!(opts.skipValidation || this.validateAllPages())) {
         return;
       }
       afterSubmit = opts.afterSubmit || this.options.afterSubmit;
       this.state.set('submitting', true);
-      if (typeof afterSubmit === 'function') {
-        cb = afterSubmit;
-      } else if (typeof afterSubmit === 'string') {
-        cb = (function(_this) {
-          return function() {
+      cb = (function(_this) {
+        return function() {
+          store.remove(_this.draftIdStorageKey());
+          if (typeof afterSubmit === 'function') {
+            return afterSubmit();
+          } else if (typeof afterSubmit === 'string') {
             return window.location = afterSubmit;
-          };
-        })(this);
-      } else {
-        cb = (function(_this) {
-          return function() {
+          } else {
             return console.log('[FormRenderer] Not sure what to do...');
-          };
-        })(this);
-      }
+          }
+        };
+      })(this);
       if (this.state.get('hasChanges')) {
         return this.save({
           success: cb
@@ -1426,7 +1454,7 @@
     BottomStatusBar.prototype.handleBack = function(e) {
       e.preventDefault();
       return this.form_renderer.activatePage(this.previousPage(), {
-        silent: true
+        skipValidation: true
       });
     };
 

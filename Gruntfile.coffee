@@ -12,7 +12,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
-  # grunt.loadNpmTasks('grunt-karma')
+  grunt.loadNpmTasks('grunt-karma')
 
   grunt.initConfig
 
@@ -57,6 +57,7 @@ module.exports = (grunt) ->
             'bower_components/underscore.toboolean.js/index.js'
             'bower_components/before_unload.js/index.js'
             'bower_components/sanitize.js/lib/sanitize.js'
+            'bower_components/sanitize.js/lib/sanitize/config/basic.js'
             'bower_components/underscore.sanitize.js/index.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'
@@ -92,11 +93,14 @@ module.exports = (grunt) ->
       options:
         npm: false
 
-    # karma:
-    #   unit:
-    #     configFile: '<%= testFolder %>/karma.conf.coffee'
+    karma:
+      all:
+        options:
+          configFile: '<%= testFolder %>/karma.conf.coffee'
+          singleRun: true
+          reporters: 'dots'
 
   grunt.registerTask 'default', ALL_TASKS
   grunt.registerTask 'dist', ['default', 'cssmin:dist', 'uglify:dist']
-  grunt.registerTask 'release', ['default', 'dist', 'release']
-  # grunt.registerTask 'test', ['dist', 'karma']
+  grunt.registerTask 'test', ['default', 'karma']
+  grunt.registerTask 'release', ['default', 'dist', 'test', 'release']

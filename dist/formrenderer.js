@@ -366,6 +366,11 @@
         };
       })(this), 5000);
     },
+    autosaveImmediately: function() {
+      if (this.state.get('hasChanges') && !this.isSaving && this.options.enableAutosave) {
+        return this.save();
+      }
+    },
     initBeforeUnload: function() {
       return BeforeUnload.enable((function(_this) {
         return function() {
@@ -1026,10 +1031,10 @@
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     field_type: 'file',
     getValue: function() {
-      return '';
+      return this.get('value.id') || '';
     },
     hasValue: function() {
-      return this.hasValueHashKey(['id', 'filename']);
+      return this.hasValueHashKey(['id']);
     }
   });
 
@@ -1333,9 +1338,76 @@
 
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
     field_type: 'file',
+    events: {
+      'click [data-js-remove]': 'doRemove'
+    },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.$el[this.model.hasValue() ? 'addClass' : 'removeClass']('existing');
+      this.$input = this.$el.find('input');
+      this.$status = this.$el.find('.upload_status');
+      this.bindChangeEvent();
       return this;
+    },
+    bindChangeEvent: function() {
+      return this.$input.on('change', $.proxy(this.fileChanged, this));
+    },
+    fileChanged: function(e) {
+      var newFilename;
+      newFilename = e.target.files != null ? e.target.files[0].name : e.target.value ? e.target.value.replace(/^.+\\/, '') : void 0;
+      this.model.set('value.filename', newFilename, {
+        silent: true
+      });
+      this.$el.find('.filename').text(newFilename);
+      this.$status.text('Uploading...');
+      return this.doUpload();
+    },
+    doUpload: function() {
+      var $oldInput, $tmpForm;
+      $tmpForm = $("<form method='post' style='display: inline;' />");
+      $oldInput = this.$input;
+      this.$input = $oldInput.clone().hide().val('').insertBefore($oldInput);
+      this.bindChangeEvent();
+      $oldInput.appendTo($tmpForm);
+      $tmpForm.insertBefore(this.$input);
+      return $tmpForm.ajaxSubmit({
+        url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+        data: {
+          replace_file_id: this.model.get('value.id'),
+          v: 0
+        },
+        dataType: 'json',
+        uploadProgress: (function(_this) {
+          return function(_, __, ___, percentComplete) {
+            return _this.$status.text(percentComplete === 100 ? 'Finishing up...' : "Uploading... (" + percentComplete + "%)");
+          };
+        })(this),
+        complete: (function(_this) {
+          return function() {
+            return $tmpForm.remove();
+          };
+        })(this),
+        success: (function(_this) {
+          return function(data) {
+            _this.model.set('value.id', data.file_id);
+            _this.form_renderer.autosaveImmediately();
+            return _this.render();
+          };
+        })(this),
+        error: (function(_this) {
+          return function(data) {
+            _this.$status.text('Error');
+            return setTimeout(function() {
+              return _this.render();
+            }, 2000);
+          };
+        })(this)
+      });
+    },
+    doRemove: function() {
+      this.model.set('value', {});
+      this.form_renderer.autosaveImmediately();
+      return this.render();
     }
   });
 
@@ -1771,21 +1843,15 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'pretty_file_input cf '));
-    
-      if (this.model.get('value.filename')) {
-        _print(_safe('existing'));
-      }
-    
-      _print(_safe('\'>\n  <div class=\'existing\'>\n    <span class=\'pfi_existing_filename\'>'));
+      _print(_safe('<div class=\'existing\'>\n  <span class=\'filename\'>'));
     
       _print(this.model.get('value.filename'));
     
-      _print(_safe('</span>\n    <a class=\'button mini\' data-pfi=\'remove\'>Remove</a>\n  </div>\n\n  <div class=\'not_existing\'>\n    <input type=\'file\' id=\''));
+      _print(_safe('</span>\n  <a class=\'button mini\' data-js-remove>Remove</a>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
     
       _print(this.getDomId());
     
-      _print(_safe('\' name=\'file\'>\n    <span class=\'pfi_status\'></span>\n  </div>\n</div>\n'));
+      _print(_safe('\' name=\'file\'>\n  <span class=\'upload_status\'></span>\n</div>\n'));
     
     }).call(this);
     

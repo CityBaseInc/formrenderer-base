@@ -175,27 +175,61 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   field_type: 'file'
+  events:
+    'click [data-js-remove]': 'doRemove'
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
-
-    # if @form_renderer
-      # @$el.find('.pretty_file_input').prettyFileInput
-      #   action: @form_renderer.options.url
-      #   method: 'post'
-      #   name: "raw_responses[#{@model.get('id')}][]"
-      #   additional_parameters: @form_renderer.saveParams()
-      #   beforeRemove: =>
-      #     @model.set 'value', {}, silent: true
-      #   beforeUpload: (filename, pfi) =>
-      #     pfi.options.additional_parameters = @form_renderer.saveParams()
-      #     @model.set 'value.filename', filename, silent: true
-      #   onUploadError: =>
-      #     @model.set 'value.filename', '', silent: true
-      #   onUploadSuccess: (data) =>
-      #     @form_renderer.options.response.id = data.response_id
-      #     @form_renderer.trigger 'afterSave'
-
+    @$el[if @model.hasValue() then 'addClass' else 'removeClass']('existing')
+    @$input = @$el.find('input')
+    @$status = @$el.find('.upload_status')
+    @bindChangeEvent()
     return @
+
+  bindChangeEvent: ->
+    @$input.on 'change', $.proxy(@fileChanged, @)
+
+  fileChanged: (e) ->
+    newFilename = if e.target.files?
+      e.target.files[0].name
+    else if e.target.value
+      e.target.value.replace(/^.+\\/, '')
+
+    @model.set 'value.filename', newFilename, silent: true
+    @$el.find('.filename').text newFilename
+    @$status.text 'Uploading...'
+    @doUpload()
+
+  doUpload: ->
+    $tmpForm = $("<form method='post' style='display: inline;' />")
+    $oldInput = @$input
+    @$input = $oldInput.clone().hide().val('').insertBefore($oldInput)
+    @bindChangeEvent()
+    $oldInput.appendTo($tmpForm)
+    $tmpForm.insertBefore(@$input)
+    $tmpForm.ajaxSubmit
+      url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
+      data:
+        replace_file_id: @model.get('value.id')
+        v: 0
+      dataType: 'json'
+      uploadProgress: (_, __, ___, percentComplete) =>
+        @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")
+      complete: =>
+        $tmpForm.remove()
+      success: (data) =>
+        @model.set 'value.id', data.file_id
+        @form_renderer.autosaveImmediately()
+        @render()
+      error: (data) =>
+        @$status.text 'Error'
+        setTimeout =>
+          @render()
+        , 2000
+
+  doRemove: ->
+    @model.set 'value', {}
+    @form_renderer.autosaveImmediately()
+    @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'

@@ -1,11 +1,9 @@
-<div class='pretty_file_input cf <% if @model.get('value.filename'): %>existing<% end %>'>
-  <div class='existing'>
-    <span class='pfi_existing_filename'><%= @model.get('value.filename') %></span>
-    <a class='button mini' data-pfi='remove'>Remove</a>
-  </div>
+<div class='existing'>
+  <span class='filename'><%= @model.get('value.filename') %></span>
+  <a class='button mini' data-js-remove>Remove</a>
+</div>
 
-  <div class='not_existing'>
-    <input type='file' id='<%= @getDomId() %>' name='file'>
-    <span class='pfi_status'></span>
-  </div>
+<div class='not_existing'>
+  <input type='file' id='<%= @getDomId() %>' name='file'>
+  <span class='upload_status'></span>
 </div>

@@ -229,11 +229,10 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
 FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
-  # Remove value, we're setting this immediately, not on total form save
   getValue: ->
-    ''
+    @get('value.id') || ''
   hasValue: ->
-    @hasValueHashKey ['id', 'filename']
+    @hasValueHashKey ['id']
 
 FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   field_type: 'date'

@@ -204,6 +204,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @save() if @state.get('hasChanges') && !@isSaving
     , 5000
 
+  autosaveImmediately: ->
+    if @state.get('hasChanges') && !@isSaving && @options.enableAutosave
+      @save()
+
   initBeforeUnload: ->
     BeforeUnload.enable =>
       @state.get('hasChanges')

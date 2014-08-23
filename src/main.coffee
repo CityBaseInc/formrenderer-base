@@ -262,3 +262,7 @@ FormRenderer.FIELD_TYPES = _.union FormRenderer.INPUT_FIELD_TYPES, FormRenderer.
 FormRenderer.Views = {}
 FormRenderer.Models = {}
 FormRenderer.Validators = {}
+
+FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"
+FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png'
+FormRenderer.DEFAULT_LAT_LNG = [40.77, -73.98]

@@ -240,18 +240,28 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$cover = @$el.find('.map_marker_field_cover')
-    # requireOnce App.MAP_JS_URL, =>
-    #   @initMap()
-    #   if @model.latLng() then @enable()
+    @loadLeaflet =>
+      @initMap()
+      if @model.latLng() then @enable()
     @
+
+  loadLeaflet: (cb) ->
+    if L?.GeoJSON?
+      cb()
+    else if !FormRenderer.loadingLeaflet
+      FormRenderer.loadingLeaflet = [cb]
+      $.getScript FormRenderer.LEAFLET_JS_URL, ->
+        x() for x in FormRenderer.loadingLeaflet
+    else
+      FormRenderer.loadingLeaflet.push(cb)
 
   initMap: ->
     @map = L.map(@$el.find('.map_marker_field_map')[0])
-            .setView(@model.latLng() || @model.defaultLatLng() || App.DEFAULT_LAT_LNG, 13)
+            .setView(@model.latLng() || @model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13)
 
     @$el.find('.map_marker_field_map').data('map', @map)
 
-    L.tileLayer(App.MAP_TILE_URL, maxZoom: 18).addTo(@map)
+    L.tileLayer(FormRenderer.MAP_TILE_URL, maxZoom: 18).addTo(@map)
 
     @marker = L.marker([0, 0])
 

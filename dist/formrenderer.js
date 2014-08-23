@@ -422,6 +422,8 @@
 
   FormRenderer.Validators = {};
 
+  FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js";
+
 }).call(this);
 
 (function() {
@@ -1420,12 +1422,39 @@
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.map_marker_field_cover');
+      this.loadLeaflet((function(_this) {
+        return function() {
+          _this.initMap();
+          if (_this.model.latLng()) {
+            return _this.enable();
+          }
+        };
+      })(this));
       return this;
     },
+    loadLeaflet: function(cb) {
+      if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
+        return cb();
+      } else if (!FormRenderer.loadingLeaflet) {
+        FormRenderer.loadingLeaflet = [cb];
+        return $.getScript(FormRenderer.LEAFLET_JS_URL, function() {
+          var x, _i, _len, _ref, _results;
+          _ref = FormRenderer.loadingLeaflet;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            x = _ref[_i];
+            _results.push(x());
+          }
+          return _results;
+        });
+      } else {
+        return FormRenderer.loadingLeaflet.push(cb);
+      }
+    },
     initMap: function() {
-      this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || App.DEFAULT_LAT_LNG, 13);
+      this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.Views.ResponseFieldMapMarker.DEFAULT_LAT_LNG, 13);
       this.$el.find('.map_marker_field_map').data('map', this.map);
-      L.tileLayer(App.MAP_TILE_URL, {
+      L.tileLayer(FormRenderer.Views.ResponseFieldMapMarker.MAP_TILE_URL, {
         maxZoom: 18
       }).addTo(this.map);
       this.marker = L.marker([0, 0]);
@@ -1450,6 +1479,9 @@
       this.model.set('value.lat', '');
       return this.model.set('value.lng', '');
     }
+  }, {
+    MAP_TILE_URL: 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png',
+    DEFAULT_LAT_LNG: [40.77, -73.98]
   });
 
   _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker');

@@ -206,6 +206,45 @@ $errorColor = #c12f2e
     &.block-of-text-size-large
       font-size 1.8rem
 
+.map_marker_field_map_wrapper
+  width 100%
+  max-width 500px
+  height 246px
+  position relative
+  border 1px solid #ddd
+  border-radius 3px
+
+  .map_marker_field_map
+    width 100%
+    height 220px
+    border-radius 3px 3px 0 0
+
+  .map_marker_field_cover
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+    z-index 10
+    background rgba(255, 255, 255, 0.4)
+    text-align center
+    padding-top 100px
+    font-size 1.2rem
+    color #333
+    font-weight 600
+    cursor pointer
+
+  .map_marker_field_toolbar
+    height 24px
+    line-height 24px
+    padding 0 5px
+    background-color #eee
+    font-size 0.85rem
+    border-radius 0 0 3px 3px
+
+  .map_marker_field_disable
+    float right
+
 .form_renderer_bottom_bar
   display table
   background-color #eee

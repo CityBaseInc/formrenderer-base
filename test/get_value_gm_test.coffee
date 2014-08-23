@@ -8,7 +8,9 @@
 
 EXPECTED_BLANK_VALUES = '{"37":{"0":false,"1":false},"44":{"am_pm":"AM"},"46":"","48":{"country":"US"},"49":{"0":["",""],"1":["",""]}}'
 
-EXPECTED_PRESENT_VALUES = '{"35":"foo","36":"bar","37":{"0":"on","1":false},"39":"Choice #2","40":"Choice #2","41":{"dollars":"12","cents":"99"},"42":"123","43":{"month":"12","day":"30","year":"2014"},"44":{"am_pm":"PM","hours":"6","minutes":"01","seconds":"30"},"45":"http://www.google.com","46":"","47":"foo@bar.com","48":{"country":"GB","street":"123 main st"},"49":{"0":["hey",""],"1":["","nay"]}}'
+EXPECTED_PRESENT_VALUES = '{"35":"foo","36":"bar","37":{"0":"on","1":false},"39":"Choice #2","40":"Choice #2","41":{"dollars":"12","cents":"99"},"42":"123","43":{"month":"12","day":"30","year":"2014"},"44":{"am_pm":"PM","hours":"6","minutes":"01","seconds":"30"},"45":"http://www.google.com","46":"","47":"foo@bar.com","48":{"country":"GB","street":"123 main st"},"49":{"0":["hey",""],"1":["","nay"]},"50":{"lat":"40.7700000","lng":"-73.9800000"}}'
+
+REASONABLE_AMOUNT_OF_TIME_TO_LOAD_LEAFLET = 1500
 
 before ->
   $('body').html('<div data-formrenderer />')
@@ -25,7 +27,7 @@ describe '#getValue', ->
   it 'serializes the blank values', ->
     expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_BLANK_VALUES)
 
-  it 'serializes present values', ->
+  it 'serializes present values', (done) ->
     $('.response_field_text input').val('foo').trigger('input')
     $('.response_field_paragraph textarea').val('bar').trigger('input')
     $('.response_field_checkboxes input').first().click().trigger('change')
@@ -50,4 +52,8 @@ describe '#getValue', ->
 
     # @todo file, mapmarker
 
-    expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_PRESENT_VALUES)
+    setTimeout =>
+      $('.response_field_map_marker .map_marker_field_cover').click()
+      expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_PRESENT_VALUES)
+      done()
+    , REASONABLE_AMOUNT_OF_TIME_TO_LOAD_LEAFLET

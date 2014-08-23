@@ -424,6 +424,10 @@
 
   FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js";
 
+  FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png';
+
+  FormRenderer.DEFAULT_LAT_LNG = [40.77, -73.98];
+
 }).call(this);
 
 (function() {
@@ -1452,9 +1456,9 @@
       }
     },
     initMap: function() {
-      this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.Views.ResponseFieldMapMarker.DEFAULT_LAT_LNG, 13);
+      this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
       this.$el.find('.map_marker_field_map').data('map', this.map);
-      L.tileLayer(FormRenderer.Views.ResponseFieldMapMarker.MAP_TILE_URL, {
+      L.tileLayer(FormRenderer.MAP_TILE_URL, {
         maxZoom: 18
       }).addTo(this.map);
       this.marker = L.marker([0, 0]);
@@ -1479,9 +1483,6 @@
       this.model.set('value.lat', '');
       return this.model.set('value.lng', '');
     }
-  }, {
-    MAP_TILE_URL: 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png',
-    DEFAULT_LAT_LNG: [40.77, -73.98]
   });
 
   _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker');

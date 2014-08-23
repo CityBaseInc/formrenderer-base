@@ -1,4 +1,4 @@
-<table class='border_all'>
+<table class='fr_table'>
   <thead>
     <tr>
       <% for column in @model.getColumns(): %>
@@ -34,6 +34,6 @@
   <% end %>
 </table>
 
-<div class='margin_th margin_bh'>
-  <a class='uppercase add_another_row'><i class='icon-plus-sign'></i> Add another row</a>
+<div class='fr_table_add_row_wrapper'>
+  <a data-js-add-row><i class='icon-plus-sign'></i> Add another row</a>
 </div>

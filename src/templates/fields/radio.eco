@@ -1,12 +1,16 @@
 <% for option, i in @model.getOptions(): %>
-  <label class='fb-option'>
-    <input type='radio' data-rv-checked='model.value.selected' id="<%= @getDomId() %>" name="<%= @getDomId() %>" value="<%= option.label %>" />
+  <label class='fr_option'>
+    <input type='radio'
+           data-rv-checked='model.value.selected'
+           id="<%= @getDomId() %>"
+           name="<%= @getDomId() %>"
+           value="<%= option.label %>" />
     <%= option.label %>
   </label>
 <% end %>
 
 <% if @model.get('field_options.include_other_option'): %>
-  <div class='fb-option'>
+  <div class='fr_option'>
     <label>
     <input type='radio' data-rv-checked='model.value.selected' id="<%= @getDomId() %>" name="<%= @getDomId() %>" value="Other" />
       Other

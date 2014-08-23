@@ -1,5 +1,5 @@
 <% if @model.hasLengthValidations(): %>
-  <div class='min_max'>
+  <div class='fr_min_max'>
     <% if @model.get('field_options.minlength') && @model.get('field_options.maxlength'): %>
       Between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
     <% else if @model.get('field_options.minlength'): %>
@@ -9,7 +9,7 @@
     <% end %>
 
     Current count:
-    <code class='min_max_counter' data-rv-text='model.currentLength'></code>
+    <code class='fr_min_max_counter' data-rv-text='model.currentLength'></code>
     <%= @model.getLengthValidationUnits() %>.
   </div>
 <% end %>

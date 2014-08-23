@@ -1,6 +1,6 @@
 <div class='existing'>
   <span class='filename'><%= @model.get('value.filename') %></span>
-  <a class='button mini' data-js-remove>Remove</a>
+  <button data-js-remove>Remove</button>
 </div>
 
 <div class='not_existing'>

@@ -1,5 +1,5 @@
-<div class='form_renderer_bottom_bar cf'>
-  <div class='form_renderer_bottom_bar_left'>
+<div class='fr_bottom_bar fr_cf'>
+  <div class='fr_bottom_bar_l'>
     <% if @form_renderer.state.get('hasServerErrors'): %>
       Error saving
     <% else if @form_renderer.state.get('hasChanges'): %>
@@ -9,19 +9,19 @@
     <% end %>
   </div>
 
-  <div class='form_renderer_bottom_bar_right'>
+  <div class='fr_bottom_bar_r'>
     <% if !@firstPage(): %>
-      <button class='button go_back_button'>
+      <button data-js-back>
         Back to page <%= @previousPage() %>
       </button>
     <% end %>
 
     <% if @form_renderer.state.get('submitting'): %>
-      <button class='button button-primary continue_button disabled'>
+      <button disabled>
         Submitting...
       </button>
     <% else: %>
-      <button class='button button-primary continue_button'>
+      <button data-js-continue>
         <% if @lastPage(): %>Submit<% else: %>Next page<% end %>
       </button>
     <% end %>

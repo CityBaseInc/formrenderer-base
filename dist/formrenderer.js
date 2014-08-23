@@ -82,7 +82,7 @@
         hasChanges: false
       });
       this.setElement($(this.options.target));
-      this.$el.addClass('form_renderer_form');
+      this.$el.addClass('fr_form');
       this.$el.data('form-renderer', this);
       this.subviews = {
         pages: {}
@@ -93,7 +93,7 @@
       }
       return this.loadFromServer((function(_this) {
         return function() {
-          _this.$el.find('.form_renderer_main_loading').remove();
+          _this.$el.find('.fr_loading').remove();
           _this.constructResponseFields();
           _this.constructPages();
           if (_this.options.enablePages) {
@@ -1140,8 +1140,8 @@
 
   FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
     events: {
-      'click .go_back_button': 'handleBack',
-      'click .continue_button': 'handleContinue'
+      'click [data-js-back]': 'handleBack',
+      'click [data-js-continue]': 'handleContinue'
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
@@ -1180,7 +1180,7 @@
   });
 
   FormRenderer.Views.Page = Backbone.View.extend({
-    className: 'form_renderer_page',
+    className: 'fr_page',
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.models = [];
@@ -1244,11 +1244,11 @@
 
   FormRenderer.Views.ResponseField = Backbone.View.extend({
     field_type: void 0,
-    className: 'form_renderer_response_field',
+    className: 'fr_response_field',
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.model = options.model;
-      return this.$el.addClass("response_field_" + this.field_type);
+      return this.$el.addClass("fr_response_field_" + this.field_type);
     },
     getDomId: function() {
       return this.model.cid;
@@ -1265,7 +1265,7 @@
 
   FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
     render: function() {
-      this.$el.addClass("response_field_" + this.field_type);
+      this.$el.addClass("fr_response_field_" + this.field_type);
       this.$el.html(JST['partials/non_input_response_field'](this));
       return this;
     }
@@ -1274,7 +1274,7 @@
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
     events: {
-      'click .add_another_row': 'addRow',
+      'click [data-js-add-row]': 'addRow',
       'keydown textarea': 'handleKeydown'
     },
     initialize: function() {
@@ -1529,11 +1529,11 @@ window.JST["fields/address"] = function(__obj) {
     (function() {
       var k, v;
     
-      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'street\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_full\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </span>\n</div>\n\n<div class=\'form_renderer_input_line\'>\n  <span class=\'city\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </span>\n\n  <span class=\'state\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </span>\n</div>\n\n<div class=\'form_renderer_input_line\'>\n  <span class=\'zip\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </span>\n\n  <span class=\'country\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
+      _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
     
       for (k in allCountries) {
         v = allCountries[k];
@@ -1544,7 +1544,7 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('</option>\n      '));
       }
     
-      _print(_safe('\n    </select>\n    <label>Country</label>\n  </span>\n</div>\n'));
+      _print(_safe('\n    </select>\n    <label>Country</label>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -1589,7 +1589,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'block-of-text block-of-text-size-'));
+      _print(_safe('<div class=\'size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -1647,7 +1647,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fb-option\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
+        _print(_safe('\n  <label class=\'fr_option\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
         _print(i);
         _print(_safe('\' />\n    '));
         _print(option.label);
@@ -1657,7 +1657,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fb-option\'>\n    <label>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_option\'>\n    <label>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -1705,11 +1705,11 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'month\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\' />\n    <label>MM</label>\n  </span>\n\n  <span class=\'above-line\'>/</span>\n\n  <span class=\'day\'>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\' />\n    <label>DD</label>\n  </span>\n\n  <span class=\'above-line\'>/</span>\n\n  <span class=\'year\'>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\' />\n    <label>YYYY</label>\n  </span>\n</div>\n'));
+      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>MM</label>\n  </div>\n\n  <div class=\'fr_item_above\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>DD</label>\n  </div>\n\n  <div class=\'fr_item_above\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n    <label>YYYY</label>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -1827,7 +1827,7 @@ window.JST["fields/email"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       class="rf-size-'));
+      _print(_safe('"\n       class="size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -1880,7 +1880,7 @@ window.JST["fields/file"] = function(__obj) {
     
       _print(this.model.get('value.filename'));
     
-      _print(_safe('</span>\n  <a class=\'button mini\' data-js-remove>Remove</a>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
+      _print(_safe('</span>\n  <button data-js-remove>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
     
       _print(this.getDomId());
     
@@ -1929,7 +1929,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'map_marker_field_map_wrapper\'>\n  <div class=\'map_marker_field_map\' />\n\n  <div class=\'map_marker_field_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'map_marker_field_toolbar cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'none\'>N/A</span>\n    <a class=\'map_marker_field_disable\' data-rv-show=\'model.value.lat\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    <a data-js-clear data-rv-show=\'model.value.lat\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -1978,7 +1978,7 @@ window.JST["fields/number"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       class="rf-size-'));
+      _print(_safe('"\n       class="size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -2035,7 +2035,7 @@ window.JST["fields/page_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'page-break-inner\'>\n  Page break\n</div>\n'));
+      _print(_safe('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n'));
     
     }).call(this);
     
@@ -2084,7 +2084,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n   class="rf-size-'));
+      _print(_safe('"\n   class="size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -2133,14 +2133,14 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'above-line\'>$</span>\n  <span class=\'dollars\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_above\'>$</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.dollars\' />\n    <label>Dollars</label>\n  </span>\n\n  '));
+      _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n    <label>Dollars</label>\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_cents')) {
-        _print(_safe('\n    <span class=\'above-line\'>.</span>\n    <span class=\'cents\'>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\' />\n      <label>Cents</label>\n    </span>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_above\'>.</div>\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>Cents</label>\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -2193,11 +2193,11 @@ window.JST["fields/radio"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fb-option\'>\n    <input type=\'radio\' data-rv-checked=\'model.value.selected\' id="'));
+        _print(_safe('\n  <label class=\'fr_option\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           id="'));
         _print(this.getDomId());
-        _print(_safe('" name="'));
+        _print(_safe('"\n           name="'));
         _print(this.getDomId());
-        _print(_safe('" value="'));
+        _print(_safe('"\n           value="'));
         _print(option.label);
         _print(_safe('" />\n    '));
         _print(option.label);
@@ -2207,7 +2207,7 @@ window.JST["fields/radio"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fb-option\'>\n    <label>\n    <input type=\'radio\' data-rv-checked=\'model.value.selected\' id="'));
+        _print(_safe('\n  <div class=\'fr_option\'>\n    <label>\n    <input type=\'radio\' data-rv-checked=\'model.value.selected\' id="'));
         _print(this.getDomId());
         _print(_safe('" name="'));
         _print(this.getDomId());
@@ -2259,11 +2259,11 @@ window.JST["fields/section_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'section-break-inner section-break-size-'));
+      _print(_safe('<div class=\'size_'));
     
       _print(this.model.get('field_options.size'));
     
-      _print(_safe('\'>\n  <div class=\'section-name\'>'));
+      _print(_safe('\'>\n  <div class=\'fr_section_name\'>'));
     
       _print(this.model.get('label'));
     
@@ -2322,7 +2322,7 @@ window.JST["fields/table"] = function(__obj) {
     (function() {
       var column, i, j, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
     
-      _print(_safe('<table class=\'border_all\'>\n  <thead>\n    <tr>\n      '));
+      _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
     
       _ref = this.model.getColumns();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2370,7 +2370,7 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n      </tr>\n    </tfoot>\n  '));
       }
     
-      _print(_safe('\n</table>\n\n<div class=\'margin_th margin_bh\'>\n  <a class=\'uppercase add_another_row\'><i class=\'icon-plus-sign\'></i> Add another row</a>\n</div>\n'));
+      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  <a data-js-add-row><i class=\'icon-plus-sign\'></i> Add another row</a>\n</div>\n'));
     
     }).call(this);
     
@@ -2419,7 +2419,7 @@ window.JST["fields/text"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       class="rf-size-'));
+      _print(_safe('"\n       class="size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -2468,17 +2468,17 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'form_renderer_input_line\'>\n  <span class=\'hours\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\' />\n    <label>HH</label>\n  </span>\n\n  <span class=\'above-line\'>:</span>\n\n  <span class=\'minutes\'>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\' />\n    <label>MM</label>\n  </span>\n\n  '));
+      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>HH</label>\n  </div>\n\n  <div class=\'fr_item_above\'>:</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>MM</label>\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_seconds')) {
-        _print(_safe('\n    <span class=\'above-line\'>:</span>\n\n    <span class=\'seconds\'>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\' />\n      <label>SS</label>\n    </span>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_above\'>:</div>\n\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>SS</label>\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <span class=\'am_pm\'>\n    <select data-rv-value=\'model.value.am_pm\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </span>\n</div>\n'));
+      _print(_safe('\n\n  <div class=\'fr_item_auto\'>\n    <select data-rv-value=\'model.value.am_pm\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -2527,7 +2527,7 @@ window.JST["fields/website"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       class="rf-size-'));
+      _print(_safe('"\n       class="size_'));
     
       _print(this.model.get('field_options.size'));
     
@@ -2576,7 +2576,7 @@ window.JST["main"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'form_renderer_main_loading\'>\n  Loading form...\n</div>'));
+      _print(_safe('<div class=\'fr_loading\'>\n  Loading form...\n</div>'));
     
     }).call(this);
     
@@ -2621,7 +2621,7 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'form_renderer_bottom_bar cf\'>\n  <div class=\'form_renderer_bottom_bar_left\'>\n    '));
+      _print(_safe('<div class=\'fr_bottom_bar fr_cf\'>\n  <div class=\'fr_bottom_bar_l\'>\n    '));
     
       if (this.form_renderer.state.get('hasServerErrors')) {
         _print(_safe('\n      Error saving\n    '));
@@ -2631,10 +2631,10 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
         _print(_safe('\n      Saved\n    '));
       }
     
-      _print(_safe('\n  </div>\n\n  <div class=\'form_renderer_bottom_bar_right\'>\n    '));
+      _print(_safe('\n  </div>\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
     
       if (!this.firstPage()) {
-        _print(_safe('\n      <button class=\'button go_back_button\'>\n        Back to page '));
+        _print(_safe('\n      <button data-js-back>\n        Back to page '));
         _print(this.previousPage());
         _print(_safe('\n      </button>\n    '));
       }
@@ -2642,9 +2642,9 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       _print(_safe('\n\n    '));
     
       if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n      <button class=\'button button-primary continue_button disabled\'>\n        Submitting...\n      </button>\n    '));
+        _print(_safe('\n      <button disabled>\n        Submitting...\n      </button>\n    '));
       } else {
-        _print(_safe('\n      <button class=\'button button-primary continue_button\'>\n        '));
+        _print(_safe('\n      <button data-js-continue>\n        '));
         if (this.lastPage()) {
           _print(_safe('Submit'));
         } else {
@@ -2699,9 +2699,9 @@ window.JST["partials/description"] = function(__obj) {
     };
     (function() {
       if (this.model.get('field_options.description')) {
-        _print(_safe('\n  <span class=\'help-block\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_description\'>\n    '));
         _print(_safe(_.sanitize(_.simpleFormat(this.model.get('field_options.description'), false))));
-        _print(_safe('\n  </span>\n'));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -2750,9 +2750,9 @@ window.JST["partials/error"] = function(__obj) {
     };
     (function() {
       if (this.model.getError()) {
-        _print(_safe('\n  <span class=\'help-block validation-message-wrapper\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_error\'>\n    '));
         _print(this.model.getError());
-        _print(_safe('\n  </span>\n'));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -2801,7 +2801,7 @@ window.JST["partials/error_alert_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'form_renderer_error_alert_bar\'>Your response has validation errors.</div>\n'));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
       }
     
       _print(_safe('\n'));
@@ -2909,7 +2909,7 @@ window.JST["partials/length_validations"] = function(__obj) {
     };
     (function() {
       if (this.model.hasLengthValidations()) {
-        _print(_safe('\n  <div class=\'min_max\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_min_max\'>\n    '));
         if (this.model.get('field_options.minlength') && this.model.get('field_options.maxlength')) {
           _print(_safe('\n      Between '));
           _print(this.model.get('field_options.minlength'));
@@ -2931,7 +2931,7 @@ window.JST["partials/length_validations"] = function(__obj) {
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n    '));
         }
-        _print(_safe('\n\n    Current count:\n    <code class=\'min_max_counter\' data-rv-text=\'model.currentLength\'></code>\n    '));
+        _print(_safe('\n\n    Current count:\n    <code class=\'fr_min_max_counter\' data-rv-text=\'model.currentLength\'></code>\n    '));
         _print(this.model.getLengthValidationUnits());
         _print(_safe('.\n  </div>\n'));
       }
@@ -2982,7 +2982,7 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     };
     (function() {
       if (this.model.hasMinMaxValidations()) {
-        _print(_safe('\n  <div class=\'min_max\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_min_max\'>\n    '));
         if (this.model.get('field_options.min') && this.model.get('field_options.max')) {
           _print(_safe('\n      Between '));
           _print(this.model.get('field_options.min'));
@@ -3096,7 +3096,7 @@ window.JST["partials/pagination"] = function(__obj) {
       var i, _i, _ref;
     
       if (this.form_renderer.numPages > 1) {
-        _print(_safe('\n  <ul class=\'formbuilder_form_pages_list cf\'>\n    '));
+        _print(_safe('\n  <ul class=\'fr_pagination fr_cf\'>\n    '));
         for (i = _i = 1, _ref = this.form_renderer.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
           _print(_safe('\n      '));
           if (i === this.form_renderer.state.get('activePage')) {
@@ -3174,7 +3174,7 @@ window.JST["partials/response_field"] = function(__obj) {
     
       _print(_safe(JST["fields/" + this.field_type](this)));
     
-      _print(_safe('\n\n<div class=\'clear\' />\n\n'));
+      _print(_safe('\n\n<div class=\'fr_clear\' />\n\n'));
     
       _print(_safe(JST["partials/length_validations"](this)));
     

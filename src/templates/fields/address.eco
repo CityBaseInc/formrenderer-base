@@ -1,39 +1,39 @@
-<div class='form_renderer_input_line'>
-  <span class='street'>
+<div class='fr_input_grid'>
+  <div class='fr_item_full'>
     <input type="text"
            id="<%= @getDomId() %>"
            data-rv-input='model.value.street' />
     <label>Address</label>
-  </span>
+  </div>
 </div>
 
-<div class='form_renderer_input_line'>
-  <span class='city'>
+<div class='fr_input_grid'>
+  <div class='fr_item_half'>
     <input type="text"
            data-rv-input='model.value.city' />
     <label>City</label>
-  </span>
+  </div>
 
-  <span class='state'>
+  <div class='fr_item_half'>
     <input type="text"
            data-rv-input='model.value.state' />
     <label>State / Province / Region</label>
-  </span>
+  </div>
 </div>
 
-<div class='form_renderer_input_line'>
-  <span class='zip'>
+<div class='fr_input_grid'>
+  <div class='fr_item_half'>
     <input type="text"
            data-rv-input='model.value.zipcode' />
     <label>Zipcode</label>
-  </span>
+  </div>
 
-  <span class='country'>
+  <div class='fr_item_half'>
     <select data-rv-value='model.value.country'>
       <% for k, v of allCountries: %>
         <option value='<%= k %>'><%= v %></option>
       <% end %>
     </select>
     <label>Country</label>
-  </span>
+  </div>
 </div>

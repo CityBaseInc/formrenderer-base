@@ -1,19 +1,22 @@
-<div class='form_renderer_input_line'>
-  <span class='above-line'>$</span>
-  <span class='dollars'>
+<div class='fr_input_grid'>
+  <div class='fr_item_above'>$</div>
+
+  <div class='fr_item_auto'>
     <input type="text"
            id="<%= @getDomId() %>"
-           data-rv-input='model.value.dollars' />
+           data-rv-input='model.value.dollars'
+           size='6' />
     <label>Dollars</label>
-  </span>
+  </div>
 
   <% unless @model.get('field_options.disable_cents'): %>
-    <span class='above-line'>.</span>
-    <span class='cents'>
+    <div class='fr_item_above'>.</div>
+    <div class='fr_item_auto'>
       <input type="text"
              data-rv-input='model.value.cents'
-             maxlength='2' />
+             maxlength='2'
+             size='2' />
       <label>Cents</label>
-    </span>
+    </div>
   <% end %>
 </div>

@@ -31,7 +31,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @state = new Backbone.Model
       hasChanges: false
     @setElement $(@options.target)
-    @$el.addClass 'form_renderer_form'
+    @$el.addClass 'fr_form'
     @$el.data 'form-renderer', @
     @subviews = { pages: {} }
 
@@ -41,7 +41,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @initLocalstorage() if @options.saveDraftIdToLocalstorage
 
     @loadFromServer =>
-      @$el.find('.form_renderer_main_loading').remove()
+      @$el.find('.fr_loading').remove()
       @constructResponseFields()
       @constructPages()
       if @options.enablePages then @constructPagination() else @disablePagination()

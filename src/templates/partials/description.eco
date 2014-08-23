@@ -1,5 +1,5 @@
 <% if @model.get('field_options.description'): %>
-  <span class='help-block'>
+  <div class='fr_description'>
     <%- _.sanitize(_.simpleFormat(@model.get('field_options.description'), false)) %>
-  </span>
+  </div>
 <% end %>

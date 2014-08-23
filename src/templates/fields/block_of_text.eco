@@ -1,3 +1,3 @@
-<div class='block-of-text block-of-text-size-<%= @model.get('field_options.size') %>'>
+<div class='size_<%= @model.get('field_options.size') %>'>
   <%- _.simpleFormat @model.get('label') %>
 </div>

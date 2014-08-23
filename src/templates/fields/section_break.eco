@@ -1,5 +1,5 @@
-<div class='section-break-inner section-break-size-<%= @model.get('field_options.size') %>'>
-  <div class='section-name'><%= @model.get('label') %></div>
+<div class='size_<%= @model.get('field_options.size') %>'>
+  <div class='fr_section_name'><%= @model.get('label') %></div>
   <% if @model.get('field_options.description'): %>
     <p><%- _.sanitize(_.simpleFormat(@model.get('field_options.description'), false)) %></p>
   <% end %>

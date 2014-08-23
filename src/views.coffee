@@ -20,8 +20,8 @@ FormRenderer.Views.ErrorAlertBar = Backbone.View.extend
 
 FormRenderer.Views.BottomStatusBar = Backbone.View.extend
   events:
-    'click .go_back_button': 'handleBack'
-    'click .continue_button': 'handleContinue'
+    'click [data-js-back]': 'handleBack'
+    'click [data-js-continue]': 'handleContinue'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
@@ -56,7 +56,7 @@ FormRenderer.Views.BottomStatusBar = Backbone.View.extend
       @form_renderer.activatePage(@nextPage())
 
 FormRenderer.Views.Page = Backbone.View.extend
-  className: 'form_renderer_page'
+  className: 'fr_page'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
@@ -90,12 +90,12 @@ FormRenderer.Views.Page = Backbone.View.extend
 
 FormRenderer.Views.ResponseField = Backbone.View.extend
   field_type: undefined
-  className: 'form_renderer_response_field'
+  className: 'fr_response_field'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
     @model = options.model
-    @$el.addClass "response_field_#{@field_type}"
+    @$el.addClass "fr_response_field_#{@field_type}"
 
   getDomId: ->
     @model.cid
@@ -108,14 +108,14 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
 
 FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend
   render: ->
-    @$el.addClass "response_field_#{@field_type}"
+    @$el.addClass "fr_response_field_#{@field_type}"
     @$el.html JST['partials/non_input_response_field'](@)
     @
 
 FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'
   events:
-    'click .add_another_row': 'addRow'
+    'click [data-js-add-row]': 'addRow'
     'keydown textarea': 'handleKeydown'
 
   initialize: ->

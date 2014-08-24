@@ -1,9 +1,13 @@
-$maxFieldWidth = 500px
-$errorColor = #c12f2e
-$lightGray = #eee
+@import 'variables'
 
 abbr[title="required"]
   color $errorColor
+
+.fr_loading
+  color #999
+  font-size 125%
+  padding 20px 0
+  text-align center
 
 .fr_error
   color $errorColor
@@ -28,6 +32,8 @@ abbr[title="required"]
   clear: both;
 
 .fr_form
+  margin 0
+
   label
     display block
 

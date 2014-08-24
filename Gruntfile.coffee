@@ -89,7 +89,10 @@ module.exports = (grunt) ->
     stylus:
       all:
         files:
-          '<%= distFolder %>/formrenderer.css': '<%= srcFolder %>/styles/base.styl'
+          '<%= distFolder %>/formrenderer.css': [
+            '<%= srcFolder %>/styles/base.styl'
+            '<%= srcFolder %>/styles/pagination.styl'
+          ]
 
     cssmin:
       dist:

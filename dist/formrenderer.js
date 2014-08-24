@@ -1423,6 +1423,13 @@
       'click .fr_map_cover': 'enable',
       'click [data-js-clear]': 'disable'
     },
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('shown', function() {
+        var _ref;
+        return (_ref = this.map) != null ? _ref._onResize() : void 0;
+      });
+    },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.fr_map_cover');

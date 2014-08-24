@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>formrenderer-base</title>
+  <link rel="stylesheet" href="css/cardinal.css" />
   <link rel="stylesheet" href="../vendor/css/vendor.css" />
   <link rel="stylesheet" href="../dist/formrenderer.css" />
   <style>
@@ -11,6 +12,10 @@
 
   body {
     background-color: #eee;
+  }
+
+  form {
+    margin: 0;
   }
 
   #container {
@@ -25,19 +30,39 @@
 </head>
 <body>
   <div id='container'>
+    <button class='button button-small' data-form='screendoor'>Screendoor</button>
+    <button class='button button-small' data-form='kitchen_sink'>Kitchen Sink</button>
+
+    <hr />
+    <div class='fr_loading choose'>Choose a form above!</div>
     <form data-formrenderer></form>
+
   </div>
 
   <script src="../vendor/js/vendor.js"></script>
   <script src="js/purl.js"></script>
   <script src="../dist/formrenderer.js"></script>
+  <script src="../test/support/fixtures.js"></script>
 
   <script>
     $(function(){
-      new FormRenderer({
-        "project_id": 2,
-        "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
-      });
+
+      $('[data-form]').on('click', function(){
+        $('.choose').hide()
+        var id = $(this).data('form');
+
+        if (id == 'screendoor') {
+          new FormRenderer({
+            "project_id": 2,
+            "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
+          });
+        } else if (id == 'kitchen_sink') {
+          new FormRenderer(_.extend(Fixtures.FormRendererOptions.KITCHEN_SINK(), {
+            "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
+          }))
+        }
+      })
+
     });
   </script>
 

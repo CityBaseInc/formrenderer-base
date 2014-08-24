@@ -1831,10 +1831,6 @@ window.JST["fields/email"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       class="size_'));
-    
-      _print(this.model.get('field_options.size'));
-    
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
     
     }).call(this);
@@ -1981,10 +1977,6 @@ window.JST["fields/number"] = function(__obj) {
       _print(_safe('<input type="text"\n       id="'));
     
       _print(this.getDomId());
-    
-      _print(_safe('"\n       class="size_'));
-    
-      _print(this.model.get('field_options.size'));
     
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n\n'));
     
@@ -2279,7 +2271,7 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe('</p>\n  '));
       }
     
-      _print(_safe('\n</div>\n'));
+      _print(_safe('\n</div>\n\n<hr />\n'));
     
     }).call(this);
     
@@ -2530,10 +2522,6 @@ window.JST["fields/website"] = function(__obj) {
       _print(_safe('<input type="text"\n       id="'));
     
       _print(this.getDomId());
-    
-      _print(_safe('"\n       class="size_'));
-    
-      _print(this.model.get('field_options.size'));
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
     

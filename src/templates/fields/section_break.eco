@@ -4,3 +4,5 @@
     <p><%- _.sanitize(_.simpleFormat(@model.get('field_options.description'), false)) %></p>
   <% end %>
 </div>
+
+<hr />

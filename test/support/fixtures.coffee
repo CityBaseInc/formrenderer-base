@@ -130,7 +130,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 38
     form_id: 5
     label: "THE SECTION!"
-    field_options: {}
     required: false
     blind: false
     admin_only: false
@@ -156,7 +155,8 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 101
     form_id: 5
     label: "New page"
-    field_options: {}
+    field_options:
+      description: "hey hey hey."
     required: false
     blind: false
     admin_only: false

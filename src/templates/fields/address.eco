@@ -30,7 +30,7 @@
 
   <div class='fr_item_half'>
     <select data-rv-value='model.value.country'>
-      <% for k, v of allCountries: %>
+      <% for k, v of ISOCountryNames: %>
         <option value='<%= k %>'><%= v %></option>
       <% end %>
     </select>

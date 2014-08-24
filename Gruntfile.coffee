@@ -57,13 +57,13 @@ module.exports = (grunt) ->
             'bower_components/underscore.string/dist/underscore.string.min.js'
             'bower_components/underscore.simpleformat.js/index.js'
             'bower_components/underscore.toboolean.js/index.js'
-            'bower_components/before_unload.js/index.js'
+            'bower_components/beforeunload.js/index.js'
             'bower_components/sanitize.js/lib/sanitize.js'
             'bower_components/sanitize.js/lib/sanitize/config/basic.js'
             'bower_components/underscore.sanitize.js/index.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'
-            'bower_components/allcountries.js/index.js'
+            'bower_components/iso-country-names/index.js'
           ]
           '<%= vendorFolder %>/css/vendor.css': [
             'bower_components/font-awesome/css/font-awesome.css'

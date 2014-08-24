@@ -1548,8 +1548,8 @@ window.JST["fields/address"] = function(__obj) {
     
       _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
     
-      for (k in allCountries) {
-        v = allCountries[k];
+      for (k in ISOCountryNames) {
+        v = ISOCountryNames[k];
         _print(_safe('\n        <option value=\''));
         _print(k);
         _print(_safe('\'>'));

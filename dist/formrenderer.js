@@ -54,11 +54,11 @@
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
       enableAutosave: true,
-      warnBeforeUnload: true,
+      enableBeforeUnload: true,
       enablePages: true,
       enableErrorAlertBar: true,
       enableBottomStatusBar: true,
-      saveDraftIdToLocalstorage: true,
+      enableLocalstorage: true,
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
@@ -88,7 +88,7 @@
         pages: {}
       };
       this.$el.html(JST['main'](this));
-      if (this.options.saveDraftIdToLocalstorage) {
+      if (this.options.enableLocalstorage) {
         this.initLocalstorage();
       }
       return this.loadFromServer((function(_this) {
@@ -110,7 +110,7 @@
           if (_this.options.enableAutosave) {
             _this.initAutosave();
           }
-          if (_this.options.warnBeforeUnload) {
+          if (_this.options.enableBeforeUnload) {
             _this.initBeforeUnload();
           }
           if (_this.options.validateImmediately) {
@@ -427,6 +427,8 @@
   FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.77, -73.98];
+
+  FormRenderer.BUTTON_CLASS = '';
 
 }).call(this);
 
@@ -1887,7 +1889,11 @@ window.JST["fields/file"] = function(__obj) {
     
       _print(this.model.get('value.filename'));
     
-      _print(_safe('</span>\n  <button data-js-remove>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
+      _print(_safe('</span>\n  <button data-js-remove class=\''));
+    
+      _print(FormRenderer.BUTTON_CLASS);
+    
+      _print(_safe('\'>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
     
       _print(this.getDomId());
     
@@ -2373,7 +2379,7 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n      </tr>\n    </tfoot>\n  '));
       }
     
-      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  <a data-js-add-row><i class=\'icon-plus-sign\'></i> Add another row</a>\n</div>\n'));
+      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  <a data-js-add-row href=\'javascript:void(0)\'><i class=\'icon-plus-sign\'></i> Add another row</a>\n</div>\n'));
     
     }).call(this);
     
@@ -2633,7 +2639,9 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       _print(_safe('\n  </div>\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
     
       if (!this.firstPage()) {
-        _print(_safe('\n      <button data-js-back>\n        Back to page '));
+        _print(_safe('\n      <button data-js-back class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Back to page '));
         _print(this.previousPage());
         _print(_safe('\n      </button>\n    '));
       }
@@ -2641,9 +2649,13 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       _print(_safe('\n\n    '));
     
       if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n      <button disabled>\n        Submitting...\n      </button>\n    '));
+        _print(_safe('\n      <button disabled class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
       } else {
-        _print(_safe('\n      <button data-js-continue>\n        '));
+        _print(_safe('\n      <button data-js-continue class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        '));
         if (this.lastPage()) {
           _print(_safe('Submit'));
         } else {

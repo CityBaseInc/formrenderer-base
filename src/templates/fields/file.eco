@@ -1,6 +1,6 @@
 <div class='existing'>
   <span class='filename'><%= @model.get('value.filename') %></span>
-  <button data-js-remove>Remove</button>
+  <button data-js-remove class='<%= FormRenderer.BUTTON_CLASS %>'>Remove</button>
 </div>
 
 <div class='not_existing'>

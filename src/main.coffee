@@ -1,11 +1,11 @@
 window.FormRenderer = FormRenderer = Backbone.View.extend
   defaults:
     enableAutosave: true
-    warnBeforeUnload: true
+    enableBeforeUnload: true
     enablePages: true
     enableErrorAlertBar: true
     enableBottomStatusBar: true
-    saveDraftIdToLocalstorage: true
+    enableLocalstorage: true
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
@@ -38,7 +38,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     # Loading state
     @$el.html JST['main'](@)
 
-    @initLocalstorage() if @options.saveDraftIdToLocalstorage
+    @initLocalstorage() if @options.enableLocalstorage
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
@@ -48,7 +48,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @constructBottomStatusBar() if @options.enableBottomStatusBar
       @constructErrorAlertBar() if @options.enableErrorAlertBar
       @initAutosave() if @options.enableAutosave
-      @initBeforeUnload() if @options.warnBeforeUnload
+      @initBeforeUnload() if @options.enableBeforeUnload
       @validateAllPages() if @options.validateImmediately
 
   initLocalstorage: ->
@@ -266,3 +266,5 @@ FormRenderer.Validators = {}
 FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"
 FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png'
 FormRenderer.DEFAULT_LAT_LNG = [40.77, -73.98]
+FormRenderer.BUTTON_CLASS = ''
+

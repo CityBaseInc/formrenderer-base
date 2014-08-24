@@ -11,17 +11,17 @@
 
   <div class='fr_bottom_bar_r'>
     <% if !@firstPage(): %>
-      <button data-js-back>
+      <button data-js-back class='<%= FormRenderer.BUTTON_CLASS %>'>
         Back to page <%= @previousPage() %>
       </button>
     <% end %>
 
     <% if @form_renderer.state.get('submitting'): %>
-      <button disabled>
+      <button disabled class='<%= FormRenderer.BUTTON_CLASS %>'>
         Submitting...
       </button>
     <% else: %>
-      <button data-js-continue>
+      <button data-js-continue class='<%= FormRenderer.BUTTON_CLASS %>'>
         <% if @lastPage(): %>Submit<% else: %>Next page<% end %>
       </button>
     <% end %>

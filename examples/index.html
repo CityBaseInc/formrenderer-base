@@ -47,6 +47,8 @@
   <script>
     $(function(){
 
+      FormRenderer.BUTTON_CLASS = 'button button-small button-primary'
+
       $('[data-form]').on('click', function(){
         $('.choose').hide()
         var id = $(this).data('form');

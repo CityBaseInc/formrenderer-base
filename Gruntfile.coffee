@@ -92,6 +92,7 @@ module.exports = (grunt) ->
           '<%= distFolder %>/formrenderer.css': [
             '<%= srcFolder %>/styles/base.styl'
             '<%= srcFolder %>/styles/pagination.styl'
+            '<%= srcFolder %>/styles/error_alert_bar.styl'
           ]
 
     cssmin:

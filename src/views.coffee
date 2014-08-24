@@ -237,6 +237,12 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     'click .fr_map_cover': 'enable'
     'click [data-js-clear]': 'disable'
 
+  initialize: ->
+    FormRenderer.Views.ResponseField::initialize.apply @, arguments
+
+    @on 'shown', ->
+      @map?._onResize()
+
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$cover = @$el.find('.fr_map_cover')

@@ -1420,12 +1420,12 @@
   FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
     field_type: 'map_marker',
     events: {
-      'click .map_marker_field_cover': 'enable',
-      'click .map_marker_field_disable': 'disable'
+      'click .fr_map_cover': 'enable',
+      'click [data-js-clear]': 'disable'
     },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$cover = this.$el.find('.map_marker_field_cover');
+      this.$cover = this.$el.find('.fr_map_cover');
       this.loadLeaflet((function(_this) {
         return function() {
           _this.initMap();
@@ -1456,8 +1456,8 @@
       }
     },
     initMap: function() {
-      this.map = L.map(this.$el.find('.map_marker_field_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
-      this.$el.find('.map_marker_field_map').data('map', this.map);
+      this.map = L.map(this.$el.find('.fr_map_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
+      this.$el.find('.fr_map_map').data('map', this.map);
       L.tileLayer(FormRenderer.MAP_TILE_URL, {
         maxZoom: 18
       }).addTo(this.map);
@@ -1479,9 +1479,13 @@
     },
     disable: function() {
       this.map.removeLayer(this.marker);
-      this.$el.find('.map_marker_field_cover').show();
-      this.model.set('value.lat', '');
-      return this.model.set('value.lng', '');
+      this.$el.find('.fr_map_cover').show();
+      return this.model.set({
+        value: {
+          lat: '',
+          lng: ''
+        }
+      });
     }
   });
 
@@ -1929,7 +1933,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    <a data-js-clear data-rv-show=\'model.value.lat\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    <a data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     

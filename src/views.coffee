@@ -234,12 +234,12 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'
   events:
-    'click .map_marker_field_cover': 'enable'
-    'click .map_marker_field_disable': 'disable'
+    'click .fr_map_cover': 'enable'
+    'click [data-js-clear]': 'disable'
 
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
-    @$cover = @$el.find('.map_marker_field_cover')
+    @$cover = @$el.find('.fr_map_cover')
     @loadLeaflet =>
       @initMap()
       if @model.latLng() then @enable()
@@ -256,10 +256,10 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
       FormRenderer.loadingLeaflet.push(cb)
 
   initMap: ->
-    @map = L.map(@$el.find('.map_marker_field_map')[0])
+    @map = L.map(@$el.find('.fr_map_map')[0])
             .setView(@model.latLng() || @model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13)
 
-    @$el.find('.map_marker_field_map').data('map', @map)
+    @$el.find('.fr_map_map').data('map', @map)
 
     L.tileLayer(FormRenderer.MAP_TILE_URL, maxZoom: 18).addTo(@map)
 
@@ -278,9 +278,8 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
 
   disable: ->
     @map.removeLayer(@marker)
-    @$el.find('.map_marker_field_cover').show()
-    @model.set 'value.lat', ''
-    @model.set 'value.lng', ''
+    @$el.find('.fr_map_cover').show()
+    @model.set value: { lat: '', lng: '' }
 
 for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker')
   FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.ResponseField.extend

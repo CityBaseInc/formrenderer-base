@@ -116,7 +116,7 @@
       form_id: 5,
       label: "Text",
       field_options: {},
-      required: false,
+      required: true,
       blind: false,
       admin_only: false,
       created_at: "2014-08-22T20:50:37.152Z",

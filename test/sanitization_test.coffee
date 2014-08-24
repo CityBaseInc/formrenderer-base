@@ -16,10 +16,10 @@ describe 'sanitization', ->
       ]
 
   it 'removes script tags', ->
-    expect($('.form_renderer_response_field script').length).to.equal(0)
+    expect($('.fr_response_field script').length).to.equal(0)
 
   it 'preserves anchor tags', ->
-    expect($('.form_renderer_response_field a[href*=google]').attr('href')).to.equal('http://www.google.com')
+    expect($('.fr_response_field a[href*=google]').attr('href')).to.equal('http://www.google.com')
 
   it 'simple formats', ->
-    expect($('.form_renderer_response_field br').length).to.equal(2)
+    expect($('.fr_response_field br').length).to.equal(2)

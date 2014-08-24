@@ -3118,7 +3118,7 @@ window.JST["partials/pagination"] = function(__obj) {
             }
             _print(_safe('\'><a data-activate-page="'));
             _print(i);
-            _print(_safe('">'));
+            _print(_safe('" href=\'javascript:void(0)\'>'));
             _print(i);
             _print(_safe('</a></li>\n      '));
           }

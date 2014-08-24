@@ -4,7 +4,7 @@
       <% if (i == @form_renderer.state.get('activePage')): %>
         <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><span><%= i %></span></li>
       <% else: %>
-        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><a data-activate-page="<%= i %>"><%= i %></a></li>
+        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><a data-activate-page="<%= i %>" href='javascript:void(0)'><%= i %></a></li>
       <% end %>
     <% end %>
   </ul>

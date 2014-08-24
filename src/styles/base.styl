@@ -1,6 +1,15 @@
 $errorColor = #c12f2e
 $lightGray = #eee
 
+abbr[title="required"]
+  color $errorColor
+
+.fr_error
+  color $errorColor
+
+.fr_error_alert_bar
+  color $errorColor
+
 .fr_clear
   display: block;
   visibility: hidden;
@@ -17,65 +26,16 @@ $lightGray = #eee
 .fr_cf:after
   clear: both;
 
-.fr_pagination
-  list-style none
-  border-bottom 3px solid #efefef
-  margin-top 0
-  margin-bottom 40px
-  padding-left 0
-  display table
-  width 100%
-  height 40px
-
-  li
-    display table-cell
-    text-align center
-
-    a, span
-      cursor pointer
-      position relative
-      display inline-block
-      bottom -20px
-      color #fff
-      width 40px
-      height 40px
-      text-align center
-      line-height 36px
-      border-radius 50%
-      font-size 16px
-      margin-right 20px
-      text-decoration none
-      border 2px solid #e5e5e5
-      text-shadow 0 -1px 0 #999
-
-    span
-      background-color #2aa828
-
-    a
-      background-color #aaa
-
-      &:hover
-        background-color darken(#aaa, 5%)
-
-    &.has_errors
-      span
-        background-color $errorColor
-
-      a
-        background-color lighten($errorColor, 50%)
-
-      a:hover
-        background-color lighten($errorColor, 45%)
-
-    &.active span
-      background-color #2aa828
-
 .fr_form
   label
     display block
 
 .fr_response_field
   margin-bottom 20px
+
+  &.error
+    input, textarea
+      border 1px solid $errorColor
 
 .fr_bottom_bar
   display table
@@ -92,7 +52,6 @@ $lightGray = #eee
 
 .fr_bottom_bar_r
   text-align right
-
 
 .fr_input_grid
   margin: 0;

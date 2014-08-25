@@ -13,6 +13,7 @@
     "test",
     "tests"
   ],
+  "main": "dist/formrenderer.js",
   "dependencies": {
     "jquery": "*",
     "backbone": "~1.1.2",

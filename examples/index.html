@@ -30,8 +30,8 @@
 </head>
 <body>
   <div id='container'>
-    <button class='button button-small' data-form='screendoor'>Screendoor</button>
-    <button class='button button-small' data-form='kitchen_sink'>Kitchen Sink</button>
+    <button class='button' data-form='screendoor'>Screendoor</button>
+    <button class='button' data-form='kitchen_sink'>Kitchen Sink</button>
 
     <hr />
     <div class='fr_loading choose'>Choose a form above!</div>
@@ -47,7 +47,7 @@
   <script>
     $(function(){
 
-      FormRenderer.BUTTON_CLASS = 'button button-small button-primary'
+      FormRenderer.BUTTON_CLASS = 'button button-primary'
 
       $('[data-form]').on('click', function(){
         $('.choose').hide()

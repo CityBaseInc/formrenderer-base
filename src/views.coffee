@@ -116,7 +116,6 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'
   events:
     'click [data-js-add-row]': 'addRow'
-    'keydown textarea': 'handleKeydown'
 
   initialize: ->
     FormRenderer.Views.ResponseField::initialize.apply @, arguments
@@ -136,42 +135,6 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   addRow: ->
     @model.numRows++
     @render()
-
-  # @todo maybe this is trying to be too fancy?
-  handleKeydown: (e) ->
-    return unless e.which.toString() in _.keys(@constructor.KEY_DIRECTIONS)
-
-    $ta = $(e.currentTarget)
-    col = $ta.data('col')
-    row = $ta.data('row')
-
-    switch @constructor.KEY_DIRECTIONS[e.which.toString()]
-      when 'up', 'left'
-        return unless $ta.caret() == 0
-
-      when 'down', 'right'
-        return unless ($ta[0].selectionStart == 0 && $ta[0].selectionEnd > 0) ||
-                      ($ta.caret() == $ta.val().length)
-
-    switch @constructor.KEY_DIRECTIONS[e.which.toString()]
-      when 'up'
-        row -= 1
-      when 'down'
-        row += 1
-      when 'left'
-        col -= 1
-      when 'right'
-        col += 1
-
-    return if (col < 0) || (row < 0)
-    e.preventDefault()
-    $ta.closest('table').find("tbody tr:eq(#{row}) td:eq(#{col}) textarea").focus()
-,
-  KEY_DIRECTIONS:
-    '37': 'left'
-    '38': 'up'
-    '39': 'right'
-    '40': 'down'
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   field_type: 'file'

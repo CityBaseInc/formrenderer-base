@@ -1114,8 +1114,7 @@
 }).call(this);
 
 (function() {
-  var i, _i, _j, _len, _len1, _ref, _ref1,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var i, _i, _j, _len, _len1, _ref, _ref1;
 
   FormRenderer.Views.Pagination = Backbone.View.extend({
     initialize: function(options) {
@@ -1279,8 +1278,7 @@
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
     events: {
-      'click [data-js-add-row]': 'addRow',
-      'keydown textarea': 'handleKeydown'
+      'click [data-js-add-row]': 'addRow'
     },
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -1297,53 +1295,6 @@
     addRow: function() {
       this.model.numRows++;
       return this.render();
-    },
-    handleKeydown: function(e) {
-      var $ta, col, row, _ref;
-      if (_ref = e.which.toString(), __indexOf.call(_.keys(this.constructor.KEY_DIRECTIONS), _ref) < 0) {
-        return;
-      }
-      $ta = $(e.currentTarget);
-      col = $ta.data('col');
-      row = $ta.data('row');
-      switch (this.constructor.KEY_DIRECTIONS[e.which.toString()]) {
-        case 'up':
-        case 'left':
-          if ($ta.caret() !== 0) {
-            return;
-          }
-          break;
-        case 'down':
-        case 'right':
-          if (!(($ta[0].selectionStart === 0 && $ta[0].selectionEnd > 0) || ($ta.caret() === $ta.val().length))) {
-            return;
-          }
-      }
-      switch (this.constructor.KEY_DIRECTIONS[e.which.toString()]) {
-        case 'up':
-          row -= 1;
-          break;
-        case 'down':
-          row += 1;
-          break;
-        case 'left':
-          col -= 1;
-          break;
-        case 'right':
-          col += 1;
-      }
-      if ((col < 0) || (row < 0)) {
-        return;
-      }
-      e.preventDefault();
-      return $ta.closest('table').find("tbody tr:eq(" + row + ") td:eq(" + col + ") textarea").focus();
-    }
-  }, {
-    KEY_DIRECTIONS: {
-      '37': 'left',
-      '38': 'up',
-      '39': 'right',
-      '40': 'down'
     }
   });
 

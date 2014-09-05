@@ -142,6 +142,7 @@
         success: (function(_this) {
           return function(data) {
             var _base, _base1, _ref;
+            _this.options.response.id = data.response_id;
             (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
             (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
             return cb();
@@ -305,6 +306,7 @@
     },
     saveParams: function() {
       return {
+        v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
         edit_in_place: this.options.editInPlace,
@@ -318,11 +320,12 @@
       }
       this.isSaving = true;
       return $.ajax({
-        url: "" + this.options.screendoorBase + "/responses/save",
+        url: "" + this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
         dataType: 'json',
         data: _.extend(this.saveParams(), {
-          raw_responses: this.getValue()
+          raw_responses: this.getValue(),
+          submit: options.submit ? true : void 0
         }),
         complete: (function(_this) {
           return function() {
@@ -379,7 +382,7 @@
       })(this), 'You have unsaved changes. Are you sure you want to leave this page?');
     },
     submit: function(opts) {
-      var afterSubmit, cb;
+      var afterSubmit;
       if (opts == null) {
         opts = {};
       }
@@ -388,25 +391,25 @@
       }
       afterSubmit = opts.afterSubmit || this.options.afterSubmit;
       this.state.set('submitting', true);
-      cb = (function(_this) {
-        return function() {
-          store.remove(_this.draftIdStorageKey());
-          if (typeof afterSubmit === 'function') {
-            return afterSubmit();
-          } else if (typeof afterSubmit === 'string') {
-            return window.location = afterSubmit;
-          } else {
-            return console.log('[FormRenderer] Not sure what to do...');
-          }
-        };
-      })(this);
-      if (this.state.get('hasChanges')) {
-        return this.save({
-          success: cb
-        });
-      } else {
-        return cb.apply(this);
-      }
+      return this.save({
+        submit: true,
+        success: (function(_this) {
+          return function() {
+            var $page;
+            store.remove(_this.draftIdStorageKey());
+            if (typeof afterSubmit === 'function') {
+              return afterSubmit();
+            } else if (typeof afterSubmit === 'string') {
+              return window.location = afterSubmit.replace(':id', _this.options.response.id);
+            } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
+              $page = $("<div class='fr_after_submit_page'>" + afterSubmit.html + "</div>");
+              return _this.$el.replaceWith($page);
+            } else {
+              return console.log('[FormRenderer] Not sure what to do...');
+            }
+          };
+        })(this)
+      });
     }
   });
 
@@ -2149,7 +2152,7 @@ window.JST["fields/price"] = function(__obj) {
       _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n    <label>Dollars</label>\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_cents')) {
-        _print(_safe('\n    <div class=\'fr_item_above\'>.</div>\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>Cents</label>\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>Cents</label>\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));

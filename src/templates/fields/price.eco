@@ -10,7 +10,6 @@
   </div>
 
   <% unless @model.get('field_options.disable_cents'): %>
-    <div class='fr_item_above'>.</div>
     <div class='fr_item_auto'>
       <input type="text"
              data-rv-input='model.value.cents'

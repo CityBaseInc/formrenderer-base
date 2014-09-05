@@ -56,6 +56,7 @@
         if (id == 'screendoor') {
           new FormRenderer({
             "project_id": 2,
+            "afterSubmit": { method: 'page', html: 'You did it!' },
             "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
           });
         } else if (id == 'kitchen_sink') {

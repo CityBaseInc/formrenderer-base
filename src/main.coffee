@@ -69,6 +69,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         response_id: @options.response.id
         v: 0
       success: (data) =>
+        @options.response.id = data.response_id
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
         cb()
@@ -168,6 +169,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   saveParams: ->
     {
+      v: 0
       response_id: @options.response.id
       project_id: @options.project_id
       edit_in_place: @options.editInPlace
@@ -179,10 +181,13 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @isSaving = true
 
     $.ajax
-      url: "#{@options.screendoorBase}/responses/save"
+      url: "#{@options.screendoorBase}/api/form_renderer/save"
       type: 'post'
       dataType: 'json'
-      data: _.extend @saveParams(), { raw_responses: @getValue() }
+      data: _.extend @saveParams(), {
+        raw_responses: @getValue(),
+        submit: if options.submit then true else undefined
+      }
       complete: =>
         @isSaving = false
         options.complete?.apply(@, arguments)
@@ -218,20 +223,18 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     afterSubmit = opts.afterSubmit || @options.afterSubmit
     @state.set('submitting', true)
 
-    cb = =>
+    @save submit: true, success: =>
       store.remove @draftIdStorageKey()
 
       if typeof afterSubmit == 'function'
         afterSubmit()
       else if typeof afterSubmit == 'string'
-        window.location = afterSubmit
+        window.location = afterSubmit.replace(':id', @options.response.id)
+      else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
+        $page = $("<div class='fr_after_submit_page'>#{afterSubmit.html}</div>")
+        @$el.replaceWith($page)
       else
         console.log '[FormRenderer] Not sure what to do...'
-
-    if @state.get('hasChanges')
-      @save success: cb
-    else
-      cb.apply @
 
 FormRenderer.INPUT_FIELD_TYPES = [
   'address'

@@ -11,6 +11,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     validateImmediately: false
     ignoreUser: undefined
     editInPlace: undefined
+    preview: false
     response: {}
     # afterSubmit:
     # response_fields:
@@ -223,7 +224,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     afterSubmit = opts.afterSubmit || @options.afterSubmit
     @state.set('submitting', true)
 
-    @save submit: true, success: =>
+    @save submit: (if @options.preview then false else true), success: =>
       store.remove @draftIdStorageKey()
 
       if typeof afterSubmit == 'function'

@@ -64,6 +64,7 @@
       validateImmediately: false,
       ignoreUser: void 0,
       editInPlace: void 0,
+      preview: false,
       response: {}
     },
     events: {
@@ -392,7 +393,7 @@
       afterSubmit = opts.afterSubmit || this.options.afterSubmit;
       this.state.set('submitting', true);
       return this.save({
-        submit: true,
+        submit: (this.options.preview ? false : true),
         success: (function(_this) {
           return function() {
             var $page;

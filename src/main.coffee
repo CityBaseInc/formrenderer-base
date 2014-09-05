@@ -9,8 +9,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
-    ignoreUser: false
-    editInPlace: false
+    ignoreUser: undefined
+    editInPlace: undefined
     response: {}
     # afterSubmit:
     # response_fields:

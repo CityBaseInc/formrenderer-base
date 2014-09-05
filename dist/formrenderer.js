@@ -62,8 +62,8 @@
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
-      ignoreUser: false,
-      editInPlace: false,
+      ignoreUser: void 0,
+      editInPlace: void 0,
       response: {}
     },
     events: {

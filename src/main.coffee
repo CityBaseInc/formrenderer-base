@@ -11,8 +11,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     validateImmediately: false
     ignoreUser: undefined
     editInPlace: undefined
-    preview: false
     response: {}
+    preview: false
+    skipValidation: undefined
     # afterSubmit:
     # response_fields:
     # response:
@@ -175,6 +176,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       project_id: @options.project_id
       edit_in_place: @options.editInPlace
       ignore_user: @options.ignoreUser
+      skip_validation: @options.skipValidation
       background_submit: true
     }
 
@@ -220,11 +222,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     , 'You have unsaved changes. Are you sure you want to leave this page?'
 
   submit: (opts = {}) ->
-    return unless opts.skipValidation || @validateAllPages()
-    afterSubmit = opts.afterSubmit || @options.afterSubmit
+    return unless opts.skipValidation || @options.skipValidation || @validateAllPages()
     @state.set('submitting', true)
+    return @preview() if @options.preview
+    afterSubmit = opts.afterSubmit || @options.afterSubmit
 
-    @save submit: (if @options.preview then false else true), success: =>
+    @save submit: true, success: =>
       store.remove @draftIdStorageKey()
 
       if typeof afterSubmit == 'function'
@@ -236,6 +239,15 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @$el.replaceWith($page)
       else
         console.log '[FormRenderer] Not sure what to do...'
+
+  preview: ->
+    cb = =>
+      window.location = @options.preview.replace(':id', @options.response.id)
+
+    if @state.get('hasChanges')
+      @save success: cb
+    else
+      cb()
 
 FormRenderer.INPUT_FIELD_TYPES = [
   'address'

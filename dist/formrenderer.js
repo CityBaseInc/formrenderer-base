@@ -64,8 +64,9 @@
       validateImmediately: false,
       ignoreUser: void 0,
       editInPlace: void 0,
+      response: {},
       preview: false,
-      response: {}
+      skipValidation: void 0
     },
     events: {
       'click [data-activate-page]': function(e) {
@@ -312,6 +313,7 @@
         project_id: this.options.project_id,
         edit_in_place: this.options.editInPlace,
         ignore_user: this.options.ignoreUser,
+        skip_validation: this.options.skipValidation,
         background_submit: true
       };
     },
@@ -387,13 +389,16 @@
       if (opts == null) {
         opts = {};
       }
-      if (!(opts.skipValidation || this.validateAllPages())) {
+      if (!(opts.skipValidation || this.options.skipValidation || this.validateAllPages())) {
         return;
       }
-      afterSubmit = opts.afterSubmit || this.options.afterSubmit;
       this.state.set('submitting', true);
+      if (this.options.preview) {
+        return this.preview();
+      }
+      afterSubmit = opts.afterSubmit || this.options.afterSubmit;
       return this.save({
-        submit: (this.options.preview ? false : true),
+        submit: true,
         success: (function(_this) {
           return function() {
             var $page;
@@ -411,6 +416,21 @@
           };
         })(this)
       });
+    },
+    preview: function() {
+      var cb;
+      cb = (function(_this) {
+        return function() {
+          return window.location = _this.options.preview.replace(':id', _this.options.response.id);
+        };
+      })(this);
+      if (this.state.get('hasChanges')) {
+        return this.save({
+          success: cb
+        });
+      } else {
+        return cb();
+      }
     }
   });
 
@@ -2581,17 +2601,21 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_bottom_bar fr_cf\'>\n  <div class=\'fr_bottom_bar_l\'>\n    '));
+      _print(_safe('<div class=\'fr_bottom_bar fr_cf\'>\n  '));
     
-      if (this.form_renderer.state.get('hasServerErrors')) {
-        _print(_safe('\n      Error saving\n    '));
-      } else if (this.form_renderer.state.get('hasChanges')) {
-        _print(_safe('\n      Saving...\n    '));
-      } else {
-        _print(_safe('\n      Saved\n    '));
+      if (this.form_renderer.options.enableAutosave) {
+        _print(_safe('\n    <div class=\'fr_bottom_bar_l\'>\n      '));
+        if (this.form_renderer.state.get('hasServerErrors')) {
+          _print(_safe('\n        Error saving\n      '));
+        } else if (this.form_renderer.state.get('hasChanges')) {
+          _print(_safe('\n        Saving...\n      '));
+        } else {
+          _print(_safe('\n        Saved\n      '));
+        }
+        _print(_safe('\n    </div>\n  '));
       }
     
-      _print(_safe('\n  </div>\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
+      _print(_safe('\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
     
       if (!this.firstPage()) {
         _print(_safe('\n      <button data-js-back class=\''));

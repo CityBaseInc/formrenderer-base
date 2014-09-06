@@ -125,7 +125,9 @@
       var _base;
       (_base = this.options.response).id || (_base.id = store.get(this.draftIdStorageKey()));
       return this.listenTo(this, 'afterSave', function() {
-        return store.set(this.draftIdStorageKey(), this.options.response.id);
+        if (!this.state.get('submitting')) {
+          return store.set(this.draftIdStorageKey(), this.options.response.id);
+        }
       });
     },
     loadFromServer: function(cb) {
@@ -404,7 +406,7 @@
             var $page;
             store.remove(_this.draftIdStorageKey());
             if (typeof afterSubmit === 'function') {
-              return afterSubmit();
+              return afterSubmit.call(_this);
             } else if (typeof afterSubmit === 'string') {
               return window.location = afterSubmit.replace(':id', _this.options.response.id);
             } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
@@ -424,7 +426,7 @@
           return window.location = _this.options.preview.replace(':id', _this.options.response.id);
         };
       })(this);
-      if (this.state.get('hasChanges')) {
+      if (this.state.get('hasChanges') || !this.options.enableAutosave) {
         return this.save({
           success: cb
         });

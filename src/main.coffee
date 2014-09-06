@@ -57,7 +57,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @options.response.id ||= store.get(@draftIdStorageKey())
 
     @listenTo @, 'afterSave', ->
-      store.set @draftIdStorageKey(), @options.response.id
+      unless @state.get('submitting')
+        store.set @draftIdStorageKey(), @options.response.id
 
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
@@ -231,7 +232,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       store.remove @draftIdStorageKey()
 
       if typeof afterSubmit == 'function'
-        afterSubmit()
+        afterSubmit.call @
       else if typeof afterSubmit == 'string'
         window.location = afterSubmit.replace(':id', @options.response.id)
       else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
@@ -244,7 +245,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    if @state.get('hasChanges')
+    if @state.get('hasChanges') || !@options.enableAutosave
       @save success: cb
     else
       cb()

@@ -2637,7 +2637,7 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
         _print(_safe('\n      <button data-js-continue class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        '));
-        if (this.lastPage()) {
+        if (this.lastPage() || !this.form_renderer.options.enablePages) {
           _print(_safe('Submit'));
         } else {
           _print(_safe('Next page'));

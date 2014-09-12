@@ -24,7 +24,7 @@
       </button>
     <% else: %>
       <button data-js-continue class='<%= FormRenderer.BUTTON_CLASS %>'>
-        <% if @lastPage(): %>Submit<% else: %>Next page<% end %>
+        <% if (@lastPage() || !@form_renderer.options.enablePages): %>Submit<% else: %>Next page<% end %>
       </button>
     <% end %>
   </div>

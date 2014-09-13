@@ -245,7 +245,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    if @state.get('hasChanges') || !@options.enableAutosave
+    if @state.get('hasChanges') || !@options.enableAutosave || !@options.response.id
       @save success: cb
     else
       cb()

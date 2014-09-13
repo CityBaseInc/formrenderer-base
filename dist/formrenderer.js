@@ -426,7 +426,7 @@
           return window.location = _this.options.preview.replace(':id', _this.options.response.id);
         };
       })(this);
-      if (this.state.get('hasChanges') || !this.options.enableAutosave) {
+      if (this.state.get('hasChanges') || !this.options.enableAutosave || !this.options.response.id) {
         return this.save({
           success: cb
         });

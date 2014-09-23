@@ -13858,36 +13858,43 @@ if(!Sanitize.Config) {
   Sanitize.Config = {}
 }
 
-Sanitize.Config.BASIC = {
+Sanitize.Config.RELAXED = {
   elements: [
-     'a', 'b', 'blockquote', 'br', 'cite', 'code', 'dd', 'dl', 'dt', 'em',
-     'i', 'li', 'ol', 'p', 'pre', 'q', 'small', 'strike', 'strong', 'sub',
-     'sup', 'u', 'ul'],
+    'a', 'b', 'blockquote', 'br', 'caption', 'cite', 'code', 'col',
+    'colgroup', 'dd', 'dl', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'i', 'img', 'li', 'ol', 'p', 'pre', 'q', 'small', 'strike', 'strong',
+    'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'u',
+    'ul'],
 
-   attributes: {
-     'a'         : ['href'],
-     'blockquote': ['cite'],
-     'q'         : ['cite']
-   },
+  attributes: {
+    'a'         : ['href', 'title'],
+    'blockquote': ['cite'],
+    'col'       : ['span', 'width'],
+    'colgroup'  : ['span', 'width'],
+    'img'       : ['align', 'alt', 'height', 'src', 'title', 'width'],
+    'ol'        : ['start', 'type'],
+    'q'         : ['cite'],
+    'table'     : ['summary', 'width'],
+    'td'        : ['abbr', 'axis', 'colspan', 'rowspan', 'width'],
+    'th'        : ['abbr', 'axis', 'colspan', 'rowspan', 'scope',
+                     'width'],
+    'ul'        : ['type']
+  },
 
-   add_attributes: {
-     'a': {'rel': 'nofollow'}
-   },
-
-   protocols: {
-     'a'         : {'href': ['ftp', 'http', 'https', 'mailto',
-                                 Sanitize.RELATIVE]},
-     'blockquote': {'cite': ['http', 'https', Sanitize.RELATIVE]},
-     'q'         : {'cite': ['http', 'https', Sanitize.RELATIVE]}
-   }
+  protocols: {
+    'a'         : {'href': ['ftp', 'http', 'https', 'mailto',
+                                Sanitize.RELATIVE]},
+    'blockquote': {'cite': ['http', 'https', Sanitize.RELATIVE]},
+    'img'       : {'src' : ['http', 'https', Sanitize.RELATIVE]},
+    'q'         : {'cite': ['http', 'https', Sanitize.RELATIVE]}
+  }
 }
-
 _.mixin({
   sanitize: function(str, config) {
     try {
       var n = document.createElement('div');
       n.innerHTML = str;
-      var s = new Sanitize(config || Sanitize.Config.BASIC);
+      var s = new Sanitize(config || Sanitize.Config.RELAXED);
       var c = s.clean_node(n);
       var o = document.createElement('div');
       o.appendChild(c.cloneNode(true));
@@ -13898,6 +13905,7 @@ _.mixin({
     }
   }
 });
+
 /*jshint expr:true eqnull:true */
 /**
  *

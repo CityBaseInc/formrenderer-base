@@ -22,7 +22,7 @@
     "underscore.simpleformat.js": "0.0.2",
     "underscore.toboolean.js": "0.0.1",
     "ajb-sanitize": "1.0.0",
-    "underscore.sanitize.js": "0.0.2",
+    "underscore.sanitize.js": "0.1.0",
     "backbone-deep-model": "~0.10.4",
     "rivets": "0.5.12",
     "iso-country-names": "0.0.1",

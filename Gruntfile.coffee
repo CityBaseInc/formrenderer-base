@@ -59,7 +59,7 @@ module.exports = (grunt) ->
             'bower_components/underscore.toboolean.js/index.js'
             'bower_components/beforeunload.js/index.js'
             'bower_components/ajb-sanitize/lib/sanitize.js'
-            'bower_components/ajb-sanitize/lib/sanitize/config/basic.js'
+            'bower_components/ajb-sanitize/lib/sanitize/config/relaxed.js'
             'bower_components/underscore.sanitize.js/index.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'

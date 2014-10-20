@@ -1585,7 +1585,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(_.simpleFormat(this.model.get('label'))));
+      _print(_safe(_.sanitize(_.simpleFormat(this.model.get('field_options.description'), false))));
     
       _print(_safe('\n</div>\n'));
     

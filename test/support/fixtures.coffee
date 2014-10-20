@@ -168,8 +168,9 @@ Fixtures.KITCHEN_SINK_FORM = [
   {
     id: 102
     form_id: 5
-    label: "Howdyhowdyhowdy"
-    field_options: {}
+    label: ""
+    field_options:
+      description: "Howdyhowdyhowdy"
     required: false
     blind: false
     admin_only: false

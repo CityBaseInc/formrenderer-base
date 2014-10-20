@@ -13,6 +13,7 @@ EXPECTED_PRESENT_VALUES = '{"35":"foo","36":"bar","37":{"0":"on","1":false},"39"
 REASONABLE_AMOUNT_OF_TIME_TO_LOAD_LEAFLET = 1500
 
 before ->
+  L.Icon.Default.imagePath = 'whatever'
   $('body').html('<div data-formrenderer />')
 
 describe '#getValue', ->

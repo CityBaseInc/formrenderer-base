@@ -64,6 +64,7 @@ module.exports = (grunt) ->
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
+            'bower_components/leaflet/dist/leaflet.js'
           ]
           '<%= vendorFolder %>/css/vendor.css': [
             'bower_components/font-awesome/css/font-awesome.css'

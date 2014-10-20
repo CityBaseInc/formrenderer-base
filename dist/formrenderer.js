@@ -452,7 +452,7 @@
 
   FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png';
 
-  FormRenderer.DEFAULT_LAT_LNG = [40.7700000, -73.9800000];
+  FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
 
   FormRenderer.BUTTON_CLASS = '';
 

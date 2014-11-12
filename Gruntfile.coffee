@@ -4,7 +4,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-concat')
   grunt.loadNpmTasks('grunt-contrib-cssmin')
   grunt.loadNpmTasks('grunt-eco')
-  grunt.loadNpmTasks('grunt-contrib-stylus')
+  grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
@@ -87,14 +87,10 @@ module.exports = (grunt) ->
           filter: 'isFile'
         ]
 
-    stylus:
+    sass:
       all:
         files:
-          '<%= distFolder %>/formrenderer.css': [
-            '<%= srcFolder %>/styles/base.styl'
-            '<%= srcFolder %>/styles/pagination.styl'
-            '<%= srcFolder %>/styles/error_alert_bar.styl'
-          ]
+          '<%= distFolder %>/formrenderer.css': '<%= srcFolder %>/styles/base.scss'
 
     cssmin:
       dist:
@@ -133,6 +129,6 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'copy:all', 'stylus:all', 'clean:compiled']
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'copy:all', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'test', ['karma:main']

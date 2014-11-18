@@ -104,6 +104,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
     @$el.html JST['partials/response_field'](@)
     rivets.bind @$el, { model: @model }
+    @form_renderer.trigger("afterFieldRender afterFieldRender:#{@field_type}", @$el)
     @
 
 FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend

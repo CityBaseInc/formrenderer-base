@@ -1286,6 +1286,7 @@
       rivets.bind(this.$el, {
         model: this.model
       });
+      this.form_renderer.trigger("afterFieldRender afterFieldRender:" + this.field_type, this.$el);
       return this;
     }
   });

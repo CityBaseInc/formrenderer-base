@@ -83,6 +83,9 @@ abbr[title="required"] {
     width: 50%; }
   .fr_input_grid .fr_item_above {
     margin-top: 2px; }
+  @media screen and (min-width: 640px) {
+    .fr_input_grid .lap_fr_item_half {
+      width: 50%; } }
 
 .fr_response_field_file .existing {
   display: none; }
@@ -170,9 +173,6 @@ abbr[title="required"] {
   display: inline;
   width: auto; }
 
-@media screen and (min-width: 640px) {
-  .lap_fr_item_half {
-    width: 50%; } }
 .fr_error_alert_bar {
   background-color: #c12f2e;
   color: #fff;

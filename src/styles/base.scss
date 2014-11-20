@@ -102,6 +102,11 @@ abbr[title="required"] {
   .fr_item_above {
     margin-top: 2px;
   }
+  @media screen and (min-width: 640px) {
+    .lap_fr_item_half {
+      width: 50%;
+    }
+  }
 }
 
 .fr_response_field_file {
@@ -234,12 +239,6 @@ abbr[title="required"] {
   input[type=text] {
     display: inline;
     width: auto;
-  }
-}
-
-@media screen and (min-width: 640px) {
-  .lap_fr_item_half {
-    width: 50%;
   }
 }
 

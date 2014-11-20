@@ -89,6 +89,8 @@ module.exports = (grunt) ->
 
     sass:
       all:
+        options:
+          sourcemap: 'none'
         files:
           '<%= distFolder %>/formrenderer.css': '<%= srcFolder %>/styles/base.scss'
 

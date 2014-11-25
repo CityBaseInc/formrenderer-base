@@ -1,4 +1,4 @@
-<input type="url"
+<input type="text" inputmode="url"
        id="<%= @getDomId() %>"
        data-rv-input='model.value'
        placeholder='http://' />

@@ -2509,7 +2509,7 @@ window.JST["fields/website"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<input type="text"\n       id="'));
+      _print(_safe('<input type="url"\n       id="'));
     
       _print(this.getDomId());
     

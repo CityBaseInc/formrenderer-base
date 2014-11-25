@@ -1813,7 +1813,7 @@ window.JST["fields/email"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<input type="email"\n       id="'));
+      _print(_safe('<input type="text" inputmode="email"\n       id="'));
     
       _print(this.getDomId());
     
@@ -2509,7 +2509,7 @@ window.JST["fields/website"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<input type="url"\n       id="'));
+      _print(_safe('<input type="text" inputmode="url"\n       id="'));
     
       _print(this.getDomId());
     

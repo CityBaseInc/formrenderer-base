@@ -1813,7 +1813,7 @@ window.JST["fields/email"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<input type="text"\n       id="'));
+      _print(_safe('<input type="email"\n       id="'));
     
       _print(this.getDomId());
     

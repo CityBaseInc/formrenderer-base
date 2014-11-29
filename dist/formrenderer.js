@@ -875,9 +875,12 @@
   FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend({
     field_type: 'address',
     setExistingValue: function(x) {
+      var _ref;
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
-      if (!(x != null ? x.country : void 0)) {
-        return this.set('value.country', 'US');
+      if ((_ref = this.get('field_options.address_format')) !== 'city_state' && _ref !== 'city_state_zip') {
+        if (!(x != null ? x.country : void 0)) {
+          return this.set('value.country', 'US');
+        }
       }
     },
     hasValue: function() {

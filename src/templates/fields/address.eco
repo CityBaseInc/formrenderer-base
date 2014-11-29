@@ -1,39 +1,49 @@
-<div class='fr_input_grid'>
-  <div class='fr_item_full'>
-    <input type="text"
-           id="<%= @getDomId() %>"
-           data-rv-input='model.value.street' />
-    <label>Address</label>
+<% format = @model.get('field_options.address_format') %>
+
+<% unless format in ['city_state', 'city_state_zip', 'country']: %>
+  <div class='fr_input_grid'>
+    <div class='fr_item_full'>
+      <input type="text"
+             id="<%= @getDomId() %>"
+             data-rv-input='model.value.street' />
+      <label>Address</label>
+    </div>
   </div>
-</div>
+<% end %>
+
+<% unless format in ['country']: %>
+  <div class='fr_input_grid'>
+    <div class='fr_item_half'>
+      <input type="text"
+             data-rv-input='model.value.city' />
+      <label>City</label>
+    </div>
+
+    <div class='fr_item_half'>
+      <input type="text"
+             data-rv-input='model.value.state' />
+      <label>State / Province / Region</label>
+    </div>
+  </div>
+<% end %>
 
 <div class='fr_input_grid'>
-  <div class='fr_item_half'>
-    <input type="text"
-           data-rv-input='model.value.city' />
-    <label>City</label>
-  </div>
+  <% unless format in ['city_state', 'country']: %>
+    <div class='fr_item_half'>
+      <input type="text"
+             data-rv-input='model.value.zipcode' />
+      <label>Zipcode</label>
+    </div>
+  <% end %>
 
-  <div class='fr_item_half'>
-    <input type="text"
-           data-rv-input='model.value.state' />
-    <label>State / Province / Region</label>
-  </div>
-</div>
-
-<div class='fr_input_grid'>
-  <div class='fr_item_half'>
-    <input type="text"
-           data-rv-input='model.value.zipcode' />
-    <label>Zipcode</label>
-  </div>
-
-  <div class='fr_item_half'>
-    <select data-rv-value='model.value.country'>
-      <% for k, v of ISOCountryNames: %>
-        <option value='<%= k %>'><%= v %></option>
-      <% end %>
-    </select>
-    <label>Country</label>
-  </div>
+  <% unless format in ['city_state', 'city_state_zip']: %>
+    <div class='fr_item_half'>
+      <select data-rv-value='model.value.country'>
+        <% for k, v of ISOCountryNames: %>
+          <option value='<%= k %>'><%= v %></option>
+        <% end %>
+      </select>
+      <label>Country</label>
+    </div>
+  <% end %>
 </div>

@@ -1517,24 +1517,46 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var k, v;
+      var format, k, v;
     
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_full\'>\n    <input type="text"\n           id="'));
+      format = this.model.get('field_options.address_format');
     
-      _print(this.getDomId());
+      _print(_safe('\n\n'));
     
-      _print(_safe('"\n           data-rv-input=\'model.value.street\' />\n    <label>Address</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.city\' />\n    <label>City</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.state\' />\n    <label>State / Province / Region</label>\n  </div>\n</div>\n\n<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_half\'>\n    <input type="text"\n           data-rv-input=\'model.value.zipcode\' />\n    <label>Zipcode</label>\n  </div>\n\n  <div class=\'fr_item_half\'>\n    <select data-rv-value=\'model.value.country\'>\n      '));
-    
-      for (k in ISOCountryNames) {
-        v = ISOCountryNames[k];
-        _print(_safe('\n        <option value=\''));
-        _print(k);
-        _print(_safe('\'>'));
-        _print(v);
-        _print(_safe('</option>\n      '));
+      if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_full\'>\n      <input type="text"\n             id="'));
+        _print(this.getDomId());
+        _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n      <label>Address</label>\n    </div>\n  </div>\n'));
       }
     
-      _print(_safe('\n    </select>\n    <label>Country</label>\n  </div>\n</div>\n'));
+      _print(_safe('\n\n'));
+    
+      if (format !== 'country') {
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n      <label>City</label>\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.state\' />\n      <label>State / Province / Region</label>\n    </div>\n  </div>\n'));
+      }
+    
+      _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
+    
+      if (format !== 'city_state' && format !== 'country') {
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n      <label>Zipcode</label>\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n\n  '));
+    
+      if (format !== 'city_state' && format !== 'city_state_zip') {
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <select data-rv-value=\'model.value.country\'>\n        '));
+        for (k in ISOCountryNames) {
+          v = ISOCountryNames[k];
+          _print(_safe('\n          <option value=\''));
+          _print(k);
+          _print(_safe('\'>'));
+          _print(v);
+          _print(_safe('</option>\n        '));
+        }
+        _print(_safe('\n      </select>\n      <label>Country</label>\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     

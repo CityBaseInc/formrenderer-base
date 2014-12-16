@@ -1341,8 +1341,8 @@
       return this.$input.on('change', $.proxy(this.fileChanged, this));
     },
     fileChanged: function(e) {
-      var newFilename;
-      newFilename = e.target.files != null ? e.target.files[0].name : e.target.value ? e.target.value.replace(/^.+\\/, '') : void 0;
+      var newFilename, _ref;
+      newFilename = ((_ref = e.target.files) != null ? _ref[0] : void 0) != null ? e.target.files[0].name : e.target.value ? e.target.value.replace(/^.+\\/, '') : 'Error reading filename';
       this.model.set('value.filename', newFilename, {
         silent: true
       });

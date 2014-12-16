@@ -152,10 +152,12 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @$input.on 'change', $.proxy(@fileChanged, @)
 
   fileChanged: (e) ->
-    newFilename = if e.target.files?
+    newFilename = if e.target.files?[0]?
       e.target.files[0].name
     else if e.target.value
       e.target.value.replace(/^.+\\/, '')
+    else
+      'Error reading filename'
 
     @model.set 'value.filename', newFilename, silent: true
     @$el.find('.filename').text newFilename

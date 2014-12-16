@@ -90,7 +90,7 @@
         pages: {}
       };
       this.$el.html(JST['main'](this));
-      if (this.options.enableLocalstorage) {
+      if (this.options.enableLocalstorage && store.enabled) {
         this.initLocalstorage();
       }
       return this.loadFromServer((function(_this) {

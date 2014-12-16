@@ -40,7 +40,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     # Loading state
     @$el.html JST['main'](@)
 
-    @initLocalstorage() if @options.enableLocalstorage
+    @initLocalstorage() if @options.enableLocalstorage && store.enabled
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()

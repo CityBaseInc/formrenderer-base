@@ -990,13 +990,25 @@
         return this.listenTo(this, 'change:value.*', this.calculateColumnTotals);
       }
     },
+    canAddRows: function() {
+      return this.numRows < this.maxRows();
+    },
+    minRows: function() {
+      return parseInt(this.get('field_options.minrows'), 10) || 0;
+    },
+    maxRows: function() {
+      if (this.get('field_options.maxrows')) {
+        return parseInt(this.get('field_options.maxrows'), 10) || Infinity;
+      } else {
+        return Infinity;
+      }
+    },
     setExistingValue: function(x) {
-      var firstColumnLength, minRows, _ref;
+      var firstColumnLength, _ref;
       firstColumnLength = ((_ref = _.find(x, (function() {
         return true;
       }))) != null ? _ref.length : void 0) || 0;
-      minRows = parseInt(this.get('field_options.minrows'), 10) || 0;
-      this.numRows = Math.max(minRows, firstColumnLength, 1);
+      this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
       return this.set('value', _.tap({}, (function(_this) {
         return function(h) {
           var column, i, j, _i, _ref1, _results;
@@ -2381,7 +2393,13 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n      </tr>\n    </tfoot>\n  '));
       }
     
-      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  <a data-js-add-row href=\'javascript:void(0)\'><i class=\'icon-plus-sign\'></i> Add another row</a>\n</div>\n'));
+      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
+    
+      if (this.model.canAddRows()) {
+        _print(_safe('\n    <a data-js-add-row href=\'javascript:void(0)\'><i class=\'icon-plus-sign\'></i> Add another row</a>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     

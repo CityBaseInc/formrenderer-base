@@ -185,11 +185,22 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
     if @get('field_options.column_totals')
       @listenTo @, 'change:value.*', @calculateColumnTotals
 
+  canAddRows: ->
+    @numRows < @maxRows()
+
+  minRows: ->
+    parseInt(@get('field_options.minrows'), 10) || 0
+
+  maxRows: ->
+    if @get('field_options.maxrows')
+      parseInt(@get('field_options.maxrows'), 10) || Infinity
+    else
+      Infinity
+
   setExistingValue: (x) ->
     # Set initial @numRows
     firstColumnLength = _.find(x, (-> true))?.length || 0
-    minRows = parseInt(@get('field_options.minrows'), 10) || 0
-    @numRows = Math.max minRows, firstColumnLength, 1
+    @numRows = Math.max @minRows(), firstColumnLength, 1
 
     @set 'value', _.tap {}, (h) =>
       # Copy preset value *or* existing value to model

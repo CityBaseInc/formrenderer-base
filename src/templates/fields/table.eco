@@ -35,5 +35,7 @@
 </table>
 
 <div class='fr_table_add_row_wrapper'>
-  <a data-js-add-row href='javascript:void(0)'><i class='icon-plus-sign'></i> Add another row</a>
+  <% if @model.canAddRows(): %>
+    <a data-js-add-row href='javascript:void(0)'><i class='icon-plus-sign'></i> Add another row</a>
+  <% end %>
 </div>

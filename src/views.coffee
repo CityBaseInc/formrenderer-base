@@ -112,6 +112,17 @@ FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.exte
     @$el.html JST['partials/non_input_response_field'](@)
     @
 
+FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
+  field_type: 'price'
+  events:
+    'blur [data-rv-input="model.value.cents"]': 'formatCents'
+
+  formatCents: (e) ->
+    $input = $(e.target)
+    cents = $input.val()
+    if cents.match(/^\d$/)
+      $input.val("0#{cents}")
+
 FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'
   events:
@@ -252,7 +263,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @$el.find('.fr_map_cover').show()
     @model.set value: { lat: '', lng: '' }
 
-for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker')
+for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker', 'price')
   FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 

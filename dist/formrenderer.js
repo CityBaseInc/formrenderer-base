@@ -1688,7 +1688,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
         _print(i);
         _print(_safe('\' />\n    '));
         _print(option.label);
@@ -1698,7 +1698,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -2230,7 +2230,7 @@ window.JST["fields/radio"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           id="'));
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           id="'));
         _print(this.getDomId());
         _print(_safe('"\n           name="'));
         _print(this.getDomId());
@@ -2244,11 +2244,11 @@ window.JST["fields/radio"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label>\n    <input type=\'radio\' data-rv-checked=\'model.value.selected\' id="'));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             id="'));
         _print(this.getDomId());
-        _print(_safe('" name="'));
+        _print(_safe('"\n             name="'));
         _print(this.getDomId());
-        _print(_safe('" value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
+        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));

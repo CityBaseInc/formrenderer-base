@@ -6,8 +6,11 @@ describe '#formatCents', ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
 
   it 'formats single-digit cents properly', ->
-    $('.fr_response_field_price input[data-rv-input="model.value.cents"]').val('3').trigger('blur')
-    expect($('.fr_response_field_price input[data-rv-input="model.value.cents"]').val()).to.equal('03')
+    price = @fr.response_fields.find (rf) -> rf.field_type == 'price'
+    $cents = $('.fr_response_field_price input[data-rv-input="model.value.cents"]')
+    $cents.val('3').trigger('blur')
+    expect($cents.val()).to.equal('03')
+    expect(price.get('value.cents')).to.equal('03')
 
 
 describe 'state', ->

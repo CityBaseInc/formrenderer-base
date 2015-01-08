@@ -118,10 +118,9 @@ FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
     'blur [data-rv-input="model.value.cents"]': 'formatCents'
 
   formatCents: (e) ->
-    $input = $(e.target)
-    cents = $input.val()
-    if cents.match(/^\d$/)
-      $input.val("0#{cents}")
+    cents = $(e.target).val()
+    if cents && cents.match(/^\d$/)
+      @model.set('value.cents', "0#{cents}")
 
 FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'

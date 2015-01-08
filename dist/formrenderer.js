@@ -1319,11 +1319,10 @@
       'blur [data-rv-input="model.value.cents"]': 'formatCents'
     },
     formatCents: function(e) {
-      var $input, cents;
-      $input = $(e.target);
-      cents = $input.val();
-      if (cents.match(/^\d$/)) {
-        return $input.val("0" + cents);
+      var cents;
+      cents = $(e.target).val();
+      if (cents && cents.match(/^\d$/)) {
+        return this.model.set('value.cents', "0" + cents);
       }
     }
   });

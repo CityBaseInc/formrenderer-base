@@ -1313,6 +1313,21 @@
     }
   });
 
+  FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
+    field_type: 'price',
+    events: {
+      'blur [data-rv-input="model.value.cents"]': 'formatCents'
+    },
+    formatCents: function(e) {
+      var $input, cents;
+      $input = $(e.target);
+      cents = $input.val();
+      if (cents.match(/^\d$/)) {
+        return $input.val("0" + cents);
+      }
+    }
+  });
+
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
     events: {
@@ -1490,7 +1505,7 @@
     }
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker');
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker', 'price');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.ResponseField.extend({

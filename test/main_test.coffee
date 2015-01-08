@@ -1,6 +1,15 @@
 before ->
   $('body').html('<div data-formrenderer />')
 
+describe '#formatCents', ->
+  before ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+
+  it 'formats single-digit cents properly', ->
+    $('.fr_response_field_price input[data-rv-input="model.value.cents"]').val('3').trigger('blur')
+    expect($('.fr_response_field_price input[data-rv-input="model.value.cents"]').val()).to.equal('03')
+
+
 describe 'state', ->
   before ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()

@@ -1,5 +1,5 @@
 <% for option, i in @model.getOptions(): %>
-  <label class='fr_option'>
+  <label class='fr_option control'>
     <input type='radio'
            data-rv-checked='model.value.selected'
            id="<%= @getDomId() %>"
@@ -11,8 +11,12 @@
 
 <% if @model.get('field_options.include_other_option'): %>
   <div class='fr_option fr_other_option'>
-    <label>
-    <input type='radio' data-rv-checked='model.value.selected' id="<%= @getDomId() %>" name="<%= @getDomId() %>" value="Other" />
+    <label class='control'>
+      <input type='radio'
+             data-rv-checked='model.value.selected'
+             id="<%= @getDomId() %>"
+             name="<%= @getDomId() %>"
+             value="Other" />
       Other
     </label>
 

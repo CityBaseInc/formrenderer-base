@@ -1567,13 +1567,13 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n      <label>Zipcode</label>\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n      <label>ZIP Code</label>\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <select data-rv-value=\'model.value.country\'>\n        '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
         for (k in ISOCountryNames) {
           v = ISOCountryNames[k];
           _print(_safe('\n          <option value=\''));
@@ -2521,7 +2521,7 @@ window.JST["fields/time"] = function(__obj) {
         _print(_safe('\n    <div class=\'fr_item_above\'>:</div>\n\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>SS</label>\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <div class=\'fr_item_auto\'>\n    <select data-rv-value=\'model.value.am_pm\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
+      _print(_safe('\n\n  <div class=\'fr_item_auto\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
     
     }).call(this);
     

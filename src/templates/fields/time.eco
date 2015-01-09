@@ -31,7 +31,7 @@
   <% end %>
 
   <div class='fr_item_auto'>
-    <select data-rv-value='model.value.am_pm'>
+    <select data-rv-value='model.value.am_pm' data-width='auto'>
       <option value='AM'>AM</option>
       <option value='PM'>PM</option>
     </select>

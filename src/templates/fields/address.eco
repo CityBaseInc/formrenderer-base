@@ -32,13 +32,13 @@
     <div class='fr_item_half'>
       <input type="text"
              data-rv-input='model.value.zipcode' />
-      <label>Zipcode</label>
+      <label>ZIP Code</label>
     </div>
   <% end %>
 
   <% unless format in ['city_state', 'city_state_zip']: %>
     <div class='fr_item_half'>
-      <select data-rv-value='model.value.country'>
+      <select data-rv-value='model.value.country' data-width='auto'>
         <% for k, v of ISOCountryNames: %>
           <option value='<%= k %>'><%= v %></option>
         <% end %>

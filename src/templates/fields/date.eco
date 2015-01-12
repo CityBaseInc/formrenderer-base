@@ -1,30 +1,30 @@
 <div class='fr_input_grid'>
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">MM</label>
     <input type="text"
            id="<%= @getDomId() %>"
            data-rv-input='model.value.month'
            maxlength='2'
            size='2' />
-    <label>MM</label>
   </div>
 
-  <div class='fr_item_above'>/</div>
+  <div class='fr_item_spacer'>/</div>
 
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">DD</label>
     <input type="text"
            data-rv-input='model.value.day'
            maxlength='2'
            size='2' />
-    <label>DD</label>
   </div>
 
-  <div class='fr_item_above'>/</div>
+  <div class='fr_item_spacer'>/</div>
 
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">YYYY</label>
     <input type="text"
            data-rv-input='model.value.year'
            maxlength='4'
            size='4' />
-    <label>YYYY</label>
   </div>
 </div>

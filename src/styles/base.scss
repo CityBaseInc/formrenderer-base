@@ -79,7 +79,6 @@ abbr[title="required"] {
 .fr_input_grid {
   margin: 0;
   margin-left: -10px; /* 1 */
-  padding: 0;
   list-style: none; /* 2 */
   font-size: 0; /* 3 */
   width: 100%;
@@ -99,8 +98,13 @@ abbr[title="required"] {
   .fr_item_half {
     width: 50%;
   }
-  .fr_item_above {
-    margin-top: 2px;
+  .fr_item_spacer {
+    margin-top: 1.5rem;
+    line-height: 2.626rem;
+  }
+  .fr_sub_label {
+    line-height: 1.5rem;
+    color: #888;
   }
   @media screen and (min-width: 640px) {
     .lap_fr_item_half {

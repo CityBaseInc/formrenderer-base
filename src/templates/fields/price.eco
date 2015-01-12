@@ -1,21 +1,22 @@
 <div class='fr_input_grid'>
-  <div class='fr_item_above'>$</div>
+  <div class='fr_item_spacer'>$</div>
 
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">Dollars</label>
     <input type="text"
            id="<%= @getDomId() %>"
            data-rv-input='model.value.dollars'
            size='6' />
-    <label>Dollars</label>
   </div>
 
   <% unless @model.get('field_options.disable_cents'): %>
+    <div class='fr_item_spacer'>.</div>
     <div class='fr_item_auto'>
+      <label class="fr_sub_label">Cents</label>
       <input type="text"
              data-rv-input='model.value.cents'
              maxlength='2'
              size='2' />
-      <label>Cents</label>
     </div>
   <% end %>
 </div>

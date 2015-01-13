@@ -133,4 +133,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'copy:all', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
+  grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

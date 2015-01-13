@@ -2410,7 +2410,7 @@ window.JST["fields/table"] = function(__obj) {
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    <a data-js-add-row href=\'javascript:void(0)\'><i class=\'icon-plus-sign\'></i> Add another row</a>\n  '));
+        _print(_safe('\n    <a data-js-add-row href=\'javascript:void(0)\'><i class=\'fa fa-plus-circle\'></i> Add another row</a>\n  '));
       }
     
       _print(_safe('\n</div>\n'));

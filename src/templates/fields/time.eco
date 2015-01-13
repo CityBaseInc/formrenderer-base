@@ -1,36 +1,36 @@
 <div class='fr_input_grid'>
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">HH</label>
     <input type="text"
            id="<%= @getDomId() %>"
            data-rv-input='model.value.hours'
            maxlength='2'
            size='2' />
-    <label>HH</label>
   </div>
 
-  <div class='fr_item_above'>:</div>
+  <div class='fr_item_spacer'>:</div>
 
   <div class='fr_item_auto'>
+    <label class="fr_sub_label">MM</label>
     <input type="text"
            data-rv-input='model.value.minutes'
            maxlength='2'
            size='2' />
-    <label>MM</label>
   </div>
 
   <% unless @model.get('field_options.disable_seconds'): %>
-    <div class='fr_item_above'>:</div>
+    <div class='fr_item_spacer'>:</div>
 
     <div class='fr_item_auto'>
+      <label class="fr_sub_label">SS</label>
       <input type="text"
              data-rv-input='model.value.seconds'
              maxlength='2'
              size='2' />
-      <label>SS</label>
     </div>
   <% end %>
 
-  <div class='fr_item_auto'>
+  <div class='fr_item_spacer'>
     <select data-rv-value='model.value.am_pm' data-width='auto'>
       <option value='AM'>AM</option>
       <option value='PM'>PM</option>

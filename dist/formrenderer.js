@@ -1553,27 +1553,27 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_full\'>\n      <input type="text"\n             id="'));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_full\'>\n      <label class="fr_sub_label">Address</label>\n      <input type="text"\n             id="'));
         _print(this.getDomId());
-        _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n      <label>Address</label>\n    </div>\n  </div>\n'));
+        _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
     
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n      <label>City</label>\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.state\' />\n      <label>State / Province / Region</label>\n    </div>\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">State / Province / Region</label>\n      <input type="text"\n             data-rv-input=\'model.value.state\' />\n    </div>\n  </div>\n'));
       }
     
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n      <label>ZIP Code</label>\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">ZIP Code</label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
         for (k in ISOCountryNames) {
           v = ISOCountryNames[k];
           _print(_safe('\n          <option value=\''));
@@ -1582,7 +1582,7 @@ window.JST["fields/address"] = function(__obj) {
           _print(v);
           _print(_safe('</option>\n        '));
         }
-        _print(_safe('\n      </select>\n      <label>Country</label>\n    </div>\n  '));
+        _print(_safe('\n      </select>\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -1746,11 +1746,11 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>MM</label>\n  </div>\n\n  <div class=\'fr_item_above\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>DD</label>\n  </div>\n\n  <div class=\'fr_item_above\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n    <label>YYYY</label>\n  </div>\n</div>\n'));
+      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">YYYY</label>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -2170,14 +2170,14 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_above\'>$</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_spacer\'>$</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">Dollars</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n    <label>Dollars</label>\n  </div>\n\n  '));
+      _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_cents')) {
-        _print(_safe('\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>Cents</label>\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_spacer\'>.</div>\n    <div class=\'fr_item_auto\'>\n      <label class="fr_sub_label">Cents</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -2511,17 +2511,17 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>HH</label>\n  </div>\n\n  <div class=\'fr_item_above\'>:</div>\n\n  <div class=\'fr_item_auto\'>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n    <label>MM</label>\n  </div>\n\n  '));
+      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>:</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_seconds')) {
-        _print(_safe('\n    <div class=\'fr_item_above\'>:</div>\n\n    <div class=\'fr_item_auto\'>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n      <label>SS</label>\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_spacer\'>:</div>\n\n    <div class=\'fr_item_auto\'>\n      <label class="fr_sub_label">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <div class=\'fr_item_auto\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
+      _print(_safe('\n\n  <div class=\'fr_item_spacer\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
     
     }).call(this);
     

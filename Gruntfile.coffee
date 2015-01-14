@@ -14,7 +14,6 @@ module.exports = (grunt) ->
   grunt.initConfig
 
     pkg: '<json:package.json>'
-    configFolder: 'config'
     srcFolder: 'src'
     compiledFolder: 'compiled' # Temporary holding area.
     distFolder: 'dist'
@@ -32,7 +31,7 @@ module.exports = (grunt) ->
       all:
         files:
           '<%= compiledFolder %>/scripts.js': [
-            '<%= configFolder %>/rivets.coffee'
+            '<%= srcFolder %>/rivets_config.coffee'
             '<%= srcFolder %>/main.coffee'
             '<%= srcFolder %>/validators/base_validator.coffee'
             '<%= srcFolder %>/validators/*.coffee'

@@ -10,10 +10,7 @@ EXPECTED_BLANK_VALUES = '{"37":{"0":false,"1":false},"44":{"am_pm":"AM"},"46":""
 
 EXPECTED_PRESENT_VALUES = '{"35":"foo","36":"bar","37":{"0":"on","1":false},"39":"Choice #2","40":"Choice #2","41":{"dollars":"12","cents":"99"},"42":"123","43":{"month":"12","day":"30","year":"2014"},"44":{"am_pm":"PM","hours":"6","minutes":"01","seconds":"30"},"45":"http://www.google.com","46":"","47":"foo@bar.com","48":{"country":"GB","street":"123 main st"},"49":{"0":["hey",""],"1":["","nay"]},"50":{"lat":"40.7700118","lng":"-73.9800453"}}'
 
-REASONABLE_AMOUNT_OF_TIME_TO_LOAD_LEAFLET = 1500
-
 before ->
-  L.Icon.Default.imagePath = 'whatever'
   $('body').html('<div data-formrenderer />')
 
 describe '#getValue', ->
@@ -53,8 +50,6 @@ describe '#getValue', ->
 
     # @todo file, mapmarker
 
-    setTimeout =>
-      $('.fr_response_field_map_marker .fr_map_cover').click()
-      expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_PRESENT_VALUES)
-      done()
-    , REASONABLE_AMOUNT_OF_TIME_TO_LOAD_LEAFLET
+    $('.fr_response_field_map_marker .fr_map_cover').click()
+    expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_PRESENT_VALUES)
+    done()

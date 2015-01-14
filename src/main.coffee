@@ -280,7 +280,20 @@ FormRenderer.Views = {}
 FormRenderer.Models = {}
 FormRenderer.Validators = {}
 
-FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"
-FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png'
-FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
 FormRenderer.BUTTON_CLASS = ''
+FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
+FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
+
+FormRenderer.loadLeaflet = (cb) ->
+  if L?.GeoJSON?
+    cb()
+  else if !FormRenderer.loadingLeaflet
+    FormRenderer.loadingLeaflet = [cb]
+    $.getScript FormRenderer.MAPBOX_URL, ->
+      x() for x in FormRenderer.loadingLeaflet
+  else
+    FormRenderer.loadingLeaflet.push(cb)
+
+FormRenderer.initMap = (el) ->
+  L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg'
+  L.mapbox.map(el, 'adamjacobbecker.ja7plkah')

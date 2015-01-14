@@ -17,6 +17,8 @@ module.exports = (config) ->
 
         'test/support/*.coffee'
         'test/**/*_test.coffee'
+
+        'bower_components/mapbox.js/mapbox.js'
       ]
 
     # web server port

@@ -448,13 +448,36 @@
 
   FormRenderer.Validators = {};
 
-  FormRenderer.LEAFLET_JS_URL = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js";
-
-  FormRenderer.MAP_TILE_URL = 'https://{s}.tiles.mapbox.com/v3/adamjacobbecker.ja7plkah/{z}/{x}/{y}.png';
+  FormRenderer.BUTTON_CLASS = '';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
 
-  FormRenderer.BUTTON_CLASS = '';
+  FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
+
+  FormRenderer.loadLeaflet = function(cb) {
+    if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
+      return cb();
+    } else if (!FormRenderer.loadingLeaflet) {
+      FormRenderer.loadingLeaflet = [cb];
+      return $.getScript(FormRenderer.MAPBOX_URL, function() {
+        var x, _i, _len, _ref, _results;
+        _ref = FormRenderer.loadingLeaflet;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          x = _ref[_i];
+          _results.push(x());
+        }
+        return _results;
+      });
+    } else {
+      return FormRenderer.loadingLeaflet.push(cb);
+    }
+  };
+
+  FormRenderer.initMap = function(el) {
+    L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
+    return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
+  };
 
 }).call(this);
 
@@ -1441,7 +1464,7 @@
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.fr_map_cover');
-      this.loadLeaflet((function(_this) {
+      FormRenderer.loadLeaflet((function(_this) {
         return function() {
           _this.initMap();
           if (_this.model.latLng()) {
@@ -1451,31 +1474,10 @@
       })(this));
       return this;
     },
-    loadLeaflet: function(cb) {
-      if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
-        return cb();
-      } else if (!FormRenderer.loadingLeaflet) {
-        FormRenderer.loadingLeaflet = [cb];
-        return $.getScript(FormRenderer.LEAFLET_JS_URL, function() {
-          var x, _i, _len, _ref, _results;
-          _ref = FormRenderer.loadingLeaflet;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            x = _ref[_i];
-            _results.push(x());
-          }
-          return _results;
-        });
-      } else {
-        return FormRenderer.loadingLeaflet.push(cb);
-      }
-    },
     initMap: function() {
-      this.map = L.map(this.$el.find('.fr_map_map')[0]).setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
+      this.map = FormRenderer.initMap(this.$el.find('.fr_map_map')[0]);
       this.$el.find('.fr_map_map').data('map', this.map);
-      L.tileLayer(FormRenderer.MAP_TILE_URL, {
-        maxZoom: 18
-      }).addTo(this.map);
+      this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
       this.marker = L.marker([0, 0]);
       return this.map.on('move', (function(_this) {
         return function() {

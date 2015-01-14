@@ -10,7 +10,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
   grunt.loadNpmTasks('grunt-karma')
-  grunt.loadNpmTasks('grunt-contrib-copy')
 
   grunt.initConfig
 
@@ -64,21 +63,7 @@ module.exports = (grunt) ->
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
-            'bower_components/leaflet/dist/leaflet.js'
           ]
-          '<%= vendorFolder %>/css/vendor.css': [
-            'bower_components/leaflet/dist/leaflet.css'
-          ]
-
-    copy:
-      all:
-        files: [
-          expand: true
-          flatten: true
-          src: ['bower_components/leaflet/dist/images/*']
-          dest: '<%= vendorFolder %>/images/'
-          filter: 'isFile'
-        ]
 
     sass:
       all:
@@ -124,7 +109,7 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'copy:all', 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

@@ -98,7 +98,7 @@ module.exports = (grunt) ->
     watch:
       all:
         files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}']
-        tasks: 'default'
+        tasks: 'all'
 
     # # To test, run `grunt --no-write -v release`
     release:

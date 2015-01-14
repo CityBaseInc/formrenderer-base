@@ -13,7 +13,10 @@
     "test",
     "tests"
   ],
-  "main": "dist/formrenderer.js",
+  "main": [
+    "dist/formrenderer.css",
+    "dist/formrenderer.js"
+  ],
   "dependencies": {
     "backbone": "~1.1.2",
     "underscore": "~1.6.0",

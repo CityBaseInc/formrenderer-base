@@ -7,6 +7,9 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
+        'bower_components/jquery/dist/jquery.js'
+        'bower_components/mapbox.js/mapbox.js'
+
         'vendor/js/vendor.js'
         'dist/formrenderer.js'
 
@@ -17,8 +20,6 @@ module.exports = (config) ->
 
         'test/support/*.coffee'
         'test/**/*_test.coffee'
-
-        'bower_components/mapbox.js/mapbox.js'
       ]
 
     # web server port

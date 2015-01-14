@@ -15,7 +15,6 @@
   ],
   "main": "dist/formrenderer.js",
   "dependencies": {
-    "jquery": "*",
     "backbone": "~1.1.2",
     "underscore": "~1.6.0",
     "underscore.string": "~2.3.3",
@@ -31,6 +30,7 @@
     "jquery-form": "~3.46.0"
   },
   "devDependencies": {
-    "mapbox.js": "~2.1.4"
+    "mapbox.js": "~2.1.4",
+    "jquery": "~1.11.2"
   }
 }

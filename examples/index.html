@@ -30,7 +30,7 @@
 </head>
 <body>
   <div id='container'>
-    <button class='button' data-form='screendoor'>Screendoor</button>
+    <button class='button' data-form='short'>Short</button>
     <button class='button' data-form='kitchen_sink'>Kitchen Sink</button>
 
     <hr />
@@ -53,22 +53,21 @@
         this.state.set({
           hasChanges: false
         });
+        if (options.success) {
+          options.success();
+        }
       };
 
       $('[data-form]').on('click', function(){
         $('.choose').hide()
         var id = $(this).data('form');
 
-        if (id == 'screendoor') {
-          new FormRenderer({
-            "project_id": 2,
-            "afterSubmit": { method: 'page', html: 'You did it!' },
-            "screendoorBase": undefined
-          });
-        } else if (id == 'kitchen_sink') {
-          new FormRenderer(_.extend(Fixtures.FormRendererOptions.KITCHEN_SINK(), {
-            "screendoorBase": undefined
+        if (id == 'short') {
+          new FormRenderer(_.extend(Fixtures.FormRendererOptions.SHORT(), {
+            "afterSubmit": { method: 'page', html: 'You did it!' }
           }))
+        } else if (id == 'kitchen_sink') {
+          new FormRenderer(Fixtures.FormRendererOptions.KITCHEN_SINK())
         }
       })
 

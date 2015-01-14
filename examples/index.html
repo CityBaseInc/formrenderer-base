@@ -48,6 +48,13 @@
 
       FormRenderer.BUTTON_CLASS = 'button button-primary'
 
+      FormRenderer.prototype.save = function(options){
+        console.log(this.getValue());
+        this.state.set({
+          hasChanges: false
+        });
+      };
+
       $('[data-form]').on('click', function(){
         $('.choose').hide()
         var id = $(this).data('form');

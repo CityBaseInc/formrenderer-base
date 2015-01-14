@@ -4,6 +4,7 @@
   <title>formrenderer-base</title>
   <link rel="stylesheet" href="css/cardinal.css" />
   <link rel="stylesheet" href="../dist/formrenderer.css" />
+  <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css" />
   <style>
   * {
     box-sizing: border-box;
@@ -38,9 +39,7 @@
 
   </div>
 
-  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script src="../vendor/vendor.js"></script>
-  <script src="js/purl.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
   <script src="../dist/formrenderer.js"></script>
   <script src="../test/support/fixtures.js"></script>
 
@@ -57,11 +56,11 @@
           new FormRenderer({
             "project_id": 2,
             "afterSubmit": { method: 'page', html: 'You did it!' },
-            "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
+            "screendoorBase": undefined
           });
         } else if (id == 'kitchen_sink') {
           new FormRenderer(_.extend(Fixtures.FormRendererOptions.KITCHEN_SINK(), {
-            "screendoorBase": $.url().param('prod') ? undefined : 'http://screendoor.dobt.dev'
+            "screendoorBase": undefined
           }))
         }
       })

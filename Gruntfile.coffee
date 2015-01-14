@@ -46,7 +46,7 @@ module.exports = (grunt) ->
     concat:
       all:
         files:
-          '<%= distFolder %>/formrenderer.js': '<%= compiledFolder %>/*.js'
+          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': '<%= compiledFolder %>/*.js'
           '<%= vendorFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/store.js/store.js'
@@ -63,18 +63,22 @@ module.exports = (grunt) ->
             'bower_components/rivets/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
           ]
+          '<%= distFolder %>/formrenderer.uncompressed.js': [
+            '<%= vendorFolder %>/vendor.js'
+            '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
+          ]
 
     sass:
       all:
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.css': '<%= srcFolder %>/styles/base.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= srcFolder %>/styles/base.scss'
 
     cssmin:
       dist:
         files:
-          '<%= distFolder %>/formrenderer-min.css': '<%= distFolder %>/formrenderer.css'
+          '<%= distFolder %>/formrenderer.css': '<%= distFolder %>/formrenderer.uncompressed.css'
 
     clean:
       compiled:
@@ -83,7 +87,8 @@ module.exports = (grunt) ->
     uglify:
       dist:
         files:
-          '<%= distFolder %>/formrenderer-min.js': '<%= distFolder %>/formrenderer.js'
+          '<%= distFolder %>/formrenderer.standalone.js': '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
+          '<%= distFolder %>/formrenderer.js': '<%= distFolder %>/formrenderer.uncompressed.js'
 
     watch:
       all:

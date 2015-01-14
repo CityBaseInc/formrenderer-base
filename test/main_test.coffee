@@ -1,6 +1,11 @@
 before ->
   $('body').html('<div data-formrenderer />')
 
+describe 'Encapsulation', ->
+  it 'does not share dependencies with the global namespace', ->
+    expect(typeof window.ISOCountryNames).to.equal('undefined')
+    expect(typeof window.FormRenderer).not.to.equal('undefined')
+
 describe '#formatCents', ->
   before ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
@@ -11,7 +16,6 @@ describe '#formatCents', ->
     $cents.val('3').trigger('blur')
     expect($cents.val()).to.equal('03')
     expect(price.get('value.cents')).to.equal('03')
-
 
 describe 'state', ->
   before ->

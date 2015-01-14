@@ -14,7 +14,6 @@ module.exports = (config) ->
         'test/vendor/js/chai-jquery.js'
         'test/vendor/js/sinon-chai.js'
 
-        'vendor/vendor.js'
         'dist/formrenderer.js'
 
         'test/support/*.coffee'

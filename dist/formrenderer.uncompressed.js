@@ -1,4 +1,4 @@
-/*!
+(function(window){/*!
  * jQuery Form Plugin
  * version: 3.46.0-2013.11.21
  * Requires jQuery v1.5 or later
@@ -9756,3 +9756,4 @@ window.JST["partials/response_field"] = function(__obj) {
     return obj;
   })());
 };
+})(window);

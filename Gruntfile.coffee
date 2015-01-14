@@ -63,10 +63,16 @@ module.exports = (grunt) ->
             'bower_components/rivets/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
           ]
+      dist:
+        files:
           '<%= distFolder %>/formrenderer.uncompressed.js': [
             '<%= vendorFolder %>/vendor.js'
             '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
           ]
+        options:
+          # Add lazy encapsulation
+          banner: '(function(window){'
+          footer: '})(window);'
 
     sass:
       all:
@@ -113,7 +119,7 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

@@ -47,7 +47,7 @@ module.exports = (grunt) ->
       all:
         files:
           '<%= distFolder %>/formrenderer.standalone.uncompressed.js': '<%= compiledFolder %>/*.js'
-          '<%= vendorFolder %>/vendor.js': [
+          '<%= compiledFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/store.js/store.js'
             'bower_components/underscore/underscore.js'
@@ -66,7 +66,7 @@ module.exports = (grunt) ->
       dist:
         files:
           '<%= distFolder %>/formrenderer.uncompressed.js': [
-            '<%= vendorFolder %>/vendor.js'
+            '<%= compiledFolder %>/vendor.js'
             '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
           ]
         options:

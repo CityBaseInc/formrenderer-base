@@ -2410,7 +2410,9 @@ window.JST["fields/table"] = function(__obj) {
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    <a data-js-add-row href=\'javascript:void(0)\'><i class=\'fa fa-plus-circle\'></i> Add another row</a>\n  '));
+        _print(_safe('\n    '));
+        _print(_safe(JST["partials/add_row_link"](this)));
+        _print(_safe('\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -2616,6 +2618,51 @@ window.JST["main"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_loading\'>\n  Loading form...\n</div>'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/add_row_link"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<a data-js-add-row href=\'javascript:void(0)\'>+ Add another row</a>\n'));
     
     }).call(this);
     

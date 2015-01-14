@@ -67,7 +67,6 @@ module.exports = (grunt) ->
             'bower_components/leaflet/dist/leaflet.js'
           ]
           '<%= vendorFolder %>/css/vendor.css': [
-            'bower_components/font-awesome/css/font-awesome.css'
             'bower_components/leaflet/dist/leaflet.css'
           ]
 
@@ -78,12 +77,6 @@ module.exports = (grunt) ->
           flatten: true
           src: ['bower_components/leaflet/dist/images/*']
           dest: '<%= vendorFolder %>/images/'
-          filter: 'isFile'
-        ,
-          expand: true
-          flatten: true
-          src: ['bower_components/font-awesome/font/*']
-          dest: '<%= vendorFolder %>/font/'
           filter: 'isFile'
         ]
 
@@ -110,7 +103,7 @@ module.exports = (grunt) ->
 
     watch:
       all:
-        files: ['<%= srcFolder %>/**/*.{coffee,eco,styl}']
+        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}']
         tasks: 'default'
 
     # # To test, run `grunt --no-write -v release`

@@ -10,7 +10,7 @@ module.exports = (config) ->
         'bower_components/jquery/dist/jquery.js'
         'bower_components/mapbox.js/mapbox.js'
 
-        'vendor/js/vendor.js'
+        'vendor/vendor.js'
         'dist/formrenderer.js'
 
         'test/vendor/js/chai.js'

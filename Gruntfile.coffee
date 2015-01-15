@@ -13,6 +13,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-aws')
 
   grunt.initConfig
+    aws: if grunt.file.exists("credentials.json") then grunt.file.readJSON("credentials.json") else {}
     bower: grunt.file.readJSON("bower.json")
     pkg: '<json:package.json>'
     srcFolder: 'src'
@@ -109,8 +110,8 @@ module.exports = (grunt) ->
 
     s3:
       options:
-        accessKeyId: grunt.file.readJSON("credentials.json").accessKeyId
-        secretAccessKey: grunt.file.readJSON("credentials.json").secretAccessKey
+        accessKeyId: "<%= aws.accessKeyId %>"
+        secretAccessKey: "<%= aws.secretAccessKey %>"
         bucket: 'formrenderer-base'
         access: 'public-read'
         gzip: true

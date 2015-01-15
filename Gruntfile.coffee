@@ -13,7 +13,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-aws')
 
   grunt.initConfig
-    bower: '<json:bower.json>'
+    bower: grunt.file.readJSON("bower.json")
     pkg: '<json:package.json>'
     srcFolder: 'src'
     compiledFolder: 'compiled' # Temporary holding area.
@@ -117,7 +117,7 @@ module.exports = (grunt) ->
       build:
         cwd: "dist/"
         src: "**"
-        dest: "<%= bower.version %>/"
+        dest: '<%= bower.version %>/'
 
     karma:
       main:

@@ -53,7 +53,7 @@
         this.state.set({
           hasChanges: false
         });
-        if (options.success) {
+        if (options && options.success) {
           options.success();
         }
       };

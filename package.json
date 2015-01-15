@@ -26,5 +26,8 @@
     "karma": "^0.12.22",
     "karma-coffee-preprocessor": "^0.2.1",
     "grunt-contrib-copy": "^0.5.0"
+  },
+  "dependencies": {
+    "grunt-aws": "^0.4.0"
   }
 }

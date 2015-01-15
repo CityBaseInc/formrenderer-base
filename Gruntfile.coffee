@@ -10,9 +10,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
   grunt.loadNpmTasks('grunt-karma')
+  grunt.loadNpmTasks('grunt-aws')
 
   grunt.initConfig
-
+    bower: '<json:bower.json>'
     pkg: '<json:package.json>'
     srcFolder: 'src'
     compiledFolder: 'compiled' # Temporary holding area.
@@ -100,11 +101,23 @@ module.exports = (grunt) ->
         files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}']
         tasks: 'all'
 
-    # # To test, run `grunt --no-write -v release`
+    # # To test, run `grunt --no-write -v releaseTask`
     release:
       options:
         file: 'bower.json'
         npm: false
+
+    s3:
+      options:
+        accessKeyId: grunt.file.readJSON("credentials.json").accessKeyId
+        secretAccessKey: grunt.file.readJSON("credentials.json").secretAccessKey
+        bucket: 'formrenderer-base'
+        access: 'public-read'
+        gzip: true
+      build:
+        cwd: "dist/"
+        src: "**"
+        dest: "<%= bower.version %>/"
 
     karma:
       main:

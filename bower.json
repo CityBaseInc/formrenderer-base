@@ -13,9 +13,11 @@
     "test",
     "tests"
   ],
-  "main": "dist/formrenderer.js",
+  "main": [
+    "dist/formrenderer.css",
+    "dist/formrenderer.js"
+  ],
   "dependencies": {
-    "jquery": "*",
     "backbone": "~1.1.2",
     "underscore": "~1.6.0",
     "underscore.string": "~2.3.3",
@@ -25,11 +27,9 @@
     "underscore.sanitize.js": "~0.1.0",
     "backbone-deep-model": "~0.10.4",
     "rivets": "0.5.12",
-    "iso-country-names": "~0.0.1",
+    "iso-country-names": "~0.0.2",
     "beforeunload.js": "~0.0.1",
     "store.js": "~1.3.16",
-    "font-awesome": "~4.2.0",
-    "jquery-form": "~3.46.0",
-    "leaflet": "~0.7.3"
+    "jquery-form": "~3.46.0"
   }
 }

@@ -7,13 +7,14 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-        'vendor/js/vendor.js'
-        'dist/formrenderer.js'
-
+        'test/vendor/js/jquery.js'
+        'test/vendor/js/mapbox.js'
         'test/vendor/js/chai.js'
         'test/vendor/js/sinon.js'
         'test/vendor/js/chai-jquery.js'
         'test/vendor/js/sinon-chai.js'
+
+        'dist/formrenderer.js'
 
         'test/support/*.coffee'
         'test/**/*_test.coffee'

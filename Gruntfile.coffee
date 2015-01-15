@@ -10,12 +10,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
   grunt.loadNpmTasks('grunt-karma')
-  grunt.loadNpmTasks('grunt-contrib-copy')
+  grunt.loadNpmTasks('grunt-aws')
 
   grunt.initConfig
-
+    aws: if grunt.file.exists("credentials.json") then grunt.file.readJSON("credentials.json") else {}
+    bower: grunt.file.readJSON("bower.json")
     pkg: '<json:package.json>'
-    configFolder: 'config'
     srcFolder: 'src'
     compiledFolder: 'compiled' # Temporary holding area.
     distFolder: 'dist'
@@ -33,7 +33,7 @@ module.exports = (grunt) ->
       all:
         files:
           '<%= compiledFolder %>/scripts.js': [
-            '<%= configFolder %>/rivets.coffee'
+            '<%= srcFolder %>/rivets_config.coffee'
             '<%= srcFolder %>/main.coffee'
             '<%= srcFolder %>/validators/base_validator.coffee'
             '<%= srcFolder %>/validators/*.coffee'
@@ -47,9 +47,8 @@ module.exports = (grunt) ->
     concat:
       all:
         files:
-          '<%= distFolder %>/formrenderer.js': '<%= compiledFolder %>/*.js'
-          '<%= vendorFolder %>/js/vendor.js': [
-            'bower_components/jquery/dist/jquery.js'
+          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': '<%= compiledFolder %>/*.js'
+          '<%= compiledFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/store.js/store.js'
             'bower_components/underscore/underscore.js'
@@ -64,40 +63,29 @@ module.exports = (grunt) ->
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
-            'bower_components/leaflet/dist/leaflet.js'
           ]
-          '<%= vendorFolder %>/css/vendor.css': [
-            'bower_components/font-awesome/css/font-awesome.css'
-            'bower_components/leaflet/dist/leaflet.css'
+      dist:
+        files:
+          '<%= distFolder %>/formrenderer.uncompressed.js': [
+            '<%= compiledFolder %>/vendor.js'
+            '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
           ]
-
-    copy:
-      all:
-        files: [
-          expand: true
-          flatten: true
-          src: ['bower_components/leaflet/dist/images/*']
-          dest: '<%= vendorFolder %>/images/'
-          filter: 'isFile'
-        ,
-          expand: true
-          flatten: true
-          src: ['bower_components/font-awesome/font/*']
-          dest: '<%= vendorFolder %>/font/'
-          filter: 'isFile'
-        ]
+        options:
+          # Add lazy encapsulation
+          banner: '(function(window){'
+          footer: '})(window);'
 
     sass:
       all:
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.css': '<%= srcFolder %>/styles/base.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= srcFolder %>/styles/base.scss'
 
     cssmin:
       dist:
         files:
-          '<%= distFolder %>/formrenderer-min.css': '<%= distFolder %>/formrenderer.css'
+          '<%= distFolder %>/formrenderer.css': '<%= distFolder %>/formrenderer.uncompressed.css'
 
     clean:
       compiled:
@@ -106,18 +94,31 @@ module.exports = (grunt) ->
     uglify:
       dist:
         files:
-          '<%= distFolder %>/formrenderer-min.js': '<%= distFolder %>/formrenderer.js'
+          '<%= distFolder %>/formrenderer.standalone.js': '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
+          '<%= distFolder %>/formrenderer.js': '<%= distFolder %>/formrenderer.uncompressed.js'
 
     watch:
       all:
-        files: ['<%= srcFolder %>/**/*.{coffee,eco,styl}']
-        tasks: 'default'
+        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}']
+        tasks: 'all'
 
-    # # To test, run `grunt --no-write -v release`
+    # # To test, run `grunt --no-write -v releaseTask`
     release:
       options:
         file: 'bower.json'
         npm: false
+
+    s3:
+      options:
+        accessKeyId: "<%= aws.accessKeyId %>"
+        secretAccessKey: "<%= aws.secretAccessKey %>"
+        bucket: 'formrenderer-base'
+        access: 'public-read'
+        gzip: true
+      build:
+        cwd: "dist/"
+        src: "**"
+        dest: '<%= bower.version %>/'
 
     karma:
       main:
@@ -131,7 +132,7 @@ module.exports = (grunt) ->
           reporters: 'dots'
           autoWatch: true
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'copy:all', 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

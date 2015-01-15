@@ -15,9 +15,11 @@ This documentation will be focused on the former, while the latter should be con
 Include the formrenderer JS and CSS:
 
 ```html
-<script src='formrenderer.js'></script>
-<link href='formrenderer.css' rel='stylesheet' />
+<script src='//d3q1ytufopwvkq.cloudfront.net/X.X.X/formrenderer.js'></script>
+<link href='//d3q1ytufopwvkq.cloudfront.net/X.X.X/formrenderer.css' rel='stylesheet' />
 ```
+
+> Replace `X.X.X` with the current version number, which can be found in a badge at the top of this file.
 
 The distributions in `dist/` contain all of the necessary dependencies **with the exception of jQuery**, which must be loaded before `formrenderer.js`.
 

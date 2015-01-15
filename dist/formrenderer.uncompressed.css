@@ -29,10 +29,8 @@ abbr[title="required"] {
 .fr_cf:after {
   clear: both; }
 
-.fr_form {
-  margin: 0; }
-  .fr_form label {
-    display: block; }
+.fr_response_field label {
+  display: block; }
 
 .fr_response_field {
   margin-bottom: 20px;

@@ -171,7 +171,7 @@
         }
         this.response_fields.add(model);
       }
-      return this.listenTo(this.response_fields, 'change', function() {
+      return this.listenTo(this.response_fields, 'change', function(a, b, c) {
         if (!this.state.get('hasChanges')) {
           return this.state.set('hasChanges', true);
         }
@@ -1458,7 +1458,15 @@
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
         var _ref;
-        return (_ref = this.map) != null ? _ref._onResize() : void 0;
+        this.refreshing = true;
+        if ((_ref = this.map) != null) {
+          _ref._onResize();
+        }
+        return setTimeout((function(_this) {
+          return function() {
+            return _this.refreshing = false;
+          };
+        })(this), 0);
       });
     },
     render: function() {
@@ -1479,20 +1487,26 @@
       this.$el.find('.fr_map_map').data('map', this.map);
       this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
       this.marker = L.marker([0, 0]);
-      return this.map.on('move', (function(_this) {
-        return function() {
-          var center;
-          center = _this.map.getCenter();
-          _this.marker.setLatLng(center);
-          _this.model.set('value.lat', center.lat.toFixed(7));
-          return _this.model.set('value.lng', center.lng.toFixed(7));
-        };
-      })(this));
+      return this.map.on('move', $.proxy(this._onMove, this));
+    },
+    _onMove: function() {
+      var center;
+      if (this.refreshing) {
+        return;
+      }
+      center = this.map.getCenter();
+      this.marker.setLatLng(center);
+      return this.model.set({
+        value: {
+          lat: center.lat.toFixed(7),
+          lng: center.lng.toFixed(7)
+        }
+      });
     },
     enable: function() {
       this.map.addLayer(this.marker);
       this.$cover.hide();
-      return this.map.fire('move');
+      return this._onMove();
     },
     disable: function() {
       this.map.removeLayer(this.marker);

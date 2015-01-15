@@ -216,7 +216,11 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     FormRenderer.Views.ResponseField::initialize.apply @, arguments
 
     @on 'shown', ->
+      @refreshing = true
       @map?._onResize()
+      setTimeout =>
+        @refreshing = false
+      , 0
 
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
@@ -230,19 +234,23 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @map = FormRenderer.initMap(@$el.find('.fr_map_map')[0])
     @$el.find('.fr_map_map').data('map', @map)
     @map.setView(@model.latLng() || @model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13)
-
     @marker = L.marker([0, 0])
+    @map.on 'move', $.proxy(@_onMove, @)
 
-    @map.on 'move', =>
-      center = @map.getCenter()
-      @marker.setLatLng center
-      @model.set 'value.lat', center.lat.toFixed(7)
-      @model.set 'value.lng', center.lng.toFixed(7)
+  _onMove: ->
+    # We're just refreshing the leaflet map, not actually saving anything
+    return if @refreshing
+    center = @map.getCenter()
+    @marker.setLatLng center
+    @model.set
+      value:
+        lat: center.lat.toFixed(7)
+        lng: center.lng.toFixed(7)
 
   enable: ->
     @map.addLayer(@marker)
     @$cover.hide()
-    @map.fire('move')
+    @_onMove()
 
   disable: ->
     @map.removeLayer(@marker)

@@ -6619,7 +6619,7 @@ var ISOCountryNames = {
         }
         this.response_fields.add(model);
       }
-      return this.listenTo(this.response_fields, 'change', function(a, b, c) {
+      return this.listenTo(this.response_fields, 'change', function() {
         if (!this.state.get('hasChanges')) {
           return this.state.set('hasChanges', true);
         }
@@ -7645,7 +7645,7 @@ var ISOCountryNames = {
     render: function() {
       this.$el.html(JST['partials/error_alert_bar'](this));
       if (!this.form_renderer.areAllPagesValid()) {
-        window.scrollTo(0, 0);
+        window.scrollTo(0, this.$el.offset().top - 10);
       }
       return this;
     }

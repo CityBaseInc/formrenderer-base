@@ -15,7 +15,10 @@ FormRenderer.Views.ErrorAlertBar = Backbone.View.extend
 
   render: ->
     @$el.html JST['partials/error_alert_bar'](@)
-    window.scrollTo(0, 0) unless @form_renderer.areAllPagesValid()
+
+    unless @form_renderer.areAllPagesValid()
+      window.scrollTo(0, @$el.offset().top - 10)
+
     @
 
 FormRenderer.Views.BottomStatusBar = Backbone.View.extend

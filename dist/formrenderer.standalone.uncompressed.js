@@ -62,11 +62,10 @@
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
-      ignoreUser: void 0,
-      editInPlace: void 0,
       response: {},
       preview: false,
-      skipValidation: void 0
+      skipValidation: void 0,
+      saveParams: {}
     },
     events: {
       'click [data-activate-page]': function(e) {
@@ -309,15 +308,12 @@
       })(this));
     },
     saveParams: function() {
-      return {
+      return _.extend({
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        edit_in_place: this.options.editInPlace,
-        ignore_user: this.options.ignoreUser,
-        skip_validation: this.options.skipValidation,
-        background_submit: true
-      };
+        skip_validation: this.options.skipValidation
+      }, this.options.saveParams);
     },
     save: function(options) {
       if (options == null) {

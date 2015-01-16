@@ -9,11 +9,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
-    ignoreUser: undefined
-    editInPlace: undefined
     response: {}
     preview: false
     skipValidation: undefined
+    saveParams: {}
     # afterSubmit:
     # response_fields:
     # response:
@@ -171,15 +170,13 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           h[rf.get('id')] = gotValue
 
   saveParams: ->
-    {
+    _.extend
       v: 0
       response_id: @options.response.id
       project_id: @options.project_id
-      edit_in_place: @options.editInPlace
-      ignore_user: @options.ignoreUser
       skip_validation: @options.skipValidation
-      background_submit: true
-    }
+    ,
+      @options.saveParams
 
   save: (options = {}) ->
     @isSaving = true

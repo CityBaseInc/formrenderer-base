@@ -31,6 +31,7 @@
 <body>
   <div id='container'>
     <button class='button' data-form='short'>Short</button>
+    <button class='button' data-form='file'>File</button>
     <button class='button' data-form='kitchen_sink'>Kitchen Sink</button>
 
     <hr />
@@ -66,6 +67,8 @@
           new FormRenderer(_.extend(Fixtures.FormRendererOptions.SHORT(), {
             "afterSubmit": { method: 'page', html: 'You did it!' }
           }))
+        } else if (id == 'file') {
+          new FormRenderer(Fixtures.FormRendererOptions.FILE())
         } else if (id == 'kitchen_sink') {
           new FormRenderer(Fixtures.FormRendererOptions.KITCHEN_SINK())
         }

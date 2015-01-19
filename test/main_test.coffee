@@ -95,6 +95,22 @@ describe '#loadFromServer', ->
 
     expect(storeSpy.remove).to.have.been.called
 
+describe '#submit', ->
+  before ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()
+
+  it 'does not save while uploads are in progress', ->
+    FormRenderer::save = sinon.spy()
+    @fr.uploads = 1
+    @fr.submit()
+    expect(FormRenderer::save).to.not.have.been.called
+
+  it 'saves if uploads are not in progress', ->
+    FormRenderer::save = sinon.spy()
+    @fr.uploads = 0
+    @fr.submit()
+    expect(FormRenderer::save).to.have.been.called
+
 describe 'options', ->
   describe 'enablePages', ->
     it 'is enabled by default'

@@ -184,6 +184,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @bindChangeEvent()
     $oldInput.appendTo($tmpForm)
     $tmpForm.insertBefore(@$input)
+    @form_renderer.uploads += 1
     $tmpForm.ajaxSubmit
       url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
       data:
@@ -193,6 +194,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       uploadProgress: (_, __, ___, percentComplete) =>
         @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")
       complete: =>
+        @form_renderer.uploads -= 1
         $tmpForm.remove()
       success: (data) =>
         @model.set 'value.id', data.file_id

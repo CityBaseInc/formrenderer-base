@@ -6511,6 +6511,7 @@ var ISOCountryNames = {
     },
     constructor: function(options) {
       this.options = $.extend({}, this.defaults, options);
+      this.uploads = 0;
       this.state = new Backbone.Model({
         hasChanges: false
       });
@@ -6814,6 +6815,17 @@ var ISOCountryNames = {
         };
       })(this), 'You have unsaved changes. Are you sure you want to leave this page?');
     },
+    waitForUploads: function(cb) {
+      if (this.uploads > 0) {
+        return setTimeout(((function(_this) {
+          return function() {
+            return _this.waitForUploads(cb);
+          };
+        })(this)), 100);
+      } else {
+        return cb();
+      }
+    },
     submit: function(opts) {
       var afterSubmit;
       if (opts == null) {
@@ -6827,25 +6839,27 @@ var ISOCountryNames = {
         return this.preview();
       }
       afterSubmit = opts.afterSubmit || this.options.afterSubmit;
-      return this.save({
-        submit: true,
-        success: (function(_this) {
-          return function() {
-            var $page;
-            store.remove(_this.draftIdStorageKey());
-            if (typeof afterSubmit === 'function') {
-              return afterSubmit.call(_this);
-            } else if (typeof afterSubmit === 'string') {
-              return window.location = afterSubmit.replace(':id', _this.options.response.id);
-            } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
-              $page = $("<div class='fr_after_submit_page'>" + afterSubmit.html + "</div>");
-              return _this.$el.replaceWith($page);
-            } else {
-              return console.log('[FormRenderer] Not sure what to do...');
+      return this.waitForUploads((function(_this) {
+        return function() {
+          return _this.save({
+            submit: true,
+            success: function() {
+              var $page;
+              store.remove(_this.draftIdStorageKey());
+              if (typeof afterSubmit === 'function') {
+                return afterSubmit.call(_this);
+              } else if (typeof afterSubmit === 'string') {
+                return window.location = afterSubmit.replace(':id', _this.options.response.id);
+              } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
+                $page = $("<div class='fr_after_submit_page'>" + afterSubmit.html + "</div>");
+                return _this.$el.replaceWith($page);
+              } else {
+                return console.log('[FormRenderer] Not sure what to do...');
+              }
             }
-          };
-        })(this)
-      });
+          });
+        };
+      })(this));
     },
     preview: function() {
       var cb;
@@ -7835,6 +7849,7 @@ var ISOCountryNames = {
       this.bindChangeEvent();
       $oldInput.appendTo($tmpForm);
       $tmpForm.insertBefore(this.$input);
+      this.form_renderer.uploads += 1;
       return $tmpForm.ajaxSubmit({
         url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
         data: {
@@ -7849,6 +7864,7 @@ var ISOCountryNames = {
         })(this),
         complete: (function(_this) {
           return function() {
+            _this.form_renderer.uploads -= 1;
             return $tmpForm.remove();
           };
         })(this),

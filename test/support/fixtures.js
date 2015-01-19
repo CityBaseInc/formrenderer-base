@@ -110,22 +110,6 @@
     field_type: 'text'
   };
 
-  Fixtures.SHORT_FORM = [
-    {
-      id: 35,
-      form_id: 5,
-      label: "Text",
-      field_options: {},
-      required: false,
-      blind: false,
-      admin_only: false,
-      created_at: "2014-08-22T20:50:37.152Z",
-      updated_at: "2014-08-22T20:50:37.152Z",
-      field_type: "text",
-      cid: null
-    }
-  ];
-
   Fixtures.KITCHEN_SINK_FORM = [
     {
       id: 35,
@@ -476,7 +460,45 @@
     SHORT: function() {
       return {
         project_id: 1,
-        response_fields: Fixtures.SHORT_FORM,
+        response_fields: [
+          {
+            id: 35,
+            form_id: 5,
+            label: "Text",
+            field_options: {},
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "text",
+            cid: null
+          }
+        ],
+        response: {
+          id: 'xxx',
+          responses: {}
+        }
+      };
+    },
+    FILE: function() {
+      return {
+        project_id: 1,
+        response_fields: [
+          {
+            id: 35,
+            form_id: 5,
+            label: "Text",
+            field_options: {},
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "file",
+            cid: null
+          }
+        ],
         response: {
           id: 'xxx',
           responses: {}

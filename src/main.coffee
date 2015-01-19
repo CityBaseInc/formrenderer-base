@@ -29,6 +29,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   constructor: (options) ->
     @options = $.extend {}, @defaults, options
+    @uploads = 0
     @state = new Backbone.Model
       hasChanges: false
     @setElement $(@options.target)
@@ -219,24 +220,31 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @state.get('hasChanges')
     , 'You have unsaved changes. Are you sure you want to leave this page?'
 
+  waitForUploads: (cb) ->
+    if @uploads > 0
+      setTimeout ( => @waitForUploads(cb) ), 100
+    else
+      cb()
+
   submit: (opts = {}) ->
     return unless opts.skipValidation || @options.skipValidation || @validateAllPages()
     @state.set('submitting', true)
     return @preview() if @options.preview
     afterSubmit = opts.afterSubmit || @options.afterSubmit
 
-    @save submit: true, success: =>
-      store.remove @draftIdStorageKey()
+    @waitForUploads =>
+      @save submit: true, success: =>
+        store.remove @draftIdStorageKey()
 
-      if typeof afterSubmit == 'function'
-        afterSubmit.call @
-      else if typeof afterSubmit == 'string'
-        window.location = afterSubmit.replace(':id', @options.response.id)
-      else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
-        $page = $("<div class='fr_after_submit_page'>#{afterSubmit.html}</div>")
-        @$el.replaceWith($page)
-      else
-        console.log '[FormRenderer] Not sure what to do...'
+        if typeof afterSubmit == 'function'
+          afterSubmit.call @
+        else if typeof afterSubmit == 'string'
+          window.location = afterSubmit.replace(':id', @options.response.id)
+        else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
+          $page = $("<div class='fr_after_submit_page'>#{afterSubmit.html}</div>")
+          @$el.replaceWith($page)
+        else
+          console.log '[FormRenderer] Not sure what to do...'
 
   preview: ->
     cb = =>

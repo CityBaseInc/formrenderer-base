@@ -4365,28 +4365,33 @@ _.mixin({
   BeforeUnload = (function() {
     function BeforeUnload() {}
 
-    BeforeUnload.footerText = "Are you sure you want to leave this page?";
+    BeforeUnload.footerText = 'Are you sure you want to leave this page?';
 
-    BeforeUnload.enable = function(enableIf, msg) {
-      if (!msg) {
-        msg = enableIf;
-        enableIf = (function() {
-          return true;
-        });
-      }
+    BeforeUnload.defaults = {
+      "if": function() {
+        return true;
+      },
+      message: 'You have unsaved changes.'
+    };
+
+    BeforeUnload.enable = function(opts) {
+      opts = $.extend({}, this.defaults, opts);
       $(window).bind('beforeunload', function() {
-        if (enableIf()) {
-          return msg;
+        if (opts["if"]()) {
+          return opts.message;
         } else {
           return void 0;
         }
       });
       return $(document).on('page:before-change.beforeunload', (function(_this) {
-        return function() {
-          if (!enableIf()) {
-            return;
+        return function(e) {
+          if (!opts["if"]()) {
+            return _this.disable();
           }
-          if (confirm("" + msg + "\n\n" + _this.footerText)) {
+          if (opts.cb) {
+            opts.cb(e.originalEvent.data.url);
+            return false;
+          } else if (confirm("" + opts.message + "\n\n" + _this.footerText)) {
             return _this.disable();
           } else {
             return false;
@@ -6809,11 +6814,13 @@ var ISOCountryNames = {
       }
     },
     initBeforeUnload: function() {
-      return BeforeUnload.enable((function(_this) {
-        return function() {
-          return _this.state.get('hasChanges');
-        };
-      })(this), 'You have unsaved changes. Are you sure you want to leave this page?');
+      return BeforeUnload.enable({
+        "if": (function(_this) {
+          return function() {
+            return _this.state.get('hasChanges');
+          };
+        })(this)
+      });
     },
     waitForUploads: function(cb) {
       if (this.uploads > 0) {

@@ -377,11 +377,13 @@
       }
     },
     initBeforeUnload: function() {
-      return BeforeUnload.enable((function(_this) {
-        return function() {
-          return _this.state.get('hasChanges');
-        };
-      })(this), 'You have unsaved changes. Are you sure you want to leave this page?');
+      return BeforeUnload.enable({
+        "if": (function(_this) {
+          return function() {
+            return _this.state.get('hasChanges');
+          };
+        })(this)
+      });
     },
     waitForUploads: function(cb) {
       if (this.uploads > 0) {

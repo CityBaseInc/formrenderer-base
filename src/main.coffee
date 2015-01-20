@@ -216,9 +216,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @save()
 
   initBeforeUnload: ->
-    BeforeUnload.enable =>
-      @state.get('hasChanges')
-    , 'You have unsaved changes. Are you sure you want to leave this page?'
+    BeforeUnload.enable
+      if: => @state.get('hasChanges')
 
   waitForUploads: (cb) ->
     if @uploads > 0

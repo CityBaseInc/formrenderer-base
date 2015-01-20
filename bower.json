@@ -28,7 +28,7 @@
     "backbone-deep-model": "~0.10.4",
     "rivets": "0.5.12",
     "iso-country-names": "~0.1.0",
-    "beforeunload.js": "~0.0.1",
+    "beforeunload.js": "~0.1.1",
     "store.js": "~1.3.16",
     "jquery-form": "~3.46.0"
   }

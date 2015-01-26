@@ -77,7 +77,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     label: "Text"
     field_options: {}
     required: true
-    blind: false
+    blind: true
     admin_only: false
     created_at: "2014-08-22T20:50:37.152Z"
     updated_at: "2014-08-22T20:50:37.152Z"
@@ -95,7 +95,7 @@ Fixtures.KITCHEN_SINK_FORM = [
 
     required: false
     blind: false
-    admin_only: false
+    admin_only: true
     created_at: "2014-08-22T20:50:37.169Z"
     updated_at: "2014-08-22T20:50:37.169Z"
     field_type: "paragraph"

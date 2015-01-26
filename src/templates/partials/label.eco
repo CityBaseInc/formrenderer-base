@@ -1,4 +1,13 @@
 <label for="<%= @getDomId() %>">
   <%= @model.get('label') %>
   <% if @model.get('required'): %><abbr title='required'>*</abbr><% end %>
+
+  <% if @showLabels: %>
+    <% if @model.get('blind'): %>
+      <span class='label'>Blind</span>
+    <% end %>
+    <% if @model.get('admin_only'): %>
+      <span class='label'>Admin only</span>
+    <% end %>
+  <% end %>
 </label>

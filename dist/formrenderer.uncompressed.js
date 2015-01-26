@@ -6502,7 +6502,8 @@ var ISOCountryNames = {
       response: {},
       preview: false,
       skipValidation: void 0,
-      saveParams: {}
+      saveParams: {},
+      showLabels: false
     },
     events: {
       'click [data-activate-page]': function(e) {
@@ -7761,6 +7762,11 @@ var ISOCountryNames = {
     className: 'fr_response_field',
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
+      if (this.form_renderer) {
+        this.showLabels = this.form_renderer.options.showLabels;
+      } else {
+        this.showLabels = options.showLabels;
+      }
       this.model = options.model;
       return this.$el.addClass("fr_response_field_" + this.field_type);
     },
@@ -9426,7 +9432,21 @@ window.JST["partials/label"] = function(__obj) {
         _print(_safe('<abbr title=\'required\'>*</abbr>'));
       }
     
-      _print(_safe('\n</label>'));
+      _print(_safe('\n\n  '));
+    
+      if (this.showLabels) {
+        _print(_safe('\n    '));
+        if (this.model.get('blind')) {
+          _print(_safe('\n      <span class=\'label\'>Blind</span>\n    '));
+        }
+        _print(_safe('\n    '));
+        if (this.model.get('admin_only')) {
+          _print(_safe('\n      <span class=\'label\'>Admin only</span>\n    '));
+        }
+        _print(_safe('\n  '));
+      }
+    
+      _print(_safe('\n</label>\n'));
     
     }).call(this);
     

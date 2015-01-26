@@ -13,6 +13,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     preview: false
     skipValidation: undefined
     saveParams: {}
+    showLabels: false
     # afterSubmit:
     # response_fields:
     # response:

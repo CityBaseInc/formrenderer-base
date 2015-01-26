@@ -97,6 +97,12 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
+
+    if @form_renderer
+      @showLabels = @form_renderer.options.showLabels
+    else
+      @showLabels = options.showLabels
+
     @model = options.model
     @$el.addClass "fr_response_field_#{@field_type}"
 

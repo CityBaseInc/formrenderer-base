@@ -6904,6 +6904,8 @@ var ISOCountryNames = {
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
+  FormRenderer.FILE_TYPES = {};
+
   FormRenderer.loadLeaflet = function(cb) {
     if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
       return cb();

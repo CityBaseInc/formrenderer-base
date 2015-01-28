@@ -289,6 +289,9 @@ FormRenderer.BUTTON_CLASS = ''
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
 FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
 
+# Can be overridden by implementers
+FormRenderer.FILE_TYPES = {}
+
 FormRenderer.loadLeaflet = (cb) ->
   if L?.GeoJSON?
     cb()

@@ -95,6 +95,9 @@ abbr[title="required"] {
 .fr_response_field_file.existing .not_existing {
   display: none; }
 
+.upload_status.is_error {
+  color: #c12f2e; }
+
 .fr_map_wrapper {
   width: 100%;
   height: 246px;

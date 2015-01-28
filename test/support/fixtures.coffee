@@ -461,7 +461,8 @@ Fixtures.FormRendererOptions =
           id: 35
           form_id: 5
           label: "Text"
-          field_options: {}
+          field_options:
+            file_types: 'images'
           required: false
           blind: false
           admin_only: false

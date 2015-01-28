@@ -4,6 +4,18 @@
 </div>
 
 <div class='not_existing'>
-  <input type='file' id='<%= @getDomId() %>' name='file'>
+  <input type='file'
+         id='<%= @getDomId() %>'
+         name='file'
+         <% if (exts = @model.getAcceptedExtensions()): %>
+          accept='<%= exts.join(',') %>'
+         <% end %>
+         />
   <span class='upload_status'></span>
+
+  <% if (exts = @model.getAcceptedExtensions()): %>
+    <div class='file_type_help'>
+      We'll accept <%= _.str.toSentence(exts) %>
+    </div>
+  <% end %>
 </div>

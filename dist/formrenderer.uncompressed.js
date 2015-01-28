@@ -7557,6 +7557,14 @@ var ISOCountryNames = {
     },
     hasValue: function() {
       return this.hasValueHashKey(['id']);
+    },
+    getAcceptedExtensions: function() {
+      var x;
+      if ((x = FormRenderer.FILE_TYPES[this.get('field_options.file_types')])) {
+        return _.map(x, function(x) {
+          return "." + x;
+        });
+      }
     }
   });
 
@@ -7866,6 +7874,7 @@ var ISOCountryNames = {
       return $tmpForm.ajaxSubmit({
         url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
         data: {
+          response_field_id: this.model.get('id'),
           replace_file_id: this.model.get('value.id'),
           v: 0
         },
@@ -7890,7 +7899,10 @@ var ISOCountryNames = {
         })(this),
         error: (function(_this) {
           return function(data) {
-            _this.$status.text('Error');
+            var errorText, _ref;
+            errorText = (_ref = data.responseJSON) != null ? _ref.errors : void 0;
+            _this.$status.text(errorText ? "Error: " + errorText : 'Error');
+            _this.$status.addClass('is_error');
             return setTimeout(function() {
               return _this.render();
             }, 2000);
@@ -8386,6 +8398,8 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      var exts;
+    
       _print(_safe('<div class=\'existing\'>\n  <span class=\'filename\'>'));
     
       _print(this.model.get('value.filename'));
@@ -8394,11 +8408,27 @@ window.JST["fields/file"] = function(__obj) {
     
       _print(FormRenderer.BUTTON_CLASS);
     
-      _print(_safe('\'>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\' id=\''));
+      _print(_safe('\'>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\'\n         id=\''));
     
       _print(this.getDomId());
     
-      _print(_safe('\' name=\'file\'>\n  <span class=\'upload_status\'></span>\n</div>\n'));
+      _print(_safe('\'\n         name=\'file\'\n         '));
+    
+      if ((exts = this.model.getAcceptedExtensions())) {
+        _print(_safe('\n          accept=\''));
+        _print(exts.join(','));
+        _print(_safe('\'\n         '));
+      }
+    
+      _print(_safe('\n         />\n  <span class=\'upload_status\'></span>\n\n  '));
+    
+      if ((exts = this.model.getAcceptedExtensions())) {
+        _print(_safe('\n    <div class=\'file_type_help\'>\n      We\'ll accept '));
+        _print(_.str.toSentence(exts));
+        _print(_safe('\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     

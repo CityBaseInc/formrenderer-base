@@ -194,6 +194,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     $tmpForm.ajaxSubmit
       url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
       data:
+        response_field_id: @model.get('id')
         replace_file_id: @model.get('value.id')
         v: 0
       dataType: 'json'
@@ -207,7 +208,9 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         @form_renderer.autosaveImmediately()
         @render()
       error: (data) =>
-        @$status.text 'Error'
+        errorText = data.responseJSON?.errors
+        @$status.text(if errorText then "Error: #{errorText}" else 'Error')
+        @$status.addClass('is_error')
         setTimeout =>
           @render()
         , 2000

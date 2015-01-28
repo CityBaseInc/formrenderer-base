@@ -126,6 +126,12 @@ abbr[title="required"] {
   }
 }
 
+.upload_status {
+  &.is_error {
+    color: $errorColor;
+  }
+}
+
 .fr_map_wrapper {
   width: 100%;
   height: 246px;

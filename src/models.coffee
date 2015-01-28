@@ -247,6 +247,9 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
     @get('value.id') || ''
   hasValue: ->
     @hasValueHashKey ['id']
+  getAcceptedExtensions: ->
+    if (x = FormRenderer.FILE_TYPES[@get('field_options.file_types')])
+      _.map x, (x) -> ".#{x}"
 
 FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   field_type: 'date'

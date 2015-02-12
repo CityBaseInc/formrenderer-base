@@ -90,6 +90,11 @@ FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend
   field_type: undefined
   sync: ->
 
+FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend
+  field_type: 'identification'
+  validators: [FormRenderer.Validators.IdentificationValidator]
+  hasValue: -> true # always pass to IdentificationValidator above
+
 FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend
   field_type: 'map_marker'
   hasValue: ->

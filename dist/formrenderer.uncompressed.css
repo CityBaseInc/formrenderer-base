@@ -88,6 +88,9 @@ abbr[title="required"] {
     .fr_input_grid .lap_fr_item_half {
       width: 50%; } }
 
+.fr_response_field_identification > label {
+  display: none; }
+
 .fr_response_field_file .existing {
   display: none; }
 .fr_response_field_file.existing .existing {

@@ -462,6 +462,18 @@
         project_id: 1,
         response_fields: [
           {
+            id: 34,
+            form_id: 5,
+            label: "",
+            field_options: {},
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "identification",
+            cid: null
+          }, {
             id: 35,
             form_id: 5,
             label: "Text",

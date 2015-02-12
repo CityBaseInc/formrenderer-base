@@ -112,6 +112,12 @@ abbr[title="required"] {
   }
 }
 
+.fr_response_field_identification {
+  > label {
+    display: none;
+  }
+}
+
 .fr_response_field_file {
   .existing {
     display: none;

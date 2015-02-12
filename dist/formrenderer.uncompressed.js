@@ -6572,7 +6572,7 @@ var ISOCountryNames = {
     }
   });
 
-  FormRenderer.INPUT_FIELD_TYPES = ['address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
+  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
 
   FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
 
@@ -6682,6 +6682,31 @@ var ISOCountryNames = {
     };
 
     return EmailValidator;
+
+  })(FormRenderer.Validators.BaseValidator);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Validators.IdentificationValidator = (function(_super) {
+    __extends(IdentificationValidator, _super);
+
+    function IdentificationValidator() {
+      return IdentificationValidator.__super__.constructor.apply(this, arguments);
+    }
+
+    IdentificationValidator.prototype.validate = function() {
+      if (!this.model.get('value.name') || !this.model.get('value.email')) {
+        return 'please enter your name and email';
+      } else if (!this.model.get('value.email').match('@')) {
+        return 'email is invalid';
+      }
+    };
+
+    return IdentificationValidator;
 
   })(FormRenderer.Validators.BaseValidator);
 
@@ -7009,6 +7034,14 @@ var ISOCountryNames = {
     input_field: false,
     field_type: void 0,
     sync: function() {}
+  });
+
+  FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
+    field_type: 'identification',
+    validators: [FormRenderer.Validators.IdentificationValidator],
+    hasValue: function() {
+      return true;
+    }
   });
 
   FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
@@ -8117,6 +8150,67 @@ window.JST["fields/file"] = function(__obj) {
       }
     
       _print(_safe('\n</div>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["fields/identification"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_full lap_fr_item_half\'>\n    <label for=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('-name\'>Name <abbr title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_item_full lap_fr_item_half\'>\n    <label for=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('-email\'>Email <abbr title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
     
     }).call(this);
     

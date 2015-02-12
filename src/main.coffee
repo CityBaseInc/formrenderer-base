@@ -256,6 +256,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       cb()
 
 FormRenderer.INPUT_FIELD_TYPES = [
+  'identification'
   'address'
   'checkboxes'
   'date'

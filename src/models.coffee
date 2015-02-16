@@ -111,8 +111,6 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false
   field_type: undefined
-  initialize: (_attrs, options = {}) ->
-    { @form_renderer } = options
   validate: ->
   sync: ->
 

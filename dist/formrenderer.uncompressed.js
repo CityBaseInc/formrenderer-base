@@ -7177,12 +7177,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
     input_field: false,
     field_type: void 0,
-    initialize: function(_attrs, options) {
-      if (options == null) {
-        options = {};
-      }
-      return this.form_renderer = options.form_renderer, options;
-    },
     validate: function() {},
     sync: function() {}
   });

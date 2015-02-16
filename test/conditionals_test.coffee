@@ -17,6 +17,17 @@ describe 'Conditionals', ->
   it 'renders ok', ->
     expect(@fr).to.be.ok
 
+  it 'renders with existing values', ->
+    $('body').html('<div data-formrenderer />')
+    data = Fixtures.FormRendererOptions.CONDITIONAL()
+    data.response_fields[0].field_options.options[0].checked = false
+    data.response_fields[0].field_options.options[1].checked = true
+    @fr = new FormRenderer data
+
+    expect(
+      $('.fr_response_field:contains("Dang, that sucks.")').is(':visible')
+    ).to.equal(true)
+
   it 'does not show hidden fields', ->
     expect(
       $('.fr_response_field:contains("Dang, that sucks.")').is(':visible')

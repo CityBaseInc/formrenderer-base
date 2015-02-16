@@ -3,7 +3,7 @@
 <head>
   <title>formrenderer-base</title>
   <link rel="stylesheet" href="css/cardinal.css" />
-  <link rel="stylesheet" href="../dist/formrenderer.css" />
+  <link rel="stylesheet" href="../dist/formrenderer.uncompressed.css" />
   <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css" />
   <style>
   * {
@@ -30,9 +30,10 @@
 </head>
 <body>
   <div id='container'>
-    <button class='button' data-form='short'>Short</button>
-    <button class='button' data-form='file'>File</button>
-    <button class='button' data-form='kitchen_sink'>Kitchen Sink</button>
+    <button class='button' data-form='SHORT'>Short</button>
+    <button class='button' data-form='FILE'>File</button>
+    <button class='button' data-form='CONDITIONAL'>Conditional</button>
+    <button class='button' data-form='KITCHEN_SINK'>Kitchen Sink</button>
 
     <hr />
     <div class='fr_loading choose'>Choose a form above!</div>
@@ -41,7 +42,7 @@
   </div>
 
   <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script src="../dist/formrenderer.js"></script>
+  <script src="../dist/formrenderer.uncompressed.js"></script>
   <script src="../test/support/fixtures.js"></script>
 
   <script>
@@ -49,6 +50,7 @@
 
       FormRenderer.BUTTON_CLASS = 'button button-primary'
 
+      // Override save to just console.log the value
       FormRenderer.prototype.save = function(options){
         console.log(this.getValue());
         this.state.set({
@@ -61,17 +63,7 @@
 
       $('[data-form]').on('click', function(){
         $('.choose').hide()
-        var id = $(this).data('form');
-
-        if (id == 'short') {
-          new FormRenderer(_.extend(Fixtures.FormRendererOptions.SHORT(), {
-            "afterSubmit": { method: 'page', html: 'You did it!' }
-          }))
-        } else if (id == 'file') {
-          new FormRenderer(Fixtures.FormRendererOptions.FILE())
-        } else if (id == 'kitchen_sink') {
-          new FormRenderer(Fixtures.FormRendererOptions.KITCHEN_SINK())
-        }
+        new FormRenderer(Fixtures.FormRendererOptions[$(this).data('form')]())
       })
 
     });

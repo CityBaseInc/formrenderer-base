@@ -1,96 +1,3 @@
-FormRenderer.Views.Pagination = Backbone.View.extend
-  initialize: (options) ->
-    @form_renderer = options.form_renderer
-    @listenTo @form_renderer.state, 'change:activePage', @render
-    @listenTo @form_renderer, 'afterValidate', @render
-
-  render: ->
-    @$el.html JST['partials/pagination'](@)
-    @
-
-FormRenderer.Views.ErrorAlertBar = Backbone.View.extend
-  initialize: (options) ->
-    @form_renderer = options.form_renderer
-    @listenTo @form_renderer, 'afterValidate', @render
-
-  render: ->
-    @$el.html JST['partials/error_alert_bar'](@)
-
-    unless @form_renderer.areAllPagesValid()
-      window.scrollTo(0, @$el.offset().top - 10)
-
-    @
-
-FormRenderer.Views.BottomStatusBar = Backbone.View.extend
-  events:
-    'click [data-js-back]': 'handleBack'
-    'click [data-js-continue]': 'handleContinue'
-
-  initialize: (options) ->
-    @form_renderer = options.form_renderer
-    @listenTo @form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', @render
-
-  render: ->
-    @$el.html JST['partials/bottom_status_bar'](@)
-    @
-
-  firstPage: ->
-    @form_renderer.state.get('activePage') == 1
-
-  lastPage: ->
-    @form_renderer.state.get('activePage') == @form_renderer.numPages
-
-  previousPage: ->
-    @form_renderer.state.get('activePage') - 1
-
-  nextPage: ->
-    @form_renderer.state.get('activePage') + 1
-
-  handleBack: (e) ->
-    e.preventDefault()
-    @form_renderer.activatePage @previousPage(), skipValidation: true
-
-  handleContinue: (e) ->
-    e.preventDefault()
-
-    if @lastPage() || !@form_renderer.options.enablePages
-      @form_renderer.submit()
-    else
-      @form_renderer.activatePage(@nextPage())
-
-FormRenderer.Views.Page = Backbone.View.extend
-  className: 'fr_page'
-
-  initialize: (options) ->
-    @form_renderer = options.form_renderer
-    @models = []
-    @views = []
-
-  render: ->
-    @hide()
-
-    for rf in @models
-      view = new FormRenderer.Views["ResponseField#{_.str.classify(rf.field_type)}"](model: rf, form_renderer: @form_renderer)
-      @$el.append view.render().el
-      @views.push view
-
-    return @
-
-  hide: ->
-    @$el.hide()
-    view.trigger('hidden') for view in @views
-
-  show: ->
-    @$el.show()
-    view.trigger('shown') for view in @views
-
-  validate: ->
-    for rf in _.filter(@models, ((rf) -> rf.input_field) )
-      rf.validate()
-
-    for view in @views
-      view.render()
-
 FormRenderer.Views.ResponseField = Backbone.View.extend
   field_type: undefined
   className: 'fr_response_field'
@@ -108,6 +15,12 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
 
   getDomId: ->
     @model.cid
+
+  reflectConditions: ->
+    if @model.isVisible
+      @$el.show()
+    else
+      @$el.hide()
 
   render: ->
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')

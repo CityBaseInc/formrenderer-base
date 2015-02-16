@@ -35,10 +35,11 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/scripts.js': [
             '<%= srcFolder %>/rivets_config.coffee'
             '<%= srcFolder %>/main.coffee'
+            '<%= srcFolder %>/condition_checker.coffee'
             '<%= srcFolder %>/validators/base_validator.coffee'
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'
-            '<%= srcFolder %>/views.coffee'
+            '<%= srcFolder %>/views/*.coffee'
           ]
           '<%= testFolder %>/support/fixtures.js': [
             '<%= testFolder %>/support/fixtures.coffee'
@@ -63,6 +64,7 @@ module.exports = (grunt) ->
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets-dobt/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
+            'bower_components/require_once/require_once.js'
           ]
       dist:
         files:
@@ -98,15 +100,19 @@ module.exports = (grunt) ->
           '<%= distFolder %>/formrenderer.js': '<%= distFolder %>/formrenderer.uncompressed.js'
 
     watch:
-      all:
-        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}']
-        tasks: 'all'
+      build:
+        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}', '<%= testFolder %>/support/fixtures.coffee']
+        tasks: 'default'
+      test:
+        files: ['<%= testFolder %>/**/*_test.{coffee,js}']
+        tasks: 'test'
 
     # # To test, run `grunt --no-write -v releaseTask`
     release:
       options:
         file: 'bower.json'
         npm: false
+        afterRelease: ['s3']
 
     s3:
       options:
@@ -126,11 +132,6 @@ module.exports = (grunt) ->
           configFile: '<%= testFolder %>/karma.conf.coffee'
           singleRun: true
           reporters: 'dots'
-      dev:
-        options:
-          configFile: '<%= testFolder %>/karma.conf.coffee'
-          reporters: 'dots'
-          autoWatch: true
 
   grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']

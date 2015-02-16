@@ -464,6 +464,219 @@ Fixtures.FormRendererOptions =
       response:
         id: 'xxx'
         responses: {}
+      afterSubmit: {
+        method: 'page',
+        html: 'You did it!'
+      }
+    }
+
+  CONDITIONAL: ->
+    {
+      project_id: 1
+      response_fields: [
+        {
+          id: 35
+          form_id: 5
+          label: "Do you like conditional form fields?"
+          field_options:
+            options: [
+              {
+                label: 'Yes'
+                checked: true
+              },
+              {
+                label: 'No'
+                checked: false
+              }
+            ]
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "dropdown"
+          cid: null
+        },
+        {
+          id: 36
+          form_id: 5
+          label: "Dang, that sucks."
+          field_options: {
+            size: 'large'
+            conditions: [
+              {
+                action: 'show'
+                response_field_id: 35
+                method: 'eq'
+                value: 'No'
+              }
+            ]
+          }
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "section_break"
+          cid: null
+        },
+        {
+          id: 37
+          form_id: 5
+          label: "What's your email address?"
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "email"
+          cid: null
+        },
+        {
+          id: 38
+          form_id: 5
+          label: "What are the nuclear launch codes?"
+          field_options: {
+            conditions: [
+              {
+                action: 'show'
+                response_field_id: 37
+                method: 'contains'
+                value: 'whitehouse'
+              }
+            ]
+          }
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "text"
+          cid: null
+        },
+        {
+          id: 39
+          form_id: 5
+          label: "What's the most boring part of the job?"
+          field_options: {
+            conditions: [
+              {
+                action: 'hide'
+                response_field_id: 37
+                method: 'contains'
+                value: 'whitehouse'
+              }
+            ]
+          }
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "text"
+          cid: null
+        },
+        {
+          id: 40
+          form_id: 5
+          label: "Guess a number..."
+          required: false
+          blind: false
+          admin_only: false
+          field_options:
+            min: 1
+            max: 10
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "number"
+          cid: null
+        },
+        {
+          id: 100
+          form_id: 5
+          label: ""
+          field_options: {}
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.217Z"
+          updated_at: "2014-08-22T20:50:37.217Z"
+          field_type: "page_break"
+          cid: null
+        },
+        {
+          id: 41
+          form_id: 5
+          label: "Why do you like big numbers?"
+          field_options: {
+            conditions: [
+              {
+                action: 'show'
+                response_field_id: 40
+                method: 'gt'
+                value: '5'
+              }
+            ]
+          }
+          required: true
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "text"
+          cid: null
+        },
+        {
+          id: 101
+          form_id: 5
+          label: ""
+          field_options: {}
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.217Z"
+          updated_at: "2014-08-22T20:50:37.217Z"
+          field_type: "page_break"
+          cid: null
+        },
+        {
+          id: 42
+          form_id: 5
+          label: "Guess a price..."
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "price"
+          cid: null
+        },
+        {
+          id: 43
+          form_id: 5
+          label: "Why so expensive?"
+          field_options: {
+            conditions: [
+              {
+                action: 'show'
+                response_field_id: 42
+                method: 'gt'
+                value: '5.00'
+              }
+            ]
+          }
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "text"
+          cid: null
+        }
+      ]
+      response:
+        id: 'xxx'
+        responses: {}
     }
 
   FILE: ->

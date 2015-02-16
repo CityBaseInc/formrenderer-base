@@ -3,14 +3,20 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   field_type: undefined
   validators: []
   sync: ->
-  initialize: ->
+  initialize: (_attrs, options = {}) ->
+    { @form_renderer } = options
+
     @errors = []
+
+    @calculateVisibility()
 
     if @hasLengthValidations()
       @listenTo @, 'change:value', @calculateLength
 
   validate: ->
     @errors = []
+
+    return unless @isVisible
 
     # Presence is a special-case, since it will stop us from running any other validators
     if !@hasValue()
@@ -85,9 +91,29 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
     @set @columnOrOptionKeypath(), opts
     @trigger 'change'
 
-FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend
+  getConditions: ->
+    @get('field_options.conditions') || []
+
+  calculateVisibility: ->
+    @isVisible = (
+      # If we're not in a form_renderer context, it's visible
+      if !@form_renderer
+        true
+      else
+        if @getConditions() && !_.isEmpty(@getConditions())
+          # We can consider adding an option for any/all in future versions.
+          !!_.find @getConditions(), (c) =>
+            @form_renderer.isConditionalVisible(c)
+        else
+          true
+    )
+
+FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false
   field_type: undefined
+  initialize: (_attrs, options = {}) ->
+    { @form_renderer } = options
+  validate: ->
   sync: ->
 
 FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend

@@ -1,11 +1,16 @@
-<% if @form_renderer.numPages > 1: %>
+<% if @form_renderer.visiblePages().length > 1: %>
   <ul class='fr_pagination fr_cf'>
-    <% for i in [1..(@form_renderer.numPages)]: %>
-      <% if (i == @form_renderer.state.get('activePage')): %>
-        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><span><%= i %></span></li>
-      <% else: %>
-        <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'><a data-activate-page="<%= i %>" href='javascript:void(0)'><%= i %></a></li>
-      <% end %>
+    <% for i, idx in @form_renderer.visiblePages(): %>
+      <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'>
+        <% if (i == @form_renderer.state.get('activePage')): %>
+          <span><%= idx + 1 %></span>
+        </li>
+        <% else: %>
+          <a data-activate-page="<%= i %>" href='javascript:void(0)'>
+            <%= idx + 1 %>
+          </a>
+        <% end %>
+      </li>
     <% end %>
   </ul>
 <% end %>

@@ -12,9 +12,9 @@
   <% end %>
 
   <div class='fr_bottom_bar_r'>
-    <% if !@firstPage(): %>
+    <% if !@form_renderer.isFirstPage(): %>
       <button data-js-back class='<%= FormRenderer.BUTTON_CLASS %>'>
-        Back to page <%= @previousPage() %>
+        Back to page <%= @form_renderer.previousPage() %>
       </button>
     <% end %>
 
@@ -24,7 +24,7 @@
       </button>
     <% else: %>
       <button data-js-continue class='<%= FormRenderer.BUTTON_CLASS %>'>
-        <% if (@lastPage() || !@form_renderer.options.enablePages): %>Submit<% else: %>Next page<% end %>
+        <% if (@form_renderer.isLastPage() || !@form_renderer.options.enablePages): %>Submit<% else: %>Next page<% end %>
       </button>
     <% end %>
   </div>

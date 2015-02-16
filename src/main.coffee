@@ -303,7 +303,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   conditionsForResponseField: (rf) ->
     _.filter @allConditions, (condition) ->
-      condition.response_field_id == rf.id
+      "#{condition.response_field_id}" == "#{rf.id}"
 
   initConditions: ->
     @listenTo @response_fields, 'change:value change:value.*', (rf) =>

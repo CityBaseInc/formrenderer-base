@@ -6623,7 +6623,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     },
     conditionsForResponseField: function(rf) {
       return _.filter(this.allConditions, function(condition) {
-        return condition.response_field_id === rf.id;
+        return ("" + condition.response_field_id) === ("" + rf.id);
       });
     },
     initConditions: function() {

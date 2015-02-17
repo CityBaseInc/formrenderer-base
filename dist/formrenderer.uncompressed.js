@@ -6685,22 +6685,23 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     function ConditionChecker(form_renderer, condition) {
       this.form_renderer = form_renderer;
       this.condition = condition;
+      this.value = this.responseField().toText() || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
-      return this.value() === this.condition.value;
+      return this.value.toLowerCase() === this.condition.value.toLowerCase();
     };
 
     ConditionChecker.prototype.method_contains = function() {
-      return !!(this.value() || '').match(this.condition.value);
+      return !!this.value.toLowerCase().match(this.condition.value.toLowerCase());
     };
 
     ConditionChecker.prototype.method_gt = function() {
-      return parseFloat(this.value()) > parseFloat(this.condition.value);
+      return parseFloat(this.value) > parseFloat(this.condition.value);
     };
 
     ConditionChecker.prototype.method_lt = function() {
-      return parseFloat(this.value()) < parseFloat(this.condition.value);
+      return parseFloat(this.value) < parseFloat(this.condition.value);
     };
 
     ConditionChecker.prototype.isValid = function() {
@@ -6725,10 +6726,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
     ConditionChecker.prototype.responseField = function() {
       return this.form_renderer.response_fields.get(this.condition.response_field_id);
-    };
-
-    ConditionChecker.prototype.value = function() {
-      return this.responseField().toText();
     };
 
     return ConditionChecker;

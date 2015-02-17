@@ -1,17 +1,18 @@
 class FormRenderer.ConditionChecker
   constructor: (@form_renderer, @condition) ->
+    @value = @responseField().toText() || ''
 
   method_eq: ->
-    @value() == @condition.value
+    @value.toLowerCase() == @condition.value.toLowerCase()
 
   method_contains: ->
-    !!(@value() || '').match(@condition.value)
+    !!@value.toLowerCase().match(@condition.value.toLowerCase())
 
   method_gt: ->
-    parseFloat(@value()) > parseFloat(@condition.value)
+    parseFloat(@value) > parseFloat(@condition.value)
 
   method_lt: ->
-    parseFloat(@value()) < parseFloat(@condition.value)
+    parseFloat(@value) < parseFloat(@condition.value)
 
   isValid: ->
     _.all ['value', 'action', 'response_field_id', 'method'], (x) =>
@@ -28,6 +29,3 @@ class FormRenderer.ConditionChecker
 
   responseField: ->
     @form_renderer.response_fields.get(@condition.response_field_id)
-
-  value: ->
-    @responseField().toText()

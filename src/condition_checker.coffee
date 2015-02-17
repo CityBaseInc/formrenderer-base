@@ -30,11 +30,4 @@ class FormRenderer.ConditionChecker
     @form_renderer.response_fields.get(@condition.response_field_id)
 
   value: ->
-    raw = @responseField().getValue()
-
-    if @responseField().field_type == 'radio'
-      raw["#{@responseField().id}"]
-    else if @responseField().field_type == 'price'
-      "#{raw?.dollars}.#{raw?.cents}"
-    else
-      raw
+    @responseField().toText()

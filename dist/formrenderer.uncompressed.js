@@ -6728,15 +6728,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     };
 
     ConditionChecker.prototype.value = function() {
-      var raw;
-      raw = this.responseField().getValue();
-      if (this.responseField().field_type === 'radio') {
-        return raw["" + (this.responseField().id)];
-      } else if (this.responseField().field_type === 'price') {
-        return "" + (raw != null ? raw.dollars : void 0) + "." + (raw != null ? raw.cents : void 0);
-      } else {
-        return raw;
-      }
+      return this.responseField().toText();
     };
 
     return ConditionChecker;
@@ -7110,6 +7102,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     getValue: function() {
       return this.get('value');
     },
+    toText: function() {
+      return this.getValue();
+    },
     hasValue: function() {
       return !!this.get('value');
     },
@@ -7224,6 +7219,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     },
     hasValue: function() {
       return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
     }
   });
 
@@ -7265,6 +7263,26 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
       return returnValue;
     },
+    toText: function() {
+      var values;
+      values = _.tap([], (function(_this) {
+        return function(a) {
+          var idx, k, v, _ref;
+          _ref = _this.get('value');
+          for (k in _ref) {
+            v = _ref[k];
+            idx = parseInt(k);
+            if (v === true && !_.isNaN(idx)) {
+              a.push(_this.getOptions()[idx].label);
+            }
+          }
+          if (_this.get('value.other_checkbox') === true) {
+            return a.push(_this.get('value.other'));
+          }
+        };
+      })(this));
+      return values.join(' ');
+    },
     hasValue: function() {
       return this.hasAnyValueInHash();
     }
@@ -7293,6 +7311,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
           return h["" + (_this.get('id')) + "_other"] = _this.get('value.other');
         };
       })(this));
+    },
+    toText: function() {
+      return (this.getValue() || {})["" + this.id];
     },
     hasValue: function() {
       return !!this.get('value.selected');
@@ -7393,6 +7414,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
       return returnValue;
     },
+    toText: function() {
+      return _.flatten(_.values(this.getValue())).join(' ');
+    },
     calculateColumnTotals: function() {
       var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
       _ref = this.getColumns();
@@ -7439,6 +7463,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     validators: [FormRenderer.Validators.DateValidator],
     hasValue: function() {
       return this.hasValueHashKey(['month', 'day', 'year']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue(), 'month', 'day', 'year')).join('/');
     }
   });
 
@@ -7462,6 +7489,11 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     field_type: 'price',
     hasValue: function() {
       return this.hasValueHashKey(['dollars', 'cents']);
+    },
+    toText: function() {
+      var raw;
+      raw = this.getValue() || {};
+      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
     }
   });
 
@@ -7481,6 +7513,11 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       if (!(x != null ? x.am_pm : void 0)) {
         return this.set('value.am_pm', 'AM');
       }
+    },
+    toText: function() {
+      var raw;
+      raw = this.getValue() || {};
+      return "" + (raw.hours || '00') + ":" + (raw.minutes || '00') + ":" + (raw.seconds || '00') + " " + raw.am_pm;
     }
   });
 

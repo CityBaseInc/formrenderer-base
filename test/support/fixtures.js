@@ -698,6 +698,90 @@
         }
       };
     },
+    CONDITIONAL_TWO: function() {
+      return {
+        project_id: 1,
+        response_fields: [
+          {
+            id: 35,
+            form_id: 5,
+            label: "Essay 1",
+            field_options: {
+              min_max_length_units: 'words',
+              maxlength: 100
+            },
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "paragraph",
+            cid: null
+          }, {
+            id: 36,
+            form_id: 5,
+            label: "Essay 2",
+            field_options: {
+              min_max_length_units: 'characters',
+              maxlength: 100
+            },
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "paragraph",
+            cid: null
+          }, {
+            id: 37,
+            form_id: 5,
+            label: "Please elaborate... (lt 10 words)",
+            field_options: {
+              conditions: [
+                {
+                  action: 'show',
+                  response_field_id: 35,
+                  method: 'shorter',
+                  value: '10'
+                }
+              ]
+            },
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "text",
+            cid: null
+          }, {
+            id: 38,
+            form_id: 5,
+            label: "No more! (gt 10 characters)",
+            field_options: {
+              conditions: [
+                {
+                  action: 'show',
+                  response_field_id: 36,
+                  method: 'longer',
+                  value: '10'
+                }
+              ]
+            },
+            required: false,
+            blind: false,
+            admin_only: false,
+            created_at: "2014-08-22T20:50:37.152Z",
+            updated_at: "2014-08-22T20:50:37.152Z",
+            field_type: "text",
+            cid: null
+          }
+        ],
+        response: {
+          id: 'xxx',
+          responses: {}
+        }
+      };
+    },
     FILE: function() {
       return {
         project_id: 1,

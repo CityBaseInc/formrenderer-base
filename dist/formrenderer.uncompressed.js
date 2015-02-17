@@ -6704,6 +6704,18 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return parseFloat(this.value) < parseFloat(this.condition.value);
     };
 
+    ConditionChecker.prototype.method_shorter = function() {
+      return this.length() < parseInt(this.condition.value, 10);
+    };
+
+    ConditionChecker.prototype.method_longer = function() {
+      return this.length() > parseInt(this.condition.value, 10);
+    };
+
+    ConditionChecker.prototype.length = function() {
+      return new FormRenderer.Validators.MinMaxLengthValidator(this.responseField()).count();
+    };
+
     ConditionChecker.prototype.isValid = function() {
       return _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
         return function(x) {
@@ -6867,17 +6879,23 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     }
 
     MinMaxLengthValidator.prototype.validate = function() {
-      var count;
       if (!(this.model.get('field_options.minlength') || this.model.get('field_options.maxlength'))) {
         return;
       }
       this.min = parseInt(this.model.get('field_options.minlength'), 10) || void 0;
       this.max = parseInt(this.model.get('field_options.maxlength'), 10) || void 0;
-      count = this.model.get('field_options.min_max_length_units') === 'words' ? this.countWords() : this.countCharacters();
-      if (this.min && count < this.min) {
+      if (this.min && this.count() < this.min) {
         return 'is too short';
-      } else if (this.max && count > this.max) {
+      } else if (this.max && this.count() > this.max) {
         return 'is too long';
+      }
+    };
+
+    MinMaxLengthValidator.prototype.count = function() {
+      if (this.model.getLengthValidationUnits() === 'words') {
+        return this.countWords();
+      } else {
+        return this.countCharacters();
       }
     };
 

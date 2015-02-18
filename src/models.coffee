@@ -33,6 +33,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
     @errors.join('. ') if @errors.length > 0
 
   hasLengthValidations: ->
+    (FormRenderer.Validators.MinMaxLengthValidator in @validators) &&
     @get('field_options.minlength') || @get('field_options.maxlength')
 
   calculateLength: ->
@@ -40,6 +41,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
     @set 'currentLength', v[if @getLengthValidationUnits() == 'words' then 'countWords' else 'countCharacters']()
 
   hasMinMaxValidations: ->
+    (FormRenderer.Validators.MinMaxValidator in @validators) &&
     @get('field_options.min') || @get('field_options.max')
 
   getLengthValidationUnits: ->

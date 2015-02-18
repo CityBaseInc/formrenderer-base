@@ -7043,7 +7043,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 }).call(this);
 
 (function() {
-  var i, _i, _len, _ref;
+  var i, _i, _len, _ref,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   FormRenderer.Models.ResponseField = Backbone.DeepModel.extend({
     input_field: true,
@@ -7093,7 +7094,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     hasLengthValidations: function() {
-      return this.get('field_options.minlength') || this.get('field_options.maxlength');
+      var _ref;
+      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.minlength') || this.get('field_options.maxlength');
     },
     calculateLength: function() {
       var v;
@@ -7101,7 +7103,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this.set('currentLength', v[this.getLengthValidationUnits() === 'words' ? 'countWords' : 'countCharacters']());
     },
     hasMinMaxValidations: function() {
-      return this.get('field_options.min') || this.get('field_options.max');
+      var _ref;
+      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.min') || this.get('field_options.max');
     },
     getLengthValidationUnits: function() {
       return this.get('field_options.min_max_length_units') || 'characters';
@@ -9479,7 +9482,7 @@ window.JST["partials/label"] = function(__obj) {
         }
         _print(_safe('\n    '));
         if (this.model.get('admin_only')) {
-          _print(_safe('\n      <span class=\'label\'>Admin only</span>\n    '));
+          _print(_safe('\n      <span class=\'label\'>Hidden</span>\n    '));
         }
         _print(_safe('\n  '));
       }

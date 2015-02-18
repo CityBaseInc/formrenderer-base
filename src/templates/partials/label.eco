@@ -7,7 +7,7 @@
       <span class='label'>Blind</span>
     <% end %>
     <% if @model.get('admin_only'): %>
-      <span class='label'>Admin only</span>
+      <span class='label'>Hidden</span>
     <% end %>
   <% end %>
 </label>

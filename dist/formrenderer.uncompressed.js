@@ -6910,7 +6910,8 @@ var ISOCountryNames = {
 }).call(this);
 
 (function() {
-  var i, _i, _len, _ref;
+  var i, _i, _len, _ref,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   FormRenderer.Models.ResponseField = Backbone.DeepModel.extend({
     input_field: true,
@@ -6952,7 +6953,8 @@ var ISOCountryNames = {
       }
     },
     hasLengthValidations: function() {
-      return this.get('field_options.minlength') || this.get('field_options.maxlength');
+      var _ref;
+      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.minlength') || this.get('field_options.maxlength');
     },
     calculateLength: function() {
       var v;
@@ -6960,7 +6962,8 @@ var ISOCountryNames = {
       return this.set('currentLength', v[this.getLengthValidationUnits() === 'words' ? 'countWords' : 'countCharacters']());
     },
     hasMinMaxValidations: function() {
-      return this.get('field_options.min') || this.get('field_options.max');
+      var _ref;
+      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.min') || this.get('field_options.max');
     },
     getLengthValidationUnits: function() {
       return this.get('field_options.min_max_length_units') || 'characters';

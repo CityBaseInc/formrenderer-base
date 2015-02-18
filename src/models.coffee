@@ -78,25 +78,6 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   columnOrOptionKeypath: ->
     if @field_type == 'table' then 'field_options.columns' else 'field_options.options'
 
-  addOptionOrColumnAtIndex: (i) ->
-    opts = if @field_type == 'table' then @getColumns() else @getOptions()
-    newOpt = { label: '' }
-    newOpt['checked'] = false unless @field_type == 'table'
-
-    if i == -1
-      opts.push newOpt
-    else
-      opts.splice(i + 1, 0, newOpt)
-
-    @set @columnOrOptionKeypath(), opts
-    @trigger 'change'
-
-  removeOptionOrColumnAtIndex: (i) ->
-    opts = @get(@columnOrOptionKeypath())
-    opts.splice i, 1
-    @set @columnOrOptionKeypath(), opts
-    @trigger 'change'
-
   getConditions: ->
     @get('field_options.conditions') || []
 

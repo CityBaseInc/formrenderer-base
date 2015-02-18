@@ -1027,30 +1027,6 @@
         return 'field_options.options';
       }
     },
-    addOptionOrColumnAtIndex: function(i) {
-      var newOpt, opts;
-      opts = this.field_type === 'table' ? this.getColumns() : this.getOptions();
-      newOpt = {
-        label: ''
-      };
-      if (this.field_type !== 'table') {
-        newOpt['checked'] = false;
-      }
-      if (i === -1) {
-        opts.push(newOpt);
-      } else {
-        opts.splice(i + 1, 0, newOpt);
-      }
-      this.set(this.columnOrOptionKeypath(), opts);
-      return this.trigger('change');
-    },
-    removeOptionOrColumnAtIndex: function(i) {
-      var opts;
-      opts = this.get(this.columnOrOptionKeypath());
-      opts.splice(i, 1);
-      this.set(this.columnOrOptionKeypath(), opts);
-      return this.trigger('change');
-    },
     getConditions: function() {
       return this.get('field_options.conditions') || [];
     },

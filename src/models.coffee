@@ -75,9 +75,6 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   getColumns: ->
     @get('field_options.columns') || []
 
-  columnOrOptionKeypath: ->
-    if @field_type == 'table' then 'field_options.columns' else 'field_options.options'
-
   getConditions: ->
     @get('field_options.conditions') || []
 

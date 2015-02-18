@@ -1020,13 +1020,6 @@
     getColumns: function() {
       return this.get('field_options.columns') || [];
     },
-    columnOrOptionKeypath: function() {
-      if (this.field_type === 'table') {
-        return 'field_options.columns';
-      } else {
-        return 'field_options.options';
-      }
-    },
     getConditions: function() {
       return this.get('field_options.conditions') || [];
     },

@@ -9,5 +9,8 @@
     <% if @model.get('admin_only'): %>
       <span class='label'>Hidden</span>
     <% end %>
+    <% if @model.isConditional(): %>
+      <span class='label'>Conditional</span>
+    <% end %>
   <% end %>
 </label>

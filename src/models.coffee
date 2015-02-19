@@ -78,13 +78,16 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   getConditions: ->
     @get('field_options.conditions') || []
 
+  isConditional: ->
+    @getConditions().length > 0
+
   calculateVisibility: ->
     @isVisible = (
       # If we're not in a form_renderer context, it's visible
       if !@form_renderer
         true
       else
-        if @getConditions() && !_.isEmpty(@getConditions())
+        if @isConditional()
           _.all @getConditions(), (c) =>
             @form_renderer.isConditionalVisible(c)
         else

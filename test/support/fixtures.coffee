@@ -763,6 +763,90 @@ Fixtures.FormRendererOptions =
         responses: {}
     }
 
+  CONDITIONAL_THREE: ->
+    {
+      project_id: 1
+      response_fields: [
+        {
+          id: 35
+          form_id: 5
+          label: "Question 1"
+          field_options:
+            options: [
+              {
+                label: 'Yes'
+                checked: false
+              }
+              {
+                label: 'No',
+                checked: false
+              }
+            ]
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "checkboxes"
+          cid: null
+        },
+        {
+          id: 36
+          form_id: 5
+          label: "Question 2"
+          field_options:
+            options: [
+              {
+                label: 'Yes'
+                checked: false
+              }
+              {
+                label: 'No',
+                checked: false
+              }
+            ]
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "checkboxes"
+          cid: null
+        },
+        {
+          id: 37
+          form_id: 5
+          label: "Why do you like the word 'yes'?"
+          field_options:
+            conditions: [
+              {
+                action: 'show'
+                response_field_id: 35
+                method: 'contains'
+                value: 'Yes'
+              },
+              {
+                action: 'show'
+                response_field_id: 36
+                method: 'contains'
+                value: 'Yes'
+              }
+            ]
+          required: false
+          blind: false
+          admin_only: false
+          created_at: "2014-08-22T20:50:37.152Z"
+          updated_at: "2014-08-22T20:50:37.152Z"
+          field_type: "text"
+          cid: null
+        }
+      ]
+      response:
+        id: 'xxx'
+        responses: {}
+    }
+
+
   FILE: ->
     {
       project_id: 1

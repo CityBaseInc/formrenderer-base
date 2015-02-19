@@ -85,8 +85,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
         true
       else
         if @getConditions() && !_.isEmpty(@getConditions())
-          # We can consider adding an option for any/all in future versions.
-          !!_.find @getConditions(), (c) =>
+          _.all @getConditions(), (c) =>
             @form_renderer.isConditionalVisible(c)
         else
           true

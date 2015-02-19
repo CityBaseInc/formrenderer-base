@@ -7148,7 +7148,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this.get('field_options.conditions') || [];
     },
     calculateVisibility: function() {
-      return this.isVisible = (!this.form_renderer ? true : this.getConditions() && !_.isEmpty(this.getConditions()) ? !!_.find(this.getConditions(), (function(_this) {
+      return this.isVisible = (!this.form_renderer ? true : this.getConditions() && !_.isEmpty(this.getConditions()) ? _.all(this.getConditions(), (function(_this) {
         return function(c) {
           return _this.form_renderer.isConditionalVisible(c);
         };

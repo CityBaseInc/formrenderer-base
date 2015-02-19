@@ -28,6 +28,21 @@ describe 'Conditionals', ->
       $('.fr_response_field:contains("Dang, that sucks.")').is(':visible')
     ).to.equal(true)
 
+  it 'checks multiple conditions', ->
+    $('body').html('<div data-formrenderer />')
+    @fr = new FormRenderer Fixtures.FormRendererOptions.CONDITIONAL_THREE()
+
+    isVisible = ->
+      $('.fr_response_field:contains("Why do you like the word")').is(':visible')
+
+    expect(isVisible()).to.equal(false)
+    check 'Question 1', 'Yes'
+    expect(isVisible()).to.equal(false)
+    check 'Question 2', 'No'
+    expect(isVisible()).to.equal(false)
+    check 'Question 2', 'Yes'
+    expect(isVisible()).to.equal(true)
+
   it 'does not show hidden fields', ->
     expect(
       $('.fr_response_field:contains("Dang, that sucks.")').is(':visible')

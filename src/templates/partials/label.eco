@@ -10,7 +10,7 @@
       <span class='label'>Hidden</span>
     <% end %>
     <% if @model.isConditional(): %>
-      <span class='label'>Conditional</span>
+      <span class='label'>Hidden until rules are met</span>
     <% end %>
   <% end %>
 </label>

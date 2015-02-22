@@ -90,6 +90,8 @@ abbr[title="required"] {
 
 .fr_response_field_identification > label {
   display: none; }
+.fr_response_field_identification .fr_item_full {
+  margin-bottom: 15px; }
 
 .fr_response_field_file .existing {
   display: none; }

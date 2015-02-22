@@ -146,7 +146,9 @@
           };
         })(this),
         error: (function(_this) {
-          return function() {
+          return function(xhr) {
+            var _ref;
+            _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
             return store.remove(_this.draftIdStorageKey());
           };
         })(this)

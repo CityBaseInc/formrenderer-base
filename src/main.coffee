@@ -75,7 +75,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
         cb()
-      error: =>
+      error: (xhr) =>
+        @$el.find('.fr_loading').text(
+          "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
+        )
         store.remove @draftIdStorageKey()
 
   initResponseFields: ->

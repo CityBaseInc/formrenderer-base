@@ -36,6 +36,7 @@
     <button class='button' data-form='CONDITIONAL_TWO'>Conditional 2</button>
     <button class='button' data-form='CONDITIONAL_THREE'>Conditional 3</button>
     <button class='button' data-form='KITCHEN_SINK'>Kitchen Sink</button>
+    <button class='button' data-form='SD'>Screendoor</button>
 
     <hr />
     <div class='fr_loading choose'>Choose a form above!</div>
@@ -65,8 +66,12 @@
 
       $('[data-form]').on('click', function(){
         $('.choose').hide()
-        new FormRenderer(Fixtures.FormRendererOptions[$(this).data('form')]())
-      })
+
+        new FormRenderer($.extend(
+          Fixtures.FormRendererOptions[$(this).data('form')](),
+          { screendoorBase: 'http://screendoor.dobt.dev' }
+        ));
+      });
 
     });
   </script>

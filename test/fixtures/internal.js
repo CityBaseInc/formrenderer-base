@@ -785,5 +785,14 @@ Fixtures.FormRendererOptions = {
         responses: {}
       }
     };
+  },
+  SD: function() {
+    return {
+      project_id: 1,
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
   }
 };

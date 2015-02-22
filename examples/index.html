@@ -69,7 +69,12 @@
 
         new FormRenderer($.extend(
           Fixtures.FormRendererOptions[$(this).data('form')](),
-          { screendoorBase: 'http://screendoor.dobt.dev' }
+          {
+            screendoorBase: 'http://screendoor.dobt.dev',
+            onReady: function(){
+              console.log('Form is ready!');
+            }
+          }
         ));
       });
 

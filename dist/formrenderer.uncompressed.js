@@ -6210,6 +6210,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
       this.loadFromServer((function(_this) {
         return function() {
+          var _base;
           _this.$el.find('.fr_loading').remove();
           _this.initResponseFields();
           _this.initPages();
@@ -6233,7 +6234,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
           if (_this.options.validateImmediately) {
             _this.validateAllPages();
           }
-          return _this.initConditions();
+          _this.initConditions();
+          _this.trigger('ready');
+          return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
         };
       })(this));
       return this;

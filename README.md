@@ -42,6 +42,7 @@ Of course, there's a lot more you can do...
 | option | description | default |
 | --- | --- | --- |
 | project_id | Your Screendoor project ID, which can be found on your project settings page |  |
+| onReady | A function to call once the form is fully-loaded |  |
 | target | jQuery selector for the element in which to render your form. Can also be a DOM node. | `'[data-formrenderer]'` |
 | enableAutosave | Persist changes back to the server every 5 seconds | `true` |
 | enableBeforeUnload | Warn if the user leaves the page with unsubmitted responses | `true` |

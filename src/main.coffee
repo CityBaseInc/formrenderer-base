@@ -20,6 +20,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     #   id:
     #   responses:
     # project_id:
+    # onReady:
 
   ## Initialization logic
 
@@ -49,6 +50,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @initBeforeUnload() if @options.enableBeforeUnload
       @validateAllPages() if @options.validateImmediately
       @initConditions()
+      @trigger 'ready'
+      @options.onReady?()
 
     @ # explicitly return self
 

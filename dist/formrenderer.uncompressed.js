@@ -9458,7 +9458,7 @@ window.JST["partials/label"] = function(__obj) {
         }
         _print(_safe('\n    '));
         if (this.model.isConditional()) {
-          _print(_safe('\n      <span class=\'label\'>Conditional</span>\n    '));
+          _print(_safe('\n      <span class=\'label\'>Hidden until rules are met</span>\n    '));
         }
         _print(_safe('\n  '));
       }

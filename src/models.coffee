@@ -3,14 +3,20 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   field_type: undefined
   validators: []
   sync: ->
-  initialize: ->
+  initialize: (_attrs, options = {}) ->
+    { @form_renderer } = options
+
     @errors = []
+
+    @calculateVisibility()
 
     if @hasLengthValidations()
       @listenTo @, 'change:value', @calculateLength
 
   validate: ->
     @errors = []
+
+    return unless @isVisible
 
     # Presence is a special-case, since it will stop us from running any other validators
     if !@hasValue()
@@ -48,6 +54,10 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   getValue: ->
     @get('value')
 
+  # used for conditionals
+  toText: ->
+    @getValue()
+
   hasValue: ->
     !!@get('value')
 
@@ -65,31 +75,29 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   getColumns: ->
     @get('field_options.columns') || []
 
-  columnOrOptionKeypath: ->
-    if @field_type == 'table' then 'field_options.columns' else 'field_options.options'
+  getConditions: ->
+    @get('field_options.conditions') || []
 
-  addOptionOrColumnAtIndex: (i) ->
-    opts = if @field_type == 'table' then @getColumns() else @getOptions()
-    newOpt = { label: '' }
-    newOpt['checked'] = false unless @field_type == 'table'
+  isConditional: ->
+    @getConditions().length > 0
 
-    if i == -1
-      opts.push newOpt
-    else
-      opts.splice(i + 1, 0, newOpt)
+  calculateVisibility: ->
+    @isVisible = (
+      # If we're not in a form_renderer context, it's visible
+      if !@form_renderer
+        true
+      else
+        if @isConditional()
+          _.all @getConditions(), (c) =>
+            @form_renderer.isConditionalVisible(c)
+        else
+          true
+    )
 
-    @set @columnOrOptionKeypath(), opts
-    @trigger 'change'
-
-  removeOptionOrColumnAtIndex: (i) ->
-    opts = @get(@columnOrOptionKeypath())
-    opts.splice i, 1
-    @set @columnOrOptionKeypath(), opts
-    @trigger 'change'
-
-FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend
+FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false
   field_type: undefined
+  validate: ->
   sync: ->
 
 FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend
@@ -120,6 +128,9 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
   hasValue: ->
     @hasValueHashKey ['street', 'city', 'state', 'zipcode']
 
+  toText: ->
+    _.values(_.pick(@getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ')
+
 FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
   setExistingValue: (x) ->
@@ -147,6 +158,19 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
 
     returnValue
 
+  toText: ->
+    values = _.tap [], (a) =>
+      for k, v of @get('value')
+        idx = parseInt(k)
+
+        if v == true && !_.isNaN(idx)
+          a.push @getOptions()[idx].label
+
+      if @get('value.other_checkbox') == true
+        a.push @get('value.other')
+
+    values.join(' ')
+
   hasValue: ->
     @hasAnyValueInHash()
 
@@ -164,6 +188,9 @@ FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.exten
     _.tap { merge: true }, (h) =>
       h["#{@get('id')}"] = @get('value.selected')
       h["#{@get('id')}_other"] = @get('value.other')
+
+  toText: ->
+    (@getValue() || {})["#{@id}"]
 
   hasValue: ->
     !!@get('value.selected')
@@ -235,6 +262,9 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
     returnValue
 
+  toText: ->
+    _.flatten(_.values(@getValue())).join(' ')
+
   calculateColumnTotals: ->
     for column, j in @getColumns()
       columnVals = []
@@ -263,6 +293,8 @@ FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.DateValidator]
   hasValue: ->
     @hasValueHashKey ['month', 'day', 'year']
+  toText: ->
+    _.values(_.pick(@getValue(), 'month', 'day', 'year')).join('/')
 
 FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.EmailValidator]
@@ -288,6 +320,9 @@ FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.exten
   field_type: 'price'
   hasValue: ->
     @hasValueHashKey ['dollars', 'cents']
+  toText: ->
+    raw = @getValue() || {}
+    "#{raw.dollars|| '0'}.#{raw.cents || '00'}"
 
 FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend
   field_type: 'text'
@@ -301,6 +336,9 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   setExistingValue: (x) ->
     FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     @set('value.am_pm', 'AM') unless x?.am_pm
+  toText: ->
+    raw = @getValue() || {}
+    "#{raw.hours || '00'}:#{raw.minutes || '00'}:#{raw.seconds || '00'} #{raw.am_pm}"
 
 FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend
   field_type: 'website'

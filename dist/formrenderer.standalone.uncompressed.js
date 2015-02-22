@@ -68,16 +68,6 @@
       saveParams: {},
       showLabels: false
     },
-    events: {
-      'click [data-activate-page]': function(e) {
-        return this.activatePage($(e.currentTarget).data('activate-page'), {
-          skipValidation: true
-        });
-      }
-    },
-    draftIdStorageKey: function() {
-      return "project-" + this.options.project_id + "-response-id";
-    },
     constructor: function(options) {
       this.options = $.extend({}, this.defaults, options);
       this.uploads = 0;
@@ -94,21 +84,21 @@
       if (this.options.enableLocalstorage && store.enabled) {
         this.initLocalstorage();
       }
-      return this.loadFromServer((function(_this) {
+      this.loadFromServer((function(_this) {
         return function() {
           _this.$el.find('.fr_loading').remove();
-          _this.constructResponseFields();
-          _this.constructPages();
+          _this.initResponseFields();
+          _this.initPages();
           if (_this.options.enablePages) {
-            _this.constructPagination();
+            _this.initPagination();
           } else {
-            _this.disablePagination();
+            _this.initNoPagination();
           }
           if (_this.options.enableBottomStatusBar) {
-            _this.constructBottomStatusBar();
+            _this.initBottomStatusBar();
           }
           if (_this.options.enableErrorAlertBar) {
-            _this.constructErrorAlertBar();
+            _this.initErrorAlertBar();
           }
           if (_this.options.enableAutosave) {
             _this.initAutosave();
@@ -117,10 +107,12 @@
             _this.initBeforeUnload();
           }
           if (_this.options.validateImmediately) {
-            return _this.validateAllPages();
+            _this.validateAllPages();
           }
+          return _this.initConditions();
         };
       })(this));
+      return this;
     },
     initLocalstorage: function() {
       var _base;
@@ -160,13 +152,15 @@
         })(this)
       });
     },
-    constructResponseFields: function() {
+    initResponseFields: function() {
       var model, rf, _i, _len, _ref;
       this.response_fields = new Backbone.Collection;
       _ref = this.options.response_fields;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_.str.classify(rf.field_type))](rf);
+        model = new FormRenderer.Models["ResponseField" + (_.str.classify(rf.field_type))](rf, {
+          form_renderer: this
+        });
         if (model.input_field) {
           model.setExistingValue(this.options.response.responses[model.get('id')]);
         }
@@ -178,46 +172,28 @@
         }
       });
     },
-    validateCurrentPage: function() {
-      this.trigger("beforeValidate beforeValidate:" + (this.state.get('activePage')));
-      this.subviews.pages[this.state.get('activePage')].validate();
-      this.trigger("afterValidate afterValidate:" + (this.state.get('activePage')));
-      return this.isPageValid(this.state.get('activePage'));
-    },
-    validateAllPages: function() {
-      var page, pageNumber, _ref;
-      this.trigger('beforeValidate beforeValidate:all');
-      _ref = this.subviews.pages;
-      for (pageNumber in _ref) {
-        page = _ref[pageNumber];
-        page.validate();
-      }
-      this.trigger('afterValidate afterValidate:all');
-      return this.areAllPagesValid();
-    },
-    isPageValid: function(pageNumber) {
-      return !_.find(this.subviews.pages[pageNumber].models, (function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }));
-    },
-    areAllPagesValid: function() {
-      var _i, _ref, _results;
-      return _.every((function() {
-        _results = [];
-        for (var _i = 1, _ref = this.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--){ _results.push(_i); }
-        return _results;
-      }).apply(this), (function(_this) {
-        return function(x) {
-          return _this.isPageValid(x);
+    initAutosave: function() {
+      return setInterval((function(_this) {
+        return function() {
+          if (_this.state.get('hasChanges') && !_this.isSaving) {
+            return _this.save();
+          }
         };
-      })(this));
+      })(this), 5000);
     },
-    numValidationErrors: function() {
-      return this.response_fields.filter(function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }).length;
+    initBottomStatusBar: function() {
+      this.subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar({
+        form_renderer: this
+      });
+      return this.$el.append(this.subviews.bottomStatusBar.render().el);
     },
-    constructPages: function() {
+    initErrorAlertBar: function() {
+      this.subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar({
+        form_renderer: this
+      });
+      return this.$el.prepend(this.subviews.errorAlertBar.render().el);
+    },
+    initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
       addPage = (function(_this) {
         return function() {
@@ -250,14 +226,14 @@
       }
       return _results;
     },
-    constructPagination: function() {
+    initPagination: function() {
       this.subviews.pagination = new FormRenderer.Views.Pagination({
         form_renderer: this
       });
       this.$el.prepend(this.subviews.pagination.render().el);
       return this.subviews.pages[this.state.get('activePage')].show();
     },
-    disablePagination: function() {
+    initNoPagination: function() {
       var page, pageNumber, _ref, _results;
       _ref = this.subviews.pages;
       _results = [];
@@ -267,17 +243,14 @@
       }
       return _results;
     },
-    constructBottomStatusBar: function() {
-      this.subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar({
-        form_renderer: this
+    initBeforeUnload: function() {
+      return BeforeUnload.enable({
+        "if": (function(_this) {
+          return function() {
+            return _this.state.get('hasChanges');
+          };
+        })(this)
       });
-      return this.$el.append(this.subviews.bottomStatusBar.render().el);
-    },
-    constructErrorAlertBar: function() {
-      this.subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar({
-        form_renderer: this
-      });
-      return this.$el.prepend(this.subviews.errorAlertBar.render().el);
     },
     activatePage: function(newPageNumber, opts) {
       if (opts == null) {
@@ -290,12 +263,92 @@
       this.subviews.pages[newPageNumber].show();
       return this.state.set('activePage', newPageNumber);
     },
+    validateCurrentPage: function() {
+      this.trigger("beforeValidate beforeValidate:" + (this.state.get('activePage')));
+      this.subviews.pages[this.state.get('activePage')].validate();
+      this.trigger("afterValidate afterValidate:" + (this.state.get('activePage')));
+      return this.isPageValid(this.state.get('activePage'));
+    },
+    validateAllPages: function() {
+      var page, _, _ref;
+      this.trigger('beforeValidate beforeValidate:all');
+      _ref = this.subviews.pages;
+      for (_ in _ref) {
+        page = _ref[_];
+        page.validate();
+      }
+      this.trigger('afterValidate afterValidate:all');
+      return this.areAllPagesValid();
+    },
+    isPageVisible: function(pageNumber) {
+      return !!_.find(this.subviews.pages[pageNumber].models, (function(rf) {
+        return rf.isVisible;
+      }));
+    },
+    isPageValid: function(pageNumber) {
+      return !_.find(this.subviews.pages[pageNumber].models, (function(rf) {
+        return rf.input_field && rf.errors.length > 0;
+      }));
+    },
+    areAllPagesValid: function() {
+      var _i, _ref, _results;
+      return _.every((function() {
+        _results = [];
+        for (var _i = 1, _ref = this.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this), (function(_this) {
+        return function(x) {
+          return _this.isPageValid(x);
+        };
+      })(this));
+    },
+    numValidationErrors: function() {
+      return this.response_fields.filter(function(rf) {
+        return rf.input_field && rf.errors.length > 0;
+      }).length;
+    },
+    visiblePages: function() {
+      return _.tap([], (function(_this) {
+        return function(a) {
+          var num, _, _ref, _results;
+          _ref = _this.subviews.pages;
+          _results = [];
+          for (num in _ref) {
+            _ = _ref[num];
+            if (_this.isPageVisible(num)) {
+              _results.push(a.push(parseInt(num, 10)));
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        };
+      })(this));
+    },
+    isFirstPage: function() {
+      return this.state.get('activePage') === this.visiblePages()[0];
+    },
+    isLastPage: function() {
+      return this.state.get('activePage') === _.last(this.visiblePages());
+    },
+    previousPage: function() {
+      return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) - 1];
+    },
+    nextPage: function() {
+      return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) + 1];
+    },
+    draftIdStorageKey: function() {
+      return "project-" + this.options.project_id + "-response-id";
+    },
     getValue: function() {
       return _.tap({}, (function(_this) {
         return function(h) {
           return _this.response_fields.each(function(rf) {
             var gotValue;
             if (!rf.input_field) {
+              return;
+            }
+            if (!rf.isVisible) {
               return;
             }
             gotValue = rf.getValue();
@@ -363,28 +416,10 @@
         })(this)
       });
     },
-    initAutosave: function() {
-      return setInterval((function(_this) {
-        return function() {
-          if (_this.state.get('hasChanges') && !_this.isSaving) {
-            return _this.save();
-          }
-        };
-      })(this), 5000);
-    },
     autosaveImmediately: function() {
       if (this.state.get('hasChanges') && !this.isSaving && this.options.enableAutosave) {
         return this.save();
       }
-    },
-    initBeforeUnload: function() {
-      return BeforeUnload.enable({
-        "if": (function(_this) {
-          return function() {
-            return _this.state.get('hasChanges');
-          };
-        })(this)
-      });
     },
     waitForUploads: function(cb) {
       if (this.uploads > 0) {
@@ -446,6 +481,43 @@
       } else {
         return cb();
       }
+    },
+    reflectConditions: function() {
+      var page, _, _ref, _ref1;
+      _ref = this.subviews.pages;
+      for (_ in _ref) {
+        page = _ref[_];
+        page.reflectConditions();
+      }
+      return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
+    },
+    runConditions: function(rf) {
+      _.each(this.conditionsForResponseField(rf), function(c) {
+        return c.parent.calculateVisibility();
+      });
+      return this.reflectConditions();
+    },
+    conditionsForResponseField: function(rf) {
+      return _.filter(this.allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    },
+    initConditions: function() {
+      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
+        return function(rf) {
+          return _this.runConditions(rf);
+        };
+      })(this));
+      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
+          });
+        });
+      }));
+    },
+    isConditionalVisible: function(condition) {
+      return new FormRenderer.ConditionChecker(this, condition).isVisible();
     }
   });
 
@@ -472,20 +544,8 @@
   FormRenderer.loadLeaflet = function(cb) {
     if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
       return cb();
-    } else if (!FormRenderer.loadingLeaflet) {
-      FormRenderer.loadingLeaflet = [cb];
-      return $.getScript(FormRenderer.MAPBOX_URL, function() {
-        var x, _i, _len, _ref, _results;
-        _ref = FormRenderer.loadingLeaflet;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          x = _ref[_i];
-          _results.push(x());
-        }
-        return _results;
-      });
     } else {
-      return FormRenderer.loadingLeaflet.push(cb);
+      return requireOnce(FormRenderer.MAPBOX_URL, cb);
     }
   };
 
@@ -493,6 +553,72 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
     return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
   };
+
+}).call(this);
+
+(function() {
+  FormRenderer.ConditionChecker = (function() {
+    function ConditionChecker(form_renderer, condition) {
+      this.form_renderer = form_renderer;
+      this.condition = condition;
+      this.value = this.responseField().toText() || '';
+    }
+
+    ConditionChecker.prototype.method_eq = function() {
+      return this.value.toLowerCase() === this.condition.value.toLowerCase();
+    };
+
+    ConditionChecker.prototype.method_contains = function() {
+      return !!this.value.toLowerCase().match(this.condition.value.toLowerCase());
+    };
+
+    ConditionChecker.prototype.method_gt = function() {
+      return parseFloat(this.value) > parseFloat(this.condition.value);
+    };
+
+    ConditionChecker.prototype.method_lt = function() {
+      return parseFloat(this.value) < parseFloat(this.condition.value);
+    };
+
+    ConditionChecker.prototype.method_shorter = function() {
+      return this.length() < parseInt(this.condition.value, 10);
+    };
+
+    ConditionChecker.prototype.method_longer = function() {
+      return this.length() > parseInt(this.condition.value, 10);
+    };
+
+    ConditionChecker.prototype.length = function() {
+      return new FormRenderer.Validators.MinMaxLengthValidator(this.responseField()).count();
+    };
+
+    ConditionChecker.prototype.isValid = function() {
+      return _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
+        return function(x) {
+          return _this.condition[x];
+        };
+      })(this));
+    };
+
+    ConditionChecker.prototype.isVisible = function() {
+      if (this.isValid()) {
+        return this.actionBool() === this["method_" + this.condition.method]();
+      } else {
+        return true;
+      }
+    };
+
+    ConditionChecker.prototype.actionBool = function() {
+      return this.condition.action === 'show';
+    };
+
+    ConditionChecker.prototype.responseField = function() {
+      return this.form_renderer.response_fields.get(this.condition.response_field_id);
+    };
+
+    return ConditionChecker;
+
+  })();
 
 }).call(this);
 
@@ -629,17 +755,23 @@
     }
 
     MinMaxLengthValidator.prototype.validate = function() {
-      var count;
       if (!(this.model.get('field_options.minlength') || this.model.get('field_options.maxlength'))) {
         return;
       }
       this.min = parseInt(this.model.get('field_options.minlength'), 10) || void 0;
       this.max = parseInt(this.model.get('field_options.maxlength'), 10) || void 0;
-      count = this.model.get('field_options.min_max_length_units') === 'words' ? this.countWords() : this.countCharacters();
-      if (this.min && count < this.min) {
+      if (this.min && this.count() < this.min) {
         return 'is too short';
-      } else if (this.max && count > this.max) {
+      } else if (this.max && this.count() > this.max) {
         return 'is too long';
+      }
+    };
+
+    MinMaxLengthValidator.prototype.count = function() {
+      if (this.model.getLengthValidationUnits() === 'words') {
+        return this.countWords();
+      } else {
+        return this.countCharacters();
       }
     };
 
@@ -795,8 +927,13 @@
     field_type: void 0,
     validators: [],
     sync: function() {},
-    initialize: function() {
+    initialize: function(_attrs, options) {
+      if (options == null) {
+        options = {};
+      }
+      this.form_renderer = options.form_renderer;
       this.errors = [];
+      this.calculateVisibility();
       if (this.hasLengthValidations()) {
         return this.listenTo(this, 'change:value', this.calculateLength);
       }
@@ -804,6 +941,9 @@
     validate: function() {
       var newError, v, validator, validatorName, _ref, _results;
       this.errors = [];
+      if (!this.isVisible) {
+        return;
+      }
       if (!this.hasValue()) {
         if (this.get('required')) {
           this.errors.push("can't be blank");
@@ -856,6 +996,9 @@
     getValue: function() {
       return this.get('value');
     },
+    toText: function() {
+      return this.getValue();
+    },
     hasValue: function() {
       return !!this.get('value');
     },
@@ -877,42 +1020,25 @@
     getColumns: function() {
       return this.get('field_options.columns') || [];
     },
-    columnOrOptionKeypath: function() {
-      if (this.field_type === 'table') {
-        return 'field_options.columns';
-      } else {
-        return 'field_options.options';
-      }
+    getConditions: function() {
+      return this.get('field_options.conditions') || [];
     },
-    addOptionOrColumnAtIndex: function(i) {
-      var newOpt, opts;
-      opts = this.field_type === 'table' ? this.getColumns() : this.getOptions();
-      newOpt = {
-        label: ''
-      };
-      if (this.field_type !== 'table') {
-        newOpt['checked'] = false;
-      }
-      if (i === -1) {
-        opts.push(newOpt);
-      } else {
-        opts.splice(i + 1, 0, newOpt);
-      }
-      this.set(this.columnOrOptionKeypath(), opts);
-      return this.trigger('change');
+    isConditional: function() {
+      return this.getConditions().length > 0;
     },
-    removeOptionOrColumnAtIndex: function(i) {
-      var opts;
-      opts = this.get(this.columnOrOptionKeypath());
-      opts.splice(i, 1);
-      this.set(this.columnOrOptionKeypath(), opts);
-      return this.trigger('change');
+    calculateVisibility: function() {
+      return this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
+        return function(c) {
+          return _this.form_renderer.isConditionalVisible(c);
+        };
+      })(this)) : true);
     }
   });
 
-  FormRenderer.Models.NonInputResponseField = Backbone.DeepModel.extend({
+  FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
     input_field: false,
     field_type: void 0,
+    validate: function() {},
     sync: function() {}
   });
 
@@ -959,6 +1085,9 @@
     },
     hasValue: function() {
       return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
     }
   });
 
@@ -1000,6 +1129,26 @@
       }
       return returnValue;
     },
+    toText: function() {
+      var values;
+      values = _.tap([], (function(_this) {
+        return function(a) {
+          var idx, k, v, _ref;
+          _ref = _this.get('value');
+          for (k in _ref) {
+            v = _ref[k];
+            idx = parseInt(k);
+            if (v === true && !_.isNaN(idx)) {
+              a.push(_this.getOptions()[idx].label);
+            }
+          }
+          if (_this.get('value.other_checkbox') === true) {
+            return a.push(_this.get('value.other'));
+          }
+        };
+      })(this));
+      return values.join(' ');
+    },
     hasValue: function() {
       return this.hasAnyValueInHash();
     }
@@ -1028,6 +1177,9 @@
           return h["" + (_this.get('id')) + "_other"] = _this.get('value.other');
         };
       })(this));
+    },
+    toText: function() {
+      return (this.getValue() || {})["" + this.id];
     },
     hasValue: function() {
       return !!this.get('value.selected');
@@ -1128,6 +1280,9 @@
       }
       return returnValue;
     },
+    toText: function() {
+      return _.flatten(_.values(this.getValue())).join(' ');
+    },
     calculateColumnTotals: function() {
       var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
       _ref = this.getColumns();
@@ -1174,6 +1329,9 @@
     validators: [FormRenderer.Validators.DateValidator],
     hasValue: function() {
       return this.hasValueHashKey(['month', 'day', 'year']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue(), 'month', 'day', 'year')).join('/');
     }
   });
 
@@ -1197,6 +1355,11 @@
     field_type: 'price',
     hasValue: function() {
       return this.hasValueHashKey(['dollars', 'cents']);
+    },
+    toText: function() {
+      var raw;
+      raw = this.getValue() || {};
+      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
     }
   });
 
@@ -1216,6 +1379,11 @@
       if (!(x != null ? x.am_pm : void 0)) {
         return this.set('value.am_pm', 'AM');
       }
+    },
+    toText: function() {
+      var raw;
+      raw = this.getValue() || {};
+      return "" + (raw.hours || '00') + ":" + (raw.minutes || '00') + ":" + (raw.seconds || '00') + " " + raw.am_pm;
     }
   });
 
@@ -1234,20 +1402,38 @@
 }).call(this);
 
 (function() {
-  var i, _i, _j, _len, _len1, _ref, _ref1;
-
-  FormRenderer.Views.Pagination = Backbone.View.extend({
+  FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
+    events: {
+      'click [data-js-back]': 'handleBack',
+      'click [data-js-continue]': 'handleContinue'
+    },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
-      this.listenTo(this.form_renderer.state, 'change:activePage', this.render);
-      return this.listenTo(this.form_renderer, 'afterValidate', this.render);
+      return this.listenTo(this.form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', this.render);
     },
     render: function() {
-      this.$el.html(JST['partials/pagination'](this));
+      this.$el.html(JST['partials/bottom_status_bar'](this));
       return this;
+    },
+    handleBack: function(e) {
+      e.preventDefault();
+      return this.form_renderer.activatePage(this.form_renderer.previousPage(), {
+        skipValidation: true
+      });
+    },
+    handleContinue: function(e) {
+      e.preventDefault();
+      if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
+        return this.form_renderer.submit();
+      } else {
+        return this.form_renderer.activatePage(this.form_renderer.nextPage());
+      }
     }
   });
 
+}).call(this);
+
+(function() {
   FormRenderer.Views.ErrorAlertBar = Backbone.View.extend({
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
@@ -1262,47 +1448,9 @@
     }
   });
 
-  FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
-    events: {
-      'click [data-js-back]': 'handleBack',
-      'click [data-js-continue]': 'handleContinue'
-    },
-    initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      return this.listenTo(this.form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', this.render);
-    },
-    render: function() {
-      this.$el.html(JST['partials/bottom_status_bar'](this));
-      return this;
-    },
-    firstPage: function() {
-      return this.form_renderer.state.get('activePage') === 1;
-    },
-    lastPage: function() {
-      return this.form_renderer.state.get('activePage') === this.form_renderer.numPages;
-    },
-    previousPage: function() {
-      return this.form_renderer.state.get('activePage') - 1;
-    },
-    nextPage: function() {
-      return this.form_renderer.state.get('activePage') + 1;
-    },
-    handleBack: function(e) {
-      e.preventDefault();
-      return this.form_renderer.activatePage(this.previousPage(), {
-        skipValidation: true
-      });
-    },
-    handleContinue: function(e) {
-      e.preventDefault();
-      if (this.lastPage() || !this.form_renderer.options.enablePages) {
-        return this.form_renderer.submit();
-      } else {
-        return this.form_renderer.activatePage(this.nextPage());
-      }
-    }
-  });
+}).call(this);
 
+(function() {
   FormRenderer.Views.Page = Backbone.View.extend({
     className: 'fr_page',
     initialize: function(options) {
@@ -1321,6 +1469,7 @@
           form_renderer: this.form_renderer
         });
         this.$el.append(view.render().el);
+        view.reflectConditions();
         this.views.push(view);
       }
       return this;
@@ -1347,8 +1496,28 @@
       }
       return _results;
     },
+    reflectConditions: function() {
+      var view, _i, _len, _ref, _results;
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        _results.push(view.reflectConditions());
+      }
+      return _results;
+    },
+    renderViews: function() {
+      var view, _i, _len, _ref, _results;
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        _results.push(view.render());
+      }
+      return _results;
+    },
     validate: function() {
-      var rf, view, _i, _j, _len, _len1, _ref, _ref1, _results;
+      var rf, _i, _len, _ref;
       _ref = _.filter(this.models, (function(rf) {
         return rf.input_field;
       }));
@@ -1356,15 +1525,36 @@
         rf = _ref[_i];
         rf.validate();
       }
-      _ref1 = this.views;
-      _results = [];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        view = _ref1[_j];
-        _results.push(view.render());
-      }
-      return _results;
+      return this.renderViews();
     }
   });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.Pagination = Backbone.View.extend({
+    events: {
+      'click [data-activate-page]': function(e) {
+        return this.form_renderer.activatePage($(e.currentTarget).data('activate-page'), {
+          skipValidation: true
+        });
+      }
+    },
+    initialize: function(options) {
+      this.form_renderer = options.form_renderer;
+      this.listenTo(this.form_renderer.state, 'change:activePage', this.render);
+      return this.listenTo(this.form_renderer, 'afterValidate', this.render);
+    },
+    render: function() {
+      this.$el.html(JST['partials/pagination'](this));
+      return this;
+    }
+  });
+
+}).call(this);
+
+(function() {
+  var i, _i, _j, _len, _len1, _ref, _ref1;
 
   FormRenderer.Views.ResponseField = Backbone.View.extend({
     field_type: void 0,
@@ -1381,6 +1571,13 @@
     },
     getDomId: function() {
       return this.model.cid;
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
     },
     render: function() {
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
@@ -2888,11 +3085,11 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
     
       _print(_safe('\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
     
-      if (!this.firstPage()) {
+      if (!this.form_renderer.isFirstPage()) {
         _print(_safe('\n      <button data-js-back class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        Back to page '));
-        _print(this.previousPage());
+        _print(this.form_renderer.previousPage());
         _print(_safe('\n      </button>\n    '));
       }
     
@@ -2906,7 +3103,7 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
         _print(_safe('\n      <button data-js-continue class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        '));
-        if (this.lastPage() || !this.form_renderer.options.enablePages) {
+        if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
           _print(_safe('Submit'));
         } else {
           _print(_safe('Next page'));
@@ -3134,6 +3331,10 @@ window.JST["partials/label"] = function(__obj) {
         _print(_safe('\n    '));
         if (this.model.get('admin_only')) {
           _print(_safe('\n      <span class=\'label\'>Hidden</span>\n    '));
+        }
+        _print(_safe('\n    '));
+        if (this.model.isConditional()) {
+          _print(_safe('\n      <span class=\'label\'>Hidden until rules are met</span>\n    '));
         }
         _print(_safe('\n  '));
       }
@@ -3368,32 +3569,30 @@ window.JST["partials/pagination"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, _i, _ref;
+      var i, idx, _i, _len, _ref;
     
-      if (this.form_renderer.numPages > 1) {
+      if (this.form_renderer.visiblePages().length > 1) {
         _print(_safe('\n  <ul class=\'fr_pagination fr_cf\'>\n    '));
-        for (i = _i = 1, _ref = this.form_renderer.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
-          _print(_safe('\n      '));
-          if (i === this.form_renderer.state.get('activePage')) {
-            _print(_safe('\n        <li class=\''));
-            if (!this.form_renderer.isPageValid(i)) {
-              _print(_safe('has_errors'));
-            }
-            _print(_safe('\'><span>'));
-            _print(i);
-            _print(_safe('</span></li>\n      '));
-          } else {
-            _print(_safe('\n        <li class=\''));
-            if (!this.form_renderer.isPageValid(i)) {
-              _print(_safe('has_errors'));
-            }
-            _print(_safe('\'><a data-activate-page="'));
-            _print(i);
-            _print(_safe('" href=\'javascript:void(0)\'>'));
-            _print(i);
-            _print(_safe('</a></li>\n      '));
+        _ref = this.form_renderer.visiblePages();
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          i = _ref[idx];
+          _print(_safe('\n      <li class=\''));
+          if (!this.form_renderer.isPageValid(i)) {
+            _print(_safe('has_errors'));
           }
-          _print(_safe('\n    '));
+          _print(_safe('\'>\n        '));
+          if (i === this.form_renderer.state.get('activePage')) {
+            _print(_safe('\n          <span>'));
+            _print(idx + 1);
+            _print(_safe('</span>\n        </li>\n        '));
+          } else {
+            _print(_safe('\n          <a data-activate-page="'));
+            _print(i);
+            _print(_safe('" href=\'javascript:void(0)\'>\n            '));
+            _print(idx + 1);
+            _print(_safe('\n          </a>\n        '));
+          }
+          _print(_safe('\n      </li>\n    '));
         }
         _print(_safe('\n  </ul>\n'));
       }

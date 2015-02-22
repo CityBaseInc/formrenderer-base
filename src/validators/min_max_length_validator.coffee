@@ -5,15 +5,16 @@ class FormRenderer.Validators.MinMaxLengthValidator extends FormRenderer.Validat
     @min = parseInt(@model.get('field_options.minlength'), 10) || undefined
     @max = parseInt(@model.get('field_options.maxlength'), 10) || undefined
 
-    count = if @model.get('field_options.min_max_length_units') == 'words'
+    if @min && @count() < @min
+      'is too short'
+    else if @max && @count() > @max
+      'is too long'
+
+  count: ->
+    if @model.getLengthValidationUnits() == 'words'
       @countWords()
     else
       @countCharacters()
-
-    if @min && count < @min
-      'is too short'
-    else if @max && count > @max
-      'is too long'
 
   countWords: ->
     (_.str.trim(@model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length

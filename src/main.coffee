@@ -21,12 +21,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     #   responses:
     # project_id:
 
-  events:
-    'click [data-activate-page]': (e) ->
-      @activatePage $(e.currentTarget).data('activate-page'), skipValidation: true
-
-  draftIdStorageKey: ->
-    "project-#{@options.project_id}-response-id"
+  ## Initialization logic
 
   constructor: (options) ->
     @options = $.extend {}, @defaults, options
@@ -45,14 +40,17 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
-      @constructResponseFields()
-      @constructPages()
-      if @options.enablePages then @constructPagination() else @disablePagination()
-      @constructBottomStatusBar() if @options.enableBottomStatusBar
-      @constructErrorAlertBar() if @options.enableErrorAlertBar
+      @initResponseFields()
+      @initPages()
+      if @options.enablePages then @initPagination() else @initNoPagination()
+      @initBottomStatusBar() if @options.enableBottomStatusBar
+      @initErrorAlertBar() if @options.enableErrorAlertBar
       @initAutosave() if @options.enableAutosave
       @initBeforeUnload() if @options.enableBeforeUnload
       @validateAllPages() if @options.validateImmediately
+      @initConditions()
+
+    @ # explicitly return self
 
   initLocalstorage: ->
     @options.response.id ||= store.get(@draftIdStorageKey())
@@ -80,44 +78,34 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       error: =>
         store.remove @draftIdStorageKey()
 
-  constructResponseFields: ->
+  initResponseFields: ->
     @response_fields = new Backbone.Collection
 
     for rf in @options.response_fields
-      model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](rf)
+      model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](
+        rf,
+        form_renderer: @
+      )
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
 
     @listenTo @response_fields, 'change', ->
       @state.set('hasChanges', true) unless @state.get('hasChanges')
 
-  validateCurrentPage: ->
-    @trigger "beforeValidate beforeValidate:#{@state.get('activePage')}"
-    @subviews.pages[@state.get('activePage')].validate()
-    @trigger "afterValidate afterValidate:#{@state.get('activePage')}"
-    return @isPageValid(@state.get('activePage'))
+  initAutosave: ->
+    setInterval =>
+      @save() if @state.get('hasChanges') && !@isSaving
+    , 5000
 
-  validateAllPages: ->
-    @trigger 'beforeValidate beforeValidate:all'
+  initBottomStatusBar: ->
+    @subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar(form_renderer: @)
+    @$el.append @subviews.bottomStatusBar.render().el
 
-    for pageNumber, page of @subviews.pages
-      page.validate()
+  initErrorAlertBar: ->
+    @subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar(form_renderer: @)
+    @$el.prepend @subviews.errorAlertBar.render().el
 
-    @trigger 'afterValidate afterValidate:all'
-
-    return @areAllPagesValid()
-
-  isPageValid: (pageNumber) ->
-    !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
-
-  areAllPagesValid: ->
-    _.every [1..@numPages], (x) =>
-      @isPageValid(x)
-
-  numValidationErrors: ->
-    @response_fields.filter((rf) -> rf.input_field && rf.errors.length > 0).length
-
-  constructPages: ->
+  initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
 
@@ -136,22 +124,20 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     for pageNumber, page of @subviews.pages
       @$el.append page.render().el
 
-  constructPagination: ->
+  initPagination: ->
     @subviews.pagination = new FormRenderer.Views.Pagination(form_renderer: @)
     @$el.prepend @subviews.pagination.render().el
     @subviews.pages[@state.get('activePage')].show()
 
-  disablePagination: ->
+  initNoPagination: ->
     for pageNumber, page of @subviews.pages
       page.show()
 
-  constructBottomStatusBar: ->
-    @subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar(form_renderer: @)
-    @$el.append @subviews.bottomStatusBar.render().el
+  initBeforeUnload: ->
+    BeforeUnload.enable
+      if: => @state.get('hasChanges')
 
-  constructErrorAlertBar: ->
-    @subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar(form_renderer: @)
-    @$el.prepend @subviews.errorAlertBar.render().el
+  ## Pages / Validation
 
   activatePage: (newPageNumber, opts = {}) ->
     return unless opts.skipValidation || @validateCurrentPage()
@@ -159,12 +145,69 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @subviews.pages[newPageNumber].show()
     @state.set 'activePage', newPageNumber
 
+  validateCurrentPage: ->
+    @trigger "beforeValidate beforeValidate:#{@state.get('activePage')}"
+    @subviews.pages[@state.get('activePage')].validate()
+    @trigger "afterValidate afterValidate:#{@state.get('activePage')}"
+    return @isPageValid(@state.get('activePage'))
+
+  validateAllPages: ->
+    @trigger 'beforeValidate beforeValidate:all'
+
+    for _, page of @subviews.pages
+      page.validate()
+
+    @trigger 'afterValidate afterValidate:all'
+
+    return @areAllPagesValid()
+
+  isPageVisible: (pageNumber) ->
+    !!_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.isVisible))
+
+  isPageValid: (pageNumber) ->
+    !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
+
+  areAllPagesValid: ->
+    _.every [1..@numPages], (x) =>
+      @isPageValid(x)
+
+  numValidationErrors: ->
+    @response_fields.filter((rf) -> rf.input_field && rf.errors.length > 0).length
+
+  # memoize
+
+  visiblePages: ->
+    _.tap [], (a) =>
+      for num, _ of @subviews.pages
+        a.push(parseInt(num, 10)) if @isPageVisible(num)
+
+  isFirstPage: ->
+    @state.get('activePage') == @visiblePages()[0]
+
+  isLastPage: ->
+    @state.get('activePage') == _.last(@visiblePages())
+
+  previousPage: ->
+    @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) - 1]
+
+  nextPage: ->
+    @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) + 1]
+
+  ## Localstorage
+
+  draftIdStorageKey: ->
+    "project-#{@options.project_id}-response-id"
+
+  ## Saving
+
   getValue: ->
     _.tap {}, (h) =>
       @response_fields.each (rf) ->
         return unless rf.input_field
+        return unless rf.isVisible
         gotValue = rf.getValue()
 
+        # hack for radio field...
         if (typeof gotValue == 'object') && gotValue.merge
           delete gotValue.merge
           _.extend(h, gotValue)
@@ -207,18 +250,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           submitting: false
         options.error?.apply(@, arguments)
 
-  initAutosave: ->
-    setInterval =>
-      @save() if @state.get('hasChanges') && !@isSaving
-    , 5000
-
   autosaveImmediately: ->
     if @state.get('hasChanges') && !@isSaving && @options.enableAutosave
       @save()
-
-  initBeforeUnload: ->
-    BeforeUnload.enable
-      if: => @state.get('hasChanges')
 
   waitForUploads: (cb) ->
     if @uploads > 0
@@ -255,6 +289,35 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     else
       cb()
 
+  ## Conditionals - will break into separate classes
+
+  reflectConditions: ->
+    page.reflectConditions() for _, page of @subviews.pages
+    @subviews.pagination?.render()
+
+  runConditions: (rf) ->
+    _.each @conditionsForResponseField(rf), (c) ->
+      c.parent.calculateVisibility()
+
+    @reflectConditions()
+
+  conditionsForResponseField: (rf) ->
+    _.filter @allConditions, (condition) ->
+      "#{condition.response_field_id}" == "#{rf.id}"
+
+  initConditions: ->
+    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
+      @runConditions(rf)
+
+    @allConditions = _.flatten(
+      @response_fields.map (rf) ->
+        _.map rf.getConditions(), (c) ->
+          _.extend {}, c, parent: rf
+    )
+
+  isConditionalVisible: (condition) ->
+    new FormRenderer.ConditionChecker(@, condition).isVisible()
+
 FormRenderer.INPUT_FIELD_TYPES = [
   'identification'
   'address'
@@ -280,7 +343,10 @@ FormRenderer.NON_INPUT_FIELD_TYPES = [
   'section_break'
 ]
 
-FormRenderer.FIELD_TYPES = _.union FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES
+FormRenderer.FIELD_TYPES = _.union(
+  FormRenderer.INPUT_FIELD_TYPES,
+  FormRenderer.NON_INPUT_FIELD_TYPES
+)
 
 FormRenderer.Views = {}
 FormRenderer.Models = {}
@@ -296,12 +362,8 @@ FormRenderer.FILE_TYPES = {}
 FormRenderer.loadLeaflet = (cb) ->
   if L?.GeoJSON?
     cb()
-  else if !FormRenderer.loadingLeaflet
-    FormRenderer.loadingLeaflet = [cb]
-    $.getScript FormRenderer.MAPBOX_URL, ->
-      x() for x in FormRenderer.loadingLeaflet
   else
-    FormRenderer.loadingLeaflet.push(cb)
+    requireOnce FormRenderer.MAPBOX_URL, cb
 
 FormRenderer.initMap = (el) ->
   L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg'

@@ -1,6 +1,3 @@
-yaml = require('js-yaml')
-fs = require('fs')
-
 module.exports = (grunt) ->
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
@@ -137,7 +134,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'convertYamlFixtures', '', ->
     grunt.file.write(
       'test/fixtures/validation.js',
-      "Fixtures.Validation = #{JSON.stringify(yaml.safeLoad(fs.readFileSync('fixtures/validation.yaml')))};"
+      "Fixtures.Validation = #{grunt.file.read('fixtures/validation.json')};"
     )
 
   grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']

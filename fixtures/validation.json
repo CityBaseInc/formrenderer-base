@@ -1,4 +1,4 @@
-Fixtures.Validation = {
+{
   "MIN_MAX_LENGTH_CHARACTERS": {
     "valid": ["Boooo", "   Boooo        ", " Boooooooo  ", ";oooo:"],
     "invalid": ["Boo", "Boooooooooooooooooooo"]
@@ -88,4 +88,3 @@ Fixtures.Validation = {
     "valid": ["123", "1,23", "1.23", "1-23", "+15107671234"]
   }
 }
-;

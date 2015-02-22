@@ -17,6 +17,10 @@ module.exports = (config) ->
         'dist/formrenderer.uncompressed.js'
 
         'test/support/*.coffee'
+
+        'test/fixtures/internal.js'
+        'test/fixtures/validation.js'
+
         'test/**/*_test.coffee'
       ]
 

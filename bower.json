@@ -7,11 +7,10 @@
   "description": "Base components of DOBT's form renderer.",
   "license": "MIT",
   "ignore": [
-    "**/.*",
+    "examples",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ],
   "main": [
     "dist/formrenderer.css",

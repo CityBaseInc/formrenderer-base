@@ -1,3 +1,6 @@
+yaml = require('js-yaml')
+fs = require('fs')
+
 module.exports = (grunt) ->
 
   grunt.loadNpmTasks('grunt-contrib-coffee')
@@ -40,9 +43,6 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'
             '<%= srcFolder %>/views/*.coffee'
-          ]
-          '<%= testFolder %>/support/fixtures.js': [
-            '<%= testFolder %>/support/fixtures.coffee'
           ]
 
     concat:
@@ -101,7 +101,7 @@ module.exports = (grunt) ->
 
     watch:
       build:
-        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}', '<%= testFolder %>/support/fixtures.coffee']
+        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}', '<%= testFolder %>/support/fixtures/*.js']
         tasks: 'default'
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
@@ -133,7 +133,14 @@ module.exports = (grunt) ->
           singleRun: true
           reporters: 'dots'
 
-  grunt.registerTask 'default', ['eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
+
+  grunt.registerTask 'convertYamlFixtures', '', ->
+    grunt.file.write(
+      'test/fixtures/validation.js',
+      "Fixtures.Validation = #{JSON.stringify(yaml.safeLoad(fs.readFileSync('fixtures/validation.yaml')))};"
+    )
+
+  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

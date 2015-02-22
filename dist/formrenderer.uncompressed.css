@@ -69,7 +69,7 @@ abbr[title="required"] {
     /* 1 */
     vertical-align: top;
     /* 2 */
-    font-size: initial;
+    font-size: 1rem;
     /* 3 */ }
     .fr_input_grid > div input,
     .fr_input_grid > div select {

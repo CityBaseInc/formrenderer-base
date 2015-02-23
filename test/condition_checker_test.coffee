@@ -1,3 +1,14 @@
+# Since we're sharing fixtures, this function is desgined to "mimic" the
+# ResponseField#transformed_response_value method on the server.
+transformRawValue = (key, value) ->
+  switch key
+    when 'radio'
+      {
+        selected: value
+      }
+    else
+      value
+
 describe 'ConditionChecker', ->
   describe 'values', ->
     it 'gets the text value for each response field', ->
@@ -6,7 +17,7 @@ describe 'ConditionChecker', ->
           model = new FormRenderer.Models["ResponseField#{_.str.classify(key)}"](
             field.attrs || {}
           )
-          model.setExistingValue testValues.in
+          model.setExistingValue transformRawValue(key, testValues.in)
           expect(model.toText()).to.eql(testValues.out)
 
   describe 'methods', ->

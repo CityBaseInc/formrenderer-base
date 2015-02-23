@@ -95,7 +95,8 @@ Fixtures.Validation = {
         {
           "in": {
             "street": "foo",
-            "city": "bar"
+            "city": "bar",
+            "country": "US"
           },
           "out": "foo bar US"
         },
@@ -133,9 +134,7 @@ Fixtures.Validation = {
     "radio": {
       "tests": [
         {
-          "in": {
-            "selected": "yo"
-          },
+          "in": "yo",
           "out": "yo"
         }
       ]
@@ -202,6 +201,54 @@ Fixtures.Validation = {
           "out": "0.99"
         }
       ]
+    },
+    "dropdown": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "email": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "number": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "paragraph": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "text": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "website": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
     }
   },
   "methods": {
@@ -237,4 +284,5 @@ Fixtures.Validation = {
     }
   }
 }
+
 ;

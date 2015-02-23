@@ -5,7 +5,8 @@
         {
           "in": {
             "street": "foo",
-            "city": "bar"
+            "city": "bar",
+            "country": "US"
           },
           "out": "foo bar US"
         },
@@ -43,9 +44,7 @@
     "radio": {
       "tests": [
         {
-          "in": {
-            "selected": "yo"
-          },
+          "in": "yo",
           "out": "yo"
         }
       ]
@@ -112,6 +111,54 @@
           "out": "0.99"
         }
       ]
+    },
+    "dropdown": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "email": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "number": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "paragraph": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "text": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
+    },
+    "website": {
+      "tests": [
+        {
+          "in": "Foo",
+          "out": "Foo"
+        }
+      ]
     }
   },
   "methods": {
@@ -147,3 +194,4 @@
     }
   }
 }
+

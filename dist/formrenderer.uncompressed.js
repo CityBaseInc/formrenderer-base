@@ -7101,7 +7101,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     calculateLength: function() {
       var v;
       v = new FormRenderer.Validators.MinMaxLengthValidator(this);
-      return this.set('currentLength', v[this.getLengthValidationUnits() === 'words' ? 'countWords' : 'countCharacters']());
+      return this.set('currentLength', this.getLengthValidationUnits() === 'words' ? v.countWords() : v.countCharacters());
     },
     hasMinMaxValidations: function() {
       var _ref;

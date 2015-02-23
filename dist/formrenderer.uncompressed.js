@@ -6683,6 +6683,14 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
   };
 
+  FormRenderer.getLength = function(wordsOrChars, val) {
+    if (wordsOrChars === 'words') {
+      return (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+    } else {
+      return _.str.trim(val).replace(/\s/g, '').length;
+    }
+  };
+
 }).call(this);
 
 (function() {
@@ -6718,7 +6726,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     };
 
     ConditionChecker.prototype.length = function() {
-      return new FormRenderer.Validators.MinMaxLengthValidator(this.responseField()).count();
+      return FormRenderer.getLength(this.responseField().getLengthValidationUnits(), this.value);
     };
 
     ConditionChecker.prototype.isValid = function() {
@@ -6897,19 +6905,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     };
 
     MinMaxLengthValidator.prototype.count = function() {
-      if (this.model.getLengthValidationUnits() === 'words') {
-        return this.countWords();
-      } else {
-        return this.countCharacters();
-      }
-    };
-
-    MinMaxLengthValidator.prototype.countWords = function() {
-      return (_.str.trim(this.model.get('value')).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
-    };
-
-    MinMaxLengthValidator.prototype.countCharacters = function() {
-      return _.str.trim(this.model.get('value')).replace(/\s/g, '').length;
+      return FormRenderer.getLength(this.model.getLengthValidationUnits(), this.model.get('value'));
     };
 
     return MinMaxLengthValidator;

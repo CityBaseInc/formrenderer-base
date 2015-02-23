@@ -21,7 +21,10 @@ class FormRenderer.ConditionChecker
     @length() > parseInt(@condition.value, 10)
 
   length: ->
-    new FormRenderer.Validators.MinMaxLengthValidator(@responseField()).count()
+    FormRenderer.getLength(
+      @responseField().getLengthValidationUnits(),
+      @value
+    )
 
   isValid: ->
     _.all ['value', 'action', 'response_field_id', 'method'], (x) =>

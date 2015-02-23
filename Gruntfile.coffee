@@ -98,7 +98,11 @@ module.exports = (grunt) ->
 
     watch:
       build:
-        files: ['<%= srcFolder %>/**/*.{coffee,eco,scss}', '<%= testFolder %>/support/fixtures/*.js']
+        files: [
+          '<%= srcFolder %>/**/*.{coffee,eco,scss}',
+          '<%= testFolder %>/support/fixtures/*.js',
+          'fixtures/*.json'
+        ]
         tasks: 'default'
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
@@ -133,8 +137,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'convertYamlFixtures', '', ->
     grunt.file.write(
-      'test/fixtures/validation.js',
-      "Fixtures.Validation = #{grunt.file.read('fixtures/validation.json')};"
+      'test/fixtures/converted.js',
+      "Fixtures.Validation = #{grunt.file.read('fixtures/validation.json')};" +
+      "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
     )
 
   grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']

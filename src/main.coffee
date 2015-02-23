@@ -374,3 +374,9 @@ FormRenderer.loadLeaflet = (cb) ->
 FormRenderer.initMap = (el) ->
   L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg'
   L.mapbox.map(el, 'adamjacobbecker.ja7plkah')
+
+FormRenderer.getLength = (wordsOrChars, val) ->
+  if wordsOrChars == 'words'
+    (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
+  else
+    _.str.trim(val).replace(/\s/g, '').length

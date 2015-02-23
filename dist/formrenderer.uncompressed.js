@@ -7099,9 +7099,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.minlength') || this.get('field_options.maxlength');
     },
     calculateLength: function() {
-      var v;
-      v = new FormRenderer.Validators.MinMaxLengthValidator(this);
-      return this.set('currentLength', this.getLengthValidationUnits() === 'words' ? v.countWords() : v.countCharacters());
+      return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
     },
     hasMinMaxValidations: function() {
       var _ref;

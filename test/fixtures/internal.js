@@ -26,7 +26,8 @@ Fixtures.KITCHEN_SINK_FORM = [
     field_options: {
       size: "large",
       required: true,
-      description: "How would you complete this project?"
+      description: "How would you complete this project?",
+      minlength: "10"
     },
     required: false,
     blind: false,

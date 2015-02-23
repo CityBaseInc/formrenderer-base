@@ -107,7 +107,7 @@ Fixtures.Validation = {
           },
           "out": "foo bar baz"
         }
-      ],
+      ]
     },
     "checkboxes": {
       "attrs": {
@@ -128,7 +128,7 @@ Fixtures.Validation = {
           },
           "out": "bar who"
         }
-      ],
+      ]
     },
     "radio": {
       "tests": [
@@ -138,7 +138,7 @@ Fixtures.Validation = {
           },
           "out": "yo"
         }
-      ],
+      ]
     },
     "table": {
       "attrs": {
@@ -151,7 +151,7 @@ Fixtures.Validation = {
               "label": "two"
             }
           ]
-        },
+        }
       },
       "tests": [
         {
@@ -161,7 +161,7 @@ Fixtures.Validation = {
           },
           "out": "a b c d"
         }
-      ],
+      ]
     },
     "date": {
       "tests": [
@@ -173,7 +173,7 @@ Fixtures.Validation = {
           },
           "out": "11/11/1234"
         }
-      ],
+      ]
     },
     "time": {
       "tests": [
@@ -185,7 +185,7 @@ Fixtures.Validation = {
           },
           "out": "12:12:00 AM"
         }
-      ],
+      ]
     },
     "price": {
       "tests": [

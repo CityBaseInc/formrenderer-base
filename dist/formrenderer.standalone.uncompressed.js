@@ -2739,7 +2739,7 @@ window.JST["fields/table"] = function(__obj) {
           column = _ref2[j];
           _print(_safe('\n          <td>\n            <textarea '));
           if (this.model.getPresetValue(column.label, i)) {
-            _print(_safe('readonly'));
+            _print(_safe('disabled'));
           }
           _print(_safe('\n                      data-col=\''));
           _print(j);

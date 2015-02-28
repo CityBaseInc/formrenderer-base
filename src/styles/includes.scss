@@ -1,3 +1,21 @@
-$maxFieldWidth: 500px;
+$maxFieldWidth: 30rem;
 $errorColor: #c12f2e;
 $lightGray: #eee;
+
+$font_size: 1rem;
+$font_size_small: 0.875rem;
+$rhythm: 0.75rem; // Vertical rhythm
+$line_height: $rhythm * 2;
+$ratio: 1.25; // Ratio for proportional font sizes
+$input_height: $rhythm * 3; // Height of inputs
+
+@mixin cf() {
+  &:before,
+  &:after {
+    display: table;
+    content: ' ';
+  }
+  &:after {
+    clear: both;
+  }
+}

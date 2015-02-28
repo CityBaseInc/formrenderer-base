@@ -4,10 +4,15 @@ abbr[title="required"] {
   color: $errorColor;
 }
 
+.fr_page {
+  line-height: $line_height;
+  max-width: $maxFieldWidth;
+}
+
 .fr_loading {
   color: #999;
-  font-size: 125%;
-  padding: 20px 0;
+  font-size: $font_size * $ratio;
+  padding: $line_height 0;
   text-align: center;
 }
 
@@ -17,6 +22,11 @@ abbr[title="required"] {
 
 .fr_error_alert_bar {
   color: $errorColor;
+}
+
+input[type="text"],
+select {
+  height: $input_height;
 }
 
 .fr_clear {
@@ -46,13 +56,16 @@ abbr[title="required"] {
 }
 
 .fr_response_field {
-  margin-bottom: 20px;
-  max-width: $maxFieldWidth;
+  margin-bottom: $line_height;
   &.error {
     input, textarea {
       border: 1px solid $errorColor;
     }
   }
+}
+
+.fr_description {
+  font-size: $font_size_small;
 }
 
 .fr_bottom_bar {
@@ -76,41 +89,57 @@ abbr[title="required"] {
 }
 
 .fr_input_grid {
-  margin: 0;
-  margin-left: -10px; /* 1 */
-  list-style: none; /* 2 */
-  font-size: 0; /* 3 */
+  @include cf;
   width: 100%;
-  > div {
-    display: inline-block;
-    padding-left: 10px; /* 1 */
-    vertical-align: top; /* 2 */
-    font-size: 1rem; /* 3 */
-    input,
-    select {
-      width: 100%;
-    }
+  + .fr_input_grid {
+    margin-top: $rhythm;
   }
-  .fr_item_full {
+}
+
+.fr_item_auto,
+.fr_item_spacer,
+.fr_item_full,
+.fr_item_half {
+  float: left;
+}
+
+.fr_item_full,
+.fr_item_half {
+  input, select, textarea {
     width: 100%;
   }
-  .fr_item_half {
-    width: 50%;
+}
+
+.fr_item_full {
+  width: 100%;
+}
+.fr_item_half {
+  width: 47.5%;
+  &:first-child {
+    margin-right: 5%;
   }
-  .fr_item_spacer {
-    margin-top: 1.5rem;
-    line-height: 2.626rem;
-  }
-  .fr_sub_label {
-    line-height: 1.5rem;
-    color: #888;
-  }
-  @media screen and (min-width: 640px) {
-    .lap_fr_item_half {
-      width: 50%;
+}
+
+@media screen and (min-width: 640px) {
+  .lap_fr_item_half {
+    width: 47.5%;
+    &:first-child {
+      margin-right: 5%;
     }
   }
 }
+
+.fr_item_spacer {
+  margin-top: $line_height;
+  line-height: $input_height;
+  padding: 0 $font_size / 2;
+}
+
+.fr_sub_label {
+  font-size: $font_size_small;
+  color: #888;
+}
+
 
 .fr_response_field_identification {
   > label {
@@ -183,13 +212,16 @@ abbr[title="required"] {
 
 .fr_response_field_text {
   input {
-    width: 160px;
-    &.size_medium {
-      width: 300px;
-    }
-    &.size_large {
-      width: 100%;
-    }
+    width: 100%;
+  }
+  .size_small {
+    width: 10rem;
+  }
+  .size_medium {
+    width: 20rem;
+  }
+  .size_large {
+    width: 100%;
   }
 }
 
@@ -197,30 +229,50 @@ abbr[title="required"] {
 .fr_response_field_email,
 .fr_response_field_website {
   input {
-    width: 200px;
+    width: 13rem;
   }
 }
 
-.fr_response_field_paragraph textarea {
-  width: 160px;
-  height: 40px;
-  &.size_medium {
-    width: 300px;
-    height: 100px;
-  }
-  &.size_large {
+.fr_response_field_paragraph {
+  textarea {
     width: 100%;
-    height: 240px;
+  }
+  .size_small {
+    width: 12rem;
+    textarea {
+      height: $line_height * 3;
+    }
+  }
+  .size_medium {
+    width: 24rem;
+    textarea {
+      height: $line_height * 5;
+    }
+  }
+  .size_large {
+    width: 100%;
+    textarea {
+      height: $line_height * 8;
+    }
   }
 }
 
 
-.fr_response_field_block_of_text > div {
-  &.size_medium {
-    font-size: 120%;
+.fr_response_field_block_of_text,
+.fr_response_field_section_break {
+  .size_small {
+    font-size: $font_size_small;
   }
-  &.size_large {
-    font-size: 150%;
+  .size_medium,
+  .size_large {
+    line-height: $rhythm * 3;
+  }
+  .size_medium {
+    font-size: $font_size * $ratio;
+  }
+  
+  .size_large {
+    font-size: $font_size * $ratio * $ratio;
   }
 }
 
@@ -228,25 +280,9 @@ abbr[title="required"] {
   .fr_section_name {
     font-weight: bold;
   }
-  > div {
-    p {
-      font-size: 90%;
-    }
-    &.size_medium {
-      .fr_section_name {
-        font-size: 120%;
-      }
-      p {
-        font-size: 100%;
-      }
-    }
-    &.size_large {
-      .fr_section_name {
-        font-size: 150%;
-      }
-      p {
-        font-size: 120%;
-      }
+  .size_small {
+    .fr_section_name {
+      font-size: $font_size;
     }
   }
 }

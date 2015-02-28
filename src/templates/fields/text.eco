@@ -1,6 +1,5 @@
-<div class="fr_response_input_wrapper">
+<div class="fr_response_input_wrapper size_<%= @model.get('field_options.size') %>">
   <input type="text"
          id="<%= @getDomId() %>"
-         class="size_<%= @model.get('field_options.size') %>"
          data-rv-input='model.value' />
 </div>

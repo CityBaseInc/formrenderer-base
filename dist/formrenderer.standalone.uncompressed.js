@@ -2478,15 +2478,15 @@ window.JST["fields/paragraph"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<textarea\n   id="'));
-    
-      _print(this.getDomId());
-    
-      _print(_safe('"\n   class="size_'));
+      _print(_safe('<div class="fr_response_input_wrapper size_'));
     
       _print(this.model.get('field_options.size'));
     
-      _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
+      _print(_safe('">\n  <textarea\n     id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('"\n     data-rv-input=\'model.value\' />\n</div>\n'));
     
     }).call(this);
     
@@ -2821,15 +2821,15 @@ window.JST["fields/text"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<input type="text"\n       id="'));
-    
-      _print(this.getDomId());
-    
-      _print(_safe('"\n       class="size_'));
+      _print(_safe('<div class="fr_response_input_wrapper size_'));
     
       _print(this.model.get('field_options.size'));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
+      _print(_safe('">\n  <input type="text"\n         id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('"\n         data-rv-input=\'model.value\' />\n</div>\n'));
     
     }).call(this);
     

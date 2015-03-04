@@ -9,6 +9,8 @@ $line_height: $rhythm * 2;
 $ratio: 1.25; // Ratio for proportional font sizes
 $input_height: $rhythm * 3; // Height of inputs
 
+$radius: 3px; // Border radius
+
 @mixin cf() {
   &:before,
   &:after {
@@ -19,3 +21,24 @@ $input_height: $rhythm * 3; // Height of inputs
     clear: both;
   }
 }
+
+@mixin border_top_radius($radius) {
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+
+@mixin border_right_radius($radius) {
+  border-top-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+@mixin border_bottom_radius($radius) {
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+@mixin border_left_radius($radius) {
+  border-top-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+}
+

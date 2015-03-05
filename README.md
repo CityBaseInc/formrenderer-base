@@ -51,6 +51,10 @@ Of course, there's a lot more you can do...
 | validateImmediately | If the form is initialized with invalid data, immediately show errors. | `false` |
 | afterSubmit | Can be any of the following: **a function**, which will be called after submission, **a URL**, which the user will be sent to after submission, or **an Object** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
 
+## Customizing
+
+If you're ready to dive into the full power of formrenderer and need some inspiration, take a look at some examples in the [wiki](https://github.com/dobtco/formrenderer-base/wiki).
+
 ## Developing
 
 You'll need [node and npm](http://nodejs.org/) installed.

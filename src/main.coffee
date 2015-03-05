@@ -380,3 +380,83 @@ FormRenderer.getLength = (wordsOrChars, val) ->
     (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
   else
     _.str.trim(val).replace(/\s/g, '').length
+
+commonCountries = ['US', 'GB', 'CA']
+
+FormRenderer.ORDERED_COUNTRIES = _.uniq(
+  _.union commonCountries, [undefined], _.keys(ISOCountryNames)
+)
+
+# Hardcoded for now, since these are way less likely to change than
+# the country names list.
+
+FormRenderer.PROVINCES_CA = [
+  'Alberta',
+  'British Columbia',
+  'Labrador',
+  'Manitoba',
+  'New Brunswick',
+  'Newfoundland',
+  'Nova Scotia',
+  'Nunavut',
+  'Northwest Territories',
+  'Ontario',
+  'Prince Edward Island',
+  'Quebec',
+  'Saskatchewen',
+  'Yukon'
+]
+
+FormRenderer.PROVINCES_US = [
+  'Alabama',
+  'Alaska',
+  'Arizona',
+  'Arkansas',
+  'California',
+  'Colorado',
+  'Connecticut',
+  'District of Columbia',
+  'Delaware',
+  'Florida',
+  'Georgia',
+  'Hawaii',
+  'Idaho',
+  'Illinois',
+  'Indiana',
+  'Iowa',
+  'Kansas',
+  'Kentucky',
+  'Louisiana',
+  'Maine',
+  'Maryland',
+  'Massachusetts',
+  'Michigan',
+  'Minnesota',
+  'Mississippi',
+  'Missouri',
+  'Montana',
+  'Nebraska',
+  'Nevada',
+  'New Hampshire',
+  'New Jersey',
+  'New Mexico',
+  'New York',
+  'North Carolina',
+  'North Dakota',
+  'Ohio',
+  'Oklahoma',
+  'Oregon',
+  'Pennsylvania',
+  'Rhode Island',
+  'South Carolina',
+  'South Dakota',
+  'Tennessee',
+  'Texas',
+  'Utah',
+  'Vermont',
+  'Virginia',
+  'Washington',
+  'West Virginia',
+  'Wisconsin',
+  'Wyoming'
+]

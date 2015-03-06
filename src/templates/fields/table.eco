@@ -23,7 +23,7 @@
         <% end %>
 
         <td class='fr_table_col_remove'>
-          <% if @canRemoveRows(): %>
+          <% if @canRemoveRow(i): %>
             <a class='js-remove-row' href='javascript:void(0)'>
               <%- FormRenderer.REMOVE_ROW_LINK %>
             </a>

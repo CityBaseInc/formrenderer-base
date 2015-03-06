@@ -65,8 +65,9 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     # Temporarily remove -- this is a major performance hit.
     # @$el.find('textarea').expanding()
 
-  canRemoveRows: ->
-    @model.numRows > Math.max(1, @model.minRows())
+  canRemoveRow: (rowIdx) ->
+    min = Math.max(1, @model.minRows())
+    rowIdx > (min - 1)
 
   addRow: ->
     @model.numRows++

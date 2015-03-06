@@ -1640,8 +1640,10 @@
       return this;
     },
     initExpanding: function() {},
-    canRemoveRows: function() {
-      return this.model.numRows > Math.max(1, this.model.minRows());
+    canRemoveRow: function(rowIdx) {
+      var min;
+      min = Math.max(1, this.model.minRows());
+      return rowIdx > (min - 1);
     },
     addRow: function() {
       this.model.numRows++;
@@ -2838,7 +2840,7 @@ window.JST["fields/table"] = function(__obj) {
           _print(_safe('\'\n                      rows=\'1\' />\n          </td>\n        '));
         }
         _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
-        if (this.canRemoveRows()) {
+        if (this.canRemoveRow(i)) {
           _print(_safe('\n            <a class=\'js-remove-row\' href=\'javascript:void(0)\'>\n              '));
           _print(_safe(FormRenderer.REMOVE_ROW_LINK));
           _print(_safe('\n            </a>\n          '));

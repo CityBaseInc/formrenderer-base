@@ -211,7 +211,13 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @$el.find('.fr_map_cover').show()
     @model.set value: { lat: '', lng: '' }
 
-for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker', 'price')
+FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
+  field_type: 'address'
+  initialize: ->
+    FormRenderer.Views.ResponseField::initialize.apply @, arguments
+    @listenTo @model, 'change:value.country', @render
+
+for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price')
   FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 

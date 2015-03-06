@@ -49,7 +49,7 @@
 }).call(this);
 
 (function() {
-  var FormRenderer;
+  var FormRenderer, commonCountries;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -566,6 +566,14 @@
       return _.str.trim(val).replace(/\s/g, '').length;
     }
   };
+
+  commonCountries = ['US', 'GB', 'CA'];
+
+  FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
+
+  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
+
+  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'District of Columbia', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
   FormRenderer.ADD_ROW_LINK = '+ Add another row';
 
@@ -1823,7 +1831,15 @@
     }
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker', 'price');
+  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
+    field_type: 'address',
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.listenTo(this.model, 'change:value.country', this.render);
+    }
+  });
+
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.ResponseField.extend({
@@ -1865,7 +1881,7 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var format, k, v;
+      var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     
       format = this.model.get('field_options.address_format');
     
@@ -1880,25 +1896,56 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">State / Province / Region</label>\n      <input type="text"\n             data-rv-input=\'model.value.state\' />\n    </div>\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        if (this.model.get('value.country') === 'US') {
+          _print(_safe('\n          State\n        '));
+        } else if (this.model.get('value.country') === 'CA') {
+          _print(_safe('\n          Province\n        '));
+        } else {
+          _print(_safe('\n          State / Province / Region\n        '));
+        }
+        _print(_safe('\n      </label>\n\n      '));
+        if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
+          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'auto\'>\n          <option></option>\n          '));
+          _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            x = _ref1[_i];
+            _print(_safe('\n            <option value=\''));
+            _print(x);
+            _print(_safe('\'>'));
+            _print(x);
+            _print(_safe('</option>\n          '));
+          }
+          _print(_safe('\n        </select>\n      '));
+        } else {
+          _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' />\n      '));
+        }
+        _print(_safe('\n    </div>\n  </div>\n'));
       }
     
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">ZIP Code</label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        if (this.model.get('value.country') === 'US') {
+          _print(_safe('ZIP'));
+        } else {
+          _print(_safe('Postal'));
+        }
+        _print(_safe(' Code\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
         _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
-        for (k in ISOCountryNames) {
-          v = ISOCountryNames[k];
+        _ref2 = FormRenderer.ORDERED_COUNTRIES;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          x = _ref2[_j];
           _print(_safe('\n          <option value=\''));
-          _print(k);
+          _print(x);
           _print(_safe('\'>'));
-          _print(v);
+          _print(ISOCountryNames[x] || '---');
           _print(_safe('</option>\n        '));
         }
         _print(_safe('\n      </select>\n    </div>\n  '));

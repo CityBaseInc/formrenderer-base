@@ -61,7 +61,7 @@ You'll need [node and npm](http://nodejs.org/) installed.
 
 1. `npm install`
 2. `bower install`
-3. `grunt watch`
+3. `grunt all && grunt watch`
 4. open `examples/index.html` and you're all set! To run tests: `grunt test`
 
 When you're ready to release a new version:

@@ -1889,7 +1889,13 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Postal / ZIP Code</label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        if (this.model.get('value.country') === 'US') {
+          _print(_safe('ZIP'));
+        } else {
+          _print(_safe('Postal'));
+        }
+        _print(_safe(' Code\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));

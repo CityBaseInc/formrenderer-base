@@ -47,7 +47,9 @@
 <div class='fr_input_grid'>
   <% unless format in ['city_state', 'country']: %>
     <div class='fr_item_half'>
-      <label class="fr_sub_label">Postal / ZIP Code</label>
+      <label class="fr_sub_label">
+        <% if @model.get('value.country') == 'US': %>ZIP<% else: %>Postal<% end %> Code
+      </label>
       <input type="text"
              data-rv-input='model.value.zipcode' />
     </div>

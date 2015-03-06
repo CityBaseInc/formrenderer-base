@@ -31,7 +31,7 @@
       </label>
 
       <% if @model.get('value.country') in ['US', 'CA']: %>
-        <select data-rv-value='model.value.state' data-width='auto'>
+        <select data-rv-value='model.value.state' data-width='100%'>
           <option></option>
           <% for x in FormRenderer["PROVINCES_#{@model.get('value.country')}"]: %>
             <option value='<%= x %>'><%= x %></option>
@@ -58,7 +58,7 @@
   <% unless format in ['city_state', 'city_state_zip']: %>
     <div class='fr_item_half'>
       <label class="fr_sub_label">Country</label>
-      <select data-rv-value='model.value.country' data-width='auto'>
+      <select data-rv-value='model.value.country' data-width='100%'>
         <% for x in FormRenderer.ORDERED_COUNTRIES: %>
           <option value='<%= x %>'><%= ISOCountryNames[x] || '---' %></option>
         <% end %>

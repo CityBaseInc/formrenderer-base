@@ -8030,7 +8030,7 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n      </label>\n\n      '));
         if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
-          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'auto\'>\n          <option></option>\n          '));
+          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\'>\n          <option></option>\n          '));
           _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             x = _ref1[_i];
@@ -8062,7 +8062,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\'>\n        '));
         _ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           x = _ref2[_j];

@@ -374,13 +374,18 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Text",
-          field_options: {},
+          field_options: {
+            "columns": [
+            {"label": "FOO"},
+            {"label": "BOO"}
+            ]
+          },
           required: false,
           blind: false,
           admin_only: false,
           created_at: "2014-08-22T20:50:37.152Z",
           updated_at: "2014-08-22T20:50:37.152Z",
-          field_type: "text",
+          field_type: "table",
           cid: null
         }
       ],

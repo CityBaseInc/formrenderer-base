@@ -460,3 +460,6 @@ FormRenderer.PROVINCES_US = [
   'Wisconsin',
   'Wyoming'
 ]
+
+FormRenderer.ADD_ROW_LINK = '+ Add another row'
+FormRenderer.REMOVE_ROW_LINK = '-'

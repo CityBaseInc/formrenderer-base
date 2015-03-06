@@ -182,6 +182,12 @@ abbr[title="required"] {
   display: inline;
   width: auto; }
 
+.fr_table_col_remove {
+  width: 25px;
+  padding-left: 0;
+  text-align: center;
+  vertical-align: middle; }
+
 .fr_error_alert_bar {
   background-color: #c12f2e;
   color: #fff;

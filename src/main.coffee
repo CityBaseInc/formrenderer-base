@@ -380,3 +380,6 @@ FormRenderer.getLength = (wordsOrChars, val) ->
     (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
   else
     _.str.trim(val).replace(/\s/g, '').length
+
+FormRenderer.ADD_ROW_LINK = '+ Add another row'
+FormRenderer.REMOVE_ROW_LINK = '-'

@@ -47,7 +47,8 @@ FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
 FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   field_type: 'table'
   events:
-    'click [data-js-add-row]': 'addRow'
+    'click .js-add-row': 'addRow'
+    'click .js-remove-row': 'removeRow'
 
   initialize: ->
     FormRenderer.Views.ResponseField::initialize.apply @, arguments
@@ -64,8 +65,34 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     # Temporarily remove -- this is a major performance hit.
     # @$el.find('textarea').expanding()
 
+  canRemoveRows: ->
+    @model.numRows > Math.max(1, @model.minRows())
+
   addRow: ->
     @model.numRows++
+    @render()
+
+  # Loop through rows, decreasing index for rows above the current row
+  removeRow: (e) ->
+    idx = $(e.currentTarget).closest('[data-row-index]').data('row-index')
+    modelVal = @model.get('value')
+    newVal = {}
+
+    for col, vals of modelVal
+      newVal[col] = _.tap {}, (h) ->
+        for i, val of vals
+          i = parseInt(i, 10)
+
+          if i < idx
+            h[i] = val
+          else if i > idx
+            h[i - 1] = val
+
+          # if i == idx, this is the row being removed
+
+    @model.numRows--
+    @model.attributes.value = newVal # setting this directly.. ugh
+    @model.trigger('change change:value')
     @render()
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend

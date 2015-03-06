@@ -6691,6 +6691,10 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     }
   };
 
+  FormRenderer.ADD_ROW_LINK = '+ Add another row';
+
+  FormRenderer.REMOVE_ROW_LINK = '-';
+
 }).call(this);
 
 (function() {
@@ -7737,7 +7741,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
     events: {
-      'click [data-js-add-row]': 'addRow'
+      'click .js-add-row': 'addRow',
+      'click .js-remove-row': 'removeRow'
     },
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -7751,8 +7756,40 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this;
     },
     initExpanding: function() {},
+    canRemoveRows: function() {
+      return this.model.numRows > Math.max(1, this.model.minRows());
+    },
     addRow: function() {
       this.model.numRows++;
+      return this.render();
+    },
+    removeRow: function(e) {
+      var col, idx, modelVal, newVal, vals;
+      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
+      modelVal = this.model.get('value');
+      newVal = {};
+      for (col in modelVal) {
+        vals = modelVal[col];
+        newVal[col] = _.tap({}, function(h) {
+          var i, val, _results;
+          _results = [];
+          for (i in vals) {
+            val = vals[i];
+            i = parseInt(i, 10);
+            if (i < idx) {
+              _results.push(h[i] = val);
+            } else if (i > idx) {
+              _results.push(h[i - 1] = val);
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        });
+      }
+      this.model.numRows--;
+      this.model.attributes.value = newVal;
+      this.model.trigger('change change:value');
       return this.render();
     }
   });
@@ -8854,10 +8891,12 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('</th>\n      '));
       }
     
-      _print(_safe('\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
+      _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
       for (i = _j = 0, _ref1 = this.model.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        _print(_safe('\n      <tr>\n        '));
+        _print(_safe('\n      <tr data-row-index="'));
+        _print(i);
+        _print(_safe('">\n        '));
         _ref2 = this.model.getColumns();
         for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
           column = _ref2[j];
@@ -8875,7 +8914,13 @@ window.JST["fields/table"] = function(__obj) {
           _print(i);
           _print(_safe('\'\n                      rows=\'1\' />\n          </td>\n        '));
         }
-        _print(_safe('\n      </tr>\n    '));
+        _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
+        if (this.canRemoveRows()) {
+          _print(_safe('\n            <a class=\'js-remove-row\' href=\'javascript:void(0)\'>\n              '));
+          _print(_safe(FormRenderer.REMOVE_ROW_LINK));
+          _print(_safe('\n            </a>\n          '));
+        }
+        _print(_safe('\n        </td>\n      </tr>\n    '));
       }
     
       _print(_safe('\n  </tbody>\n\n  '));
@@ -8895,9 +8940,9 @@ window.JST["fields/table"] = function(__obj) {
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    '));
-        _print(_safe(JST["partials/add_row_link"](this)));
-        _print(_safe('\n  '));
+        _print(_safe('\n    <a class=\'js-add-row\' href=\'javascript:void(0)\'>\n      '));
+        _print(_safe(FormRenderer.ADD_ROW_LINK));
+        _print(_safe('\n    </a>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -9103,51 +9148,6 @@ window.JST["main"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_loading\'>\n  Loading form...\n</div>'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/add_row_link"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      _print(_safe('<a data-js-add-row href=\'javascript:void(0)\'>+ Add another row</a>\n'));
     
     }).call(this);
     

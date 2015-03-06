@@ -4,12 +4,14 @@
       <% for column in @model.getColumns(): %>
         <th><%= column.label %></th>
       <% end %>
+
+      <th class='fr_table_col_remove'></th>
     </tr>
   </thead>
 
   <tbody>
     <% for i in [0..(@model.numRows - 1)]: %>
-      <tr>
+      <tr data-row-index="<%= i %>">
         <% for column, j in @model.getColumns(): %>
           <td>
             <textarea <% if @model.getPresetValue(column.label, i): %>readonly<% end %>
@@ -19,6 +21,14 @@
                       rows='1' />
           </td>
         <% end %>
+
+        <td class='fr_table_col_remove'>
+          <% if @canRemoveRows(): %>
+            <a class='js-remove-row' href='javascript:void(0)'>
+              <%- FormRenderer.REMOVE_ROW_LINK %>
+            </a>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
@@ -36,6 +46,8 @@
 
 <div class='fr_table_add_row_wrapper'>
   <% if @model.canAddRows(): %>
-    <%- JST["partials/add_row_link"](@) %>
+    <a class='js-add-row' href='javascript:void(0)'>
+      <%- FormRenderer.ADD_ROW_LINK %>
+    </a>
   <% end %>
 </div>

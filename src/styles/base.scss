@@ -261,5 +261,12 @@ abbr[title="required"] {
   }
 }
 
+.fr_table_col_remove {
+  width: 25px;
+  padding-left: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
 @import "error_alert_bar";
 @import "pagination";

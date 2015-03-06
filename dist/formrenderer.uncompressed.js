@@ -7108,14 +7108,14 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     },
     hasLengthValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.minlength') || this.get('field_options.maxlength');
+      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.minlength') || this.get('field_options.maxlength'));
     },
     calculateLength: function() {
       return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
     },
     hasMinMaxValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.min') || this.get('field_options.max');
+      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.min') || this.get('field_options.max'));
     },
     getLengthValidationUnits: function() {
       return this.get('field_options.min_max_length_units') || 'characters';

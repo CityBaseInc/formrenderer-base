@@ -6,7 +6,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-eco')
   grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-contrib-uglify')
-  grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-release')
@@ -42,14 +41,6 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/models.coffee'
             '<%= srcFolder %>/views/*.coffee'
           ]
-
-    copy:
-      css:
-        src: '<%= distFolder %>/formrenderer.css'
-        dest: '/Users/dobt/Documents/screendoor-v2/app/assets/stylesheets/respondent_view/formrenderer.css'
-      js:
-        src: '<%= distFolder %>/formrenderer.standalone.js'
-        dest: '/Users/dobt/Documents/screendoor-v2/app/assets/javascripts/respondent_view/formrenderer.standalone.js'
 
     concat:
       all:
@@ -112,7 +103,7 @@ module.exports = (grunt) ->
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]
-        tasks: 'all'
+        tasks: 'default'
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
         tasks: 'test'
@@ -153,5 +144,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
-  grunt.registerTask 'all', ['default', 'dist', 'copy:css', 'copy:js']
+  grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

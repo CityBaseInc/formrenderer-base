@@ -5,14 +5,14 @@ abbr[title="required"] {
 }
 
 .fr_page {
-  line-height: $line_height;
+  line-height: $lineHeight;
   max-width: $maxFieldWidth;
 }
 
 .fr_loading {
   color: #999;
-  font-size: $font_size * $ratio;
-  padding: $line_height 0;
+  font-size: $fontSize * $ratio;
+  padding: $lineHeight 0;
   text-align: center;
 }
 
@@ -26,7 +26,7 @@ abbr[title="required"] {
 
 input[type="text"],
 select {
-  height: $input_height;
+  height: $inputHeight;
 }
 
 .fr_clear {
@@ -56,7 +56,7 @@ select {
 }
 
 .fr_response_field {
-  margin-bottom: $line_height;
+  margin-bottom: $lineHeight;
   &.error {
     input, textarea {
       border: 1px solid $errorColor;
@@ -65,7 +65,7 @@ select {
 }
 
 .fr_description {
-  font-size: $font_size_small;
+  font-size: $fontSizeSmall;
 }
 
 .fr_bottom_bar {
@@ -130,13 +130,13 @@ select {
 }
 
 .fr_item_spacer {
-  margin-top: $line_height;
-  line-height: $input_height;
-  padding: 0 $font_size / 2;
+  margin-top: $lineHeight;
+  line-height: $inputHeight;
+  padding: 0 $fontSize / 2;
 }
 
 .fr_sub_label {
-  font-size: $font_size_small;
+  font-size: $fontSizeSmall;
   color: #888;
 }
 
@@ -173,7 +173,7 @@ select {
 
 .fr_map_wrapper {
   width: 100%;
-  height: $line_height * 10;
+  height: $lineHeight * 10;
   position: relative;
   border: 1px solid #ddd;
   border-radius: $radius;
@@ -181,7 +181,7 @@ select {
 
 .fr_map_map {
   width: 100%;
-  height: $line_height * 9;
+  height: $lineHeight * 9;
   @include border_top_radius($radius);
 }
 
@@ -194,19 +194,19 @@ select {
   z-index: 10;
   background: rgba(#fff,0.4);
   text-align: center;
-  padding-top: $line_height * 4.5;
-  font-size: $font_size * $ratio;
+  padding-top: $lineHeight * 4.5;
+  font-size: $fontSize * $ratio;
   color: #666;
   font-weight: normal;
   cursor: pointer;
 }
 
 .fr_map_toolbar {
-  height: $line_height;
-  line-height: $line_height;
+  height: $lineHeight;
+  line-height: $lineHeight;
   padding: 0 $rhythm;
   background-color: #eee;
-  font-size: $font_size_small;
+  font-size: $fontSizeSmall;
   @include border_bottom_radius($radius);
   a {
     float: right;
@@ -243,19 +243,19 @@ select {
   .size_small {
     width: 12rem;
     textarea {
-      height: $line_height * 3;
+      height: $lineHeight * 3;
     }
   }
   .size_medium {
     width: 24rem;
     textarea {
-      height: $line_height * 5;
+      height: $lineHeight * 5;
     }
   }
   .size_large {
     width: 100%;
     textarea {
-      height: $line_height * 8;
+      height: $lineHeight * 8;
     }
   }
 }
@@ -264,18 +264,18 @@ select {
 .fr_response_field_block_of_text,
 .fr_response_field_section_break {
   .size_small {
-    font-size: $font_size_small;
+    font-size: $fontSizeSmall;
   }
   .size_medium,
   .size_large {
     line-height: $rhythm * 3;
   }
   .size_medium {
-    font-size: $font_size * $ratio;
+    font-size: $fontSize * $ratio;
   }
-  
+
   .size_large {
-    font-size: $font_size * $ratio * $ratio;
+    font-size: $fontSize * $ratio * $ratio;
   }
 }
 
@@ -285,7 +285,7 @@ select {
   }
   .size_small {
     .fr_section_name {
-      font-size: $font_size;
+      font-size: $fontSize;
     }
   }
 }

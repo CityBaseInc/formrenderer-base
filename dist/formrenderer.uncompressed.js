@@ -1224,21 +1224,17 @@ function log() {
 		storage
 
 	store.disabled = false
-	store.version = '1.3.17'
 	store.set = function(key, value) {}
-	store.get = function(key, defaultVal) {}
-	store.has = function(key) { return store.get(key) !== undefined }
+	store.get = function(key) {}
 	store.remove = function(key) {}
 	store.clear = function() {}
 	store.transact = function(key, defaultVal, transactionFn) {
+		var val = store.get(key)
 		if (transactionFn == null) {
 			transactionFn = defaultVal
 			defaultVal = null
 		}
-		if (defaultVal == null) {
-			defaultVal = {}
-		}
-		var val = store.get(key, defaultVal)
+		if (typeof val == 'undefined') { val = defaultVal || {} }
 		transactionFn(val)
 		store.set(key, val)
 	}
@@ -1269,10 +1265,7 @@ function log() {
 			storage.setItem(key, store.serialize(val))
 			return val
 		}
-		store.get = function(key, defaultVal) {
-			var val = store.deserialize(storage.getItem(key))
-			return (val === undefined ? defaultVal : val)
-		}
+		store.get = function(key) { return store.deserialize(storage.getItem(key)) }
 		store.remove = function(key) { storage.removeItem(key) }
 		store.clear = function() { storage.clear() }
 		store.getAll = function() {
@@ -1314,7 +1307,7 @@ function log() {
 			storage = doc.createElement('div')
 			storageOwner = doc.body
 		}
-		var withIEStorage = function(storeFunction) {
+		function withIEStorage(storeFunction) {
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0)
 				args.unshift(storage)
@@ -1343,10 +1336,9 @@ function log() {
 			storage.save(localStorageName)
 			return val
 		})
-		store.get = withIEStorage(function(storage, key, defaultVal) {
+		store.get = withIEStorage(function(storage, key) {
 			key = ieKeyFix(key)
-			var val = store.deserialize(storage.getAttribute(key))
-			return (val === undefined ? defaultVal : val)
+			return store.deserialize(storage.getAttribute(key))
 		})
 		store.remove = withIEStorage(function(storage, key) {
 			key = ieKeyFix(key)
@@ -8463,7 +8455,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    <a class="fr_map_clear" data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear Location</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class="fr_map_coord">\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class="fr_map_clear" data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear Location</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -8871,7 +8863,7 @@ window.JST["fields/table"] = function(__obj) {
           column = _ref2[j];
           _print(_safe('\n          <td>\n            <textarea '));
           if (this.model.getPresetValue(column.label, i)) {
-            _print(_safe('disabled'));
+            _print(_safe('readonly'));
           }
           _print(_safe('\n                      data-col=\''));
           _print(j);

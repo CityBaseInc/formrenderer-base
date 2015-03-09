@@ -1,6 +1,6 @@
 {
   "name": "formrenderer-base",
-  "version": "0.4.0-rc2",
+  "version": "0.4.0-rc3",
   "authors": [
     "ajb <adam@dobt.co>"
   ],
@@ -14,11 +14,7 @@
   ],
   "main": [
     "dist/formrenderer.css",
-    "dist/formrenderer.js",
-    "src/styles/includes.scss",
-    "src/styles/base.scss",
-    "src/styles/error_alert_bar.scss",
-    "src/styles/pagination.scss"
+    "dist/formrenderer.js"
   ],
   "dependencies": {
     "backbone": "~1.1.2",

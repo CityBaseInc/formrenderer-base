@@ -128,7 +128,11 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
       @set('value.country', 'US') unless x?.country
 
   hasValue: ->
-    @hasValueHashKey ['street', 'city', 'state', 'zipcode']
+    if @get('field_options.address_format') == 'country'
+      !!@get('value.country')
+    else
+      # Don't accept "country" as a present value, since it's set by default
+      @hasValueHashKey ['street', 'city', 'state', 'zipcode']
 
   toText: ->
     _.values(_.pick(@getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ')

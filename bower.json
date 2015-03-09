@@ -14,7 +14,11 @@
   ],
   "main": [
     "dist/formrenderer.css",
-    "dist/formrenderer.js"
+    "dist/formrenderer.js",
+    "src/styles/includes.scss",
+    "src/styles/base.scss",
+    "src/styles/error_alert_bar.scss",
+    "src/styles/pagination.scss"
   ],
   "dependencies": {
     "backbone": "~1.1.2",

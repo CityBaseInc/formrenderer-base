@@ -7219,7 +7219,11 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     hasValue: function() {
-      return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
+      if (this.get('field_options.address_format') === 'country') {
+        return !!this.get('value.country');
+      } else {
+        return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
+      }
     },
     toText: function() {
       return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');

@@ -59,6 +59,7 @@
     <div class='fr_item_half'>
       <label class="fr_sub_label">Country</label>
       <select data-rv-value='model.value.country' data-width='100%'>
+        <option value=''>Select a country</option>
         <% for x in FormRenderer.ORDERED_COUNTRIES: %>
           <option value='<%= x %>'><%= ISOCountryNames[x] || '---' %></option>
         <% end %>

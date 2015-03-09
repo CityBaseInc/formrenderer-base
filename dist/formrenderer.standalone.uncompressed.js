@@ -49,7 +49,7 @@
 }).call(this);
 
 (function() {
-  var FormRenderer;
+  var FormRenderer, commonCountries;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -567,6 +567,18 @@
     }
   };
 
+  commonCountries = ['US', 'GB', 'CA'];
+
+  FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
+
+  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
+
+  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+
+  FormRenderer.ADD_ROW_LINK = '+ Add another row';
+
+  FormRenderer.REMOVE_ROW_LINK = '-';
+
 }).call(this);
 
 (function() {
@@ -972,14 +984,14 @@
     },
     hasLengthValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.minlength') || this.get('field_options.maxlength');
+      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.minlength') || this.get('field_options.maxlength'));
     },
     calculateLength: function() {
       return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
     },
     hasMinMaxValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && this.get('field_options.min') || this.get('field_options.max');
+      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.min') || this.get('field_options.max'));
     },
     getLengthValidationUnits: function() {
       return this.get('field_options.min_max_length_units') || 'characters';
@@ -1613,7 +1625,8 @@
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
     events: {
-      'click [data-js-add-row]': 'addRow'
+      'click .js-add-row': 'addRow',
+      'click .js-remove-row': 'removeRow'
     },
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -1627,8 +1640,42 @@
       return this;
     },
     initExpanding: function() {},
+    canRemoveRow: function(rowIdx) {
+      var min;
+      min = Math.max(1, this.model.minRows());
+      return rowIdx > (min - 1);
+    },
     addRow: function() {
       this.model.numRows++;
+      return this.render();
+    },
+    removeRow: function(e) {
+      var col, idx, modelVal, newVal, vals;
+      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
+      modelVal = this.model.get('value');
+      newVal = {};
+      for (col in modelVal) {
+        vals = modelVal[col];
+        newVal[col] = _.tap({}, function(h) {
+          var i, val, _results;
+          _results = [];
+          for (i in vals) {
+            val = vals[i];
+            i = parseInt(i, 10);
+            if (i < idx) {
+              _results.push(h[i] = val);
+            } else if (i > idx) {
+              _results.push(h[i - 1] = val);
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        });
+      }
+      this.model.numRows--;
+      this.model.attributes.value = newVal;
+      this.model.trigger('change change:value');
       return this.render();
     }
   });
@@ -1786,7 +1833,15 @@
     }
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'table', 'file', 'map_marker', 'price');
+  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
+    field_type: 'address',
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.listenTo(this.model, 'change:value.country', this.render);
+    }
+  });
+
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.ResponseField.extend({
@@ -1828,7 +1883,7 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var format, k, v;
+      var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     
       format = this.model.get('field_options.address_format');
     
@@ -1843,25 +1898,56 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">State / Province / Region</label>\n      <input type="text"\n             data-rv-input=\'model.value.state\' />\n    </div>\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        if (this.model.get('value.country') === 'US') {
+          _print(_safe('\n          State\n        '));
+        } else if (this.model.get('value.country') === 'CA') {
+          _print(_safe('\n          Province\n        '));
+        } else {
+          _print(_safe('\n          State / Province / Region\n        '));
+        }
+        _print(_safe('\n      </label>\n\n      '));
+        if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
+          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\'>\n          <option></option>\n          '));
+          _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            x = _ref1[_i];
+            _print(_safe('\n            <option value=\''));
+            _print(x);
+            _print(_safe('\'>'));
+            _print(x);
+            _print(_safe('</option>\n          '));
+          }
+          _print(_safe('\n        </select>\n      '));
+        } else {
+          _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' />\n      '));
+        }
+        _print(_safe('\n    </div>\n  </div>\n'));
       }
     
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">ZIP Code</label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        if (this.model.get('value.country') === 'US') {
+          _print(_safe('ZIP'));
+        } else {
+          _print(_safe('Postal'));
+        }
+        _print(_safe(' Code\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'auto\'>\n        '));
-        for (k in ISOCountryNames) {
-          v = ISOCountryNames[k];
+        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\'>\n        '));
+        _ref2 = FormRenderer.ORDERED_COUNTRIES;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          x = _ref2[_j];
           _print(_safe('\n          <option value=\''));
-          _print(k);
+          _print(x);
           _print(_safe('\'>'));
-          _print(v);
+          _print(ISOCountryNames[x] || '---');
           _print(_safe('</option>\n        '));
         }
         _print(_safe('\n      </select>\n    </div>\n  '));
@@ -2730,10 +2816,12 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('</th>\n      '));
       }
     
-      _print(_safe('\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
+      _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
       for (i = _j = 0, _ref1 = this.model.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        _print(_safe('\n      <tr>\n        '));
+        _print(_safe('\n      <tr data-row-index="'));
+        _print(i);
+        _print(_safe('">\n        '));
         _ref2 = this.model.getColumns();
         for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
           column = _ref2[j];
@@ -2751,7 +2839,13 @@ window.JST["fields/table"] = function(__obj) {
           _print(i);
           _print(_safe('\'\n                      rows=\'1\' />\n          </td>\n        '));
         }
-        _print(_safe('\n      </tr>\n    '));
+        _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
+        if (this.canRemoveRow(i)) {
+          _print(_safe('\n            <a class=\'js-remove-row\' href=\'javascript:void(0)\'>\n              '));
+          _print(_safe(FormRenderer.REMOVE_ROW_LINK));
+          _print(_safe('\n            </a>\n          '));
+        }
+        _print(_safe('\n        </td>\n      </tr>\n    '));
       }
     
       _print(_safe('\n  </tbody>\n\n  '));
@@ -2771,9 +2865,9 @@ window.JST["fields/table"] = function(__obj) {
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    '));
-        _print(_safe(JST["partials/add_row_link"](this)));
-        _print(_safe('\n  '));
+        _print(_safe('\n    <a class=\'js-add-row\' href=\'javascript:void(0)\'>\n      '));
+        _print(_safe(FormRenderer.ADD_ROW_LINK));
+        _print(_safe('\n    </a>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -2979,51 +3073,6 @@ window.JST["main"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_loading\'>\n  Loading form...\n</div>'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/add_row_link"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      _print(_safe('<a data-js-add-row href=\'javascript:void(0)\'>+ Add another row</a>\n'));
     
     }).call(this);
     

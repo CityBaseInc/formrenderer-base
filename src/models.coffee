@@ -34,7 +34,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
   hasLengthValidations: ->
     (FormRenderer.Validators.MinMaxLengthValidator in @validators) &&
-    @get('field_options.minlength') || @get('field_options.maxlength')
+    (@get('field_options.minlength') || @get('field_options.maxlength'))
 
   calculateLength: ->
     @set(
@@ -44,7 +44,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
   hasMinMaxValidations: ->
     (FormRenderer.Validators.MinMaxValidator in @validators) &&
-    @get('field_options.min') || @get('field_options.max')
+    (@get('field_options.min') || @get('field_options.max'))
 
   getLengthValidationUnits: ->
     @get('field_options.min_max_length_units') || 'characters'

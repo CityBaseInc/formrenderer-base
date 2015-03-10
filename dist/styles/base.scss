@@ -1,32 +1,32 @@
 @import "includes";
 
 abbr[title="required"] {
-  color: $errorColor;
+  color: $fr_error_color;
 }
 
 .fr_page {
-  line-height: $lineHeight;
-  max-width: $maxFieldWidth;
+  line-height: $fr_line_height;
+  max-width: $fr_max_field_width;
 }
 
 .fr_loading {
   color: #999;
-  font-size: $fontSize * $ratio;
-  padding: $lineHeight 0;
+  font-size: $fr_font_size * $fr_ratio;
+  padding: $fr_line_height 0;
   text-align: center;
 }
 
 .fr_error {
-  color: $errorColor;
+  color: $fr_error_color;
 }
 
 .fr_error_alert_bar {
-  color: $errorColor;
+  color: $fr_error_color;
 }
 
 input[type="text"],
 select {
-  height: $inputHeight;
+  height: $fr_input_height;
 }
 
 .fr_clear {
@@ -56,23 +56,23 @@ select {
 }
 
 .fr_response_field {
-  margin-bottom: $lineHeight;
+  margin-bottom: $fr_line_height;
   &.error {
     input, textarea {
-      border: 1px solid $errorColor;
+      border: 1px solid $fr_error_color;
     }
   }
 }
 
 .fr_description {
-  font-size: $fontSizeSmall;
+  font-size: $fr_font_size_small;
 }
 
 .fr_bottom_bar {
   display: table;
   width: 100%;
   padding: 20px;
-  background-color: $lightGray;
+  background-color: $fr_light_gray;
 }
 
 .fr_bottom_bar_l,
@@ -92,7 +92,7 @@ select {
   @include cf;
   width: 100%;
   + .fr_input_grid {
-    margin-top: $rhythm;
+    margin-top: $fr_rhythm;
   }
 }
 
@@ -130,13 +130,13 @@ select {
 }
 
 .fr_item_spacer {
-  margin-top: $lineHeight;
-  line-height: $inputHeight;
-  padding: 0 $fontSize / 2;
+  margin-top: $fr_line_height;
+  line-height: $fr_input_height;
+  padding: 0 $fr_font_size / 2;
 }
 
 .fr_sub_label {
-  font-size: $fontSizeSmall;
+  font-size: $fr_font_size_small;
   color: #888;
 }
 
@@ -167,13 +167,13 @@ select {
 
 .upload_status {
   &.is_error {
-    color: $errorColor;
+    color: $fr_error_color;
   }
 }
 
 .fr_map_wrapper {
   width: 100%;
-  height: $lineHeight * 10;
+  height: $fr_line_height * 10;
   position: relative;
   border: 1px solid #ddd;
   border-radius: $radius;
@@ -181,7 +181,7 @@ select {
 
 .fr_map_map {
   width: 100%;
-  height: $lineHeight * 9;
+  height: $fr_line_height * 9;
   @include border_top_radius($radius);
 }
 
@@ -194,19 +194,19 @@ select {
   z-index: 10;
   background: rgba(#fff,0.4);
   text-align: center;
-  padding-top: $lineHeight * 4.5;
-  font-size: $fontSize * $ratio;
+  padding-top: $fr_line_height * 4.5;
+  font-size: $fr_font_size * $fr_ratio;
   color: #666;
   font-weight: normal;
   cursor: pointer;
 }
 
 .fr_map_toolbar {
-  height: $lineHeight;
-  line-height: $lineHeight;
-  padding: 0 $rhythm;
+  height: $fr_line_height;
+  line-height: $fr_line_height;
+  padding: 0 $fr_rhythm;
   background-color: #eee;
-  font-size: $fontSizeSmall;
+  font-size: $fr_font_size_small;
   @include border_bottom_radius($radius);
   a {
     float: right;
@@ -243,19 +243,19 @@ select {
   .size_small {
     width: 12rem;
     textarea {
-      height: $lineHeight * 3;
+      height: $fr_line_height * 3;
     }
   }
   .size_medium {
     width: 24rem;
     textarea {
-      height: $lineHeight * 5;
+      height: $fr_line_height * 5;
     }
   }
   .size_large {
     width: 100%;
     textarea {
-      height: $lineHeight * 8;
+      height: $fr_line_height * 8;
     }
   }
 }
@@ -264,18 +264,18 @@ select {
 .fr_response_field_block_of_text,
 .fr_response_field_section_break {
   .size_small {
-    font-size: $fontSizeSmall;
+    font-size: $fr_font_size_small;
   }
   .size_medium,
   .size_large {
-    line-height: $rhythm * 3;
+    line-height: $fr_rhythm * 3;
   }
   .size_medium {
-    font-size: $fontSize * $ratio;
+    font-size: $fr_font_size * $fr_ratio;
   }
 
   .size_large {
-    font-size: $fontSize * $ratio * $ratio;
+    font-size: $fr_font_size * $fr_ratio * $fr_ratio;
   }
 }
 
@@ -285,7 +285,7 @@ select {
   }
   .size_small {
     .fr_section_name {
-      font-size: $fontSize;
+      font-size: $fr_font_size;
     }
   }
 }

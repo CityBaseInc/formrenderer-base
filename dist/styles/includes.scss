@@ -1,13 +1,13 @@
-$maxFieldWidth: 30rem;
-$errorColor: #c12f2e;
-$lightGray: #eee;
+$fr_max_field_width: 30rem;
+$fr_error_color: #c12f2e;
+$fr_light_gray: #eee;
 
-$fontSize: 1rem;
-$fontSizeSmall: 0.875rem;
-$rhythm: 0.75rem; // Vertical rhythm
-$lineHeight: $rhythm * 2;
-$ratio: 1.25; // Ratio for proportional font sizes
-$inputHeight: $rhythm * 3; // Height of inputs
+$fr_font_size: 1rem;
+$fr_font_size_small: 0.875rem;
+$fr_rhythm: 0.75rem; // Vertical rhythm
+$fr_line_height: $fr_rhythm * 2;
+$fr_ratio: 1.25; // Ratio for proportional font sizes
+$fr_input_height: $fr_rhythm * 3; // Height of inputs
 
 $radius: 3px; // Border radius
 

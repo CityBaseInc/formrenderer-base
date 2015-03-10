@@ -1,8 +1,8 @@
 @import 'includes';
 
 .fr_error_alert_bar {
-  background-color: $errorColor;
+  background-color: $fr_error_color;
   color: #fff;
-  padding: $rhythm;
-  margin-bottom: $lineHeight;
+  padding: $fr_rhythm;
+  margin-bottom: $fr_line_height;
 }

@@ -1057,6 +1057,9 @@
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
+    },
+    getSize: function() {
+      return this.get('field_options.size') || 'small';
     }
   });
 
@@ -1705,9 +1708,8 @@
     },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$el[this.model.hasValue() ? 'addClass' : 'removeClass']('existing');
       this.$input = this.$el.find('input');
-      this.$status = this.$el.find('.upload_status');
+      this.$status = this.$el.find('.js-upload-status');
       this.bindChangeEvent();
       return this;
     },
@@ -1720,7 +1722,7 @@
       this.model.set('value.filename', newFilename, {
         silent: true
       });
-      this.$el.find('.filename').text(newFilename);
+      this.$el.find('.js-filename').text(newFilename);
       this.$status.text('Uploading...');
       return this.doUpload();
     },
@@ -1764,7 +1766,7 @@
             var errorText, _ref;
             errorText = (_ref = data.responseJSON) != null ? _ref.errors : void 0;
             _this.$status.text(errorText ? "Error: " + errorText : 'Error');
-            _this.$status.addClass('is_error');
+            _this.$status.addClass('fr_error');
             return setTimeout(function() {
               return _this.render();
             }, 2000);
@@ -1908,7 +1910,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_full\'>\n      <label class="fr_sub_label">Address</label>\n      <input type="text"\n             id="'));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label">Address</label>\n      <input type="text"\n             id="'));
         _print(this.getDomId());
         _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
@@ -1916,7 +1918,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          State\n        '));
         } else if (this.model.get('value.country') === 'CA') {
@@ -1946,7 +1948,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">\n        '));
+        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('ZIP'));
         } else {
@@ -1958,7 +1960,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_item_half\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\'>\n        '));
+        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">Country</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\'>\n        '));
         _ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           x = _ref2[_j];
@@ -2018,7 +2020,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('\'>\n  '));
     
@@ -2132,11 +2134,11 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>/</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">YYYY</label>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n  </div>\n</div>\n'));
+      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">YYYY</label>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -2301,35 +2303,31 @@ window.JST["fields/file"] = function(__obj) {
     (function() {
       var exts;
     
-      _print(_safe('<div class=\'existing\'>\n  <span class=\'filename\'>'));
-    
-      _print(this.model.get('value.filename'));
-    
-      _print(_safe('</span>\n  <button data-js-remove class=\''));
-    
-      _print(FormRenderer.BUTTON_CLASS);
-    
-      _print(_safe('\'>Remove</button>\n</div>\n\n<div class=\'not_existing\'>\n  <input type=\'file\'\n         id=\''));
-    
-      _print(this.getDomId());
-    
-      _print(_safe('\'\n         name=\'file\'\n         '));
-    
-      if ((exts = this.model.getAcceptedExtensions())) {
-        _print(_safe('\n          accept=\''));
-        _print(exts.join(','));
-        _print(_safe('\'\n         '));
+      if (this.model.hasValue()) {
+        _print(_safe('\n  <span class=\'js-filename\'>'));
+        _print(this.model.get('value.filename'));
+        _print(_safe('</span>\n  <button data-js-remove class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>Remove</button>\n'));
+      } else {
+        _print(_safe('\n  <input type=\'file\'\n         id=\''));
+        _print(this.getDomId());
+        _print(_safe('\'\n         name=\'file\'\n         '));
+        if ((exts = this.model.getAcceptedExtensions())) {
+          _print(_safe('\n          accept=\''));
+          _print(exts.join(','));
+          _print(_safe('\'\n         '));
+        }
+        _print(_safe('\n         />\n  <span class=\'js-upload-status\'></span>\n\n  '));
+        if ((exts = this.model.getAcceptedExtensions())) {
+          _print(_safe('\n    <div class=\'fr_description\'>\n      We\'ll accept '));
+          _print(_.str.toSentence(exts));
+          _print(_safe('\n    </div>\n  '));
+        }
+        _print(_safe('\n'));
       }
     
-      _print(_safe('\n         />\n  <span class=\'upload_status\'></span>\n\n  '));
-    
-      if ((exts = this.model.getAcceptedExtensions())) {
-        _print(_safe('\n    <div class=\'file_type_help\'>\n      We\'ll accept '));
-        _print(_.str.toSentence(exts));
-        _print(_safe('\n    </div>\n  '));
-      }
-    
-      _print(_safe('\n</div>\n'));
+      _print(_safe('\n'));
     
     }).call(this);
     
@@ -2374,19 +2372,19 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_full lap_fr_item_half\'>\n    <label for=\''));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_full lap_fr_half\'>\n    <label for=\''));
     
       _print(this.getDomId());
     
-      _print(_safe('-name\'>Name <abbr title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
+      _print(_safe('-name\'>Name <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
     
       _print(this.getDomId());
     
-      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_item_full lap_fr_item_half\'>\n    <label for=\''));
+      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_full lap_fr_half\'>\n    <label for=\''));
     
       _print(this.getDomId());
     
-      _print(_safe('-email\'>Email <abbr title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
+      _print(_safe('-email\'>Email <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
     
       _print(this.getDomId());
     
@@ -2435,7 +2433,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <strong>Coordinates:</strong>\n    <span data-rv-show=\'model.value.lat\'>\n      <span data-rv-text=\'model.value.lat\' />,\n      <span data-rv-text=\'model.value.lng\' />\n    </span>\n    <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    <a data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -2487,7 +2485,7 @@ window.JST["fields/number"] = function(__obj) {
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n\n'));
     
       if (this.model.get('field_options.units')) {
-        _print(_safe('\n  <span class=\'units\'>\n    '));
+        _print(_safe('\n  <span class=\'fr_units\'>\n    '));
         _print(this.model.get('field_options.units'));
         _print(_safe('\n  </span>\n'));
       }
@@ -2588,7 +2586,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     
       _print(_safe('"\n   class="size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
     
@@ -2635,14 +2633,14 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_spacer\'>$</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">Dollars</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">Dollars</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
       _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_cents')) {
-        _print(_safe('\n    <div class=\'fr_item_spacer\'>.</div>\n    <div class=\'fr_item_auto\'>\n      <label class="fr_sub_label">Cents</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">Cents</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -2763,7 +2761,7 @@ window.JST["fields/section_break"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('\'>\n  <div class=\'fr_section_name\'>'));
     
@@ -2939,7 +2937,7 @@ window.JST["fields/text"] = function(__obj) {
     
       _print(_safe('"\n       class="size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
     
@@ -2986,17 +2984,17 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_item_spacer\'>:</div>\n\n  <div class=\'fr_item_auto\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
+      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_seconds')) {
-        _print(_safe('\n    <div class=\'fr_item_spacer\'>:</div>\n\n    <div class=\'fr_item_auto\'>\n      <label class="fr_sub_label">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <div class=\'fr_item_spacer\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
+      _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -3135,10 +3133,10 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_bottom_bar fr_cf\'>\n  '));
+      _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
     
       if (this.form_renderer.options.enableAutosave) {
-        _print(_safe('\n    <div class=\'fr_bottom_bar_l\'>\n      '));
+        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
           _print(_safe('\n        Error saving\n      '));
         } else if (this.form_renderer.state.get('hasChanges')) {
@@ -3149,7 +3147,7 @@ window.JST["partials/bottom_status_bar"] = function(__obj) {
         _print(_safe('\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <div class=\'fr_bottom_bar_r\'>\n    '));
+      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
     
       if (!this.form_renderer.isFirstPage()) {
         _print(_safe('\n      <button data-js-back class=\''));
@@ -3384,7 +3382,7 @@ window.JST["partials/label"] = function(__obj) {
       _print(_safe('\n  '));
     
       if (this.model.get('required')) {
-        _print(_safe('<abbr title=\'required\'>*</abbr>'));
+        _print(_safe('<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
     
       _print(_safe('\n\n  '));
@@ -3638,7 +3636,7 @@ window.JST["partials/pagination"] = function(__obj) {
       var i, idx, _i, _len, _ref;
     
       if (this.form_renderer.visiblePages().length > 1) {
-        _print(_safe('\n  <ul class=\'fr_pagination fr_cf\'>\n    '));
+        _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
         _ref = this.form_renderer.visiblePages();
         for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
           i = _ref[idx];

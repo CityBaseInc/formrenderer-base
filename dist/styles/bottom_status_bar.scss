@@ -1,0 +1,17 @@
+.fr_bottom {
+  display: table;
+  width: 100%;
+}
+
+.fr_bottom_l,
+.fr_bottom_r {
+  display: table-cell;
+}
+
+.fr_bottom_l {
+  text-align: left;
+}
+
+.fr_bottom_r {
+  text-align: right;
+}

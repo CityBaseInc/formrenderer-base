@@ -79,12 +79,14 @@ module.exports = (grunt) ->
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= srcFolder %>/styles/base.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= distFolder %>/styles/main.scss'
+          '<%= distFolder %>/formrenderer.with_extras.uncompressed.css': '<%= distFolder %>/styles/with_extras.scss'
 
     cssmin:
       dist:
         files:
           '<%= distFolder %>/formrenderer.css': '<%= distFolder %>/formrenderer.uncompressed.css'
+          '<%= distFolder %>/formrenderer.with_extras.css': '<%= distFolder %>/formrenderer.with_extras.uncompressed.css'
 
     clean:
       compiled:
@@ -99,7 +101,8 @@ module.exports = (grunt) ->
     watch:
       build:
         files: [
-          '<%= srcFolder %>/**/*.{coffee,eco,scss}',
+          '<%= srcFolder %>/**/*.{coffee,eco}',
+          '<%= distFolder %>/styles/**/*.scss',
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]

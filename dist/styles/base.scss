@@ -1,0 +1,256 @@
+// Border-box is a must
+.fr_form * {
+  box-sizing: border-box;
+}
+
+// Utilities
+.fr_clear {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+}
+
+.fr_cf {
+  &:before,
+  &:after {
+    display: table;
+    content: " ";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+// Loading style
+.fr_loading {
+  color: $fr_muted_color;
+  font-size: $fr_font_large;
+  padding: $fr_rhythm 0;
+  text-align: center;
+}
+
+// Basic error styles
+.fr_required,
+.fr_error {
+  color: $fr_error_color;
+}
+
+.fr_response_field.error {
+  input, textarea {
+    border-color: $fr_error_color;
+  }
+}
+
+// Labels display on their own line
+.fr_response_field {
+  label {
+    display: block;
+  }
+}
+
+// Add vertical rhythm
+.fr_response_field {
+  margin-bottom: $fr_rhythm;
+}
+
+// Add the "grid" for address, date, time, and price fields
+.fr_input_grid {
+  margin: 0 0 0 (-$fr_gutter_width);
+  font-size: 0;
+  width: 100%;
+
+  // A grid item
+  > div {
+    display: inline-block;
+    padding-left: $fr_gutter_width;
+    vertical-align: top;
+    font-size: initial;
+    position: relative;
+
+    // make room for fr_sub_label
+    &.has_sub_label {
+      margin-top: $fr_sub_label_line_height + 0.25em;
+    }
+
+    // inputs in grid get 100% width
+    input,
+    select {
+      width: 100%;
+    }
+  }
+
+  // A piece of content in between grid inputs
+  .fr_spacer {
+    vertical-align: bottom;
+  }
+}
+
+// Style the "sub labels", which are labels for specific grid inputs
+.fr_sub_label {
+  line-height: $fr_sub_label_line_height;
+  color: $fr_muted_color;
+  position: absolute;
+  top: -$fr_sub_label_line_height;
+  left: $fr_gutter_width;
+}
+
+// Grid item widths
+.fr_full { width: 100%; }
+.fr_half { width: 50%; }
+
+@media screen and (min-width: 640px) {
+  .lap_fr_half { width: 50%; }
+}
+
+.fr_response_field_identification {
+  // Identification fields are a bit different than the others,
+  // so remove the main label...
+  > label {
+    display: none;
+  }
+
+  // And ensure that they stack properly on mobile
+  @media screen and (max-width: 639px) {
+    .fr_full:first-child {
+      margin-bottom: $fr_rhythm;
+    }
+  }
+}
+
+// Style the "map marker" input
+.fr_map_wrapper {
+  width: 100%;
+  height: $fr_map_height;
+  position: relative;
+}
+.fr_map_map {
+  width: 100%;
+  height: $fr_map_height - $fr_map_toolbar_height;
+}
+.fr_map_cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: rgba(255,255,255,0.4);
+  text-align: center;
+  padding-top: $fr_map_height / 2 - $fr_rhythm; // vertically "center" the text
+  font-size: $fr_font_large;
+  cursor: pointer;
+}
+.fr_map_toolbar {
+  height: $fr_map_toolbar_height;
+  line-height: $fr_map_toolbar_height;
+  padding: 0 5px;
+  background-color: $fr_light_gray;
+  font-size: $fr_font_small;
+  .fr_map_coord {
+    float: left;
+  }
+  a {
+    float: right;
+  }
+}
+
+// Input sizes
+
+.fr_response_field_text {
+  input {
+    width: $fr_small_width;
+    &.size_medium {
+      width: $fr_medium_width;
+    }
+    &.size_large {
+      width: $fr_large_width;
+    }
+  }
+}
+
+.fr_response_field_email,
+.fr_response_field_website {
+  input {
+    width: $fr_small_med_width;
+  }
+}
+
+.fr_response_field_paragraph textarea {
+  width: $fr_small_width;
+  height: $fr_small_height;
+  &.size_medium {
+    width: $fr_medium_width;
+    height: $fr_medium_height;
+  }
+  &.size_large {
+    width: $fr_large_width;
+    height: $fr_large_height;
+  }
+}
+
+.fr_response_field_block_of_text {
+  .size_medium {
+    font-size: $fr_font_large;
+  }
+  .size_large {
+    font-size: $fr_font_x_large;
+  }
+}
+
+.fr_response_field_section_break {
+  .fr_section_name {
+    font-weight: bold;
+  }
+  p {
+    font-size: $fr_font_small;
+  }
+  .size_medium {
+    .fr_section_name {
+      font-size: $fr_font_large;
+    }
+    p {
+      font-size: $fr_font_normal;
+    }
+  }
+  .size_large {
+    .fr_section_name {
+      font-size: $fr_font_x_large;
+    }
+    p {
+      font-size: $fr_font_large;
+    }
+  }
+}
+
+// Number is always "small"
+.fr_response_field_number {
+  input[type=text] {
+    width: $fr_small_width;
+  }
+
+  .fr_units {
+    font-size: $fr_font_small;
+  }
+}
+
+// Ensure that the "other" option for checkboxes/radios displays properly
+.fr_other_option {
+  label {
+    display: inline;
+  }
+  input[type=text] {
+    display: inline;
+    width: auto;
+  }
+}
+
+// Style for the "remove" column of the table input
+.fr_table_col_remove {
+  width: 25px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}

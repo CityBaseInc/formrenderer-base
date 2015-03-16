@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #eee;
+}
+
+form {
+  margin: 0;
+}
+
+#container {
+  width: 90%;
+  max-width: 800px;
+  background-color: #fff;
+  padding: 1rem;
+  margin: 1rem auto;
+  border: 1px solid #ccc;
+}
+
+.config_select {
+  width: 150px;
+  display: inline;
+  margin-right:; 10px;
+}

@@ -1,0 +1,13 @@
+.fr_pagination {
+  list-style: none;
+  margin: 0 0 $fr_rhythm;
+  padding: 0;
+
+  &:before {
+    content: 'Pages: ';
+  }
+
+  li {
+    display: inline;
+  }
+}

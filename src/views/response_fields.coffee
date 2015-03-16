@@ -102,9 +102,8 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     'click [data-js-remove]': 'doRemove'
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
-    @$el[if @model.hasValue() then 'addClass' else 'removeClass']('existing')
     @$input = @$el.find('input')
-    @$status = @$el.find('.upload_status')
+    @$status = @$el.find('.js-upload-status')
     @bindChangeEvent()
     return @
 
@@ -120,7 +119,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       'Error reading filename'
 
     @model.set 'value.filename', newFilename, silent: true
-    @$el.find('.filename').text newFilename
+    @$el.find('.js-filename').text newFilename
     @$status.text 'Uploading...'
     @doUpload()
 
@@ -151,7 +150,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       error: (data) =>
         errorText = data.responseJSON?.errors
         @$status.text(if errorText then "Error: #{errorText}" else 'Error')
-        @$status.addClass('is_error')
+        @$status.addClass('fr_error')
         setTimeout =>
           @render()
         , 2000

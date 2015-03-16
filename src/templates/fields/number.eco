@@ -3,7 +3,7 @@
        data-rv-input='model.value' />
 
 <% if @model.get('field_options.units'): %>
-  <span class='units'>
+  <span class='fr_units'>
     <%= @model.get('field_options.units') %>
   </span>
 <% end %>

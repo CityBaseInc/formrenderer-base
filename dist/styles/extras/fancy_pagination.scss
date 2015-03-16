@@ -1,13 +1,18 @@
-@import 'includes';
+// Include this stylesheet for a fancier pagination component
+$paginationHeight: 40px;
 
 .fr_pagination {
   list-style: none;
   border-bottom: 3px solid #efefef;
-  margin-bottom: 40px;
+  margin-bottom: $fr_rhythm * 2;
   padding-left: 0;
   display: table;
   width: 100%;
-  height: 40px;
+  height: $paginationHeight;
+  // Override the base pagination :/
+  &:before {
+    content: '';
+  }
   li {
     display: table-cell;
     text-align: center;
@@ -15,10 +20,10 @@
       cursor: pointer;
       position: relative;
       display: inline-block;
-      bottom: -20px;
+      bottom: 0 - ($paginationHeight / 2);
       color: #fff;
-      width: 40px;
-      height: 40px;
+      width: $paginationHeight;
+      height: $paginationHeight;
       text-align: center;
       line-height: 36px;
       border-radius: 50%;
@@ -39,12 +44,12 @@
     }
     &.has_errors {
       span {
-        background-color: $errorColor;
+        background-color: $fr_error_color;
       }
       a {
-        background-color: lighten($errorColor, 40%);
+        background-color: lighten($fr_error_color, 40%);
         &:hover {
-          background-color: lighten($errorColor, 35%);
+          background-color: lighten($fr_error_color, 35%);
         }
       }
     }

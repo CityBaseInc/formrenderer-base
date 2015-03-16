@@ -1,5 +1,5 @@
 <% if @form_renderer.visiblePages().length > 1: %>
-  <ul class='fr_pagination fr_cf'>
+  <ul class='fr_pagination'>
     <% for i, idx in @form_renderer.visiblePages(): %>
       <li class='<% if !@form_renderer.isPageValid(i): %>has_errors<% end %>'>
         <% if (i == @form_renderer.state.get('activePage')): %>

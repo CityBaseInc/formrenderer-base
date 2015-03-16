@@ -1,0 +1,58 @@
+// Include this stylesheet for a fancier pagination component
+$paginationHeight: 40px;
+
+.fr_pagination {
+  list-style: none;
+  border-bottom: 3px solid #efefef;
+  margin-bottom: $rhythm * 2;
+  padding-left: 0;
+  display: table;
+  width: 100%;
+  height: $paginationHeight;
+  li {
+    display: table-cell;
+    text-align: center;
+    a, span {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      bottom: 0 - ($paginationHeight / 2);
+      color: #fff;
+      width: $paginationHeight;
+      height: $paginationHeight;
+      text-align: center;
+      line-height: 36px;
+      border-radius: 50%;
+      font-size: 16px;
+      margin-right: 20px;
+      text-decoration: none;
+      border: 2px solid #e5e5e5;
+      text-shadow: 0 -1px 0 #999;
+    }
+    a {
+      background-color: #aaa;
+      &:hover {
+        background-color: darken(#aaa, 5%);
+      }
+    }
+    span {
+      background-color: #2aa828;
+    }
+    &.has_errors {
+      span {
+        background-color: $errorColor;
+      }
+      a {
+        background-color: lighten($errorColor, 40%);
+        &:hover {
+          background-color: lighten($errorColor, 35%);
+        }
+      }
+    }
+    &.active {
+      span {
+        background-color: #2aa828;
+      }
+    }
+  }
+}

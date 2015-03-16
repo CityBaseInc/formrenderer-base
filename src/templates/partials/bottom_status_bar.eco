@@ -1,6 +1,6 @@
-<div class='fr_bottom_bar fr_cf'>
+<div class='fr_bottom fr_cf'>
   <% if @form_renderer.options.enableAutosave: %>
-    <div class='fr_bottom_bar_l'>
+    <div class='fr_bottom_l'>
       <% if @form_renderer.state.get('hasServerErrors'): %>
         Error saving
       <% else if @form_renderer.state.get('hasChanges'): %>
@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-  <div class='fr_bottom_bar_r'>
+  <div class='fr_bottom_r'>
     <% if !@form_renderer.isFirstPage(): %>
       <button data-js-back class='<%= FormRenderer.BUTTON_CLASS %>'>
         Back to page <%= @form_renderer.previousPage() %>

@@ -1,9 +1,7 @@
-<div class='existing'>
-  <span class='filename'><%= @model.get('value.filename') %></span>
+<% if @model.hasValue(): %>
+  <span class='js-filename'><%= @model.get('value.filename') %></span>
   <button data-js-remove class='<%= FormRenderer.BUTTON_CLASS %>'>Remove</button>
-</div>
-
-<div class='not_existing'>
+<% else: %>
   <input type='file'
          id='<%= @getDomId() %>'
          name='file'
@@ -11,11 +9,11 @@
           accept='<%= exts.join(',') %>'
          <% end %>
          />
-  <span class='upload_status'></span>
+  <span class='js-upload-status'></span>
 
   <% if (exts = @model.getAcceptedExtensions()): %>
-    <div class='file_type_help'>
+    <div class='fr_description'>
       We'll accept <%= _.str.toSentence(exts) %>
     </div>
   <% end %>
-</div>
+<% end %>

@@ -1,24 +1,18 @@
+// Base.css is a minimal stylesheet that provides a decent layout for the
+// rendered form, while providing the ability to still "inherit" the styles
+// from a host application.
+
 @import "includes";
+@import "bottom_status_bar";
+@import "error_alert_bar";
+@import "pagination";
 
-abbr[title="required"] {
-  color: $errorColor;
+// Border-box is a must
+.fr_form * {
+  box-sizing: border-box;
 }
 
-.fr_loading {
-  color: #999;
-  font-size: 125%;
-  padding: 20px 0;
-  text-align: center;
-}
-
-.fr_error {
-  color: $errorColor;
-}
-
-.fr_error_alert_bar {
-  color: $errorColor;
-}
-
+// Utilities
 .fr_clear {
   display: block;
   visibility: hidden;
@@ -31,127 +25,118 @@ abbr[title="required"] {
 .fr_cf {
   &:before,
   &:after {
-    display: table; /* 1 */
-    content: " "; /* 2 */
+    display: table;
+    content: " ";
   }
   &:after {
     clear: both;
   }
 }
 
+// Loading style
+.fr_loading {
+  color: $mutedColor;
+  font-size: $fontSizeLarge;
+  padding: $rhythm 0;
+  text-align: center;
+}
+
+// Basic error styles
+abbr[title="required"],
+.fr_error {
+  color: $errorColor;
+}
+
+.fr_response_field.error {
+  input, textarea {
+    border-color: $errorColor;
+  }
+}
+
+// Labels display on their own line
 .fr_response_field {
   label {
     display: block;
   }
 }
 
+// Add vertical rhythm
 .fr_response_field {
-  margin-bottom: 20px;
-  max-width: $maxFieldWidth;
-  &.error {
-    input, textarea {
-      border: 1px solid $errorColor;
-    }
-  }
+  margin-bottom: $rhythm;
 }
 
-.fr_bottom_bar {
-  display: table;
-  width: 100%;
-  padding: 20px;
-  background-color: $lightGray;
-}
-
-.fr_bottom_bar_l,
-.fr_bottom_bar_r {
-  display: table-cell;
-}
-
-.fr_bottom_bar_l {
-  text-align: left;
-}
-
-.fr_bottom_bar_r {
-  text-align: right;
-}
-
+// Add the "grid" for address, date, time, and price fields
 .fr_input_grid {
-  margin: 0;
-  margin-left: -10px; /* 1 */
-  list-style: none; /* 2 */
-  font-size: 0; /* 3 */
+  margin: 0 0 0 (-$gutterWidth);
+  font-size: 0;
   width: 100%;
+
+  // A grid item
   > div {
     display: inline-block;
-    padding-left: 10px; /* 1 */
-    vertical-align: top; /* 2 */
-    font-size: 1rem; /* 3 */
+    padding-left: $gutterWidth;
+    vertical-align: top;
+    font-size: initial;
+    position: relative;
+
+    // make room for fr_sub_label
+    &.has_sub_label {
+      margin-top: $subLabelLineHeight + 0.25em;
+    }
+
+    // inputs in grid get 100% width
     input,
     select {
       width: 100%;
     }
   }
-  .fr_item_full {
-    width: 100%;
-  }
-  .fr_item_half {
-    width: 50%;
-  }
-  .fr_item_spacer {
-    margin-top: 1.5rem;
-    line-height: 2.626rem;
-  }
+
+  // Style the "sub labels", which are labels for specific grid inputs
   .fr_sub_label {
-    line-height: 1.5rem;
-    color: #888;
+    line-height: $subLabelLineHeight;
+    color: $mutedColor;
+    position: absolute;
+    top: -$subLabelLineHeight;
+    left: $gutterWidth;
   }
+
+  // A piece of content in between grid inputs
+  .fr_spacer {
+    vertical-align: bottom;
+  }
+
+  // Grid item widths
+  .fr_full { width: 100%; }
+  .fr_half { width: 50%; }
+
   @media screen and (min-width: 640px) {
-    .lap_fr_item_half {
-      width: 50%;
-    }
+    .lap_fr_half { width: 50%; }
   }
 }
 
 .fr_response_field_identification {
+  // Identification fields are a bit different than the others,
+  // so remove the main label...
   > label {
     display: none;
   }
 
-  .fr_item_full {
-    margin-bottom: 15px;
-  }
-}
-
-.fr_response_field_file {
-  .existing {
-    display: none;
-  }
-  &.existing {
-    .existing {
-      display: block;
-    }
-    .not_existing {
-      display: none;
+  // And ensure that they stack properly on mobile
+  @media screen and (max-width: 639px) {
+    .fr_full:first-child {
+      margin-bottom: $rhythm;
     }
   }
 }
 
-.upload_status {
-  &.is_error {
-    color: $errorColor;
-  }
-}
-
+// Style the "map marker" input
 .fr_map_wrapper {
   width: 100%;
-  height: 246px;
+  height: $mapHeight;
   position: relative;
-  border: 1px solid #ddd;
-  border-radius: 3px;
   .fr_map_map {
     width: 100%;
-    height: 220px;
-    border-radius: 3px 3px 0 0;
+    height: $mapHeight - $mapToolbarHeight;
   }
   .fr_map_cover {
     position: absolute;
@@ -162,65 +147,62 @@ abbr[title="required"] {
     z-index: 10;
     background: rgba(255,255,255,0.4);
     text-align: center;
-    padding-top: 100px;
-    font-size: 120%;
-    color: #333;
-    font-weight: 600;
+    padding-top: $mapHeight / 2 - $rhythm; // vertically "center" the text
+    font-size: $fontSizeLarge;
     cursor: pointer;
   }
   .fr_map_toolbar {
-    height: 24px;
-    line-height: 24px;
+    height: $mapToolbarHeight;
+    line-height: $mapToolbarHeight;
     padding: 0 5px;
-    background-color: #eee;
-    font-size: 85%;
-    border-radius: 0 0 3px 3px;
+    background-color: $lightGray;
+    font-size: $fontSizeSmall;
     a {
       float: right;
     }
   }
 }
 
+// Input sizes
+
 .fr_response_field_text {
   input {
-    width: 160px;
+    width: $smallWidth;
     &.size_medium {
-      width: 300px;
+      width: $mediumWidth;
     }
     &.size_large {
-      width: 100%;
+      width: $largeWidth;
     }
   }
 }
-
 
 .fr_response_field_email,
 .fr_response_field_website {
   input {
-    width: 200px;
+    width: $smMedWidth;
   }
 }
 
 .fr_response_field_paragraph textarea {
-  width: 160px;
-  height: 40px;
+  width: $smallWidth;
+  height: $smallHeight;
   &.size_medium {
-    width: 300px;
-    height: 100px;
+    width: $mediumWidth;
+    height: $mediumHeight;
   }
   &.size_large {
-    width: 100%;
-    height: 240px;
+    width: $largeWidth;
+    height: $largeHeight;
   }
 }
 
-
 .fr_response_field_block_of_text > div {
   &.size_medium {
-    font-size: 120%;
+    font-size: $fontSizeLarge;
   }
   &.size_large {
-    font-size: 150%;
+    font-size: $fontSizeXLarge;
   }
 }
 
@@ -230,27 +212,28 @@ abbr[title="required"] {
   }
   > div {
     p {
-      font-size: 90%;
+      font-size: $fontSizeSmall;
     }
     &.size_medium {
       .fr_section_name {
-        font-size: 120%;
+        font-size: $fontSizeLarge;
       }
       p {
-        font-size: 100%;
+        font-size: $fontSizeNormal;
       }
     }
     &.size_large {
       .fr_section_name {
-        font-size: 150%;
+        font-size: $fontSizeXLarge;
       }
       p {
-        font-size: 120%;
+        font-size: $fontSizeLarge;
       }
     }
   }
 }
 
+// Ensure that the "other" option for checkboxes/radios displays properly
 .fr_other_option {
   label {
     display: inline;
@@ -261,12 +244,10 @@ abbr[title="required"] {
   }
 }
 
+// Style for the "remove" column of the table input
 .fr_table_col_remove {
   width: 25px;
-  padding-left: 0;
+  padding: 0;
   text-align: center;
   vertical-align: middle;
 }
-
-@import "error_alert_bar";
-@import "pagination";

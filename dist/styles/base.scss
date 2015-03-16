@@ -42,7 +42,7 @@
 }
 
 // Basic error styles
-abbr[title="required"],
+.fr_required,
 .fr_error {
   color: $errorColor;
 }

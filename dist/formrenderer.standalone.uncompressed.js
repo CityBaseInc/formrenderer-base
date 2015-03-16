@@ -2359,7 +2359,7 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('-name\'>Name <abbr title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
+      _print(_safe('-name\'>Name <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
     
       _print(this.getDomId());
     
@@ -2367,7 +2367,7 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('-email\'>Email <abbr title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
+      _print(_safe('-email\'>Email <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
     
       _print(this.getDomId());
     
@@ -3365,7 +3365,7 @@ window.JST["partials/label"] = function(__obj) {
       _print(_safe('\n  '));
     
       if (this.model.get('required')) {
-        _print(_safe('<abbr title=\'required\'>*</abbr>'));
+        _print(_safe('<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
     
       _print(_safe('\n\n  '));

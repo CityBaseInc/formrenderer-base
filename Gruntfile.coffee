@@ -79,7 +79,7 @@ module.exports = (grunt) ->
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= srcFolder %>/styles/base.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= distFolder %>/styles/base.scss'
 
     cssmin:
       dist:

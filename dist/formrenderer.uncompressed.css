@@ -50,7 +50,7 @@
   padding: 20px 0;
   text-align: center; }
 
-abbr[title="required"],
+.fr_required,
 .fr_error {
   color: #c12f2e; }
 

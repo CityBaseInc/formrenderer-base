@@ -1,13 +1,13 @@
 <div class='fr_input_grid'>
   <div class='fr_full lap_fr_half'>
-    <label for='<%= @getDomId() %>-name'>Name <abbr title='required'>*</abbr></label>
+    <label for='<%= @getDomId() %>-name'>Name <abbr class='fr_required' title='required'>*</abbr></label>
     <input type='text'
            id='<%= @getDomId() %>-name'
            data-rv-input='model.value.name' />
   </div>
 
   <div class='fr_full lap_fr_half'>
-    <label for='<%= @getDomId() %>-email'>Email <abbr title='required'>*</abbr></label>
+    <label for='<%= @getDomId() %>-email'>Email <abbr class='fr_required' title='required'>*</abbr></label>
     <input type="text"
            id='<%= @getDomId() %>-email'
            data-rv-input='model.value.email' />

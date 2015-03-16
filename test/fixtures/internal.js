@@ -354,6 +354,203 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  SIZES: function() {
+    return {
+      project_id: 1,
+      response_fields: [
+        {
+          id: 1,
+          form_id: 5,
+          label: "Text (small)",
+          field_options: {
+            size: 'small'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "text",
+          cid: null
+        },
+        {
+          id: 2,
+          form_id: 5,
+          label: "Text (medium)",
+          field_options: {
+            size: 'medium'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "text",
+          cid: null
+        },
+        {
+          id: 3,
+          form_id: 5,
+          label: "Text (large)",
+          field_options: {
+            size: 'large'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "text",
+          cid: null
+        },
+        {
+          id: 4,
+          form_id: 5,
+          label: "paragraph (small)",
+          field_options: {
+            size: 'small'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "paragraph",
+          cid: null
+        },
+        {
+          id: 5,
+          form_id: 5,
+          label: "paragraph (medium)",
+          field_options: {
+            size: 'medium'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "paragraph",
+          cid: null
+        },
+        {
+          id: 6,
+          form_id: 5,
+          label: "paragraph (large)",
+          field_options: {
+            size: 'large'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "paragraph",
+          cid: null
+        },
+        {
+          id: 7,
+          form_id: 5,
+          label: "block_of_text (small)",
+          field_options: {
+            size: 'small',
+            description: 'i am a block of text, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "block_of_text",
+          cid: null
+        },
+        {
+          id: 8,
+          form_id: 5,
+          label: "block_of_text (medium)",
+          field_options: {
+            size: 'medium',
+            description: 'i am a block of text, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "block_of_text",
+          cid: null
+        },
+        {
+          id: 9,
+          form_id: 5,
+          label: "block_of_text (large)",
+          field_options: {
+            size: 'large',
+            description: 'i am a block of text, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "block_of_text",
+          cid: null
+        },
+        {
+          id: 10,
+          form_id: 5,
+          label: "section_break (small)",
+          field_options: {
+            size: 'small',
+            description: 'i am a section break, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "section_break",
+          cid: null
+        },
+        {
+          id: 11,
+          form_id: 5,
+          label: "section_break (medium)",
+          field_options: {
+            size: 'medium',
+            description: 'i am a section break, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "section_break",
+          cid: null
+        },
+        {
+          id: 12,
+          form_id: 5,
+          label: "section_break (large)",
+          field_options: {
+            size: 'large',
+            description: 'i am a section break, yo'
+          },
+          required: true,
+          blind: true,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "section_break",
+          cid: null
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
+  },
   SHORT: function() {
     return {
       project_id: 1,

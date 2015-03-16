@@ -96,6 +96,8 @@
     padding: 0 5px;
     background-color: #eee;
     font-size: 90%; }
+    .fr_map_wrapper .fr_map_toolbar .fr_map_coord {
+      float: left; }
     .fr_map_wrapper .fr_map_toolbar a {
       float: right; }
 

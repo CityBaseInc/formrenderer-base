@@ -148,6 +148,9 @@
     padding: 0 5px;
     background-color: $fr_light_gray;
     font-size: $fr_font_small;
+    .fr_map_coord {
+      float: left;
+    }
     a {
       float: right;
     }

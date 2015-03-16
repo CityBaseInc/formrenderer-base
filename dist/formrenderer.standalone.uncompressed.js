@@ -1057,6 +1057,9 @@
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
+    },
+    getSize: function() {
+      return this.get('field_options.size') || 'small';
     }
   });
 
@@ -2017,7 +2020,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('\'>\n  '));
     
@@ -2583,7 +2586,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     
       _print(_safe('"\n   class="size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
     
@@ -2758,7 +2761,7 @@ window.JST["fields/section_break"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('\'>\n  <div class=\'fr_section_name\'>'));
     
@@ -2934,7 +2937,7 @@ window.JST["fields/text"] = function(__obj) {
     
       _print(_safe('"\n       class="size_'));
     
-      _print(this.model.get('field_options.size'));
+      _print(this.model.getSize());
     
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
     

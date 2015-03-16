@@ -101,7 +101,8 @@ module.exports = (grunt) ->
     watch:
       build:
         files: [
-          '<%= srcFolder %>/**/*.{coffee,eco,scss}',
+          '<%= srcFolder %>/**/*.{coffee,eco}',
+          '<%= distFolder %>/styles/**/*.scss',
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]

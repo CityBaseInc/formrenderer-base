@@ -6,9 +6,9 @@ class FormRenderer.Validators.MinMaxLengthValidator extends FormRenderer.Validat
     @max = parseInt(@model.get('field_options.maxlength'), 10) || undefined
 
     if @min && @count() < @min
-      'is too short'
+      'too_short'
     else if @max && @count() > @max
-      'is too long'
+      'too_long'
 
   count: ->
     FormRenderer.getLength @model.getLengthValidationUnits(), @model.get('value')

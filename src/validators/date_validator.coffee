@@ -7,4 +7,4 @@ class FormRenderer.Validators.DateValidator extends FormRenderer.Validators.Base
     month = parseInt(@model.get('value.month'), 10) || 0
 
     unless (year > 0) && (0 < day <= 31) && (0 < month <= 12)
-      'not a valid date'
+      'invalid_date'

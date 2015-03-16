@@ -5,4 +5,4 @@ class FormRenderer.Validators.IntegerValidator extends FormRenderer.Validators.B
     return unless @model.get('field_options.integer_only')
 
     unless @model.get('value').match(@constructor.VALID_REGEX)
-      'is not an integer'
+      'invalid_integer'

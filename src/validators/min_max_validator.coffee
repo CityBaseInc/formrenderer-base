@@ -11,6 +11,6 @@ class FormRenderer.Validators.MinMaxValidator extends FormRenderer.Validators.Ba
       parseFloat(@model.get('value').replace(/,/g, ''))
 
     if @min && value < @min
-      'is too small'
+      'too_small'
     else if @max && value > @max
-      'is too large'
+      'too_large'

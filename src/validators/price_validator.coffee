@@ -8,4 +8,4 @@ class FormRenderer.Validators.PriceValidator extends FormRenderer.Validators.Bas
     values.push(@model.get('value.cents')) if @model.get('value.cents')
 
     unless _.every(values, (x) -> x.match(/^-?\d+$/))
-      "isn't a valid price"
+      'invalid_price'

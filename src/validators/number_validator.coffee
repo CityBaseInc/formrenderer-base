@@ -10,4 +10,4 @@ class FormRenderer.Validators.NumberValidator extends FormRenderer.Validators.Ba
                  .replace(/^\+/, '')
 
     unless value.match(@constructor.VALID_REGEX)
-      'not a valid number'
+      'invalid_number'

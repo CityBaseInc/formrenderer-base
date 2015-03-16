@@ -6695,6 +6695,20 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
 
+  FormRenderer.errors = {
+    blank: "This field can't be blank.",
+    invalid_date: 'Please enter a valid date.',
+    invalid_email: 'Please enter a valid email address.',
+    invalid_integer: 'Please enter a whole number.',
+    invalid_number: 'Please enter a valid number.',
+    invalid_price: 'Please enter a valid price.',
+    invalid_time: 'Please enter a valid time.',
+    too_large: 'Your answer is too large.',
+    too_long: 'Your answer is too long.',
+    too_short: 'Your answer is too short.',
+    too_small: 'Your answer is too small.'
+  };
+
   FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
 
   FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
@@ -6803,7 +6817,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       day = parseInt(this.model.get('value.day'), 10) || 0;
       month = parseInt(this.model.get('value.month'), 10) || 0;
       if (!((year > 0) && ((0 < day && day <= 31)) && ((0 < month && month <= 12)))) {
-        return 'not a valid date';
+        return 'invalid_date';
       }
     };
 
@@ -6829,7 +6843,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return;
       }
       if (!this.model.get('value').match('@')) {
-        return 'not a valid email';
+        return 'invalid_email';
       }
     };
 
@@ -6852,9 +6866,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
     IdentificationValidator.prototype.validate = function() {
       if (!this.model.get('value.name') || !this.model.get('value.email')) {
-        return 'please enter your name and email';
+        return 'blank';
       } else if (!this.model.get('value.email').match('@')) {
-        return 'email is invalid';
+        return 'invalid_email';
       }
     };
 
@@ -6882,7 +6896,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return;
       }
       if (!this.model.get('value').match(this.constructor.VALID_REGEX)) {
-        return 'is not an integer';
+        return 'invalid_integer';
       }
     };
 
@@ -6910,9 +6924,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       this.min = parseInt(this.model.get('field_options.minlength'), 10) || void 0;
       this.max = parseInt(this.model.get('field_options.maxlength'), 10) || void 0;
       if (this.min && this.count() < this.min) {
-        return 'is too short';
+        return 'too_short';
       } else if (this.max && this.count() > this.max) {
-        return 'is too long';
+        return 'too_long';
       }
     };
 
@@ -6946,9 +6960,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       this.max = this.model.get('field_options.max') && parseFloat(this.model.get('field_options.max'));
       value = this.model.field_type === 'price' ? parseFloat("" + (this.model.get('value.dollars') || 0) + "." + (this.model.get('value.cents') || 0)) : parseFloat(this.model.get('value').replace(/,/g, ''));
       if (this.min && value < this.min) {
-        return 'is too small';
+        return 'too_small';
       } else if (this.max && value > this.max) {
-        return 'is too large';
+        return 'too_large';
       }
     };
 
@@ -6979,7 +6993,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       value = this.model.get('value');
       value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '');
       if (!value.match(this.constructor.VALID_REGEX)) {
-        return 'not a valid number';
+        return 'invalid_number';
       }
     };
 
@@ -7015,7 +7029,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);
       })) {
-        return "isn't a valid price";
+        return 'invalid_price';
       }
     };
 
@@ -7045,7 +7059,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       minutes = parseInt(this.model.get('value.minutes'), 10) || 0;
       seconds = parseInt(this.model.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 60)) && ((0 <= seconds && seconds <= 60)))) {
-        return "isn't a valid time";
+        return 'invalid_time';
       }
     };
 
@@ -7076,14 +7090,14 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     validate: function() {
-      var newError, v, validator, validatorName, _ref, _results;
+      var errorKey, v, validator, validatorName, _ref, _results;
       this.errors = [];
       if (!this.isVisible) {
         return;
       }
       if (!this.hasValue()) {
         if (this.get('required')) {
-          this.errors.push("can't be blank");
+          this.errors.push(FormRenderer.errors.blank);
         }
         return;
       }
@@ -7092,9 +7106,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       for (validatorName in _ref) {
         validator = _ref[validatorName];
         v = new validator(this);
-        newError = v.validate();
-        if (newError) {
-          _results.push(this.errors.push(newError));
+        errorKey = v.validate();
+        if (errorKey) {
+          _results.push(this.errors.push(FormRenderer.errors[errorKey]));
         } else {
           _results.push(void 0);
         }

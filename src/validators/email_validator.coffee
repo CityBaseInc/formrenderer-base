@@ -3,4 +3,4 @@ class FormRenderer.Validators.EmailValidator extends FormRenderer.Validators.Bas
     return unless @model.field_type == 'email'
 
     unless @model.get('value').match('@')
-      'not a valid email'
+      'invalid_email'

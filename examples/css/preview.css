@@ -18,3 +18,9 @@ form {
   margin: 1rem auto;
   border: 1px solid #ccc;
 }
+
+.config_select {
+  width: 150px;
+  display: inline;
+  margin-right:; 10px;
+}

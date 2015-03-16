@@ -1,19 +1,23 @@
-$errorColor: #c12f2e;
-$lightGray: #eee;
-$mutedColor: #888;
-$fontSizeSmall: 90%;
-$fontSizeNormal: 100%;
-$fontSizeLarge: 125%;
-$fontSizeXLarge: 150%;
-$rhythm: 20px;
-$subLabelLineHeight: 1.5em;
-$gutterWidth: 10px;
-$mapHeight: 240px;
-$mapToolbarHeight: 24px;
-$smallWidth: 160px;
-$smallHeight: 40px;
-$smMedWidth: 200px;
-$mediumWidth: 300px;
-$mediumHeight: 100px;
-$largeWidth: 100%;
-$largeHeight: 240px;
+$fr_error_color: #c12f2e;
+$fr_light_gray: #eee;
+$fr_muted_color: #888;
+$fr_font_small: 90%;
+$fr_font_normal: 100%;
+$fr_font_large: 125%;
+$fr_font_x_large: 150%;
+$fr_rhythm: 20px;
+$fr_sub_label_line_height: 1.5em;
+$fr_gutter_width: 10px;
+
+// Map marker input
+$fr_map_height: 240px;
+$fr_map_toolbar_height: 24px;
+
+// Input sizes
+$fr_small_width: 160px;
+$fr_small_height: 40px;
+$fr_small_med_width: 200px;
+$fr_medium_width: 300px;
+$fr_medium_height: 100px;
+$fr_large_width: 100%;
+$fr_large_height: 240px;

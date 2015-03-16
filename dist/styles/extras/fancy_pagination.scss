@@ -4,11 +4,15 @@ $paginationHeight: 40px;
 .fr_pagination {
   list-style: none;
   border-bottom: 3px solid #efefef;
-  margin-bottom: $rhythm * 2;
+  margin-bottom: $fr_rhythm * 2;
   padding-left: 0;
   display: table;
   width: 100%;
   height: $paginationHeight;
+  // Override the base pagination :/
+  &:before {
+    content: '';
+  }
   li {
     display: table-cell;
     text-align: center;
@@ -40,12 +44,12 @@ $paginationHeight: 40px;
     }
     &.has_errors {
       span {
-        background-color: $errorColor;
+        background-color: $fr_error_color;
       }
       a {
-        background-color: lighten($errorColor, 40%);
+        background-color: lighten($fr_error_color, 40%);
         &:hover {
-          background-color: lighten($errorColor, 35%);
+          background-color: lighten($fr_error_color, 35%);
         }
       }
     }

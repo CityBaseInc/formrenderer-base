@@ -1,0 +1,6 @@
+// This extends the minimal styles in base.scss with a few "extras" that
+// add a bit more visual style
+
+@import 'main';
+@import 'extras/fancy_pagination';
+@import 'extras/bottom_status_bar';

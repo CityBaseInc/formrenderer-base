@@ -1,0 +1,9 @@
+// This is a minimal stylesheet that provides a decent layout for the
+// rendered form, while providing the ability to still "inherit" the styles
+// from a host application.
+
+@import "includes";
+@import "base";
+@import "bottom_status_bar";
+@import "error_alert_bar";
+@import "pagination";

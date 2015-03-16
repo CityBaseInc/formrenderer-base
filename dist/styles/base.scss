@@ -1,12 +1,3 @@
-// Base.css is a minimal stylesheet that provides a decent layout for the
-// rendered form, while providing the ability to still "inherit" the styles
-// from a host application.
-
-@import "includes";
-@import "bottom_status_bar";
-@import "error_alert_bar";
-@import "pagination";
-
 // Border-box is a must
 .fr_form * {
   box-sizing: border-box;
@@ -35,21 +26,21 @@
 
 // Loading style
 .fr_loading {
-  color: $mutedColor;
-  font-size: $fontSizeLarge;
-  padding: $rhythm 0;
+  color: $fr_muted_color;
+  font-size: $fr_font_large;
+  padding: $fr_rhythm 0;
   text-align: center;
 }
 
 // Basic error styles
 .fr_required,
 .fr_error {
-  color: $errorColor;
+  color: $fr_error_color;
 }
 
 .fr_response_field.error {
   input, textarea {
-    border-color: $errorColor;
+    border-color: $fr_error_color;
   }
 }
 
@@ -62,26 +53,26 @@
 
 // Add vertical rhythm
 .fr_response_field {
-  margin-bottom: $rhythm;
+  margin-bottom: $fr_rhythm;
 }
 
 // Add the "grid" for address, date, time, and price fields
 .fr_input_grid {
-  margin: 0 0 0 (-$gutterWidth);
+  margin: 0 0 0 (-$fr_gutter_width);
   font-size: 0;
   width: 100%;
 
   // A grid item
   > div {
     display: inline-block;
-    padding-left: $gutterWidth;
+    padding-left: $fr_gutter_width;
     vertical-align: top;
     font-size: initial;
     position: relative;
 
     // make room for fr_sub_label
     &.has_sub_label {
-      margin-top: $subLabelLineHeight + 0.25em;
+      margin-top: $fr_sub_label_line_height + 0.25em;
     }
 
     // inputs in grid get 100% width
@@ -93,11 +84,11 @@
 
   // Style the "sub labels", which are labels for specific grid inputs
   .fr_sub_label {
-    line-height: $subLabelLineHeight;
-    color: $mutedColor;
+    line-height: $fr_sub_label_line_height;
+    color: $fr_muted_color;
     position: absolute;
-    top: -$subLabelLineHeight;
-    left: $gutterWidth;
+    top: -$fr_sub_label_line_height;
+    left: $fr_gutter_width;
   }
 
   // A piece of content in between grid inputs
@@ -124,7 +115,7 @@
   // And ensure that they stack properly on mobile
   @media screen and (max-width: 639px) {
     .fr_full:first-child {
-      margin-bottom: $rhythm;
+      margin-bottom: $fr_rhythm;
     }
   }
 }
@@ -132,11 +123,11 @@
 // Style the "map marker" input
 .fr_map_wrapper {
   width: 100%;
-  height: $mapHeight;
+  height: $fr_map_height;
   position: relative;
   .fr_map_map {
     width: 100%;
-    height: $mapHeight - $mapToolbarHeight;
+    height: $fr_map_height - $fr_map_toolbar_height;
   }
   .fr_map_cover {
     position: absolute;
@@ -147,16 +138,16 @@
     z-index: 10;
     background: rgba(255,255,255,0.4);
     text-align: center;
-    padding-top: $mapHeight / 2 - $rhythm; // vertically "center" the text
-    font-size: $fontSizeLarge;
+    padding-top: $fr_map_height / 2 - $fr_rhythm; // vertically "center" the text
+    font-size: $fr_font_large;
     cursor: pointer;
   }
   .fr_map_toolbar {
-    height: $mapToolbarHeight;
-    line-height: $mapToolbarHeight;
+    height: $fr_map_toolbar_height;
+    line-height: $fr_map_toolbar_height;
     padding: 0 5px;
-    background-color: $lightGray;
-    font-size: $fontSizeSmall;
+    background-color: $fr_light_gray;
+    font-size: $fr_font_small;
     a {
       float: right;
     }
@@ -167,12 +158,12 @@
 
 .fr_response_field_text {
   input {
-    width: $smallWidth;
+    width: $fr_small_width;
     &.size_medium {
-      width: $mediumWidth;
+      width: $fr_medium_width;
     }
     &.size_large {
-      width: $largeWidth;
+      width: $fr_large_width;
     }
   }
 }
@@ -180,29 +171,29 @@
 .fr_response_field_email,
 .fr_response_field_website {
   input {
-    width: $smMedWidth;
+    width: $fr_small_med_width;
   }
 }
 
 .fr_response_field_paragraph textarea {
-  width: $smallWidth;
-  height: $smallHeight;
+  width: $fr_small_width;
+  height: $fr_small_height;
   &.size_medium {
-    width: $mediumWidth;
-    height: $mediumHeight;
+    width: $fr_medium_width;
+    height: $fr_medium_height;
   }
   &.size_large {
-    width: $largeWidth;
-    height: $largeHeight;
+    width: $fr_large_width;
+    height: $fr_large_height;
   }
 }
 
 .fr_response_field_block_of_text > div {
   &.size_medium {
-    font-size: $fontSizeLarge;
+    font-size: $fr_font_large;
   }
   &.size_large {
-    font-size: $fontSizeXLarge;
+    font-size: $fr_font_x_large;
   }
 }
 
@@ -212,24 +203,31 @@
   }
   > div {
     p {
-      font-size: $fontSizeSmall;
+      font-size: $fr_font_small;
     }
     &.size_medium {
       .fr_section_name {
-        font-size: $fontSizeLarge;
+        font-size: $fr_font_large;
       }
       p {
-        font-size: $fontSizeNormal;
+        font-size: $fr_font_normal;
       }
     }
     &.size_large {
       .fr_section_name {
-        font-size: $fontSizeXLarge;
+        font-size: $fr_font_x_large;
       }
       p {
-        font-size: $fontSizeLarge;
+        font-size: $fr_font_large;
       }
     }
+  }
+}
+
+// Number is always "small"
+.fr_response_field_number {
+  input[type=text] {
+    width: $fr_small_width;
   }
 }
 

@@ -229,6 +229,10 @@
   input[type=text] {
     width: $fr_small_width;
   }
+
+  .fr_units {
+    font-size: $fr_font_small;
+  }
 }
 
 // Ensure that the "other" option for checkboxes/radios displays properly

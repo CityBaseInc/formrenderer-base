@@ -2482,7 +2482,7 @@ window.JST["fields/number"] = function(__obj) {
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n\n'));
     
       if (this.model.get('field_options.units')) {
-        _print(_safe('\n  <span class=\'units\'>\n    '));
+        _print(_safe('\n  <span class=\'fr_units\'>\n    '));
         _print(this.model.get('field_options.units'));
         _print(_safe('\n  </span>\n'));
       }

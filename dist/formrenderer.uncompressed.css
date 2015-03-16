@@ -140,6 +140,8 @@
 
 .fr_response_field_number input[type=text] {
   width: 160px; }
+.fr_response_field_number .fr_units {
+  font-size: 90%; }
 
 .fr_other_option label {
   display: inline; }

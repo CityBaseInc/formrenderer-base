@@ -49,7 +49,7 @@ Of course, there's a lot more you can do...
 | enablePages | If the form contains multiple pages, render them. Set to `false` to render all response fields on the same page. | `true` |
 | enableLocalstorage | Save unsubmitted draft identifiers to localstorage, which will allow respondents to leave and return to the form without losing data. | `true` |
 | validateImmediately | If the form is initialized with invalid data, immediately show errors. | `false` |
-| afterSubmit | Can be any of the following: **a function**, which will be called after submission, **a URL**, which the user will be sent to after submission, or **an Object** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
+| afterSubmit | Can be any of the following: **a function**, which will be called after submission; **a redirect URL** that looks like `"http://www.google.com"`, which the user will be sent to after submission; or **an Object with custom HTML** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
 
 ## Customizing
 

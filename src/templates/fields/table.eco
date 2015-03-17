@@ -39,6 +39,7 @@
         <% for column, j in @model.getColumns(): %>
           <td data-rv-text='model.columnTotals.<%= j %>'></td>
         <% end %>
+        <td class="fr_table_col_remove"></td>
       </tr>
     </tfoot>
   <% end %>

@@ -188,10 +188,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         a.push(parseInt(num, 10)) if @isPageVisible(num)
 
   isFirstPage: ->
-    @state.get('activePage') == @visiblePages()[0]
+    first = @visiblePages()[0]
+    !first || (@state.get('activePage') == first)
 
   isLastPage: ->
-    @state.get('activePage') == _.last(@visiblePages())
+    last = _.last(@visiblePages())
+    !last || (@state.get('activePage') == last)
 
   previousPage: ->
     @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) - 1]

@@ -32,6 +32,22 @@ describe 'state', ->
       it 'has changes', ->
         expect(@fr.state.get('hasChanges')).to.equal(true)
 
+describe 'handling blank forms', ->
+  it 'submits a blank form', ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.BLANK()
+    @fr.submit = sinon.spy()
+    expect($('[data-js-back]').length).to.equal(0)
+    $('button:contains("Submit")').click()
+    expect(@fr.submit).to.have.been.called
+
+  it 'submits a blank form (with identification)', ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.BLANK_IDENTIFIED()
+    @fr.submit = sinon.spy()
+    expect($('[data-js-back]').length).to.equal(0)
+    $('input[type=text]').val('asdf@asdf.com') # fill in name *and* email
+    $('button:contains("Submit")').click()
+    expect(@fr.submit).to.have.been.called
+
 describe 'local storage', ->
   it 'saves the draft ID'
   it 'loads the draft ID'

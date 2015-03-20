@@ -331,10 +331,14 @@
       })(this));
     },
     isFirstPage: function() {
-      return this.state.get('activePage') === this.visiblePages()[0];
+      var first;
+      first = this.visiblePages()[0];
+      return !first || (this.state.get('activePage') === first);
     },
     isLastPage: function() {
-      return this.state.get('activePage') === _.last(this.visiblePages());
+      var last;
+      last = _.last(this.visiblePages());
+      return !last || (this.state.get('activePage') === last);
     },
     previousPage: function() {
       return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) - 1];

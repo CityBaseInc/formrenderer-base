@@ -2711,7 +2711,7 @@ window.JST["fields/radio"] = function(__obj) {
         _print(this.getDomId());
         _print(_safe('"\n             name="'));
         _print(this.getDomId());
-        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder="Write your answer here" />\n  </div>\n'));
+        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));

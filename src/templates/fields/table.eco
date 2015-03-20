@@ -14,7 +14,7 @@
       <tr data-row-index="<%= i %>">
         <% for column, j in @model.getColumns(): %>
           <td>
-            <textarea <% if @model.getPresetValue(column.label, i): %>readonly<% end %>
+            <textarea <% if @model.getPresetValue(column.label, i): %>disabled<% end %>
                       data-col='<%= j %>'
                       data-row='<%= i %>'
                       data-rv-input='model.value.<%= j %>.<%= i %>'
@@ -39,6 +39,7 @@
         <% for column, j in @model.getColumns(): %>
           <td data-rv-text='model.columnTotals.<%= j %>'></td>
         <% end %>
+        <td class="fr_table_col_remove"></td>
       </tr>
     </tfoot>
   <% end %>

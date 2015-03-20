@@ -1,15 +1,13 @@
 <% if @model.hasLengthValidations(): %>
   <div class='fr_min_max'>
     <% if @model.get('field_options.minlength') && @model.get('field_options.maxlength'): %>
-      Between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
+      Enter between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
     <% else if @model.get('field_options.minlength'): %>
-      More than <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
+      Enter more than <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
     <% else if @model.get('field_options.maxlength'): %>
-      Less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
+      Enter less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
     <% end %>
 
-    Current count:
-    <code class='fr_min_max_counter' data-rv-text='model.currentLength'></code>
-    <%= @model.getLengthValidationUnits() %>.
+    <span class='fr_min_max_counter'> <b data-rv-text='model.currentLength'></b> <%= @model.getLengthValidationUnits() %></span>
   </div>
 <% end %>

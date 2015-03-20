@@ -20,6 +20,6 @@
       Other
     </label>
 
-    <input type='text' data-rv-input='model.value.other' placeholder="Write your answer here" />
+    <input type='text' data-rv-input='model.value.other' placeholder='Write your answer here' />
   </div>
 <% end %>

@@ -48,6 +48,7 @@ Of course, there's a lot more you can do...
 | enableBeforeUnload | Warn if the user leaves the page with unsubmitted responses | `true` |
 | enablePages | If the form contains multiple pages, render them. Set to `false` to render all response fields on the same page. | `true` |
 | enableLocalstorage | Save unsubmitted draft identifiers to localstorage, which will allow respondents to leave and return to the form without losing data. | `true` |
+| enablePageState | Add a `#pageX` parameter to the URL when changing pages. | `false` |
 | validateImmediately | If the form is initialized with invalid data, immediately show errors. | `false` |
 | afterSubmit | Can be any of the following: **a function**, which will be called after submission, **a URL**, which the user will be sent to after submission, or **an Object** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
 

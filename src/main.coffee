@@ -6,6 +6,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     enableErrorAlertBar: true
     enableBottomStatusBar: true
     enableLocalstorage: true
+    enablePageState: false
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
@@ -44,6 +45,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @initResponseFields()
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
+      @initPageState() if @options.enablePageState
       @initBottomStatusBar() if @options.enableBottomStatusBar
       @initErrorAlertBar() if @options.enableErrorAlertBar
       @initAutosave() if @options.enableAutosave
@@ -139,6 +141,15 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     for pageNumber, page of @subviews.pages
       page.show()
 
+  initPageState: ->
+    if num = window.location.hash.match(/page([0-9]+)/)?[1]
+      page = parseInt(num, 10)
+      if @isPageVisible(page)
+        @activatePage(page, skipValidation: true)
+
+    @state.on 'change:activePage', (_, num) ->
+      window.location.hash = "page#{num}"
+
   initBeforeUnload: ->
     BeforeUnload.enable
       if: => @state.get('hasChanges')
@@ -168,6 +179,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     return @areAllPagesValid()
 
   isPageVisible: (pageNumber) ->
+    @subviews.pages[pageNumber] &&
     !!_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.isVisible))
 
   isPageValid: (pageNumber) ->

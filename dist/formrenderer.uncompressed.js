@@ -6191,6 +6191,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       enableErrorAlertBar: true,
       enableBottomStatusBar: true,
       enableLocalstorage: true,
+      enablePageState: false,
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
@@ -6226,6 +6227,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
             _this.initPagination();
           } else {
             _this.initNoPagination();
+          }
+          if (_this.options.enablePageState) {
+            _this.initPageState();
           }
           if (_this.options.enableBottomStatusBar) {
             _this.initBottomStatusBar();
@@ -6380,6 +6384,20 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
       return _results;
     },
+    initPageState: function() {
+      var num, page, _ref;
+      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
+        page = parseInt(num, 10);
+        if (this.isPageVisible(page)) {
+          this.activatePage(page, {
+            skipValidation: true
+          });
+        }
+      }
+      return this.state.on('change:activePage', function(_, num) {
+        return window.location.hash = "page" + num;
+      });
+    },
     initBeforeUnload: function() {
       return BeforeUnload.enable({
         "if": (function(_this) {
@@ -6418,7 +6436,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this.areAllPagesValid();
     },
     isPageVisible: function(pageNumber) {
-      return !!_.find(this.subviews.pages[pageNumber].models, (function(rf) {
+      return this.subviews.pages[pageNumber] && !!_.find(this.subviews.pages[pageNumber].models, (function(rf) {
         return rf.isVisible;
       }));
     },

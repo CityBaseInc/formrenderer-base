@@ -1028,3 +1028,10 @@ Fixtures.FormRendererOptions = {
     };
   }
 };
+
+Fixtures.FormRendererOptions.PAGE_STATE = function(){
+  return $.extend(
+    Fixtures.FormRendererOptions.CONDITIONAL(),
+    { enablePageState: true }
+  );
+}

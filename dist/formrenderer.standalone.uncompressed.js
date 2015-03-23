@@ -49,7 +49,7 @@
 }).call(this);
 
 (function() {
-  var FormRenderer, commonCountries;
+  var FormRenderer, autoLink, commonCountries, sanitizeConfig;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -589,8 +589,18 @@
     }
   };
 
+  autoLink = function(str) {
+    var pattern;
+    pattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi;
+    return str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>");
+  };
+
+  sanitizeConfig = _.extend({}, Sanitize.Config.RELAXED);
+
+  sanitizeConfig.attributes.a.push('target');
+
   FormRenderer.formatHTML = function(unsafeHTML) {
-    return _.sanitize(_.simpleFormat(unsafeHTML || '', false));
+    return _.sanitize(autoLink(_.simpleFormat(unsafeHTML || '', false)), sanitizeConfig);
   };
 
   commonCountries = ['US', 'GB', 'CA'];

@@ -395,8 +395,28 @@ FormRenderer.getLength = (wordsOrChars, val) ->
   else
     _.str.trim(val).replace(/\s/g, '').length
 
+autoLink = (str) ->
+  pattern = ///
+    (^|[\s\n]|<br\/?>) # Capture the beginning of string or line or leading whitespace
+    (
+      (?:https?|ftp):// # Look for a valid URL protocol (non-captured)
+      [\-A-Z0-9+\u0026\u2019@#/%?=()~_|!:,.;]* # Valid URL characters (any number of times)
+      [\-A-Z0-9+\u0026@#/%=~()_|] # String must end in a valid URL character
+    )
+  ///gi
+
+  str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>")
+
+sanitizeConfig = _.extend {}, Sanitize.Config.RELAXED
+sanitizeConfig.attributes.a.push 'target'
+
 FormRenderer.formatHTML = (unsafeHTML) ->
-  _.sanitize(_.simpleFormat(unsafeHTML || '', false))
+  _.sanitize(
+    autoLink(
+      _.simpleFormat(unsafeHTML || '', false)
+    ),
+    sanitizeConfig
+  )
 
 commonCountries = ['US', 'GB', 'CA']
 

@@ -395,6 +395,9 @@ FormRenderer.getLength = (wordsOrChars, val) ->
   else
     _.str.trim(val).replace(/\s/g, '').length
 
+FormRenderer.formatHTML = (unsafeHTML) ->
+  _.sanitize(_.simpleFormat(unsafeHTML || '', false))
+
 commonCountries = ['US', 'GB', 'CA']
 
 FormRenderer.ORDERED_COUNTRIES = _.uniq(

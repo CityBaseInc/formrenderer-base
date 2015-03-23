@@ -1,7 +1,7 @@
 <div class='size_<%= @model.getSize() %>'>
   <div class='fr_section_name'><%= @model.get('label') %></div>
   <% if @model.get('field_options.description'): %>
-    <p><%- _.sanitize(_.simpleFormat(@model.get('field_options.description'), false)) %></p>
+    <p><%- FormRenderer.formatHTML(@model.get('field_options.description')) %></p>
   <% end %>
 </div>
 

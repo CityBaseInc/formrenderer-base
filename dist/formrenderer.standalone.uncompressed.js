@@ -589,6 +589,10 @@
     }
   };
 
+  FormRenderer.formatHTML = function(unsafeHTML) {
+    return _.sanitize(_.simpleFormat(unsafeHTML || '', false));
+  };
+
   commonCountries = ['US', 'GB', 'CA'];
 
   FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
@@ -2046,7 +2050,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(_.sanitize(_.simpleFormat(this.model.get('field_options.description'), false))));
+      _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
     
       _print(_safe('\n</div>\n'));
     
@@ -2793,7 +2797,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       if (this.model.get('field_options.description')) {
         _print(_safe('\n    <p>'));
-        _print(_safe(_.sanitize(_.simpleFormat(this.model.get('field_options.description'), false))));
+        _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
         _print(_safe('</p>\n  '));
       }
     
@@ -3244,7 +3248,7 @@ window.JST["partials/description"] = function(__obj) {
     (function() {
       if (this.model.get('field_options.description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(_safe(_.sanitize(_.simpleFormat(this.model.get('field_options.description'), false))));
+        _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
         _print(_safe('\n  </div>\n'));
       }
     

@@ -1224,17 +1224,21 @@ function log() {
 		storage
 
 	store.disabled = false
+	store.version = '1.3.17'
 	store.set = function(key, value) {}
-	store.get = function(key) {}
+	store.get = function(key, defaultVal) {}
+	store.has = function(key) { return store.get(key) !== undefined }
 	store.remove = function(key) {}
 	store.clear = function() {}
 	store.transact = function(key, defaultVal, transactionFn) {
-		var val = store.get(key)
 		if (transactionFn == null) {
 			transactionFn = defaultVal
 			defaultVal = null
 		}
-		if (typeof val == 'undefined') { val = defaultVal || {} }
+		if (defaultVal == null) {
+			defaultVal = {}
+		}
+		var val = store.get(key, defaultVal)
 		transactionFn(val)
 		store.set(key, val)
 	}
@@ -1265,7 +1269,10 @@ function log() {
 			storage.setItem(key, store.serialize(val))
 			return val
 		}
-		store.get = function(key) { return store.deserialize(storage.getItem(key)) }
+		store.get = function(key, defaultVal) {
+			var val = store.deserialize(storage.getItem(key))
+			return (val === undefined ? defaultVal : val)
+		}
 		store.remove = function(key) { storage.removeItem(key) }
 		store.clear = function() { storage.clear() }
 		store.getAll = function() {
@@ -1307,7 +1314,7 @@ function log() {
 			storage = doc.createElement('div')
 			storageOwner = doc.body
 		}
-		function withIEStorage(storeFunction) {
+		var withIEStorage = function(storeFunction) {
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0)
 				args.unshift(storage)
@@ -1336,9 +1343,10 @@ function log() {
 			storage.save(localStorageName)
 			return val
 		})
-		store.get = withIEStorage(function(storage, key) {
+		store.get = withIEStorage(function(storage, key, defaultVal) {
 			key = ieKeyFix(key)
-			return store.deserialize(storage.getAttribute(key))
+			var val = store.deserialize(storage.getAttribute(key))
+			return (val === undefined ? defaultVal : val)
 		})
 		store.remove = withIEStorage(function(storage, key) {
 			key = ieKeyFix(key)
@@ -8232,7 +8240,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -8857,7 +8865,7 @@ window.JST["fields/radio"] = function(__obj) {
         _print(this.getDomId());
         _print(_safe('"\n             name="'));
         _print(this.getDomId());
-        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' />\n  </div>\n'));
+        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -8989,7 +8997,7 @@ window.JST["fields/table"] = function(__obj) {
           column = _ref2[j];
           _print(_safe('\n          <td>\n            <textarea '));
           if (this.model.getPresetValue(column.label, i)) {
-            _print(_safe('readonly'));
+            _print(_safe('disabled'));
           }
           _print(_safe('\n                      data-col=\''));
           _print(j);
@@ -9021,7 +9029,7 @@ window.JST["fields/table"] = function(__obj) {
           _print(j);
           _print(_safe('\'></td>\n        '));
         }
-        _print(_safe('\n      </tr>\n    </tfoot>\n  '));
+        _print(_safe('\n        <td class="fr_table_col_remove"></td>\n      </tr>\n    </tfoot>\n  '));
       }
     
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
@@ -9597,7 +9605,7 @@ window.JST["partials/length_validations"] = function(__obj) {
       if (this.model.hasLengthValidations()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    '));
         if (this.model.get('field_options.minlength') && this.model.get('field_options.maxlength')) {
-          _print(_safe('\n      Between '));
+          _print(_safe('\n      Enter between '));
           _print(this.model.get('field_options.minlength'));
           _print(_safe(' and '));
           _print(this.model.get('field_options.maxlength'));
@@ -9605,21 +9613,21 @@ window.JST["partials/length_validations"] = function(__obj) {
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n    '));
         } else if (this.model.get('field_options.minlength')) {
-          _print(_safe('\n      More than '));
+          _print(_safe('\n      Enter more than '));
           _print(this.model.get('field_options.minlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n    '));
         } else if (this.model.get('field_options.maxlength')) {
-          _print(_safe('\n      Less than '));
+          _print(_safe('\n      Enter less than '));
           _print(this.model.get('field_options.maxlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n    '));
         }
-        _print(_safe('\n\n    Current count:\n    <code class=\'fr_min_max_counter\' data-rv-text=\'model.currentLength\'></code>\n    '));
+        _print(_safe('\n\n    <span class=\'fr_min_max_counter\'> <b data-rv-text=\'model.currentLength\'></b> '));
         _print(this.model.getLengthValidationUnits());
-        _print(_safe('.\n  </div>\n'));
+        _print(_safe('</span>\n  </div>\n'));
       }
     
       _print(_safe('\n'));

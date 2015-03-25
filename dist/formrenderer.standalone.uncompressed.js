@@ -14,10 +14,6 @@
     }
   };
 
-  rivets.formatters.prepend = function(value, x) {
-    return "" + x + value;
-  };
-
   rivets.configure({
     prefix: "rv",
     adapter: {
@@ -49,7 +45,7 @@
 }).call(this);
 
 (function() {
-  var FormRenderer, autoLink, commonCountries, sanitizeConfig;
+  var FormRenderer, autoLink, sanitizeConfig;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -73,7 +69,7 @@
       });
       this.setElement($(this.options.target));
       this.$el.addClass('fr_form');
-      this.$el.data('form-renderer', this);
+      this.$el.data('formrenderer-instance', this);
       this.subviews = {
         pages: {}
       };
@@ -118,10 +114,6 @@
         };
       })(this));
       return this;
-    },
-    addSubview: function(key, view) {
-      this.subviews[key] = view;
-      return this.$el.append(view.render().el);
     },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
@@ -220,6 +212,20 @@
       }
       return _results;
     },
+    initConditions: function() {
+      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
+        return function(rf) {
+          return _this.runConditions(rf);
+        };
+      })(this));
+      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
+          });
+        });
+      }));
+    },
     activatePage: function(newPageNumber, opts) {
       if (opts == null) {
         opts = {};
@@ -269,11 +275,6 @@
           return _this.isPageValid(x);
         };
       })(this));
-    },
-    numValidationErrors: function() {
-      return this.response_fields.filter(function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }).length;
     },
     visiblePages: function() {
       return _.tap([], (function(_this) {
@@ -487,20 +488,6 @@
         return ("" + condition.response_field_id) === ("" + rf.id);
       });
     },
-    initConditions: function() {
-      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return _this.runConditions(rf);
-        };
-      })(this));
-      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
-    },
     isConditionalVisible: function(condition) {
       return new FormRenderer.ConditionChecker(this, condition).isVisible();
     }
@@ -511,6 +498,18 @@
   FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
 
   FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
+
+  FormRenderer.BUTTON_CLASS = '';
+
+  FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
+
+  FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
+
+  FormRenderer.FILE_TYPES = {};
+
+  FormRenderer.ADD_ROW_LINK = '+ Add another row';
+
+  FormRenderer.REMOVE_ROW_LINK = '-';
 
   FormRenderer.Views = {};
 
@@ -536,14 +535,6 @@
   FormRenderer.removePlugin = function(x) {
     return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
   };
-
-  FormRenderer.BUTTON_CLASS = '';
-
-  FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
-
-  FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
-
-  FormRenderer.FILE_TYPES = {};
 
   FormRenderer.loadLeaflet = function(cb) {
     if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
@@ -580,10 +571,22 @@
     return _.sanitize(autoLink(_.simpleFormat(unsafeHTML || '', false)), sanitizeConfig);
   };
 
+}).call(this);
+
+(function() {
+  var commonCountries;
+
   commonCountries = ['US', 'GB', 'CA'];
 
   FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
 
+  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
+
+  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+
+}).call(this);
+
+(function() {
   FormRenderer.errors = {
     blank: "This field can't be blank.",
     invalid_date: 'Please enter a valid date.',
@@ -597,14 +600,6 @@
     too_short: 'Your answer is too short.',
     too_small: 'Your answer is too small.'
   };
-
-  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
-
-  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-
-  FormRenderer.ADD_ROW_LINK = '+ Add another row';
-
-  FormRenderer.REMOVE_ROW_LINK = '-';
 
 }).call(this);
 
@@ -675,286 +670,145 @@
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.BaseValidator = (function() {
-    function BaseValidator(model) {
-      this.model = model;
-    }
-
-    return BaseValidator;
-
-  })();
-
-}).call(this);
-
-(function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.DateValidator = (function(_super) {
-    __extends(DateValidator, _super);
-
-    function DateValidator() {
-      return DateValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    DateValidator.prototype.validate = function() {
+  FormRenderer.Validators.DateValidator = {
+    validate: function(model) {
       var day, month, year;
-      if (this.model.field_type !== 'date') {
-        return;
-      }
-      year = parseInt(this.model.get('value.year'), 10) || 0;
-      day = parseInt(this.model.get('value.day'), 10) || 0;
-      month = parseInt(this.model.get('value.month'), 10) || 0;
+      year = parseInt(model.get('value.year'), 10) || 0;
+      day = parseInt(model.get('value.day'), 10) || 0;
+      month = parseInt(model.get('value.month'), 10) || 0;
       if (!((year > 0) && ((0 < day && day <= 31)) && ((0 < month && month <= 12)))) {
         return 'invalid_date';
       }
-    };
-
-    return DateValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.EmailValidator = (function(_super) {
-    __extends(EmailValidator, _super);
-
-    function EmailValidator() {
-      return EmailValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    EmailValidator.prototype.validate = function() {
-      if (this.model.field_type !== 'email') {
-        return;
-      }
-      if (!this.model.get('value').match('@')) {
+  FormRenderer.Validators.EmailValidator = {
+    validate: function(model) {
+      if (!model.get('value').match('@')) {
         return 'invalid_email';
       }
-    };
-
-    return EmailValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.IdentificationValidator = (function(_super) {
-    __extends(IdentificationValidator, _super);
-
-    function IdentificationValidator() {
-      return IdentificationValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    IdentificationValidator.prototype.validate = function() {
-      if (!this.model.get('value.name') || !this.model.get('value.email')) {
+  FormRenderer.Validators.IdentificationValidator = {
+    validate: function(model) {
+      if (!model.get('value.name') || !model.get('value.email')) {
         return 'blank';
-      } else if (!this.model.get('value.email').match('@')) {
+      } else if (!model.get('value.email').match('@')) {
         return 'invalid_email';
       }
-    };
-
-    return IdentificationValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.IntegerValidator = (function(_super) {
-    __extends(IntegerValidator, _super);
-
-    function IntegerValidator() {
-      return IntegerValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    IntegerValidator.VALID_REGEX = /^-?\d+$/;
-
-    IntegerValidator.prototype.validate = function() {
-      if (!this.model.get('field_options.integer_only')) {
+  FormRenderer.Validators.IntegerValidator = {
+    validate: function(model) {
+      if (!model.get('field_options.integer_only')) {
         return;
       }
-      if (!this.model.get('value').match(this.constructor.VALID_REGEX)) {
+      if (!model.get('value').match(/^-?\d+$/)) {
         return 'invalid_integer';
       }
-    };
-
-    return IntegerValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.MinMaxLengthValidator = (function(_super) {
-    __extends(MinMaxLengthValidator, _super);
-
-    function MinMaxLengthValidator() {
-      return MinMaxLengthValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    MinMaxLengthValidator.prototype.validate = function() {
-      if (!(this.model.get('field_options.minlength') || this.model.get('field_options.maxlength'))) {
+  FormRenderer.Validators.MinMaxLengthValidator = {
+    validate: function(model) {
+      var count, max, min;
+      if (!(model.get('field_options.minlength') || model.get('field_options.maxlength'))) {
         return;
       }
-      this.min = parseInt(this.model.get('field_options.minlength'), 10) || void 0;
-      this.max = parseInt(this.model.get('field_options.maxlength'), 10) || void 0;
-      if (this.min && this.count() < this.min) {
+      min = parseInt(model.get('field_options.minlength'), 10) || void 0;
+      max = parseInt(model.get('field_options.maxlength'), 10) || void 0;
+      count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
+      if (min && count < min) {
         return 'too_short';
-      } else if (this.max && this.count() > this.max) {
+      } else if (max && count > max) {
         return 'too_long';
       }
-    };
-
-    MinMaxLengthValidator.prototype.count = function() {
-      return FormRenderer.getLength(this.model.getLengthValidationUnits(), this.model.get('value'));
-    };
-
-    return MinMaxLengthValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.MinMaxValidator = (function(_super) {
-    __extends(MinMaxValidator, _super);
-
-    function MinMaxValidator() {
-      return MinMaxValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    MinMaxValidator.prototype.validate = function() {
-      var value;
-      if (!(this.model.get('field_options.min') || this.model.get('field_options.max'))) {
+  FormRenderer.Validators.MinMaxValidator = {
+    validate: function(model) {
+      var max, min, value;
+      if (!(model.get('field_options.min') || model.get('field_options.max'))) {
         return;
       }
-      this.min = this.model.get('field_options.min') && parseFloat(this.model.get('field_options.min'));
-      this.max = this.model.get('field_options.max') && parseFloat(this.model.get('field_options.max'));
-      value = this.model.field_type === 'price' ? parseFloat("" + (this.model.get('value.dollars') || 0) + "." + (this.model.get('value.cents') || 0)) : parseFloat(this.model.get('value').replace(/,/g, ''));
-      if (this.min && value < this.min) {
+      min = model.get('field_options.min') && parseFloat(model.get('field_options.min'));
+      max = model.get('field_options.max') && parseFloat(model.get('field_options.max'));
+      value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
+      if (min && value < min) {
         return 'too_small';
-      } else if (this.max && value > this.max) {
+      } else if (max && value > max) {
         return 'too_large';
       }
-    };
-
-    return MinMaxValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.NumberValidator = (function(_super) {
-    __extends(NumberValidator, _super);
-
-    function NumberValidator() {
-      return NumberValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    NumberValidator.VALID_REGEX = /^-?\d*(\.\d+)?$/;
-
-    NumberValidator.prototype.validate = function() {
+  FormRenderer.Validators.NumberValidator = {
+    validate: function(model) {
       var value;
-      if (this.model.field_type !== 'number') {
-        return;
-      }
-      value = this.model.get('value');
+      value = model.get('value');
       value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '');
-      if (!value.match(this.constructor.VALID_REGEX)) {
+      if (!value.match(/^-?\d*(\.\d+)?$/)) {
         return 'invalid_number';
       }
-    };
-
-    return NumberValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.PriceValidator = (function(_super) {
-    __extends(PriceValidator, _super);
-
-    function PriceValidator() {
-      return PriceValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    PriceValidator.prototype.validate = function() {
+  FormRenderer.Validators.PriceValidator = {
+    validate: function(model) {
       var values;
-      if (this.model.field_type !== 'price') {
-        return;
-      }
       values = [];
-      if (this.model.get('value.dollars')) {
-        values.push(this.model.get('value.dollars').replace(/,/g, ''));
+      if (model.get('value.dollars')) {
+        values.push(model.get('value.dollars').replace(/,/g, ''));
       }
-      if (this.model.get('value.cents')) {
-        values.push(this.model.get('value.cents'));
+      if (model.get('value.cents')) {
+        values.push(model.get('value.cents'));
       }
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);
       })) {
         return 'invalid_price';
       }
-    };
-
-    return PriceValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.TimeValidator = (function(_super) {
-    __extends(TimeValidator, _super);
-
-    function TimeValidator() {
-      return TimeValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    TimeValidator.prototype.validate = function() {
+  FormRenderer.Validators.TimeValidator = {
+    validate: function(model) {
       var hours, minutes, seconds;
-      if (this.model.field_type !== 'time') {
-        return;
-      }
-      hours = parseInt(this.model.get('value.hours'), 10) || 0;
-      minutes = parseInt(this.model.get('value.minutes'), 10) || 0;
-      seconds = parseInt(this.model.get('value.seconds'), 10) || 0;
+      hours = parseInt(model.get('value.hours'), 10) || 0;
+      minutes = parseInt(model.get('value.minutes'), 10) || 0;
+      seconds = parseInt(model.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 60)) && ((0 <= seconds && seconds <= 60)))) {
         return 'invalid_time';
       }
-    };
-
-    return TimeValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
@@ -979,7 +833,7 @@
       }
     },
     validate: function() {
-      var errorKey, v, validator, validatorName, _ref, _results;
+      var errorKey, validator, validatorName, _ref, _results;
       this.errors = [];
       if (!this.isVisible) {
         return;
@@ -994,8 +848,7 @@
       _results = [];
       for (validatorName in _ref) {
         validator = _ref[validatorName];
-        v = new validator(this);
-        errorKey = v.validate();
+        errorKey = validator.validate(this);
         if (errorKey) {
           _results.push(this.errors.push(FormRenderer.errors[errorKey]));
         } else {

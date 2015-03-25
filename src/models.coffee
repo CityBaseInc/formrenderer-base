@@ -25,8 +25,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
     # If value is present, run all the other validators
     for validatorName, validator of @validators
-      v = new validator(@)
-      errorKey = v.validate()
+      errorKey = validator.validate(@)
       @errors.push(FormRenderer.errors[errorKey]) if errorKey
 
   getError: ->

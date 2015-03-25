@@ -9,17 +9,17 @@ before ->
   @assertValid = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    expect(@validator.validate()).to.equal(undefined)
+    expect(@validator.validate(@model)).to.equal(undefined)
 
   @assertInvalid = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    expect(@validator.validate()).not.to.equal(undefined)
+    expect(@validator.validate(@model)).not.to.equal(undefined)
 
 describe 'DateValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldDate
-    @validator = new FormRenderer.Validators.DateValidator(@model)
+    @validator = FormRenderer.Validators.DateValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.DATE.valid
@@ -31,7 +31,7 @@ describe 'DateValidator', ->
 describe 'EmailValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldEmail
-    @validator = new FormRenderer.Validators.EmailValidator(@model)
+    @validator = FormRenderer.Validators.EmailValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.EMAIL.valid
@@ -43,7 +43,7 @@ describe 'EmailValidator', ->
 describe 'NumberValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldNumber
-    @validator = new FormRenderer.Validators.NumberValidator(@model)
+    @validator = FormRenderer.Validators.NumberValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.NUMBER.valid
@@ -55,7 +55,7 @@ describe 'NumberValidator', ->
 describe 'PriceValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldPrice
-    @validator = new FormRenderer.Validators.PriceValidator(@model)
+    @validator = FormRenderer.Validators.PriceValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.PRICE.valid
@@ -67,7 +67,7 @@ describe 'PriceValidator', ->
 describe 'TimeValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldTime
-    @validator = new FormRenderer.Validators.TimeValidator(@model)
+    @validator = FormRenderer.Validators.TimeValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.TIME.valid
@@ -79,7 +79,7 @@ describe 'TimeValidator', ->
 describe 'MinMaxLengthValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldParagraph
-    @validator = new FormRenderer.Validators.MinMaxLengthValidator(@model)
+    @validator = FormRenderer.Validators.MinMaxLengthValidator
 
   describe 'characters', ->
     before ->
@@ -109,7 +109,7 @@ describe 'MinMaxValidator', ->
       field_options: { min: '5', max: '10' }
     )
 
-    @validator = new FormRenderer.Validators.MinMaxValidator(@model)
+    @validator = FormRenderer.Validators.MinMaxValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.MIN_MAX.valid
@@ -124,7 +124,7 @@ describe 'IntegerValidator', ->
       field_options: { integer_only: true }
     )
 
-    @validator = new FormRenderer.Validators.IntegerValidator(@model)
+    @validator = FormRenderer.Validators.IntegerValidator
 
   it 'validates properly', ->
     for x in Fixtures.Validation.INTEGER.valid

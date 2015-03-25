@@ -62,7 +62,7 @@
       skipValidation: void 0,
       saveParams: {},
       showLabels: false,
-      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'PageState', 'LocalStorage']
+      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']
     },
     constructor: function(options) {
       var p, _i, _len, _ref;
@@ -387,11 +387,6 @@
         })(this)
       });
     },
-    autosaveImmediately: function() {
-      if (this.state.get('hasChanges') && !this.isSaving && this.options.enableAutosave) {
-        return this.save();
-      }
-    },
     waitForUploads: function(cb) {
       if (this.uploads > 0) {
         return setTimeout(((function(_this) {
@@ -445,7 +440,7 @@
           return window.location = _this.options.preview.replace(':id', _this.options.response.id);
         };
       })(this);
-      if (this.state.get('hasChanges') || !this.options.enableAutosave || !this.options.response.id) {
+      if (this.state.get('hasChanges') || !this.options.response.id) {
         return this.save({
           success: cb
         });
@@ -1436,13 +1431,20 @@
     }
 
     Autosave.prototype.afterFormLoad = function() {
-      return setInterval((function(_this) {
+      setInterval((function(_this) {
         return function() {
           if (_this.fr.state.get('hasChanges') && !_this.fr.isSaving) {
             return _this.fr.save();
           }
         };
       })(this), 5000);
+      return this.fr.on('attachment_modified', (function(_this) {
+        return function() {
+          if (_this.fr.state.get('hasChanges') && !_this.fr.isSaving) {
+            return _this.fr.save();
+          }
+        };
+      })(this));
     };
 
     return Autosave;
@@ -1452,11 +1454,11 @@
 }).call(this);
 
 (function() {
-  var BottomBar,
+  var BottomBarView,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  BottomBar = Backbone.View.extend({
+  BottomBarView = Backbone.View.extend({
     events: {
       'click [data-js-back]': 'handleBack',
       'click [data-js-continue]': 'handleContinue'
@@ -1493,7 +1495,7 @@
     }
 
     BottomBar.prototype.afterFormLoad = function() {
-      this.fr.subviews.bottomBar = new BottomBar({
+      this.fr.subviews.bottomBar = new BottomBarView({
         form_renderer: this.fr
       });
       return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
@@ -1506,11 +1508,11 @@
 }).call(this);
 
 (function() {
-  var ErrorBar,
+  var ErrorBarView,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  ErrorBar = Backbone.View.extend({
+  ErrorBarView = Backbone.View.extend({
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
@@ -1532,7 +1534,7 @@
     }
 
     ErrorBar.prototype.afterFormLoad = function() {
-      this.fr.subviews.errorBar = new ErrorBar({
+      this.fr.subviews.errorBar = new ErrorBarView({
         form_renderer: this.fr
       });
       return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
@@ -1907,7 +1909,7 @@
         success: (function(_this) {
           return function(data) {
             _this.model.set('value.id', data.file_id);
-            _this.form_renderer.autosaveImmediately();
+            _this.form_renderer.trigger('attachment_modified');
             return _this.render();
           };
         })(this),
@@ -1926,7 +1928,7 @@
     },
     doRemove: function() {
       this.model.set('value', {});
-      this.form_renderer.autosaveImmediately();
+      this.form_renderer.trigger('attachment_modified');
       return this.render();
     }
   });
@@ -3787,9 +3789,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    
       _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
     
-      if (this.form_renderer.options.enableAutosave) {
+      if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
           _print(_safe('\n        Error saving\n      '));

@@ -1032,6 +1032,6 @@ Fixtures.FormRendererOptions = {
 Fixtures.FormRendererOptions.PAGE_STATE = function(){
   return $.extend(
     Fixtures.FormRendererOptions.CONDITIONAL(),
-    { enablePageState: true }
+    { plugins: _.union(FormRenderer.prototype.defaults.plugins, ['PageState']) }
   );
 }

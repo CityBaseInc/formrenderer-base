@@ -145,7 +145,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         $tmpForm.remove()
       success: (data) =>
         @model.set 'value.id', data.file_id
-        @form_renderer.autosaveImmediately()
+        @form_renderer.trigger('attachment_modified')
         @render()
       error: (data) =>
         errorText = data.responseJSON?.errors
@@ -157,7 +157,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
 
   doRemove: ->
     @model.set 'value', {}
-    @form_renderer.autosaveImmediately()
+    @form_renderer.trigger('attachment_modified')
     @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend

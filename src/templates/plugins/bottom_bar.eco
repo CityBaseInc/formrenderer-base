@@ -1,5 +1,5 @@
 <div class='fr_bottom fr_cf'>
-  <% if @form_renderer.options.enableAutosave: %>
+  <% if 'Autosave' in @form_renderer.options.plugins: %>
     <div class='fr_bottom_l'>
       <% if @form_renderer.state.get('hasServerErrors'): %>
         Error saving

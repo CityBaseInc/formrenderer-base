@@ -1,4 +1,5 @@
-BottomBar = Backbone.View.extend
+BottomBarView = Backbone.View.extend
+  # @todo move these events to the main view, data-js -> data-fr
   events:
     'click [data-js-back]': 'handleBack'
     'click [data-js-continue]': 'handleContinue'
@@ -25,5 +26,6 @@ BottomBar = Backbone.View.extend
 
 class FormRenderer.Plugins.BottomBar extends FormRenderer.Plugins.Base
   afterFormLoad: ->
-    @fr.subviews.bottomBar = new BottomBar(form_renderer: @fr)
+    # @todo add "public" API for appending views?
+    @fr.subviews.bottomBar = new BottomBarView(form_renderer: @fr)
     @fr.$el.append @fr.subviews.bottomBar.render().el

@@ -14,7 +14,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'WarnBeforeUnload'
       'BottomBar'
       'ErrorBar'
-      'PageState'
       'LocalStorage'
     ]
     # afterSubmit:
@@ -238,10 +237,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           submitting: false
         options.error?.apply(@, arguments)
 
-  autosaveImmediately: ->
-    if @state.get('hasChanges') && !@isSaving && @options.enableAutosave
-      @save()
-
   waitForUploads: (cb) ->
     if @uploads > 0
       setTimeout ( => @waitForUploads(cb) ), 100
@@ -272,7 +267,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    if @state.get('hasChanges') || !@options.enableAutosave || !@options.response.id
+    if @state.get('hasChanges') || !@options.response.id
       @save success: cb
     else
       cb()

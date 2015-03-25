@@ -26,7 +26,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       hasChanges: false
     @setElement $(@options.target)
     @$el.addClass 'fr_form'
-    @$el.data 'form-renderer', @
+    @$el.data 'formrenderer-instance', @
     @subviews = { pages: {} }
 
     @plugins = _.map @options.plugins, (pluginName) =>

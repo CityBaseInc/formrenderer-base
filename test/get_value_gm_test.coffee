@@ -1,7 +1,7 @@
 # This is a "Gold master" test. If you need to update these constants, you can do so
 # by manually clicking through the kitchen sink form in the Chrome dev console and running:
 #
-#   copy(JSON.stringify($('[data-formrenderer]').data('form-renderer').getValue()))
+#   copy(JSON.stringify($('[data-formrenderer]').data('form-renderer-instance').getValue()))
 #
 # ...which will copy the stringified JSON to your clipboard. You should then manually verify
 # the output, and if you're satisfied, you can finally update the constant.

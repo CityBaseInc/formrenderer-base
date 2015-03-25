@@ -362,9 +362,6 @@ FormRenderer.Plugins = {}
 
 ## Plugin utilities
 
-class FormRenderer.Plugins.Base
-  constructor: (@fr) ->
-
 FormRenderer.addPlugin = (x) ->
   @::defaults.plugins.push(x)
 

@@ -6651,15 +6651,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.Plugins = {};
 
-  FormRenderer.Plugins.Base = (function() {
-    function Base(fr) {
-      this.fr = fr;
-    }
-
-    return Base;
-
-  })();
-
   FormRenderer.addPlugin = function(x) {
     return this.prototype.defaults.plugins.push(x);
   };
@@ -7435,6 +7426,18 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       field_type: i
     });
   }
+
+}).call(this);
+
+(function() {
+  FormRenderer.Plugins.Base = (function() {
+    function Base(fr) {
+      this.fr = fr;
+    }
+
+    return Base;
+
+  })();
 
 }).call(this);
 

@@ -40,9 +40,16 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/condition_checker.coffee'
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'
-            '<%= srcFolder %>/plugins/*.coffee'
+            '<%= srcFolder %>/plugins/base.coffee'
+            '<%= srcFolder %>/plugins/default/*.coffee'
             '<%= srcFolder %>/views/*.coffee'
           ]
+      extras:
+        expand: true
+        flatten: true
+        src: ['<%= srcFolder %>/plugins/extra/*.coffee']
+        dest: '<%= distFolder %>/plugins'
+        ext: '.js'
 
     concat:
       all:
@@ -147,7 +154,7 @@ module.exports = (grunt) ->
       "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
     )
 
-  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'coffee:extras', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

@@ -519,15 +519,6 @@
 
   FormRenderer.Plugins = {};
 
-  FormRenderer.Plugins.Base = (function() {
-    function Base(fr) {
-      this.fr = fr;
-    }
-
-    return Base;
-
-  })();
-
   FormRenderer.addPlugin = function(x) {
     return this.prototype.defaults.plugins.push(x);
   };
@@ -1303,6 +1294,18 @@
       field_type: i
     });
   }
+
+}).call(this);
+
+(function() {
+  FormRenderer.Plugins.Base = (function() {
+    function Base(fr) {
+      this.fr = fr;
+    }
+
+    return Base;
+
+  })();
 
 }).call(this);
 

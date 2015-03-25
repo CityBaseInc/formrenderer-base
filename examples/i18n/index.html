@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <title>formrenderer-base translation plugin</title>
+  <link rel="stylesheet" href="../css/preview.css" />
+  <link rel="stylesheet" href="../../dist/formrenderer.uncompressed.css" />
+</head>
+<body>
+  <div id='container'>
+    <form data-formrenderer></form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="../../dist/formrenderer.uncompressed.js"></script>
+  <script src="https://cdn.rawgit.com/padolsey/findAndReplaceDOMText/master/src/findAndReplaceDOMText.js"></script>
+  <script src="../../dist/plugins/i18n.js"></script>
+  <script>
+    // Override save to just console.log the value
+    FormRenderer.prototype.save = function(options){
+      console.log(this.getValue());
+      this.state.set({
+        hasChanges: false
+      });
+      if (options && options.success) {
+        options.success();
+      }
+    };
+
+    FormRenderer.addPlugin('I18n');
+
+    var frTranslations = {
+      en: {
+        checkboxes: 'Checkboxes',
+        'choice 1': 'Choice #1',
+        'choice 2': 'Choice #2'
+      },
+      es: {
+        checkboxes: 'Checkboxes',
+        'choice 1': 'Opcion #1',
+        'choice 2': 'Opcion #2'
+      }
+    };
+
+    // Initialize form
+    new FormRenderer({
+      lang: 'es',
+      project_id: 1,
+      response_fields: [
+        {
+          id: 37,
+          form_id: 5,
+          label: "{checkboxes}",
+          field_options: {
+            options: [
+              {
+                checked: "false",
+                label: "{choice 1}"
+              }, {
+                checked: "false",
+                label: "{choice 2}"
+              }
+            ],
+            required: true
+          },
+          required: false,
+          blind: false,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.187Z",
+          updated_at: "2014-08-22T20:50:37.187Z",
+          field_type: "checkboxes",
+          cid: null
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {}
+      },
+      screendoorBase: 'http://screendoor.dobt.dev',
+    });
+  </script>
+</body>
+</html>

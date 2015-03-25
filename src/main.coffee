@@ -286,7 +286,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    # If we know the respones ID and there are no changes, we can bypass
+    # If we know the response ID and there are no changes, we can bypass
     # the call to @save() entirely
     if !@state.get('hasChanges') && @options.response.id
       cb()

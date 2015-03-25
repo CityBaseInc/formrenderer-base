@@ -1,8 +1,6 @@
 <div class='size_<%= @model.getSize() %>'>
-  <div class='fr_section_name'><%= @model.get('label') %></div>
-  <% if @model.get('field_options.description'): %>
-    <p><%- FormRenderer.formatHTML(@model.get('field_options.description')) %></p>
-  <% end %>
+  <<%= @model.sizeToHeaderTag() %>><%= @model.get('label') %></<%= @model.sizeToHeaderTag() %>>
+  <%- FormRenderer.formatHTML(@model.get('field_options.description')) %>
 </div>
 
 <hr />

@@ -926,6 +926,13 @@
     },
     getSize: function() {
       return this.get('field_options.size') || 'small';
+    },
+    sizeToHeaderTag: function() {
+      return {
+        large: 'h2',
+        medium: 'h3',
+        small: 'h4'
+      }[this.getSize()];
     }
   });
 
@@ -2790,17 +2797,21 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(this.model.getSize());
     
-      _print(_safe('\'>\n  <div class=\'fr_section_name\'>'));
+      _print(_safe('\'>\n  <'));
+    
+      _print(this.model.sizeToHeaderTag());
+    
+      _print(_safe('>'));
     
       _print(this.model.get('label'));
     
-      _print(_safe('</div>\n  '));
+      _print(_safe('</'));
     
-      if (this.model.get('field_options.description')) {
-        _print(_safe('\n    <p>'));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
-        _print(_safe('</p>\n  '));
-      }
+      _print(this.model.sizeToHeaderTag());
+    
+      _print(_safe('>\n  '));
+    
+      _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
     
       _print(_safe('\n</div>\n\n<hr />\n'));
     

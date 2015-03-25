@@ -98,6 +98,13 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   getSize: ->
     @get('field_options.size') || 'small'
 
+  sizeToHeaderTag: ->
+    {
+      large: 'h2'
+      medium: 'h3'
+      small: 'h4'
+    }[@getSize()]
+
 FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false
   field_type: undefined

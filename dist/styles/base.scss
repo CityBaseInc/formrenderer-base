@@ -201,24 +201,15 @@
 }
 
 .fr_response_field_section_break {
-  .fr_section_name {
-    font-weight: bold;
-  }
   p {
     font-size: $fr_font_small;
   }
   .size_medium {
-    .fr_section_name {
-      font-size: $fr_font_large;
-    }
     p {
       font-size: $fr_font_normal;
     }
   }
   .size_large {
-    .fr_section_name {
-      font-size: $fr_font_x_large;
-    }
     p {
       font-size: $fr_font_large;
     }

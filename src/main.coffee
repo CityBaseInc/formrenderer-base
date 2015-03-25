@@ -16,13 +16,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'ErrorBar'
       'LocalStorage'
     ]
-    # afterSubmit:
-    # response_fields:
-    # response:
-    #   id:
-    #   responses:
-    # project_id:
-    # onReady:
 
   ## Initialization logic
 
@@ -36,13 +29,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @$el.data 'form-renderer', @
     @subviews = { pages: {} }
 
-    # Loading state
-    @$el.html JST['main'](@)
-
     @plugins = _.map @options.plugins, (pluginName) =>
       new FormRenderer.Plugins[pluginName](@)
 
     p.beforeFormLoad?() for p in @plugins
+
+    # Loading state
+    @$el.html JST['main'](@)
+    @trigger 'viewRendered', @
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()

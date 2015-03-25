@@ -13,4 +13,5 @@ FormRenderer.Views.Pagination = Backbone.View.extend
 
   render: ->
     @$el.html JST['partials/pagination'](@)
+    @form_renderer.trigger 'viewRendered', @
     @

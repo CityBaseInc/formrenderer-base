@@ -77,7 +77,6 @@
       this.subviews = {
         pages: {}
       };
-      this.$el.html(JST['main'](this));
       this.plugins = _.map(this.options.plugins, (function(_this) {
         return function(pluginName) {
           return new FormRenderer.Plugins[pluginName](_this);
@@ -90,6 +89,8 @@
           p.beforeFormLoad();
         }
       }
+      this.$el.html(JST['main'](this));
+      this.trigger('viewRendered', this);
       this.loadFromServer((function(_this) {
         return function() {
           var _base, _j, _len1, _ref1;
@@ -1494,6 +1495,7 @@
     },
     render: function() {
       this.$el.html(JST['plugins/bottom_bar'](this));
+      this.form_renderer.trigger('viewRendered', this);
       return this;
     }
   });
@@ -1530,6 +1532,7 @@
     },
     render: function() {
       this.$el.html(JST['plugins/error_bar'](this));
+      this.form_renderer.trigger('viewRendered', this);
       if (!this.form_renderer.areAllPagesValid()) {
         window.scrollTo(0, this.$el.offset().top - 10);
       }
@@ -1750,6 +1753,7 @@
     },
     render: function() {
       this.$el.html(JST['partials/pagination'](this));
+      this.form_renderer.trigger('viewRendered', this);
       return this;
     }
   });
@@ -1788,14 +1792,15 @@
       rivets.bind(this.$el, {
         model: this.model
       });
+      this.form_renderer.trigger('viewRendered', this);
       return this;
     }
   });
 
   FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
     render: function() {
-      this.$el.addClass("fr_response_field_" + this.field_type);
       this.$el.html(JST['partials/non_input_response_field'](this));
+      this.form_renderer.trigger('viewRendered', this);
       return this;
     }
   });

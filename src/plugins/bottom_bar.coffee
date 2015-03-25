@@ -14,6 +14,7 @@ BottomBarView = Backbone.View.extend
 
   render: ->
     @$el.html JST['plugins/bottom_bar'](@)
+    @form_renderer.trigger 'viewRendered', @
     @
 
 class FormRenderer.Plugins.BottomBar extends FormRenderer.Plugins.Base

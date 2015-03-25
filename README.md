@@ -79,6 +79,7 @@ Since `FormRenderer` inherits the `Backbone.View` prototype, you can listen for 
 | afterValidate | Triggered after validation of a single page or the entire form. | |
 | afterValidate:one | Triggered after the validation of a single page. | `(pageNumber)` |
 | afterValidate:all | Triggered after the validation of the entire form. | |
+| viewRendered | A Backbone view has been rendered. Useful if you need to change certain DOM nodes before they're rendered. | `(view)` |
 
 ## Customizing
 

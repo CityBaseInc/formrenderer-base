@@ -5,6 +5,7 @@ ErrorBarView = Backbone.View.extend
 
   render: ->
     @$el.html JST['plugins/error_bar'](@)
+    @form_renderer.trigger 'viewRendered', @
 
     unless @form_renderer.areAllPagesValid()
       # @todo scroll to first error? show correct page?

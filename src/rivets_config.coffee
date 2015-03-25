@@ -8,9 +8,6 @@ rivets.binders.input =
   unbind: (el) ->
     $(el).unbind("#{inputEvent}.rivets")
 
-rivets.formatters.prepend = (value, x) ->
-  "#{x}#{value}"
-
 rivets.configure
   prefix: "rv"
   adapter:

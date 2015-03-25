@@ -39,6 +39,7 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/validators/base_validator.coffee'
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'
+            '<%= srcFolder %>/plugins/*.coffee'
             '<%= srcFolder %>/views/*.coffee'
           ]
 

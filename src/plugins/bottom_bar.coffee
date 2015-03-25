@@ -1,4 +1,4 @@
-FormRenderer.Views.BottomStatusBar = Backbone.View.extend
+BottomBar = Backbone.View.extend
   events:
     'click [data-js-back]': 'handleBack'
     'click [data-js-continue]': 'handleContinue'
@@ -8,7 +8,7 @@ FormRenderer.Views.BottomStatusBar = Backbone.View.extend
     @listenTo @form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', @render
 
   render: ->
-    @$el.html JST['partials/bottom_status_bar'](@)
+    @$el.html JST['plugins/bottom_bar'](@)
     @
 
   handleBack: (e) ->
@@ -22,3 +22,8 @@ FormRenderer.Views.BottomStatusBar = Backbone.View.extend
       @form_renderer.submit()
     else
       @form_renderer.activatePage(@form_renderer.nextPage())
+
+class FormRenderer.Plugins.BottomBar extends FormRenderer.Plugins.Base
+  afterFormLoad: ->
+    @fr.subviews.bottomBar = new BottomBar(form_renderer: @fr)
+    @fr.$el.append @fr.subviews.bottomBar.render().el

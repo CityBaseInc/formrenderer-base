@@ -1,12 +1,6 @@
 window.FormRenderer = FormRenderer = Backbone.View.extend
   defaults:
-    enableAutosave: true
-    enableBeforeUnload: true
     enablePages: true
-    enableErrorAlertBar: true
-    enableBottomStatusBar: true
-    enableLocalstorage: true
-    enablePageState: false
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
@@ -15,6 +9,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     skipValidation: undefined
     saveParams: {}
     showLabels: false
+    plugins: [
+      'Autosave'
+      'WarnBeforeUnload'
+      'BottomBar'
+      'ErrorBar'
+      'PageState'
+      'LocalStorage'
+    ]
     # afterSubmit:
     # response_fields:
     # response:
@@ -38,31 +40,23 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     # Loading state
     @$el.html JST['main'](@)
 
-    @initLocalstorage() if @options.enableLocalstorage && store.enabled
+    @plugins = _.map @options.plugins, (pluginName) =>
+      new FormRenderer.Plugins[pluginName](@)
+
+    p.beforeFormLoad?() for p in @plugins
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
       @initResponseFields()
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
-      @initPageState() if @options.enablePageState
-      @initBottomStatusBar() if @options.enableBottomStatusBar
-      @initErrorAlertBar() if @options.enableErrorAlertBar
-      @initAutosave() if @options.enableAutosave
-      @initBeforeUnload() if @options.enableBeforeUnload
+      p.afterFormLoad?() for p in @plugins
       @validateAllPages() if @options.validateImmediately
       @initConditions()
       @trigger 'ready'
       @options.onReady?()
 
     @ # explicitly return self
-
-  initLocalstorage: ->
-    @options.response.id ||= store.get(@draftIdStorageKey())
-
-    @listenTo @, 'afterSave', ->
-      unless @state.get('submitting')
-        store.set @draftIdStorageKey(), @options.response.id
 
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
@@ -100,19 +94,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @listenTo @response_fields, 'change', ->
       @state.set('hasChanges', true) unless @state.get('hasChanges')
 
-  initAutosave: ->
-    setInterval =>
-      @save() if @state.get('hasChanges') && !@isSaving
-    , 5000
-
-  initBottomStatusBar: ->
-    @subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar(form_renderer: @)
-    @$el.append @subviews.bottomStatusBar.render().el
-
-  initErrorAlertBar: ->
-    @subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar(form_renderer: @)
-    @$el.prepend @subviews.errorAlertBar.render().el
-
   initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
@@ -140,19 +121,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   initNoPagination: ->
     for pageNumber, page of @subviews.pages
       page.show()
-
-  initPageState: ->
-    if num = window.location.hash.match(/page([0-9]+)/)?[1]
-      page = parseInt(num, 10)
-      if @isPageVisible(page)
-        @activatePage(page, skipValidation: true)
-
-    @state.on 'change:activePage', (_, num) ->
-      window.location.hash = "page#{num}"
-
-  initBeforeUnload: ->
-    BeforeUnload.enable
-      if: => @state.get('hasChanges')
 
   ## Pages / Validation
 
@@ -371,6 +339,10 @@ FormRenderer.FIELD_TYPES = _.union(
 FormRenderer.Views = {}
 FormRenderer.Models = {}
 FormRenderer.Validators = {}
+FormRenderer.Plugins = {}
+
+class FormRenderer.Plugins.Base
+  constructor: (@fr) ->
 
 FormRenderer.BUTTON_CLASS = ''
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]

@@ -6185,13 +6185,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
-      enableAutosave: true,
-      enableBeforeUnload: true,
       enablePages: true,
-      enableErrorAlertBar: true,
-      enableBottomStatusBar: true,
-      enableLocalstorage: true,
-      enablePageState: false,
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
@@ -6199,9 +6193,11 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       preview: false,
       skipValidation: void 0,
       saveParams: {},
-      showLabels: false
+      showLabels: false,
+      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'PageState', 'LocalStorage']
     },
     constructor: function(options) {
+      var p, _i, _len, _ref;
       this.options = $.extend({}, this.defaults, options);
       this.uploads = 0;
       this.state = new Backbone.Model({
@@ -6214,12 +6210,21 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         pages: {}
       };
       this.$el.html(JST['main'](this));
-      if (this.options.enableLocalstorage && store.enabled) {
-        this.initLocalstorage();
+      this.plugins = _.map(this.options.plugins, (function(_this) {
+        return function(pluginName) {
+          return new FormRenderer.Plugins[pluginName](_this);
+        };
+      })(this));
+      _ref = this.plugins;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
+        if (typeof p.beforeFormLoad === "function") {
+          p.beforeFormLoad();
+        }
       }
       this.loadFromServer((function(_this) {
         return function() {
-          var _base;
+          var _base, _j, _len1, _ref1;
           _this.$el.find('.fr_loading').remove();
           _this.initResponseFields();
           _this.initPages();
@@ -6228,20 +6233,12 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
           } else {
             _this.initNoPagination();
           }
-          if (_this.options.enablePageState) {
-            _this.initPageState();
-          }
-          if (_this.options.enableBottomStatusBar) {
-            _this.initBottomStatusBar();
-          }
-          if (_this.options.enableErrorAlertBar) {
-            _this.initErrorAlertBar();
-          }
-          if (_this.options.enableAutosave) {
-            _this.initAutosave();
-          }
-          if (_this.options.enableBeforeUnload) {
-            _this.initBeforeUnload();
+          _ref1 = _this.plugins;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            p = _ref1[_j];
+            if (typeof p.afterFormLoad === "function") {
+              p.afterFormLoad();
+            }
           }
           if (_this.options.validateImmediately) {
             _this.validateAllPages();
@@ -6252,15 +6249,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         };
       })(this));
       return this;
-    },
-    initLocalstorage: function() {
-      var _base;
-      (_base = this.options.response).id || (_base.id = store.get(this.draftIdStorageKey()));
-      return this.listenTo(this, 'afterSave', function() {
-        if (!this.state.get('submitting')) {
-          return store.set(this.draftIdStorageKey(), this.options.response.id);
-        }
-      });
     },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
@@ -6313,27 +6301,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         }
       });
     },
-    initAutosave: function() {
-      return setInterval((function(_this) {
-        return function() {
-          if (_this.state.get('hasChanges') && !_this.isSaving) {
-            return _this.save();
-          }
-        };
-      })(this), 5000);
-    },
-    initBottomStatusBar: function() {
-      this.subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar({
-        form_renderer: this
-      });
-      return this.$el.append(this.subviews.bottomStatusBar.render().el);
-    },
-    initErrorAlertBar: function() {
-      this.subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar({
-        form_renderer: this
-      });
-      return this.$el.prepend(this.subviews.errorAlertBar.render().el);
-    },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
       addPage = (function(_this) {
@@ -6383,29 +6350,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         _results.push(page.show());
       }
       return _results;
-    },
-    initPageState: function() {
-      var num, page, _ref;
-      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
-        page = parseInt(num, 10);
-        if (this.isPageVisible(page)) {
-          this.activatePage(page, {
-            skipValidation: true
-          });
-        }
-      }
-      return this.state.on('change:activePage', function(_, num) {
-        return window.location.hash = "page" + num;
-      });
-    },
-    initBeforeUnload: function() {
-      return BeforeUnload.enable({
-        "if": (function(_this) {
-          return function() {
-            return _this.state.get('hasChanges');
-          };
-        })(this)
-      });
     },
     activatePage: function(newPageNumber, opts) {
       if (opts == null) {
@@ -6691,6 +6635,17 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Models = {};
 
   FormRenderer.Validators = {};
+
+  FormRenderer.Plugins = {};
+
+  FormRenderer.Plugins.Base = (function() {
+    function Base(fr) {
+      this.fr = fr;
+    }
+
+    return Base;
+
+  })();
 
   FormRenderer.BUTTON_CLASS = '';
 
@@ -7602,7 +7557,38 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 }).call(this);
 
 (function() {
-  FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.Autosave = (function(_super) {
+    __extends(Autosave, _super);
+
+    function Autosave() {
+      return Autosave.__super__.constructor.apply(this, arguments);
+    }
+
+    Autosave.prototype.afterFormLoad = function() {
+      return setInterval((function(_this) {
+        return function() {
+          if (_this.fr.state.get('hasChanges') && !_this.fr.isSaving) {
+            return _this.fr.save();
+          }
+        };
+      })(this), 5000);
+    };
+
+    return Autosave;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var BottomBar,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  BottomBar = Backbone.View.extend({
     events: {
       'click [data-js-back]': 'handleBack',
       'click [data-js-continue]': 'handleContinue'
@@ -7612,7 +7598,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this.listenTo(this.form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', this.render);
     },
     render: function() {
-      this.$el.html(JST['partials/bottom_status_bar'](this));
+      this.$el.html(JST['plugins/bottom_bar'](this));
       return this;
     },
     handleBack: function(e) {
@@ -7631,22 +7617,150 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     }
   });
 
+  FormRenderer.Plugins.BottomBar = (function(_super) {
+    __extends(BottomBar, _super);
+
+    function BottomBar() {
+      return BottomBar.__super__.constructor.apply(this, arguments);
+    }
+
+    BottomBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.bottomBar = new BottomBar({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
+    };
+
+    return BottomBar;
+
+  })(FormRenderer.Plugins.Base);
+
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ErrorAlertBar = Backbone.View.extend({
+  var ErrorBar,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  ErrorBar = Backbone.View.extend({
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
     },
     render: function() {
-      this.$el.html(JST['partials/error_alert_bar'](this));
+      this.$el.html(JST['plugins/error_bar'](this));
       if (!this.form_renderer.areAllPagesValid()) {
         window.scrollTo(0, this.$el.offset().top - 10);
       }
       return this;
     }
   });
+
+  FormRenderer.Plugins.ErrorBar = (function(_super) {
+    __extends(ErrorBar, _super);
+
+    function ErrorBar() {
+      return ErrorBar.__super__.constructor.apply(this, arguments);
+    }
+
+    ErrorBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.errorBar = new ErrorBar({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
+    };
+
+    return ErrorBar;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.LocalStorage = (function(_super) {
+    __extends(LocalStorage, _super);
+
+    function LocalStorage() {
+      return LocalStorage.__super__.constructor.apply(this, arguments);
+    }
+
+    LocalStorage.prototype.beforeFormLoad = function() {
+      var _base;
+      if (store.enabled) {
+        (_base = this.fr.options.response).id || (_base.id = store.get(this.fr.draftIdStorageKey()));
+        return this.fr.on('afterSave', function() {
+          if (!this.fr.state.get('submitting')) {
+            return store.set(this.fr.draftIdStorageKey(), this.fr.options.response.id);
+          }
+        });
+      }
+    };
+
+    return LocalStorage;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.PageState = (function(_super) {
+    __extends(PageState, _super);
+
+    function PageState() {
+      return PageState.__super__.constructor.apply(this, arguments);
+    }
+
+    PageState.prototype.afterFormLoad = function() {
+      var num, page, _ref;
+      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
+        page = parseInt(num, 10);
+        if (this.fr.isPageVisible(page)) {
+          this.fr.activatePage(page, {
+            skipValidation: true
+          });
+        }
+      }
+      return this.fr.state.on('change:activePage', function(_, num) {
+        return window.location.hash = "page" + num;
+      });
+    };
+
+    return PageState;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.WarnBeforeUnload = (function(_super) {
+    __extends(WarnBeforeUnload, _super);
+
+    function WarnBeforeUnload() {
+      return WarnBeforeUnload.__super__.constructor.apply(this, arguments);
+    }
+
+    WarnBeforeUnload.prototype.afterFormLoad = function() {
+      return BeforeUnload.enable({
+        "if": (function(_this) {
+          return function() {
+            return _this.fr.state.get('hasChanges');
+          };
+        })(this)
+      });
+    };
+
+    return WarnBeforeUnload;
+
+  })(FormRenderer.Plugins.Base);
 
 }).call(this);
 
@@ -9280,93 +9394,6 @@ window.JST["main"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
-window.JST["partials/bottom_status_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
-    
-      if (this.form_renderer.options.enableAutosave) {
-        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
-        if (this.form_renderer.state.get('hasServerErrors')) {
-          _print(_safe('\n        Error saving\n      '));
-        } else if (this.form_renderer.state.get('hasChanges')) {
-          _print(_safe('\n        Saving...\n      '));
-        } else {
-          _print(_safe('\n        Saved\n      '));
-        }
-        _print(_safe('\n    </div>\n  '));
-      }
-    
-      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
-    
-      if (!this.form_renderer.isFirstPage()) {
-        _print(_safe('\n      <button data-js-back class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Back to page '));
-        _print(this.form_renderer.previousPage());
-        _print(_safe('\n      </button>\n    '));
-      }
-    
-      _print(_safe('\n\n    '));
-    
-      if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n      <button disabled class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
-      } else {
-        _print(_safe('\n      <button data-js-continue class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        '));
-        if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-          _print(_safe('Submit'));
-        } else {
-          _print(_safe('Next page'));
-        }
-        _print(_safe('\n      </button>\n    '));
-      }
-    
-      _print(_safe('\n  </div>\n</div>\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
 window.JST["partials/description"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -9443,55 +9470,6 @@ window.JST["partials/error"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_error\'>\n    '));
         _print(this.model.getError());
         _print(_safe('\n  </div>\n'));
-      }
-    
-      _print(_safe('\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/error_alert_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
       }
     
       _print(_safe('\n'));
@@ -9895,6 +9873,142 @@ window.JST["partials/response_field"] = function(__obj) {
       _print(_safe('\n'));
     
       _print(_safe(JST["partials/description"](this)));
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["plugins/bottom_bar"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
+    
+      if (this.form_renderer.options.enableAutosave) {
+        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
+        if (this.form_renderer.state.get('hasServerErrors')) {
+          _print(_safe('\n        Error saving\n      '));
+        } else if (this.form_renderer.state.get('hasChanges')) {
+          _print(_safe('\n        Saving...\n      '));
+        } else {
+          _print(_safe('\n        Saved\n      '));
+        }
+        _print(_safe('\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
+    
+      if (!this.form_renderer.isFirstPage()) {
+        _print(_safe('\n      <button data-js-back class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Back to page '));
+        _print(this.form_renderer.previousPage());
+        _print(_safe('\n      </button>\n    '));
+      }
+    
+      _print(_safe('\n\n    '));
+    
+      if (this.form_renderer.state.get('submitting')) {
+        _print(_safe('\n      <button disabled class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
+      } else {
+        _print(_safe('\n      <button data-js-continue class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        '));
+        if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
+          _print(_safe('Submit'));
+        } else {
+          _print(_safe('Next page'));
+        }
+        _print(_safe('\n      </button>\n    '));
+      }
+    
+      _print(_safe('\n  </div>\n</div>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["plugins/error_bar"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      if (!this.form_renderer.areAllPagesValid()) {
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
+      }
     
       _print(_safe('\n'));
     

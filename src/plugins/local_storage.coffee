@@ -1,9 +1,18 @@
 class FormRenderer.Plugins.LocalStorage extends FormRenderer.Plugins.Base
-  # @todo refactor to move draftIdStorageKey and related methods into this plugin
   beforeFormLoad: ->
-    if store.enabled
-      @fr.options.response.id ||= store.get(@fr.draftIdStorageKey())
+    # Store has its own check to see if the browser supports localstorage
+    return unless store.enabled
 
-      @fr.on 'afterSave', ->
-        unless @fr.state.get('submitting')
-          store.set @fr.draftIdStorageKey(), @fr.options.response.id
+    draftKey = "project-#{@fr.options.project_id}-response-id"
+
+    @fr.options.response.id ||= store.get(draftKey)
+
+    @fr.on 'afterSave', ->
+      unless @fr.state.get('submitting')
+        store.set draftKey, @fr.options.response.id
+
+    @fr.on 'afterSubmit', ->
+      store.remove draftKey
+
+    @fr.on 'errorSaving', ->
+      store.remove draftKey

@@ -57,6 +57,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @ # explicitly return self
 
+  addSubview: (key, view) ->
+    @subviews[key] = view
+    @$el.append view.render().el
+
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
 
@@ -77,7 +81,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @$el.find('.fr_loading').text(
           "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
         )
-        store.remove @draftIdStorageKey()
+        @trigger 'errorSaving', xhr
 
   initResponseFields: ->
     @response_fields = new Backbone.Collection
@@ -129,19 +133,15 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @state.set 'activePage', newPageNumber
 
   validateCurrentPage: ->
-    @trigger "beforeValidate beforeValidate:#{@state.get('activePage')}"
+    @trigger 'beforeValidate beforeValidate:one', @state.get('activePage')
     @subviews.pages[@state.get('activePage')].validate()
-    @trigger "afterValidate afterValidate:#{@state.get('activePage')}"
+    @trigger 'afterValidate afterValidate:one', @state.get('activePage')
     return @isPageValid(@state.get('activePage'))
 
   validateAllPages: ->
     @trigger 'beforeValidate beforeValidate:all'
-
-    for _, page of @subviews.pages
-      page.validate()
-
+    page.validate() for _, page of @subviews.pages
     @trigger 'afterValidate afterValidate:all'
-
     return @areAllPagesValid()
 
   isPageVisible: (pageNumber) ->
@@ -157,8 +157,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   numValidationErrors: ->
     @response_fields.filter((rf) -> rf.input_field && rf.errors.length > 0).length
-
-  # memoize
 
   visiblePages: ->
     _.tap [], (a) =>
@@ -179,10 +177,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   nextPage: ->
     @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) + 1]
 
-  ## Localstorage
+  handlePreviousPage: ->
+    @activatePage @previousPage(), skipValidation: true
 
-  draftIdStorageKey: ->
-    "project-#{@options.project_id}-response-id"
+  handleNextPage: ->
+    if @isLastPage() || !@options.enablePages
+      @submit()
+    else
+      @activatePage(@nextPage())
 
   ## Saving
 
@@ -264,7 +266,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @_preview()
       else
         @save submit: true, cb: =>
-          store.remove @draftIdStorageKey()
+          @trigger 'afterSubmit'
           @_afterSubmit()
 
   _afterSubmit: ->
@@ -357,6 +359,12 @@ FormRenderer.Plugins = {}
 
 class FormRenderer.Plugins.Base
   constructor: (@fr) ->
+
+FormRenderer.addPlugin = (x) ->
+  @::defaults.plugins.push(x)
+
+FormRenderer.removePlugin = (x) ->
+  @::defaults.plugins = _.without(@::defaults.plugins, x)
 
 FormRenderer.BUTTON_CLASS = ''
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]

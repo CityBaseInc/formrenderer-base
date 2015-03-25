@@ -99,7 +99,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   field_type: 'file'
   events:
-    'click [data-js-remove]': 'doRemove'
+    'click [data-fr-remove-file]': 'doRemove'
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
@@ -162,7 +162,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
   field_type: 'map_marker'
   events:
     'click .fr_map_cover': 'enable'
-    'click [data-js-clear]': 'disable'
+    'click [data-fr-clear-map]': 'disable'
 
   initialize: ->
     FormRenderer.Views.ResponseField::initialize.apply @, arguments

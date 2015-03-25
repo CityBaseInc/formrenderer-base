@@ -118,6 +118,10 @@
       })(this));
       return this;
     },
+    addSubview: function(key, view) {
+      this.subviews[key] = view;
+      return this.$el.append(view.render().el);
+    },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
@@ -144,7 +148,7 @@
           return function(xhr) {
             var _ref;
             _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
-            return store.remove(_this.draftIdStorageKey());
+            return _this.trigger('errorSaving', xhr);
           };
         })(this)
       });
@@ -227,9 +231,9 @@
       return this.state.set('activePage', newPageNumber);
     },
     validateCurrentPage: function() {
-      this.trigger("beforeValidate beforeValidate:" + (this.state.get('activePage')));
+      this.trigger('beforeValidate beforeValidate:one', this.state.get('activePage'));
       this.subviews.pages[this.state.get('activePage')].validate();
-      this.trigger("afterValidate afterValidate:" + (this.state.get('activePage')));
+      this.trigger('afterValidate afterValidate:one', this.state.get('activePage'));
       return this.isPageValid(this.state.get('activePage'));
     },
     validateAllPages: function() {
@@ -304,8 +308,17 @@
     nextPage: function() {
       return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) + 1];
     },
-    draftIdStorageKey: function() {
-      return "project-" + this.options.project_id + "-response-id";
+    handlePreviousPage: function() {
+      return this.activatePage(this.previousPage(), {
+        skipValidation: true
+      });
+    },
+    handleNextPage: function() {
+      if (this.isLastPage() || !this.options.enablePages) {
+        return this.submit();
+      } else {
+        return this.activatePage(this.nextPage());
+      }
     },
     getValue: function() {
       return _.tap({}, (function(_this) {
@@ -416,7 +429,7 @@
             return _this.save({
               submit: true,
               cb: function() {
-                store.remove(_this.draftIdStorageKey());
+                _this.trigger('afterSubmit');
                 return _this._afterSubmit();
               }
             });
@@ -514,6 +527,14 @@
     return Base;
 
   })();
+
+  FormRenderer.addPlugin = function(x) {
+    return this.prototype.defaults.plugins.push(x);
+  };
+
+  FormRenderer.removePlugin = function(x) {
+    return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
+  };
 
   FormRenderer.BUTTON_CLASS = '';
 
@@ -1458,8 +1479,14 @@
 
   BottomBarView = Backbone.View.extend({
     events: {
-      'click [data-js-back]': 'handleBack',
-      'click [data-js-continue]': 'handleContinue'
+      'click [data-fr-previous-page]': function(e) {
+        e.preventDefault();
+        return this.form_renderer.handlePreviousPage();
+      },
+      'click [data-fr-next-page]': function(e) {
+        e.preventDefault();
+        return this.form_renderer.handleNextPage();
+      }
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
@@ -1468,20 +1495,6 @@
     render: function() {
       this.$el.html(JST['plugins/bottom_bar'](this));
       return this;
-    },
-    handleBack: function(e) {
-      e.preventDefault();
-      return this.form_renderer.activatePage(this.form_renderer.previousPage(), {
-        skipValidation: true
-      });
-    },
-    handleContinue: function(e) {
-      e.preventDefault();
-      if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-        return this.form_renderer.submit();
-      } else {
-        return this.form_renderer.activatePage(this.form_renderer.nextPage());
-      }
     }
   });
 
@@ -1556,15 +1569,23 @@
     }
 
     LocalStorage.prototype.beforeFormLoad = function() {
-      var _base;
-      if (store.enabled) {
-        (_base = this.fr.options.response).id || (_base.id = store.get(this.fr.draftIdStorageKey()));
-        return this.fr.on('afterSave', function() {
-          if (!this.fr.state.get('submitting')) {
-            return store.set(this.fr.draftIdStorageKey(), this.fr.options.response.id);
-          }
-        });
+      var draftKey, _base;
+      if (!store.enabled) {
+        return;
       }
+      draftKey = "project-" + this.fr.options.project_id + "-response-id";
+      (_base = this.fr.options.response).id || (_base.id = store.get(draftKey));
+      this.fr.on('afterSave', function() {
+        if (!this.fr.state.get('submitting')) {
+          return store.set(draftKey, this.fr.options.response.id);
+        }
+      });
+      this.fr.on('afterSubmit', function() {
+        return store.remove(draftKey);
+      });
+      return this.fr.on('errorSaving', function() {
+        return store.remove(draftKey);
+      });
     };
 
     return LocalStorage;
@@ -1854,7 +1875,7 @@
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
     field_type: 'file',
     events: {
-      'click [data-js-remove]': 'doRemove'
+      'click [data-fr-remove-file]': 'doRemove'
     },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
@@ -1933,7 +1954,7 @@
     field_type: 'map_marker',
     events: {
       'click .fr_map_cover': 'enable',
-      'click [data-js-clear]': 'disable'
+      'click [data-fr-clear-map]': 'disable'
     },
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -2454,7 +2475,7 @@ window.JST["fields/file"] = function(__obj) {
       if (this.model.hasValue()) {
         _print(_safe('\n  <span class=\'js-filename\'>'));
         _print(this.model.get('value.filename'));
-        _print(_safe('</span>\n  <button data-js-remove class=\''));
+        _print(_safe('</span>\n  <button data-fr-remove-file class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>Remove</button>\n'));
       } else {
@@ -2581,7 +2602,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -3804,7 +3825,7 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
     
       if (!this.form_renderer.isFirstPage()) {
-        _print(_safe('\n      <button data-js-back class=\''));
+        _print(_safe('\n      <button data-fr-previous-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        Back to page '));
         _print(this.form_renderer.previousPage());
@@ -3818,7 +3839,7 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
       } else {
-        _print(_safe('\n      <button data-js-continue class=\''));
+        _print(_safe('\n      <button data-fr-next-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        '));
         if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {

@@ -130,7 +130,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @bindChangeEvent()
     $oldInput.appendTo($tmpForm)
     $tmpForm.insertBefore(@$input)
-    @form_renderer.uploads += 1
+    @form_renderer.requests += 1
     $tmpForm.ajaxSubmit
       url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
       data:
@@ -141,11 +141,10 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       uploadProgress: (_, __, ___, percentComplete) =>
         @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")
       complete: =>
-        @form_renderer.uploads -= 1
+        @form_renderer.requests -= 1
         $tmpForm.remove()
       success: (data) =>
         @model.set 'value.id', data.file_id
-        @form_renderer.trigger('attachment_modified')
         @render()
       error: (data) =>
         errorText = data.responseJSON?.errors
@@ -157,7 +156,6 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
 
   doRemove: ->
     @model.set 'value', {}
-    @form_renderer.trigger('attachment_modified')
     @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend

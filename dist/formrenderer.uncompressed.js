@@ -6199,7 +6199,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     constructor: function(options) {
       var p, _i, _len, _ref;
       this.options = $.extend({}, this.defaults, options);
-      this.uploads = 0;
+      this.requests = 0;
       this.state = new Backbone.Model({
         hasChanges: false
       });
@@ -6295,11 +6295,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         }
         this.response_fields.add(model);
       }
-      return this.listenTo(this.response_fields, 'change', function() {
-        if (!this.state.get('hasChanges')) {
-          return this.state.set('hasChanges', true);
-        }
-      });
+      return this.listenTo(this.response_fields, 'change', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -6473,11 +6469,22 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         skip_validation: this.options.skipValidation
       }, this.options.saveParams);
     },
+    _onChange: function() {
+      this.state.set('hasChanges', true);
+      if (this.isSaving) {
+        return this.changedWhileSaving = true;
+      }
+    },
     save: function(options) {
       if (options == null) {
         options = {};
       }
+      if (this.isSaving) {
+        return;
+      }
+      this.requests += 1;
       this.isSaving = true;
+      this.changedWhileSaving = false;
       return $.ajax({
         url: "" + this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
@@ -6488,11 +6495,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         }),
         complete: (function(_this) {
           return function() {
-            var _ref;
+            _this.requests -= 1;
             _this.isSaving = false;
-            if ((_ref = options.complete) != null) {
-              _ref.apply(_this, arguments);
-            }
             return _this.trigger('afterSave');
           };
         })(this),
@@ -6500,30 +6504,28 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
           return function(data) {
             var _ref;
             _this.state.set({
-              hasChanges: false,
+              hasChanges: _this.changedWhileSaving,
               hasServerErrors: false
             });
             _this.options.response.id = data.response_id;
-            return (_ref = options.success) != null ? _ref.apply(_this, arguments) : void 0;
+            return (_ref = options.cb) != null ? _ref.apply(_this, arguments) : void 0;
           };
         })(this),
         error: (function(_this) {
           return function() {
-            var _ref;
-            _this.state.set({
+            return _this.state.set({
               hasServerErrors: true,
               submitting: false
             });
-            return (_ref = options.error) != null ? _ref.apply(_this, arguments) : void 0;
           };
         })(this)
       });
     },
-    waitForUploads: function(cb) {
-      if (this.uploads > 0) {
+    waitForRequests: function(cb) {
+      if (this.requests > 0) {
         return setTimeout(((function(_this) {
           return function() {
-            return _this.waitForUploads(cb);
+            return _this.waitForRequests(cb);
           };
         })(this)), 100);
       } else {
@@ -6531,7 +6533,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     submit: function(opts) {
-      var afterSubmit;
       if (opts == null) {
         opts = {};
       }
@@ -6539,45 +6540,49 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return;
       }
       this.state.set('submitting', true);
-      if (this.options.preview) {
-        return this.preview();
-      }
-      afterSubmit = opts.afterSubmit || this.options.afterSubmit;
-      return this.waitForUploads((function(_this) {
+      return this.waitForRequests((function(_this) {
         return function() {
-          return _this.save({
-            submit: true,
-            success: function() {
-              var $page;
-              store.remove(_this.draftIdStorageKey());
-              if (typeof afterSubmit === 'function') {
-                return afterSubmit.call(_this);
-              } else if (typeof afterSubmit === 'string') {
-                return window.location = afterSubmit.replace(':id', _this.options.response.id);
-              } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
-                $page = $("<div class='fr_after_submit_page'>" + afterSubmit.html + "</div>");
-                return _this.$el.replaceWith($page);
-              } else {
-                return console.log('[FormRenderer] Not sure what to do...');
+          if (_this.options.preview) {
+            return _this._preview();
+          } else {
+            return _this.save({
+              submit: true,
+              cb: function() {
+                store.remove(_this.draftIdStorageKey());
+                return _this._afterSubmit();
               }
-            }
-          });
+            });
+          }
         };
       })(this));
     },
-    preview: function() {
+    _afterSubmit: function() {
+      var $page, as;
+      as = this.options.afterSubmit;
+      if (typeof as === 'function') {
+        return as.call(this);
+      } else if (typeof as === 'string') {
+        return window.location = as.replace(':id', this.options.response.id);
+      } else if (typeof as === 'object' && as.method === 'page') {
+        $page = $("<div class='fr_after_submit_page'>" + as.html + "</div>");
+        return this.$el.replaceWith($page);
+      } else {
+        return console.log('[FormRenderer] Not sure what to do...');
+      }
+    },
+    _preview: function() {
       var cb;
       cb = (function(_this) {
         return function() {
           return window.location = _this.options.preview.replace(':id', _this.options.response.id);
         };
       })(this);
-      if (this.state.get('hasChanges') || !this.options.response.id) {
-        return this.save({
-          success: cb
-        });
-      } else {
+      if (!this.state.get('hasChanges') && this.options.response.id) {
         return cb();
+      } else {
+        return this.save({
+          cb: cb
+        });
       }
     },
     reflectConditions: function() {
@@ -7563,20 +7568,13 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     }
 
     Autosave.prototype.afterFormLoad = function() {
-      setInterval((function(_this) {
+      return setInterval((function(_this) {
         return function() {
-          if (_this.fr.state.get('hasChanges') && !_this.fr.isSaving) {
+          if (_this.fr.state.get('hasChanges')) {
             return _this.fr.save();
           }
         };
       })(this), 5000);
-      return this.fr.on('attachment_modified', (function(_this) {
-        return function() {
-          if (_this.fr.state.get('hasChanges') && !_this.fr.isSaving) {
-            return _this.fr.save();
-          }
-        };
-      })(this));
     };
 
     return Autosave;
@@ -8018,7 +8016,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       this.bindChangeEvent();
       $oldInput.appendTo($tmpForm);
       $tmpForm.insertBefore(this.$input);
-      this.form_renderer.uploads += 1;
+      this.form_renderer.requests += 1;
       return $tmpForm.ajaxSubmit({
         url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
         data: {
@@ -8034,14 +8032,13 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         })(this),
         complete: (function(_this) {
           return function() {
-            _this.form_renderer.uploads -= 1;
+            _this.form_renderer.requests -= 1;
             return $tmpForm.remove();
           };
         })(this),
         success: (function(_this) {
           return function(data) {
             _this.model.set('value.id', data.file_id);
-            _this.form_renderer.trigger('attachment_modified');
             return _this.render();
           };
         })(this),
@@ -8060,7 +8057,6 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     },
     doRemove: function() {
       this.model.set('value', {});
-      this.form_renderer.trigger('attachment_modified');
       return this.render();
     }
   });

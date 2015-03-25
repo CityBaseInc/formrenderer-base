@@ -152,13 +152,13 @@ describe '#submit', ->
 
   it 'does not save while uploads are in progress', ->
     FormRenderer::save = sinon.spy()
-    @fr.uploads = 1
+    @fr.requests = 1
     @fr.submit()
     expect(FormRenderer::save).to.not.have.been.called
 
   it 'saves if uploads are not in progress', ->
     FormRenderer::save = sinon.spy()
-    @fr.uploads = 0
+    @fr.requests = 0
     @fr.submit()
     expect(FormRenderer::save).to.have.been.called
 

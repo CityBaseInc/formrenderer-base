@@ -28,7 +28,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   constructor: (options) ->
     @options = $.extend {}, @defaults, options
-    @uploads = 0
+    @requests = 0
     @state = new Backbone.Model
       hasChanges: false
     @setElement $(@options.target)
@@ -90,8 +90,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
 
-    @listenTo @response_fields, 'change', ->
-      @state.set('hasChanges', true) unless @state.get('hasChanges')
+    @listenTo @response_fields, 'change', $.proxy(@_onChange, @)
 
   initPages: ->
     addPage = =>
@@ -210,8 +209,22 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     ,
       @options.saveParams
 
+  _onChange: ->
+    @state.set('hasChanges', true)
+
+    # Handle the edge case when the form is saved while there's an AJAX
+    # request pending.
+    if @isSaving
+      @changedWhileSaving = true
+
+  # Options:
+  #   submit (boolean) if true, tell the server to submit the response
+  #   cb (function) a callback that will be called on success
   save: (options = {}) ->
+    return if @isSaving
+    @requests += 1
     @isSaving = true
+    @changedWhileSaving = false
 
     $.ajax
       url: "#{@options.screendoorBase}/api/form_renderer/save"
@@ -222,55 +235,61 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         submit: if options.submit then true else undefined
       }
       complete: =>
+        @requests -= 1
         @isSaving = false
-        options.complete?.apply(@, arguments)
         @trigger 'afterSave'
       success: (data) =>
         @state.set
-          hasChanges: false
+          hasChanges: @changedWhileSaving
           hasServerErrors: false
         @options.response.id = data.response_id
-        options.success?.apply(@, arguments)
+        options.cb?.apply(@, arguments)
       error: =>
         @state.set
           hasServerErrors: true
           submitting: false
-        options.error?.apply(@, arguments)
 
-  waitForUploads: (cb) ->
-    if @uploads > 0
-      setTimeout ( => @waitForUploads(cb) ), 100
+  waitForRequests: (cb) ->
+    if @requests > 0
+      setTimeout ( => @waitForRequests(cb) ), 100
     else
       cb()
 
   submit: (opts = {}) ->
     return unless opts.skipValidation || @options.skipValidation || @validateAllPages()
     @state.set('submitting', true)
-    return @preview() if @options.preview
-    afterSubmit = opts.afterSubmit || @options.afterSubmit
 
-    @waitForUploads =>
-      @save submit: true, success: =>
-        store.remove @draftIdStorageKey()
+    @waitForRequests =>
+      if @options.preview
+        @_preview()
+      else
+        @save submit: true, cb: =>
+          store.remove @draftIdStorageKey()
+          @_afterSubmit()
 
-        if typeof afterSubmit == 'function'
-          afterSubmit.call @
-        else if typeof afterSubmit == 'string'
-          window.location = afterSubmit.replace(':id', @options.response.id)
-        else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
-          $page = $("<div class='fr_after_submit_page'>#{afterSubmit.html}</div>")
-          @$el.replaceWith($page)
-        else
-          console.log '[FormRenderer] Not sure what to do...'
+  _afterSubmit: ->
+    as = @options.afterSubmit
 
-  preview: ->
+    if typeof as == 'function'
+      as.call @
+    else if typeof as == 'string'
+      window.location = as.replace(':id', @options.response.id)
+    else if typeof as == 'object' && as.method == 'page'
+      $page = $("<div class='fr_after_submit_page'>#{as.html}</div>")
+      @$el.replaceWith($page)
+    else
+      console.log '[FormRenderer] Not sure what to do...'
+
+  _preview: ->
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    if @state.get('hasChanges') || !@options.response.id
-      @save success: cb
-    else
+    # If we know the respones ID and there are no changes, we can bypass
+    # the call to @save() entirely
+    if !@state.get('hasChanges') && @options.response.id
       cb()
+    else
+      @save cb: cb
 
   ## Conditionals - will break into separate classes
 

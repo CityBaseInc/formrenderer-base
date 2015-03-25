@@ -51,10 +51,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @ # explicitly return self
 
-  addSubview: (key, view) ->
-    @subviews[key] = view
-    @$el.append view.render().el
-
+  # Fetch the details of this form from the Screendoor API
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
 
@@ -77,6 +74,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         )
         @trigger 'errorSaving', xhr
 
+  # Create a collection for our response fields
   initResponseFields: ->
     @response_fields = new Backbone.Collection
 
@@ -90,6 +88,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @listenTo @response_fields, 'change', $.proxy(@_onChange, @)
 
+  # Build pages, which contain the response fields views.
   initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
@@ -117,6 +116,16 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   initNoPagination: ->
     for pageNumber, page of @subviews.pages
       page.show()
+
+  initConditions: ->
+    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
+      @runConditions(rf)
+
+    @allConditions = _.flatten(
+      @response_fields.map (rf) ->
+        _.map rf.getConditions(), (c) ->
+          _.extend {}, c, parent: rf
+    )
 
   ## Pages / Validation
 
@@ -148,9 +157,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   areAllPagesValid: ->
     _.every [1..@numPages], (x) =>
       @isPageValid(x)
-
-  numValidationErrors: ->
-    @response_fields.filter((rf) -> rf.input_field && rf.errors.length > 0).length
 
   visiblePages: ->
     _.tap [], (a) =>
@@ -303,18 +309,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     _.filter @allConditions, (condition) ->
       "#{condition.response_field_id}" == "#{rf.id}"
 
-  initConditions: ->
-    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
-      @runConditions(rf)
-
-    @allConditions = _.flatten(
-      @response_fields.map (rf) ->
-        _.map rf.getConditions(), (c) ->
-          _.extend {}, c, parent: rf
-    )
-
   isConditionalVisible: (condition) ->
     new FormRenderer.ConditionChecker(@, condition).isVisible()
+
+## Master list of field types
 
 FormRenderer.INPUT_FIELD_TYPES = [
   'identification'
@@ -346,10 +344,23 @@ FormRenderer.FIELD_TYPES = _.union(
   FormRenderer.NON_INPUT_FIELD_TYPES
 )
 
+## Class-level configs
+
+FormRenderer.BUTTON_CLASS = ''
+FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
+FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
+FormRenderer.FILE_TYPES = {} # Can be overridden by implementers
+FormRenderer.ADD_ROW_LINK = '+ Add another row'
+FormRenderer.REMOVE_ROW_LINK = '-'
+
+## Settin' these up for later
+
 FormRenderer.Views = {}
 FormRenderer.Models = {}
 FormRenderer.Validators = {}
 FormRenderer.Plugins = {}
+
+## Plugin utilities
 
 class FormRenderer.Plugins.Base
   constructor: (@fr) ->
@@ -360,12 +371,7 @@ FormRenderer.addPlugin = (x) ->
 FormRenderer.removePlugin = (x) ->
   @::defaults.plugins = _.without(@::defaults.plugins, x)
 
-FormRenderer.BUTTON_CLASS = ''
-FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
-FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
-
-# Can be overridden by implementers
-FormRenderer.FILE_TYPES = {}
+## Overrideable utilities
 
 FormRenderer.loadLeaflet = (cb) ->
   if L?.GeoJSON?
@@ -405,107 +411,3 @@ FormRenderer.formatHTML = (unsafeHTML) ->
     ),
     sanitizeConfig
   )
-
-commonCountries = ['US', 'GB', 'CA']
-
-FormRenderer.ORDERED_COUNTRIES = _.uniq(
-  _.union commonCountries, [undefined], _.keys(ISOCountryNames)
-)
-
-FormRenderer.errors =
-  blank: "This field can't be blank."
-  invalid_date: 'Please enter a valid date.'
-  invalid_email: 'Please enter a valid email address.'
-  invalid_integer: 'Please enter a whole number.'
-  invalid_number: 'Please enter a valid number.'
-  invalid_price: 'Please enter a valid price.'
-  invalid_time: 'Please enter a valid time.'
-  too_large: 'Your answer is too large.'
-  too_long: 'Your answer is too long.'
-  too_short: 'Your answer is too short.'
-  too_small: 'Your answer is too small.'
-
-# Hardcoded for now, since these are way less likely to change than
-# the country names list.
-
-FormRenderer.PROVINCES_CA = [
-  'Alberta'
-  'British Columbia'
-  'Labrador'
-  'Manitoba'
-  'New Brunswick'
-  'Newfoundland'
-  'Nova Scotia'
-  'Nunavut'
-  'Northwest Territories'
-  'Ontario'
-  'Prince Edward Island'
-  'Quebec'
-  'Saskatchewen'
-  'Yukon'
-]
-
-FormRenderer.PROVINCES_US = [
-  'Alabama'
-  'Alaska'
-  'American Samoa'
-  'Arizona'
-  'Arkansas'
-  'California'
-  'Colorado'
-  'Connecticut'
-  'Delaware'
-  'District Of Columbia'
-  'Federated States Of Micronesia'
-  'Florida'
-  'Georgia'
-  'Guam'
-  'Hawaii'
-  'Idaho'
-  'Illinois'
-  'Indiana'
-  'Iowa'
-  'Kansas'
-  'Kentucky'
-  'Louisiana'
-  'Maine'
-  'Marshall Islands'
-  'Maryland'
-  'Massachusetts'
-  'Michigan'
-  'Minnesota'
-  'Mississippi'
-  'Missouri'
-  'Montana'
-  'Nebraska'
-  'Nevada'
-  'New Hampshire'
-  'New Jersey'
-  'New Mexico'
-  'New York'
-  'North Carolina'
-  'North Dakota'
-  'Northern Mariana Islands'
-  'Ohio'
-  'Oklahoma'
-  'Oregon'
-  'Palau'
-  'Pennsylvania'
-  'Puerto Rico'
-  'Rhode Island'
-  'South Carolina'
-  'South Dakota'
-  'Tennessee'
-  'Texas'
-  'Utah'
-  'Vermont'
-  'Virgin Islands'
-  'Virginia'
-  'Washington'
-  'West Virginia'
-  'Wisconsin'
-  'Wyoming'
-]
-
-FormRenderer.ADD_ROW_LINK = '+ Add another row'
-FormRenderer.REMOVE_ROW_LINK = '-'

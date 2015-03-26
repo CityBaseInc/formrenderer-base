@@ -1,5 +1,5 @@
-<div class='size_<%= @model.getSize() %>'>
-  <<%= @model.sizeToHeaderTag() %>><%= @model.get('label') %></<%= @model.sizeToHeaderTag() %>>
+<<%= @model.sizeToHeaderTag() %>><%= @model.get('label') %></<%= @model.sizeToHeaderTag() %>>
+<div class='fr_text size_<%= @model.getSize() %>'>
   <%- FormRenderer.formatHTML(@model.get('field_options.description')) %>
 </div>
 

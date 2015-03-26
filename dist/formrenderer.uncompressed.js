@@ -8200,7 +8200,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'size_'));
+      _print(_safe('<div class=\'fr_text size_'));
     
       _print(this.model.getSize());
     
@@ -8941,11 +8941,7 @@ window.JST["fields/section_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'size_'));
-    
-      _print(this.model.getSize());
-    
-      _print(_safe('\'>\n  <'));
+      _print(_safe('<'));
     
       _print(this.model.sizeToHeaderTag());
     
@@ -8957,7 +8953,11 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(this.model.sizeToHeaderTag());
     
-      _print(_safe('>\n  '));
+      _print(_safe('>\n<div class=\'fr_text size_'));
+    
+      _print(this.model.getSize());
+    
+      _print(_safe('\'>\n  '));
     
       _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
     

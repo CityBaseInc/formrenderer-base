@@ -191,28 +191,14 @@
   }
 }
 
-.fr_response_field_block_of_text {
-  .size_medium {
+// Content of "section break" and "block of text" fields
+.fr_text {
+  font-size: $fr_font_small;
+  &.size_medium {
     font-size: $fr_font_large;
   }
-  .size_large {
+  &.size_large {
     font-size: $fr_font_x_large;
-  }
-}
-
-.fr_response_field_section_break {
-  p {
-    font-size: $fr_font_small;
-  }
-  .size_medium {
-    p {
-      font-size: $fr_font_normal;
-    }
-  }
-  .size_large {
-    p {
-      font-size: $fr_font_large;
-    }
   }
 }
 

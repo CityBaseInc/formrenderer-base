@@ -1,12 +1,6 @@
 window.FormRenderer = FormRenderer = Backbone.View.extend
   defaults:
-    enableAutosave: true
-    enableBeforeUnload: true
     enablePages: true
-    enableErrorAlertBar: true
-    enableBottomStatusBar: true
-    enableLocalstorage: true
-    enablePageState: false
     screendoorBase: 'https://screendoor.dobt.co'
     target: '[data-formrenderer]'
     validateImmediately: false
@@ -15,41 +9,41 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     skipValidation: undefined
     saveParams: {}
     showLabels: false
-    # afterSubmit:
-    # response_fields:
-    # response:
-    #   id:
-    #   responses:
-    # project_id:
-    # onReady:
+    plugins: [
+      'Autosave'
+      'WarnBeforeUnload'
+      'BottomBar'
+      'ErrorBar'
+      'LocalStorage'
+    ]
 
   ## Initialization logic
 
   constructor: (options) ->
     @options = $.extend {}, @defaults, options
-    @uploads = 0
+    @requests = 0
     @state = new Backbone.Model
       hasChanges: false
     @setElement $(@options.target)
     @$el.addClass 'fr_form'
-    @$el.data 'form-renderer', @
+    @$el.data 'formrenderer-instance', @
     @subviews = { pages: {} }
+
+    @plugins = _.map @options.plugins, (pluginName) =>
+      new FormRenderer.Plugins[pluginName](@)
+
+    p.beforeFormLoad?() for p in @plugins
 
     # Loading state
     @$el.html JST['main'](@)
-
-    @initLocalstorage() if @options.enableLocalstorage && store.enabled
+    @trigger 'viewRendered', @
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
       @initResponseFields()
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
-      @initPageState() if @options.enablePageState
-      @initBottomStatusBar() if @options.enableBottomStatusBar
-      @initErrorAlertBar() if @options.enableErrorAlertBar
-      @initAutosave() if @options.enableAutosave
-      @initBeforeUnload() if @options.enableBeforeUnload
+      p.afterFormLoad?() for p in @plugins
       @validateAllPages() if @options.validateImmediately
       @initConditions()
       @trigger 'ready'
@@ -57,13 +51,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @ # explicitly return self
 
-  initLocalstorage: ->
-    @options.response.id ||= store.get(@draftIdStorageKey())
-
-    @listenTo @, 'afterSave', ->
-      unless @state.get('submitting')
-        store.set @draftIdStorageKey(), @options.response.id
-
+  # Fetch the details of this form from the Screendoor API
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
 
@@ -84,8 +72,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @$el.find('.fr_loading').text(
           "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
         )
-        store.remove @draftIdStorageKey()
+        @trigger 'errorSaving', xhr
 
+  # Create a collection for our response fields
   initResponseFields: ->
     @response_fields = new Backbone.Collection
 
@@ -97,22 +86,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
 
-    @listenTo @response_fields, 'change', ->
-      @state.set('hasChanges', true) unless @state.get('hasChanges')
+    @listenTo @response_fields, 'change', $.proxy(@_onChange, @)
 
-  initAutosave: ->
-    setInterval =>
-      @save() if @state.get('hasChanges') && !@isSaving
-    , 5000
-
-  initBottomStatusBar: ->
-    @subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar(form_renderer: @)
-    @$el.append @subviews.bottomStatusBar.render().el
-
-  initErrorAlertBar: ->
-    @subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar(form_renderer: @)
-    @$el.prepend @subviews.errorAlertBar.render().el
-
+  # Build pages, which contain the response fields views.
   initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
@@ -141,18 +117,15 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     for pageNumber, page of @subviews.pages
       page.show()
 
-  initPageState: ->
-    if num = window.location.hash.match(/page([0-9]+)/)?[1]
-      page = parseInt(num, 10)
-      if @isPageVisible(page)
-        @activatePage(page, skipValidation: true)
+  initConditions: ->
+    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
+      @runConditions(rf)
 
-    @state.on 'change:activePage', (_, num) ->
-      window.location.hash = "page#{num}"
-
-  initBeforeUnload: ->
-    BeforeUnload.enable
-      if: => @state.get('hasChanges')
+    @allConditions = _.flatten(
+      @response_fields.map (rf) ->
+        _.map rf.getConditions(), (c) ->
+          _.extend {}, c, parent: rf
+    )
 
   ## Pages / Validation
 
@@ -163,19 +136,15 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @state.set 'activePage', newPageNumber
 
   validateCurrentPage: ->
-    @trigger "beforeValidate beforeValidate:#{@state.get('activePage')}"
+    @trigger 'beforeValidate beforeValidate:one', @state.get('activePage')
     @subviews.pages[@state.get('activePage')].validate()
-    @trigger "afterValidate afterValidate:#{@state.get('activePage')}"
+    @trigger 'afterValidate afterValidate:one', @state.get('activePage')
     return @isPageValid(@state.get('activePage'))
 
   validateAllPages: ->
     @trigger 'beforeValidate beforeValidate:all'
-
-    for _, page of @subviews.pages
-      page.validate()
-
+    page.validate() for _, page of @subviews.pages
     @trigger 'afterValidate afterValidate:all'
-
     return @areAllPagesValid()
 
   isPageVisible: (pageNumber) ->
@@ -188,11 +157,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   areAllPagesValid: ->
     _.every [1..@numPages], (x) =>
       @isPageValid(x)
-
-  numValidationErrors: ->
-    @response_fields.filter((rf) -> rf.input_field && rf.errors.length > 0).length
-
-  # memoize
 
   visiblePages: ->
     _.tap [], (a) =>
@@ -213,10 +177,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   nextPage: ->
     @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) + 1]
 
-  ## Localstorage
+  handlePreviousPage: ->
+    @activatePage @previousPage(), skipValidation: true
 
-  draftIdStorageKey: ->
-    "project-#{@options.project_id}-response-id"
+  handleNextPage: ->
+    if @isLastPage() || !@options.enablePages
+      @submit()
+    else
+      @activatePage(@nextPage())
 
   ## Saving
 
@@ -243,8 +211,22 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     ,
       @options.saveParams
 
+  _onChange: ->
+    @state.set('hasChanges', true)
+
+    # Handle the edge case when the form is saved while there's an AJAX
+    # request pending.
+    if @isSaving
+      @changedWhileSaving = true
+
+  # Options:
+  #   submit (boolean) if true, tell the server to submit the response
+  #   cb (function) a callback that will be called on success
   save: (options = {}) ->
+    return if @isSaving
+    @requests += 1
     @isSaving = true
+    @changedWhileSaving = false
 
     $.ajax
       url: "#{@options.screendoorBase}/api/form_renderer/save"
@@ -255,59 +237,61 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         submit: if options.submit then true else undefined
       }
       complete: =>
+        @requests -= 1
         @isSaving = false
-        options.complete?.apply(@, arguments)
         @trigger 'afterSave'
       success: (data) =>
         @state.set
-          hasChanges: false
+          hasChanges: @changedWhileSaving
           hasServerErrors: false
         @options.response.id = data.response_id
-        options.success?.apply(@, arguments)
+        options.cb?.apply(@, arguments)
       error: =>
         @state.set
           hasServerErrors: true
           submitting: false
-        options.error?.apply(@, arguments)
 
-  autosaveImmediately: ->
-    if @state.get('hasChanges') && !@isSaving && @options.enableAutosave
-      @save()
-
-  waitForUploads: (cb) ->
-    if @uploads > 0
-      setTimeout ( => @waitForUploads(cb) ), 100
+  waitForRequests: (cb) ->
+    if @requests > 0
+      setTimeout ( => @waitForRequests(cb) ), 100
     else
       cb()
 
   submit: (opts = {}) ->
     return unless opts.skipValidation || @options.skipValidation || @validateAllPages()
     @state.set('submitting', true)
-    return @preview() if @options.preview
-    afterSubmit = opts.afterSubmit || @options.afterSubmit
 
-    @waitForUploads =>
-      @save submit: true, success: =>
-        store.remove @draftIdStorageKey()
+    @waitForRequests =>
+      if @options.preview
+        @_preview()
+      else
+        @save submit: true, cb: =>
+          @trigger 'afterSubmit'
+          @_afterSubmit()
 
-        if typeof afterSubmit == 'function'
-          afterSubmit.call @
-        else if typeof afterSubmit == 'string'
-          window.location = afterSubmit.replace(':id', @options.response.id)
-        else if typeof afterSubmit == 'object' && afterSubmit.method == 'page'
-          $page = $("<div class='fr_after_submit_page'>#{afterSubmit.html}</div>")
-          @$el.replaceWith($page)
-        else
-          console.log '[FormRenderer] Not sure what to do...'
+  _afterSubmit: ->
+    as = @options.afterSubmit
 
-  preview: ->
+    if typeof as == 'function'
+      as.call @
+    else if typeof as == 'string'
+      window.location = as.replace(':id', @options.response.id)
+    else if typeof as == 'object' && as.method == 'page'
+      $page = $("<div class='fr_after_submit_page'>#{as.html}</div>")
+      @$el.replaceWith($page)
+    else
+      console.log '[FormRenderer] Not sure what to do...'
+
+  _preview: ->
     cb = =>
       window.location = @options.preview.replace(':id', @options.response.id)
 
-    if @state.get('hasChanges') || !@options.enableAutosave || !@options.response.id
-      @save success: cb
-    else
+    # If we know the response ID and there are no changes, we can bypass
+    # the call to @save() entirely
+    if !@state.get('hasChanges') && @options.response.id
       cb()
+    else
+      @save cb: cb
 
   ## Conditionals - will break into separate classes
 
@@ -316,27 +300,22 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @subviews.pagination?.render()
 
   runConditions: (rf) ->
-    _.each @conditionsForResponseField(rf), (c) ->
-      c.parent.calculateVisibility()
+    needsRender = false
 
-    @reflectConditions()
+    _.each @conditionsForResponseField(rf), (c) ->
+      if c.parent.calculateVisibility()
+        needsRender = true
+
+    @reflectConditions() if needsRender
 
   conditionsForResponseField: (rf) ->
     _.filter @allConditions, (condition) ->
       "#{condition.response_field_id}" == "#{rf.id}"
 
-  initConditions: ->
-    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
-      @runConditions(rf)
-
-    @allConditions = _.flatten(
-      @response_fields.map (rf) ->
-        _.map rf.getConditions(), (c) ->
-          _.extend {}, c, parent: rf
-    )
-
   isConditionalVisible: (condition) ->
     new FormRenderer.ConditionChecker(@, condition).isVisible()
+
+## Master list of field types
 
 FormRenderer.INPUT_FIELD_TYPES = [
   'identification'
@@ -368,16 +347,31 @@ FormRenderer.FIELD_TYPES = _.union(
   FormRenderer.NON_INPUT_FIELD_TYPES
 )
 
-FormRenderer.Views = {}
-FormRenderer.Models = {}
-FormRenderer.Validators = {}
+## Class-level configs
 
 FormRenderer.BUTTON_CLASS = ''
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
 FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
+FormRenderer.FILE_TYPES = {} # Can be overridden by implementers
+FormRenderer.ADD_ROW_LINK = '+ Add another row'
+FormRenderer.REMOVE_ROW_LINK = '-'
 
-# Can be overridden by implementers
-FormRenderer.FILE_TYPES = {}
+## Settin' these up for later
+
+FormRenderer.Views = {}
+FormRenderer.Models = {}
+FormRenderer.Validators = {}
+FormRenderer.Plugins = {}
+
+## Plugin utilities
+
+FormRenderer.addPlugin = (x) ->
+  @::defaults.plugins.push(x)
+
+FormRenderer.removePlugin = (x) ->
+  @::defaults.plugins = _.without(@::defaults.plugins, x)
+
+## Overrideable utilities
 
 FormRenderer.loadLeaflet = (cb) ->
   if L?.GeoJSON?
@@ -417,107 +411,3 @@ FormRenderer.formatHTML = (unsafeHTML) ->
     ),
     sanitizeConfig
   )
-
-commonCountries = ['US', 'GB', 'CA']
-
-FormRenderer.ORDERED_COUNTRIES = _.uniq(
-  _.union commonCountries, [undefined], _.keys(ISOCountryNames)
-)
-
-FormRenderer.errors =
-  blank: "This field can't be blank."
-  invalid_date: 'Please enter a valid date.'
-  invalid_email: 'Please enter a valid email address.'
-  invalid_integer: 'Please enter a whole number.'
-  invalid_number: 'Please enter a valid number.'
-  invalid_price: 'Please enter a valid price.'
-  invalid_time: 'Please enter a valid time.'
-  too_large: 'Your answer is too large.'
-  too_long: 'Your answer is too long.'
-  too_short: 'Your answer is too short.'
-  too_small: 'Your answer is too small.'
-
-# Hardcoded for now, since these are way less likely to change than
-# the country names list.
-
-FormRenderer.PROVINCES_CA = [
-  'Alberta'
-  'British Columbia'
-  'Labrador'
-  'Manitoba'
-  'New Brunswick'
-  'Newfoundland'
-  'Nova Scotia'
-  'Nunavut'
-  'Northwest Territories'
-  'Ontario'
-  'Prince Edward Island'
-  'Quebec'
-  'Saskatchewen'
-  'Yukon'
-]
-
-FormRenderer.PROVINCES_US = [
-  'Alabama'
-  'Alaska'
-  'American Samoa'
-  'Arizona'
-  'Arkansas'
-  'California'
-  'Colorado'
-  'Connecticut'
-  'Delaware'
-  'District Of Columbia'
-  'Federated States Of Micronesia'
-  'Florida'
-  'Georgia'
-  'Guam'
-  'Hawaii'
-  'Idaho'
-  'Illinois'
-  'Indiana'
-  'Iowa'
-  'Kansas'
-  'Kentucky'
-  'Louisiana'
-  'Maine'
-  'Marshall Islands'
-  'Maryland'
-  'Massachusetts'
-  'Michigan'
-  'Minnesota'
-  'Mississippi'
-  'Missouri'
-  'Montana'
-  'Nebraska'
-  'Nevada'
-  'New Hampshire'
-  'New Jersey'
-  'New Mexico'
-  'New York'
-  'North Carolina'
-  'North Dakota'
-  'Northern Mariana Islands'
-  'Ohio'
-  'Oklahoma'
-  'Oregon'
-  'Palau'
-  'Pennsylvania'
-  'Puerto Rico'
-  'Rhode Island'
-  'South Carolina'
-  'South Dakota'
-  'Tennessee'
-  'Texas'
-  'Utah'
-  'Vermont'
-  'Virgin Islands'
-  'Virginia'
-  'Washington'
-  'West Virginia'
-  'Wisconsin'
-  'Wyoming'
-]
-
-FormRenderer.ADD_ROW_LINK = '+ Add another row'
-FormRenderer.REMOVE_ROW_LINK = '-'

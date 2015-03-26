@@ -14,10 +14,6 @@
     }
   };
 
-  rivets.formatters.prepend = function(value, x) {
-    return "" + x + value;
-  };
-
   rivets.configure({
     prefix: "rv",
     adapter: {
@@ -49,17 +45,11 @@
 }).call(this);
 
 (function() {
-  var FormRenderer, autoLink, commonCountries, sanitizeConfig;
+  var FormRenderer, autoLink, sanitizeConfig;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
-      enableAutosave: true,
-      enableBeforeUnload: true,
       enablePages: true,
-      enableErrorAlertBar: true,
-      enableBottomStatusBar: true,
-      enableLocalstorage: true,
-      enablePageState: false,
       screendoorBase: 'https://screendoor.dobt.co',
       target: '[data-formrenderer]',
       validateImmediately: false,
@@ -67,27 +57,39 @@
       preview: false,
       skipValidation: void 0,
       saveParams: {},
-      showLabels: false
+      showLabels: false,
+      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']
     },
     constructor: function(options) {
+      var p, _i, _len, _ref;
       this.options = $.extend({}, this.defaults, options);
-      this.uploads = 0;
+      this.requests = 0;
       this.state = new Backbone.Model({
         hasChanges: false
       });
       this.setElement($(this.options.target));
       this.$el.addClass('fr_form');
-      this.$el.data('form-renderer', this);
+      this.$el.data('formrenderer-instance', this);
       this.subviews = {
         pages: {}
       };
-      this.$el.html(JST['main'](this));
-      if (this.options.enableLocalstorage && store.enabled) {
-        this.initLocalstorage();
+      this.plugins = _.map(this.options.plugins, (function(_this) {
+        return function(pluginName) {
+          return new FormRenderer.Plugins[pluginName](_this);
+        };
+      })(this));
+      _ref = this.plugins;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
+        if (typeof p.beforeFormLoad === "function") {
+          p.beforeFormLoad();
+        }
       }
+      this.$el.html(JST['main'](this));
+      this.trigger('viewRendered', this);
       this.loadFromServer((function(_this) {
         return function() {
-          var _base;
+          var _base, _j, _len1, _ref1;
           _this.$el.find('.fr_loading').remove();
           _this.initResponseFields();
           _this.initPages();
@@ -96,20 +98,12 @@
           } else {
             _this.initNoPagination();
           }
-          if (_this.options.enablePageState) {
-            _this.initPageState();
-          }
-          if (_this.options.enableBottomStatusBar) {
-            _this.initBottomStatusBar();
-          }
-          if (_this.options.enableErrorAlertBar) {
-            _this.initErrorAlertBar();
-          }
-          if (_this.options.enableAutosave) {
-            _this.initAutosave();
-          }
-          if (_this.options.enableBeforeUnload) {
-            _this.initBeforeUnload();
+          _ref1 = _this.plugins;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            p = _ref1[_j];
+            if (typeof p.afterFormLoad === "function") {
+              p.afterFormLoad();
+            }
           }
           if (_this.options.validateImmediately) {
             _this.validateAllPages();
@@ -120,15 +114,6 @@
         };
       })(this));
       return this;
-    },
-    initLocalstorage: function() {
-      var _base;
-      (_base = this.options.response).id || (_base.id = store.get(this.draftIdStorageKey()));
-      return this.listenTo(this, 'afterSave', function() {
-        if (!this.state.get('submitting')) {
-          return store.set(this.draftIdStorageKey(), this.options.response.id);
-        }
-      });
     },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
@@ -156,7 +141,7 @@
           return function(xhr) {
             var _ref;
             _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
-            return store.remove(_this.draftIdStorageKey());
+            return _this.trigger('errorSaving', xhr);
           };
         })(this)
       });
@@ -175,32 +160,7 @@
         }
         this.response_fields.add(model);
       }
-      return this.listenTo(this.response_fields, 'change', function() {
-        if (!this.state.get('hasChanges')) {
-          return this.state.set('hasChanges', true);
-        }
-      });
-    },
-    initAutosave: function() {
-      return setInterval((function(_this) {
-        return function() {
-          if (_this.state.get('hasChanges') && !_this.isSaving) {
-            return _this.save();
-          }
-        };
-      })(this), 5000);
-    },
-    initBottomStatusBar: function() {
-      this.subviews.bottomStatusBar = new FormRenderer.Views.BottomStatusBar({
-        form_renderer: this
-      });
-      return this.$el.append(this.subviews.bottomStatusBar.render().el);
-    },
-    initErrorAlertBar: function() {
-      this.subviews.errorAlertBar = new FormRenderer.Views.ErrorAlertBar({
-        form_renderer: this
-      });
-      return this.$el.prepend(this.subviews.errorAlertBar.render().el);
+      return this.listenTo(this.response_fields, 'change', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -252,28 +212,19 @@
       }
       return _results;
     },
-    initPageState: function() {
-      var num, page, _ref;
-      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
-        page = parseInt(num, 10);
-        if (this.isPageVisible(page)) {
-          this.activatePage(page, {
-            skipValidation: true
+    initConditions: function() {
+      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
+        return function(rf) {
+          return _this.runConditions(rf);
+        };
+      })(this));
+      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
           });
-        }
-      }
-      return this.state.on('change:activePage', function(_, num) {
-        return window.location.hash = "page" + num;
-      });
-    },
-    initBeforeUnload: function() {
-      return BeforeUnload.enable({
-        "if": (function(_this) {
-          return function() {
-            return _this.state.get('hasChanges');
-          };
-        })(this)
-      });
+        });
+      }));
     },
     activatePage: function(newPageNumber, opts) {
       if (opts == null) {
@@ -287,9 +238,9 @@
       return this.state.set('activePage', newPageNumber);
     },
     validateCurrentPage: function() {
-      this.trigger("beforeValidate beforeValidate:" + (this.state.get('activePage')));
+      this.trigger('beforeValidate beforeValidate:one', this.state.get('activePage'));
       this.subviews.pages[this.state.get('activePage')].validate();
-      this.trigger("afterValidate afterValidate:" + (this.state.get('activePage')));
+      this.trigger('afterValidate afterValidate:one', this.state.get('activePage'));
       return this.isPageValid(this.state.get('activePage'));
     },
     validateAllPages: function() {
@@ -325,11 +276,6 @@
         };
       })(this));
     },
-    numValidationErrors: function() {
-      return this.response_fields.filter(function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }).length;
-    },
     visiblePages: function() {
       return _.tap([], (function(_this) {
         return function(a) {
@@ -364,8 +310,17 @@
     nextPage: function() {
       return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) + 1];
     },
-    draftIdStorageKey: function() {
-      return "project-" + this.options.project_id + "-response-id";
+    handlePreviousPage: function() {
+      return this.activatePage(this.previousPage(), {
+        skipValidation: true
+      });
+    },
+    handleNextPage: function() {
+      if (this.isLastPage() || !this.options.enablePages) {
+        return this.submit();
+      } else {
+        return this.activatePage(this.nextPage());
+      }
     },
     getValue: function() {
       return _.tap({}, (function(_this) {
@@ -397,11 +352,22 @@
         skip_validation: this.options.skipValidation
       }, this.options.saveParams);
     },
+    _onChange: function() {
+      this.state.set('hasChanges', true);
+      if (this.isSaving) {
+        return this.changedWhileSaving = true;
+      }
+    },
     save: function(options) {
       if (options == null) {
         options = {};
       }
+      if (this.isSaving) {
+        return;
+      }
+      this.requests += 1;
       this.isSaving = true;
+      this.changedWhileSaving = false;
       return $.ajax({
         url: "" + this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
@@ -412,11 +378,8 @@
         }),
         complete: (function(_this) {
           return function() {
-            var _ref;
+            _this.requests -= 1;
             _this.isSaving = false;
-            if ((_ref = options.complete) != null) {
-              _ref.apply(_this, arguments);
-            }
             return _this.trigger('afterSave');
           };
         })(this),
@@ -424,35 +387,28 @@
           return function(data) {
             var _ref;
             _this.state.set({
-              hasChanges: false,
+              hasChanges: _this.changedWhileSaving,
               hasServerErrors: false
             });
             _this.options.response.id = data.response_id;
-            return (_ref = options.success) != null ? _ref.apply(_this, arguments) : void 0;
+            return (_ref = options.cb) != null ? _ref.apply(_this, arguments) : void 0;
           };
         })(this),
         error: (function(_this) {
           return function() {
-            var _ref;
-            _this.state.set({
+            return _this.state.set({
               hasServerErrors: true,
               submitting: false
             });
-            return (_ref = options.error) != null ? _ref.apply(_this, arguments) : void 0;
           };
         })(this)
       });
     },
-    autosaveImmediately: function() {
-      if (this.state.get('hasChanges') && !this.isSaving && this.options.enableAutosave) {
-        return this.save();
-      }
-    },
-    waitForUploads: function(cb) {
-      if (this.uploads > 0) {
+    waitForRequests: function(cb) {
+      if (this.requests > 0) {
         return setTimeout(((function(_this) {
           return function() {
-            return _this.waitForUploads(cb);
+            return _this.waitForRequests(cb);
           };
         })(this)), 100);
       } else {
@@ -460,7 +416,6 @@
       }
     },
     submit: function(opts) {
-      var afterSubmit;
       if (opts == null) {
         opts = {};
       }
@@ -468,45 +423,49 @@
         return;
       }
       this.state.set('submitting', true);
-      if (this.options.preview) {
-        return this.preview();
-      }
-      afterSubmit = opts.afterSubmit || this.options.afterSubmit;
-      return this.waitForUploads((function(_this) {
+      return this.waitForRequests((function(_this) {
         return function() {
-          return _this.save({
-            submit: true,
-            success: function() {
-              var $page;
-              store.remove(_this.draftIdStorageKey());
-              if (typeof afterSubmit === 'function') {
-                return afterSubmit.call(_this);
-              } else if (typeof afterSubmit === 'string') {
-                return window.location = afterSubmit.replace(':id', _this.options.response.id);
-              } else if (typeof afterSubmit === 'object' && afterSubmit.method === 'page') {
-                $page = $("<div class='fr_after_submit_page'>" + afterSubmit.html + "</div>");
-                return _this.$el.replaceWith($page);
-              } else {
-                return console.log('[FormRenderer] Not sure what to do...');
+          if (_this.options.preview) {
+            return _this._preview();
+          } else {
+            return _this.save({
+              submit: true,
+              cb: function() {
+                _this.trigger('afterSubmit');
+                return _this._afterSubmit();
               }
-            }
-          });
+            });
+          }
         };
       })(this));
     },
-    preview: function() {
+    _afterSubmit: function() {
+      var $page, as;
+      as = this.options.afterSubmit;
+      if (typeof as === 'function') {
+        return as.call(this);
+      } else if (typeof as === 'string') {
+        return window.location = as.replace(':id', this.options.response.id);
+      } else if (typeof as === 'object' && as.method === 'page') {
+        $page = $("<div class='fr_after_submit_page'>" + as.html + "</div>");
+        return this.$el.replaceWith($page);
+      } else {
+        return console.log('[FormRenderer] Not sure what to do...');
+      }
+    },
+    _preview: function() {
       var cb;
       cb = (function(_this) {
         return function() {
           return window.location = _this.options.preview.replace(':id', _this.options.response.id);
         };
       })(this);
-      if (this.state.get('hasChanges') || !this.options.enableAutosave || !this.options.response.id) {
-        return this.save({
-          success: cb
-        });
-      } else {
+      if (!this.state.get('hasChanges') && this.options.response.id) {
         return cb();
+      } else {
+        return this.save({
+          cb: cb
+        });
       }
     },
     reflectConditions: function() {
@@ -519,29 +478,21 @@
       return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
     },
     runConditions: function(rf) {
+      var needsRender;
+      needsRender = false;
       _.each(this.conditionsForResponseField(rf), function(c) {
-        return c.parent.calculateVisibility();
+        if (c.parent.calculateVisibility()) {
+          return needsRender = true;
+        }
       });
-      return this.reflectConditions();
+      if (needsRender) {
+        return this.reflectConditions();
+      }
     },
     conditionsForResponseField: function(rf) {
       return _.filter(this.allConditions, function(condition) {
         return ("" + condition.response_field_id) === ("" + rf.id);
       });
-    },
-    initConditions: function() {
-      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return _this.runConditions(rf);
-        };
-      })(this));
-      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
     },
     isConditionalVisible: function(condition) {
       return new FormRenderer.ConditionChecker(this, condition).isVisible();
@@ -554,12 +505,6 @@
 
   FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
 
-  FormRenderer.Views = {};
-
-  FormRenderer.Models = {};
-
-  FormRenderer.Validators = {};
-
   FormRenderer.BUTTON_CLASS = '';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
@@ -567,6 +512,26 @@
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
   FormRenderer.FILE_TYPES = {};
+
+  FormRenderer.ADD_ROW_LINK = '+ Add another row';
+
+  FormRenderer.REMOVE_ROW_LINK = '-';
+
+  FormRenderer.Views = {};
+
+  FormRenderer.Models = {};
+
+  FormRenderer.Validators = {};
+
+  FormRenderer.Plugins = {};
+
+  FormRenderer.addPlugin = function(x) {
+    return this.prototype.defaults.plugins.push(x);
+  };
+
+  FormRenderer.removePlugin = function(x) {
+    return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
+  };
 
   FormRenderer.loadLeaflet = function(cb) {
     if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
@@ -603,10 +568,22 @@
     return _.sanitize(autoLink(_.simpleFormat(unsafeHTML || '', false)), sanitizeConfig);
   };
 
+}).call(this);
+
+(function() {
+  var commonCountries;
+
   commonCountries = ['US', 'GB', 'CA'];
 
   FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
 
+  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
+
+  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+
+}).call(this);
+
+(function() {
   FormRenderer.errors = {
     blank: "This field can't be blank.",
     invalid_date: 'Please enter a valid date.',
@@ -620,14 +597,6 @@
     too_short: 'Your answer is too short.',
     too_small: 'Your answer is too small.'
   };
-
-  FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
-
-  FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-
-  FormRenderer.ADD_ROW_LINK = '+ Add another row';
-
-  FormRenderer.REMOVE_ROW_LINK = '-';
 
 }).call(this);
 
@@ -698,286 +667,145 @@
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.BaseValidator = (function() {
-    function BaseValidator(model) {
-      this.model = model;
-    }
-
-    return BaseValidator;
-
-  })();
-
-}).call(this);
-
-(function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.DateValidator = (function(_super) {
-    __extends(DateValidator, _super);
-
-    function DateValidator() {
-      return DateValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    DateValidator.prototype.validate = function() {
+  FormRenderer.Validators.DateValidator = {
+    validate: function(model) {
       var day, month, year;
-      if (this.model.field_type !== 'date') {
-        return;
-      }
-      year = parseInt(this.model.get('value.year'), 10) || 0;
-      day = parseInt(this.model.get('value.day'), 10) || 0;
-      month = parseInt(this.model.get('value.month'), 10) || 0;
+      year = parseInt(model.get('value.year'), 10) || 0;
+      day = parseInt(model.get('value.day'), 10) || 0;
+      month = parseInt(model.get('value.month'), 10) || 0;
       if (!((year > 0) && ((0 < day && day <= 31)) && ((0 < month && month <= 12)))) {
         return 'invalid_date';
       }
-    };
-
-    return DateValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.EmailValidator = (function(_super) {
-    __extends(EmailValidator, _super);
-
-    function EmailValidator() {
-      return EmailValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    EmailValidator.prototype.validate = function() {
-      if (this.model.field_type !== 'email') {
-        return;
-      }
-      if (!this.model.get('value').match('@')) {
+  FormRenderer.Validators.EmailValidator = {
+    validate: function(model) {
+      if (!model.get('value').match('@')) {
         return 'invalid_email';
       }
-    };
-
-    return EmailValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.IdentificationValidator = (function(_super) {
-    __extends(IdentificationValidator, _super);
-
-    function IdentificationValidator() {
-      return IdentificationValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    IdentificationValidator.prototype.validate = function() {
-      if (!this.model.get('value.name') || !this.model.get('value.email')) {
+  FormRenderer.Validators.IdentificationValidator = {
+    validate: function(model) {
+      if (!model.get('value.name') || !model.get('value.email')) {
         return 'blank';
-      } else if (!this.model.get('value.email').match('@')) {
+      } else if (!model.get('value.email').match('@')) {
         return 'invalid_email';
       }
-    };
-
-    return IdentificationValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.IntegerValidator = (function(_super) {
-    __extends(IntegerValidator, _super);
-
-    function IntegerValidator() {
-      return IntegerValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    IntegerValidator.VALID_REGEX = /^-?\d+$/;
-
-    IntegerValidator.prototype.validate = function() {
-      if (!this.model.get('field_options.integer_only')) {
+  FormRenderer.Validators.IntegerValidator = {
+    validate: function(model) {
+      if (!model.get('field_options.integer_only')) {
         return;
       }
-      if (!this.model.get('value').match(this.constructor.VALID_REGEX)) {
+      if (!model.get('value').match(/^-?\d+$/)) {
         return 'invalid_integer';
       }
-    };
-
-    return IntegerValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.MinMaxLengthValidator = (function(_super) {
-    __extends(MinMaxLengthValidator, _super);
-
-    function MinMaxLengthValidator() {
-      return MinMaxLengthValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    MinMaxLengthValidator.prototype.validate = function() {
-      if (!(this.model.get('field_options.minlength') || this.model.get('field_options.maxlength'))) {
+  FormRenderer.Validators.MinMaxLengthValidator = {
+    validate: function(model) {
+      var count, max, min;
+      if (!(model.get('field_options.minlength') || model.get('field_options.maxlength'))) {
         return;
       }
-      this.min = parseInt(this.model.get('field_options.minlength'), 10) || void 0;
-      this.max = parseInt(this.model.get('field_options.maxlength'), 10) || void 0;
-      if (this.min && this.count() < this.min) {
+      min = parseInt(model.get('field_options.minlength'), 10) || void 0;
+      max = parseInt(model.get('field_options.maxlength'), 10) || void 0;
+      count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
+      if (min && count < min) {
         return 'too_short';
-      } else if (this.max && this.count() > this.max) {
+      } else if (max && count > max) {
         return 'too_long';
       }
-    };
-
-    MinMaxLengthValidator.prototype.count = function() {
-      return FormRenderer.getLength(this.model.getLengthValidationUnits(), this.model.get('value'));
-    };
-
-    return MinMaxLengthValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.MinMaxValidator = (function(_super) {
-    __extends(MinMaxValidator, _super);
-
-    function MinMaxValidator() {
-      return MinMaxValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    MinMaxValidator.prototype.validate = function() {
-      var value;
-      if (!(this.model.get('field_options.min') || this.model.get('field_options.max'))) {
+  FormRenderer.Validators.MinMaxValidator = {
+    validate: function(model) {
+      var max, min, value;
+      if (!(model.get('field_options.min') || model.get('field_options.max'))) {
         return;
       }
-      this.min = this.model.get('field_options.min') && parseFloat(this.model.get('field_options.min'));
-      this.max = this.model.get('field_options.max') && parseFloat(this.model.get('field_options.max'));
-      value = this.model.field_type === 'price' ? parseFloat("" + (this.model.get('value.dollars') || 0) + "." + (this.model.get('value.cents') || 0)) : parseFloat(this.model.get('value').replace(/,/g, ''));
-      if (this.min && value < this.min) {
+      min = model.get('field_options.min') && parseFloat(model.get('field_options.min'));
+      max = model.get('field_options.max') && parseFloat(model.get('field_options.max'));
+      value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
+      if (min && value < min) {
         return 'too_small';
-      } else if (this.max && value > this.max) {
+      } else if (max && value > max) {
         return 'too_large';
       }
-    };
-
-    return MinMaxValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.NumberValidator = (function(_super) {
-    __extends(NumberValidator, _super);
-
-    function NumberValidator() {
-      return NumberValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    NumberValidator.VALID_REGEX = /^-?\d*(\.\d+)?$/;
-
-    NumberValidator.prototype.validate = function() {
+  FormRenderer.Validators.NumberValidator = {
+    validate: function(model) {
       var value;
-      if (this.model.field_type !== 'number') {
-        return;
-      }
-      value = this.model.get('value');
+      value = model.get('value');
       value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '');
-      if (!value.match(this.constructor.VALID_REGEX)) {
+      if (!value.match(/^-?\d*(\.\d+)?$/)) {
         return 'invalid_number';
       }
-    };
-
-    return NumberValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.PriceValidator = (function(_super) {
-    __extends(PriceValidator, _super);
-
-    function PriceValidator() {
-      return PriceValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    PriceValidator.prototype.validate = function() {
+  FormRenderer.Validators.PriceValidator = {
+    validate: function(model) {
       var values;
-      if (this.model.field_type !== 'price') {
-        return;
-      }
       values = [];
-      if (this.model.get('value.dollars')) {
-        values.push(this.model.get('value.dollars').replace(/,/g, ''));
+      if (model.get('value.dollars')) {
+        values.push(model.get('value.dollars').replace(/,/g, ''));
       }
-      if (this.model.get('value.cents')) {
-        values.push(this.model.get('value.cents'));
+      if (model.get('value.cents')) {
+        values.push(model.get('value.cents'));
       }
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);
       })) {
         return 'invalid_price';
       }
-    };
-
-    return PriceValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Validators.TimeValidator = (function(_super) {
-    __extends(TimeValidator, _super);
-
-    function TimeValidator() {
-      return TimeValidator.__super__.constructor.apply(this, arguments);
-    }
-
-    TimeValidator.prototype.validate = function() {
+  FormRenderer.Validators.TimeValidator = {
+    validate: function(model) {
       var hours, minutes, seconds;
-      if (this.model.field_type !== 'time') {
-        return;
-      }
-      hours = parseInt(this.model.get('value.hours'), 10) || 0;
-      minutes = parseInt(this.model.get('value.minutes'), 10) || 0;
-      seconds = parseInt(this.model.get('value.seconds'), 10) || 0;
+      hours = parseInt(model.get('value.hours'), 10) || 0;
+      minutes = parseInt(model.get('value.minutes'), 10) || 0;
+      seconds = parseInt(model.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 60)) && ((0 <= seconds && seconds <= 60)))) {
         return 'invalid_time';
       }
-    };
-
-    return TimeValidator;
-
-  })(FormRenderer.Validators.BaseValidator);
+    }
+  };
 
 }).call(this);
 
@@ -1002,7 +830,7 @@
       }
     },
     validate: function() {
-      var errorKey, v, validator, validatorName, _ref, _results;
+      var errorKey, validator, validatorName, _ref, _results;
       this.errors = [];
       if (!this.isVisible) {
         return;
@@ -1017,8 +845,7 @@
       _results = [];
       for (validatorName in _ref) {
         validator = _ref[validatorName];
-        v = new validator(this);
-        errorKey = v.validate();
+        errorKey = validator.validate(this);
         if (errorKey) {
           _results.push(this.errors.push(FormRenderer.errors[errorKey]));
         } else {
@@ -1088,14 +915,24 @@
       return this.getConditions().length > 0;
     },
     calculateVisibility: function() {
-      return this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
+      var prevValue;
+      prevValue = !!this.isVisible;
+      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
         return function(c) {
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
+      return prevValue !== this.isVisible;
     },
     getSize: function() {
       return this.get('field_options.size') || 'small';
+    },
+    sizeToHeaderTag: function() {
+      return {
+        large: 'h2',
+        medium: 'h3',
+        small: 'h4'
+      }[this.getSize()];
     }
   });
 
@@ -1470,51 +1307,222 @@
 }).call(this);
 
 (function() {
-  FormRenderer.Views.BottomStatusBar = Backbone.View.extend({
+  FormRenderer.Plugins.Base = (function() {
+    function Base(fr) {
+      this.fr = fr;
+    }
+
+    return Base;
+
+  })();
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.Autosave = (function(_super) {
+    __extends(Autosave, _super);
+
+    function Autosave() {
+      return Autosave.__super__.constructor.apply(this, arguments);
+    }
+
+    Autosave.prototype.afterFormLoad = function() {
+      return setInterval((function(_this) {
+        return function() {
+          if (_this.fr.state.get('hasChanges')) {
+            return _this.fr.save();
+          }
+        };
+      })(this), 5000);
+    };
+
+    return Autosave;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.BottomBar = (function(_super) {
+    __extends(BottomBar, _super);
+
+    function BottomBar() {
+      return BottomBar.__super__.constructor.apply(this, arguments);
+    }
+
+    BottomBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.bottomBar = new FormRenderer.Plugins.BottomBar.View({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
+    };
+
+    return BottomBar;
+
+  })(FormRenderer.Plugins.Base);
+
+  FormRenderer.Plugins.BottomBar.View = Backbone.View.extend({
     events: {
-      'click [data-js-back]': 'handleBack',
-      'click [data-js-continue]': 'handleContinue'
+      'click [data-fr-previous-page]': function(e) {
+        e.preventDefault();
+        return this.form_renderer.handlePreviousPage();
+      },
+      'click [data-fr-next-page]': function(e) {
+        e.preventDefault();
+        return this.form_renderer.handleNextPage();
+      }
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer.state, 'change:activePage change:hasChanges change:submitting change:hasServerErrors', this.render);
     },
     render: function() {
-      this.$el.html(JST['partials/bottom_status_bar'](this));
+      this.$el.html(JST['plugins/bottom_bar'](this));
+      this.form_renderer.trigger('viewRendered', this);
       return this;
-    },
-    handleBack: function(e) {
-      e.preventDefault();
-      return this.form_renderer.activatePage(this.form_renderer.previousPage(), {
-        skipValidation: true
-      });
-    },
-    handleContinue: function(e) {
-      e.preventDefault();
-      if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-        return this.form_renderer.submit();
-      } else {
-        return this.form_renderer.activatePage(this.form_renderer.nextPage());
-      }
     }
   });
 
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ErrorAlertBar = Backbone.View.extend({
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.ErrorBar = (function(_super) {
+    __extends(ErrorBar, _super);
+
+    function ErrorBar() {
+      return ErrorBar.__super__.constructor.apply(this, arguments);
+    }
+
+    ErrorBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.errorBar = new FormRenderer.Plugins.ErrorBar.View({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
+    };
+
+    return ErrorBar;
+
+  })(FormRenderer.Plugins.Base);
+
+  FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend({
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
     },
     render: function() {
-      this.$el.html(JST['partials/error_alert_bar'](this));
+      this.$el.html(JST['plugins/error_bar'](this));
+      this.form_renderer.trigger('viewRendered', this);
       if (!this.form_renderer.areAllPagesValid()) {
         window.scrollTo(0, this.$el.offset().top - 10);
       }
       return this;
     }
   });
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.LocalStorage = (function(_super) {
+    __extends(LocalStorage, _super);
+
+    function LocalStorage() {
+      return LocalStorage.__super__.constructor.apply(this, arguments);
+    }
+
+    LocalStorage.prototype.beforeFormLoad = function() {
+      var draftKey, _base;
+      if (!store.enabled) {
+        return;
+      }
+      draftKey = "project-" + this.fr.options.project_id + "-response-id";
+      (_base = this.fr.options.response).id || (_base.id = store.get(draftKey));
+      this.fr.on('afterSave', function() {
+        if (!this.state.get('submitting')) {
+          return store.set(draftKey, this.options.response.id);
+        }
+      });
+      this.fr.on('afterSubmit', function() {
+        return store.remove(draftKey);
+      });
+      return this.fr.on('errorSaving', function() {
+        return store.remove(draftKey);
+      });
+    };
+
+    return LocalStorage;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.PageState = (function(_super) {
+    __extends(PageState, _super);
+
+    function PageState() {
+      return PageState.__super__.constructor.apply(this, arguments);
+    }
+
+    PageState.prototype.afterFormLoad = function() {
+      var num, page, _ref;
+      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
+        page = parseInt(num, 10);
+        if (this.fr.isPageVisible(page)) {
+          this.fr.activatePage(page, {
+            skipValidation: true
+          });
+        }
+      }
+      return this.fr.state.on('change:activePage', function(_, num) {
+        return window.location.hash = "page" + num;
+      });
+    };
+
+    return PageState;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.WarnBeforeUnload = (function(_super) {
+    __extends(WarnBeforeUnload, _super);
+
+    function WarnBeforeUnload() {
+      return WarnBeforeUnload.__super__.constructor.apply(this, arguments);
+    }
+
+    WarnBeforeUnload.prototype.afterFormLoad = function() {
+      return BeforeUnload.enable({
+        "if": (function(_this) {
+          return function() {
+            return _this.fr.state.get('hasChanges');
+          };
+        })(this)
+      });
+    };
+
+    return WarnBeforeUnload;
+
+  })(FormRenderer.Plugins.Base);
 
 }).call(this);
 
@@ -1615,6 +1623,7 @@
     },
     render: function() {
       this.$el.html(JST['partials/pagination'](this));
+      this.form_renderer.trigger('viewRendered', this);
       return this;
     }
   });
@@ -1648,19 +1657,26 @@
       }
     },
     render: function() {
+      var _ref;
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
       this.$el.html(JST['partials/response_field'](this));
       rivets.bind(this.$el, {
         model: this.model
       });
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
       return this;
     }
   });
 
   FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
     render: function() {
-      this.$el.addClass("fr_response_field_" + this.field_type);
+      var _ref;
       this.$el.html(JST['partials/non_input_response_field'](this));
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
       return this;
     }
   });
@@ -1740,7 +1756,7 @@
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
     field_type: 'file',
     events: {
-      'click [data-js-remove]': 'doRemove'
+      'click [data-fr-remove-file]': 'doRemove'
     },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
@@ -1770,7 +1786,7 @@
       this.bindChangeEvent();
       $oldInput.appendTo($tmpForm);
       $tmpForm.insertBefore(this.$input);
-      this.form_renderer.uploads += 1;
+      this.form_renderer.requests += 1;
       return $tmpForm.ajaxSubmit({
         url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
         data: {
@@ -1786,14 +1802,13 @@
         })(this),
         complete: (function(_this) {
           return function() {
-            _this.form_renderer.uploads -= 1;
+            _this.form_renderer.requests -= 1;
             return $tmpForm.remove();
           };
         })(this),
         success: (function(_this) {
           return function(data) {
             _this.model.set('value.id', data.file_id);
-            _this.form_renderer.autosaveImmediately();
             return _this.render();
           };
         })(this),
@@ -1812,7 +1827,6 @@
     },
     doRemove: function() {
       this.model.set('value', {});
-      this.form_renderer.autosaveImmediately();
       return this.render();
     }
   });
@@ -1821,7 +1835,7 @@
     field_type: 'map_marker',
     events: {
       'click .fr_map_cover': 'enable',
-      'click [data-js-clear]': 'disable'
+      'click [data-fr-clear-map]': 'disable'
     },
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -2054,7 +2068,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'size_'));
+      _print(_safe('<div class=\'fr_text size_'));
     
       _print(this.model.getSize());
     
@@ -2342,7 +2356,7 @@ window.JST["fields/file"] = function(__obj) {
       if (this.model.hasValue()) {
         _print(_safe('\n  <span class=\'js-filename\'>'));
         _print(this.model.get('value.filename'));
-        _print(_safe('</span>\n  <button data-js-remove class=\''));
+        _print(_safe('</span>\n  <button data-fr-remove-file class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>Remove</button>\n'));
       } else {
@@ -2469,7 +2483,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-js-clear data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -2795,21 +2809,25 @@ window.JST["fields/section_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'size_'));
+      _print(_safe('<'));
     
-      _print(this.model.getSize());
+      _print(this.model.sizeToHeaderTag());
     
-      _print(_safe('\'>\n  <div class=\'fr_section_name\'>'));
+      _print(_safe('>'));
     
       _print(this.model.get('label'));
     
-      _print(_safe('</div>\n  '));
+      _print(_safe('</'));
     
-      if (this.model.get('field_options.description')) {
-        _print(_safe('\n    <p>'));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
-        _print(_safe('</p>\n  '));
-      }
+      _print(this.model.sizeToHeaderTag());
+    
+      _print(_safe('>\n<div class=\'fr_text size_'));
+    
+      _print(this.model.getSize());
+    
+      _print(_safe('\'>\n  '));
+    
+      _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
     
       _print(_safe('\n</div>\n\n<hr />\n'));
     
@@ -3148,93 +3166,6 @@ window.JST["main"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
-window.JST["partials/bottom_status_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
-    
-      if (this.form_renderer.options.enableAutosave) {
-        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
-        if (this.form_renderer.state.get('hasServerErrors')) {
-          _print(_safe('\n        Error saving\n      '));
-        } else if (this.form_renderer.state.get('hasChanges')) {
-          _print(_safe('\n        Saving...\n      '));
-        } else {
-          _print(_safe('\n        Saved\n      '));
-        }
-        _print(_safe('\n    </div>\n  '));
-      }
-    
-      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
-    
-      if (!this.form_renderer.isFirstPage()) {
-        _print(_safe('\n      <button data-js-back class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Back to page '));
-        _print(this.form_renderer.previousPage());
-        _print(_safe('\n      </button>\n    '));
-      }
-    
-      _print(_safe('\n\n    '));
-    
-      if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n      <button disabled class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
-      } else {
-        _print(_safe('\n      <button data-js-continue class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        '));
-        if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-          _print(_safe('Submit'));
-        } else {
-          _print(_safe('Next page'));
-        }
-        _print(_safe('\n      </button>\n    '));
-      }
-    
-      _print(_safe('\n  </div>\n</div>\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
 window.JST["partials/description"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -3311,55 +3242,6 @@ window.JST["partials/error"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_error\'>\n    '));
         _print(this.model.getError());
         _print(_safe('\n  </div>\n'));
-      }
-    
-      _print(_safe('\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/error_alert_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
       }
     
       _print(_safe('\n'));
@@ -3763,6 +3645,144 @@ window.JST["partials/response_field"] = function(__obj) {
       _print(_safe('\n'));
     
       _print(_safe(JST["partials/description"](this)));
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["plugins/bottom_bar"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    
+      _print(_safe('<div class=\'fr_bottom fr_cf\'>\n  '));
+    
+      if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
+        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
+        if (this.form_renderer.state.get('hasServerErrors')) {
+          _print(_safe('\n        Error saving\n      '));
+        } else if (this.form_renderer.state.get('hasChanges')) {
+          _print(_safe('\n        Saving...\n      '));
+        } else {
+          _print(_safe('\n        Saved\n      '));
+        }
+        _print(_safe('\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
+    
+      if (!this.form_renderer.isFirstPage()) {
+        _print(_safe('\n      <button data-fr-previous-page class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Back to page '));
+        _print(this.form_renderer.previousPage());
+        _print(_safe('\n      </button>\n    '));
+      }
+    
+      _print(_safe('\n\n    '));
+    
+      if (this.form_renderer.state.get('submitting')) {
+        _print(_safe('\n      <button disabled class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
+      } else {
+        _print(_safe('\n      <button data-fr-next-page class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n        '));
+        if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
+          _print(_safe('Submit'));
+        } else {
+          _print(_safe('Next page'));
+        }
+        _print(_safe('\n      </button>\n    '));
+      }
+    
+      _print(_safe('\n  </div>\n</div>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["plugins/error_bar"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      if (!this.form_renderer.areAllPagesValid()) {
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
+      }
     
       _print(_safe('\n'));
     

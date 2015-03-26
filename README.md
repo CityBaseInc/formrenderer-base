@@ -44,13 +44,42 @@ Of course, there's a lot more you can do...
 | project_id | Your Screendoor project ID, which can be found on your project settings page |  |
 | onReady | A function to call once the form is fully-loaded |  |
 | target | jQuery selector for the element in which to render your form. Can also be a DOM node. | `'[data-formrenderer]'` |
-| enableAutosave | Persist changes back to the server every 5 seconds | `true` |
-| enableBeforeUnload | Warn if the user leaves the page with unsubmitted responses | `true` |
 | enablePages | If the form contains multiple pages, render them. Set to `false` to render all response fields on the same page. | `true` |
-| enableLocalstorage | Save unsubmitted draft identifiers to localstorage, which will allow respondents to leave and return to the form without losing data. | `true` |
-| enablePageState | Add a `#pageX` parameter to the URL when changing pages. | `false` |
 | validateImmediately | If the form is initialized with invalid data, immediately show errors. | `false` |
 | afterSubmit | Can be any of the following: **a function**, which will be called after submission, **a URL**, which the user will be sent to after submission, or **an Object** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
+| plugins | Enabled plugins (see below) | `['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']` |
+
+## Plugins
+
+FormRenderer exposes a simple plugin system that allows for extending its core functionality. (It even comes with a few that are enabled by default -- see above in the "Options" section.)
+
+You can add or remove plugins using the following convenience methods:
+
+```js
+FormRenderer.addPlugin('Foo') 
+// -> will look for FormRenderer.Plugins.Foo when initializing a form
+
+FormRenderer.removePlugin('ErrorBar') 
+// -> forms created will no longer include the ErrorBar plugin
+```
+
+## Events
+
+Since `FormRenderer` inherits the `Backbone.View` prototype, you can listen for the following events using the standard [Backbone syntax](http://backbonejs.org/#Events).
+
+| event | description | arguments |
+| --- | --- | --- |
+| ready | The form has been loaded from the server and initialization is complete. | |
+| errorSaving | There was an error saving the form. | `(xhr)` |
+| afterSave | Triggered after the form has been saved. | |
+| afterSubmit | Triggered after the form has been submitted. | |
+| beforeValidate | Triggered before validation of a single page or the entire form. | |
+| beforeValidate:one | Triggered before the validation of a single page. | `(pageNumber)` |
+| beforeValidate:all | Triggered before the validation of the entire form. | |
+| afterValidate | Triggered after validation of a single page or the entire form. | |
+| afterValidate:one | Triggered after the validation of a single page. | `(pageNumber)` |
+| afterValidate:all | Triggered after the validation of the entire form. | |
+| viewRendered | A Backbone view has been rendered. Useful if you need to change certain DOM nodes before they're rendered. | `(view)` |
 
 ## Customizing
 

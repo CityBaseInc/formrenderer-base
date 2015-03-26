@@ -128,23 +128,12 @@
     width: 100%;
     height: 240px; }
 
-.fr_response_field_block_of_text .size_medium {
-  font-size: 125%; }
-.fr_response_field_block_of_text .size_large {
-  font-size: 150%; }
-
-.fr_response_field_section_break .fr_section_name {
-  font-weight: bold; }
-.fr_response_field_section_break p {
+.fr_text {
   font-size: 90%; }
-.fr_response_field_section_break .size_medium .fr_section_name {
-  font-size: 125%; }
-.fr_response_field_section_break .size_medium p {
-  font-size: 100%; }
-.fr_response_field_section_break .size_large .fr_section_name {
-  font-size: 150%; }
-.fr_response_field_section_break .size_large p {
-  font-size: 125%; }
+  .fr_text.size_medium {
+    font-size: 100%; }
+  .fr_text.size_large {
+    font-size: 125%; }
 
 .fr_response_field_number input[type=text] {
   width: 160px; }

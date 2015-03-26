@@ -48,46 +48,6 @@ describe 'handling blank forms', ->
     $('button:contains("Submit")').click()
     expect(@fr.submit).to.have.been.called
 
-describe 'page state', ->
-  describe 'when disabled (default)', ->
-    it 'it ignores the hash', ->
-      window.location.hash = 'page3'
-      fr = new FormRenderer Fixtures.FormRendererOptions.CONDITIONAL()
-      expect(fr.state.get('activePage')).to.equal(1)
-
-  describe 'when enabled', ->
-    it 'uses the hash to set the first page', ->
-      window.location.hash = 'page3'
-      fr = new FormRenderer Fixtures.FormRendererOptions.PAGE_STATE()
-      expect(fr.state.get('activePage')).to.equal(3)
-
-    it 'ignores pages that are not visible', ->
-      window.location.hash = 'page2'
-      fr = new FormRenderer Fixtures.FormRendererOptions.PAGE_STATE()
-      expect(fr.state.get('activePage')).to.equal(1)
-
-    it 'ignores invalid pages', ->
-      window.location.hash = 'page12345'
-      fr = new FormRenderer Fixtures.FormRendererOptions.PAGE_STATE()
-      expect(fr.state.get('activePage')).to.equal(1)
-
-      window.location.hash = 'foobarbaz'
-      fr = new FormRenderer Fixtures.FormRendererOptions.PAGE_STATE()
-      expect(fr.state.get('activePage')).to.equal(1)
-
-    it 'changes the hash when changing pages', ->
-      window.location.hash = ''
-      fr = new FormRenderer Fixtures.FormRendererOptions.PAGE_STATE()
-      expect(fr.state.get('activePage')).to.equal(1)
-      expect(window.location.hash).to.equal('')
-      $('button:contains("Next page")').click()
-      expect(window.location.hash).to.equal('#page3')
-
-describe 'local storage', ->
-  it 'saves the draft ID'
-  it 'loads the draft ID'
-  it 'removes the draft ID after submitting'
-
 describe '#loadFromServer', ->
   beforeEach ->
     @server = sinon.fakeServer.create()
@@ -152,42 +112,37 @@ describe '#submit', ->
 
   it 'does not save while uploads are in progress', ->
     FormRenderer::save = sinon.spy()
-    @fr.uploads = 1
+    @fr.requests = 1
     @fr.submit()
     expect(FormRenderer::save).to.not.have.been.called
 
   it 'saves if uploads are not in progress', ->
     FormRenderer::save = sinon.spy()
-    @fr.uploads = 0
+    @fr.requests = 0
     @fr.submit()
     expect(FormRenderer::save).to.have.been.called
 
 describe 'options', ->
   describe 'enablePages', ->
-    it 'is enabled by default'
-    it 'disables pages'
+    it 'is enabled by default', ->
+      @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+      expect($('[data-activate-page]').length).to.not.equal(0)
 
-  describe 'enableBottomStatusBar', ->
-    it 'is enabled by default'
-    it 'disables the bar'
-
-  describe 'enableErrorAlertBar', ->
-    it 'is enabled by default'
-    it 'disables the bar'
-
-  describe 'enableAutosave', ->
-    it 'is enabled by default'
-    it 'disables autosave'
-
-  describe 'warnBeforeUnload', ->
-    it 'is enabled by default'
-    it 'disables BeforeUnload'
+    it 'disables pages', ->
+      @fr = new FormRenderer _.extend({}, Fixtures.FormRendererOptions.KITCHEN_SINK(), enablePages: false)
+      expect($('[data-activate-page]').length).to.equal(0)
 
   describe 'validateImmediately', ->
-    it 'is false by default'
-    it 'validates immediately'
+    it 'is false by default', ->
+      @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+      expect($('.fr_error_alert_bar').length).to.equal(0)
 
+    it 'validates immediately', ->
+      @fr = new FormRenderer _.extend({}, Fixtures.FormRendererOptions.KITCHEN_SINK(), validateImmediately: true)
+      expect($('.fr_error_alert_bar').length).to.not.equal(0)
+
+# Need to mock AJAX requests for these...
 describe '#save', ->
-  it 'sends the correct data to the server'
+  it 'handles additional changes while saving'
   it 'sets state on success'
   it 'sets state on error'

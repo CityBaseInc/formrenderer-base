@@ -1,5 +1,5 @@
 <div class='fr_bottom fr_cf'>
-  <% if @form_renderer.options.enableAutosave: %>
+  <% if 'Autosave' in @form_renderer.options.plugins: %>
     <div class='fr_bottom_l'>
       <% if @form_renderer.state.get('hasServerErrors'): %>
         Error saving
@@ -13,7 +13,7 @@
 
   <div class='fr_bottom_r'>
     <% if !@form_renderer.isFirstPage(): %>
-      <button data-js-back class='<%= FormRenderer.BUTTON_CLASS %>'>
+      <button data-fr-previous-page class='<%= FormRenderer.BUTTON_CLASS %>'>
         Back to page <%= @form_renderer.previousPage() %>
       </button>
     <% end %>
@@ -23,7 +23,7 @@
         Submitting...
       </button>
     <% else: %>
-      <button data-js-continue class='<%= FormRenderer.BUTTON_CLASS %>'>
+      <button data-fr-next-page class='<%= FormRenderer.BUTTON_CLASS %>'>
         <% if (@form_renderer.isLastPage() || !@form_renderer.options.enablePages): %>Submit<% else: %>Next page<% end %>
       </button>
     <% end %>

@@ -25,8 +25,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
     # If value is present, run all the other validators
     for validatorName, validator of @validators
-      v = new validator(@)
-      errorKey = v.validate()
+      errorKey = validator.validate(@)
       @errors.push(FormRenderer.errors[errorKey]) if errorKey
 
   getError: ->
@@ -83,7 +82,10 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   isConditional: ->
     @getConditions().length > 0
 
+  # Returns true if the new value is different than the old value
   calculateVisibility: ->
+    prevValue = !!@isVisible
+
     @isVisible = (
       # If we're not in a form_renderer context, it's visible
       if !@form_renderer
@@ -96,8 +98,17 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
           true
     )
 
+    prevValue != @isVisible
+
   getSize: ->
     @get('field_options.size') || 'small'
+
+  sizeToHeaderTag: ->
+    {
+      large: 'h2'
+      medium: 'h3'
+      small: 'h4'
+    }[@getSize()]
 
 FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false

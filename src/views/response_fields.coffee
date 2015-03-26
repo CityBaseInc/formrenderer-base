@@ -26,12 +26,13 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
     @$el.html JST['partials/response_field'](@)
     rivets.bind @$el, { model: @model }
+    @form_renderer?.trigger 'viewRendered', @
     @
 
 FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend
   render: ->
-    @$el.addClass "fr_response_field_#{@field_type}"
     @$el.html JST['partials/non_input_response_field'](@)
+    @form_renderer?.trigger 'viewRendered', @
     @
 
 FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
@@ -99,7 +100,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   field_type: 'file'
   events:
-    'click [data-js-remove]': 'doRemove'
+    'click [data-fr-remove-file]': 'doRemove'
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
@@ -130,7 +131,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @bindChangeEvent()
     $oldInput.appendTo($tmpForm)
     $tmpForm.insertBefore(@$input)
-    @form_renderer.uploads += 1
+    @form_renderer.requests += 1
     $tmpForm.ajaxSubmit
       url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
       data:
@@ -141,11 +142,10 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       uploadProgress: (_, __, ___, percentComplete) =>
         @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")
       complete: =>
-        @form_renderer.uploads -= 1
+        @form_renderer.requests -= 1
         $tmpForm.remove()
       success: (data) =>
         @model.set 'value.id', data.file_id
-        @form_renderer.autosaveImmediately()
         @render()
       error: (data) =>
         errorText = data.responseJSON?.errors
@@ -157,14 +157,13 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
 
   doRemove: ->
     @model.set 'value', {}
-    @form_renderer.autosaveImmediately()
     @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'
   events:
     'click .fr_map_cover': 'enable'
-    'click [data-js-clear]': 'disable'
+    'click [data-fr-clear-map]': 'disable'
 
   initialize: ->
     FormRenderer.Views.ResponseField::initialize.apply @, arguments

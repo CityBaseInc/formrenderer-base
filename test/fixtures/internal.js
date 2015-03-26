@@ -1020,11 +1020,7 @@ Fixtures.FormRendererOptions = {
   },
   SD: function() {
     return {
-      project_id: 1,
-      response: {
-        id: 'xxx',
-        responses: {}
-      }
+      project_id: 1
     };
   }
 };
@@ -1032,6 +1028,6 @@ Fixtures.FormRendererOptions = {
 Fixtures.FormRendererOptions.PAGE_STATE = function(){
   return $.extend(
     Fixtures.FormRendererOptions.CONDITIONAL(),
-    { enablePageState: true }
+    { plugins: _.union(FormRenderer.prototype.defaults.plugins, ['PageState']) }
   );
 }

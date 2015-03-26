@@ -6,15 +6,36 @@
   <link rel="stylesheet" href="../../dist/formrenderer.uncompressed.css" />
 </head>
 <body>
+  <select id='lang'>
+    <option value='en'>English</option>
+    <option value='es'>Espanol</option>
+  </select>
+
   <div id='container'>
     <form data-formrenderer></form>
   </div>
 
   <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
   <script src="../../dist/formrenderer.uncompressed.js"></script>
+  <script src="../js/store.js"></script>
   <script src="https://cdn.rawgit.com/padolsey/findAndReplaceDOMText/master/src/findAndReplaceDOMText.js"></script>
   <script src="../../dist/plugins/i18n.js"></script>
   <script>
+    $('#lang').each(function(){
+      var stored = store.get($(this).attr('id'));
+
+      if (stored) {
+        $(this).val(stored);
+      } else {
+        $(this).val($(this).find('option').first().val());
+      }
+    });
+
+    $('#lang').change(function(){
+      store.set($(this).attr('id'), $(this).val());
+      location.reload();
+    });
+
     // Override save to just console.log the value
     FormRenderer.prototype.save = function(options){
       console.log(this.getValue());
@@ -43,7 +64,7 @@
 
     // Initialize form
     new FormRenderer({
-      lang: 'es',
+      lang: $('#lang').val(),
       project_id: 1,
       response_fields: [
         {

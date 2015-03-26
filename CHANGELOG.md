@@ -1,4 +1,4 @@
-## 0.5.0
+## 0.5.0 (March 26, 2015)
 
 - Change the name of the `data-` attribute that stores the FormRenderer instance. It is now `$(el).data('formrenderer-instance')`.
 - Add lots more events

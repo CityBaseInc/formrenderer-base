@@ -8,8 +8,8 @@ class FormRenderer.Plugins.LocalStorage extends FormRenderer.Plugins.Base
     @fr.options.response.id ||= store.get(draftKey)
 
     @fr.on 'afterSave', ->
-      unless @fr.state.get('submitting')
-        store.set draftKey, @fr.options.response.id
+      unless @state.get('submitting')
+        store.set draftKey, @options.response.id
 
     @fr.on 'afterSubmit', ->
       store.remove draftKey

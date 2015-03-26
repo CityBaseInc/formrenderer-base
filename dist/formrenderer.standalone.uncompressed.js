@@ -1440,8 +1440,8 @@
       draftKey = "project-" + this.fr.options.project_id + "-response-id";
       (_base = this.fr.options.response).id || (_base.id = store.get(draftKey));
       this.fr.on('afterSave', function() {
-        if (!this.fr.state.get('submitting')) {
-          return store.set(draftKey, this.fr.options.response.id);
+        if (!this.state.get('submitting')) {
+          return store.set(draftKey, this.options.response.id);
         }
       });
       this.fr.on('afterSubmit', function() {

@@ -7780,20 +7780,26 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     render: function() {
+      var _ref;
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
       this.$el.html(JST['partials/response_field'](this));
       rivets.bind(this.$el, {
         model: this.model
       });
-      this.form_renderer.trigger('viewRendered', this);
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
       return this;
     }
   });
 
   FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
     render: function() {
+      var _ref;
       this.$el.html(JST['partials/non_input_response_field'](this));
-      this.form_renderer.trigger('viewRendered', this);
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
       return this;
     }
   });

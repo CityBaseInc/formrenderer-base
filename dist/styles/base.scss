@@ -195,10 +195,10 @@
 .fr_text {
   font-size: $fr_font_small;
   &.size_medium {
-    font-size: $fr_font_large;
+    font-size: $fr_font_normal;
   }
   &.size_large {
-    font-size: $fr_font_x_large;
+    font-size: $fr_font_large;
   }
 }
 

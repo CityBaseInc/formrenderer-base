@@ -131,9 +131,9 @@
 .fr_text {
   font-size: 90%; }
   .fr_text.size_medium {
-    font-size: 125%; }
+    font-size: 100%; }
   .fr_text.size_large {
-    font-size: 150%; }
+    font-size: 125%; }
 
 .fr_response_field_number input[type=text] {
   width: 160px; }

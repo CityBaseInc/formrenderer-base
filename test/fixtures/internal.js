@@ -1020,11 +1020,7 @@ Fixtures.FormRendererOptions = {
   },
   SD: function() {
     return {
-      project_id: 1,
-      response: {
-        id: 'xxx',
-        responses: {}
-      }
+      project_id: 1
     };
   }
 };

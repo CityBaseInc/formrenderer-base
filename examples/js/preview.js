@@ -20,19 +20,8 @@ $('head').
 
 FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary'
 
-// Override save to just console.log the value
-FormRenderer.prototype.save = function(options){
-  console.log(this.getValue());
-  this.state.set({
-    hasChanges: false
-  });
-  if (options && options.success) {
-    options.success();
-  }
-};
-
 // Initialize form
-new FormRenderer($.extend(
+var fr = new FormRenderer($.extend(
   Fixtures.FormRendererOptions[$('#fixture').val()](),
   {
     screendoorBase: 'http://screendoor.dobt.dev',
@@ -41,3 +30,7 @@ new FormRenderer($.extend(
     }
   }
 ));
+
+fr.on('afterSave', function(){
+  console.log(this.getValue());
+});

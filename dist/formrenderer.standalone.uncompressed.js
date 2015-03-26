@@ -1337,11 +1337,28 @@
 }).call(this);
 
 (function() {
-  var BottomBarView,
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  BottomBarView = Backbone.View.extend({
+  FormRenderer.Plugins.BottomBar = (function(_super) {
+    __extends(BottomBar, _super);
+
+    function BottomBar() {
+      return BottomBar.__super__.constructor.apply(this, arguments);
+    }
+
+    BottomBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.bottomBar = new FormRenderer.Plugins.BottomBar.View({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
+    };
+
+    return BottomBar;
+
+  })(FormRenderer.Plugins.Base);
+
+  FormRenderer.Plugins.BottomBar.View = Backbone.View.extend({
     events: {
       'click [data-fr-previous-page]': function(e) {
         e.preventDefault();
@@ -1363,32 +1380,31 @@
     }
   });
 
-  FormRenderer.Plugins.BottomBar = (function(_super) {
-    __extends(BottomBar, _super);
-
-    function BottomBar() {
-      return BottomBar.__super__.constructor.apply(this, arguments);
-    }
-
-    BottomBar.prototype.afterFormLoad = function() {
-      this.fr.subviews.bottomBar = new BottomBarView({
-        form_renderer: this.fr
-      });
-      return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
-    };
-
-    return BottomBar;
-
-  })(FormRenderer.Plugins.Base);
-
 }).call(this);
 
 (function() {
-  var ErrorBarView,
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  ErrorBarView = Backbone.View.extend({
+  FormRenderer.Plugins.ErrorBar = (function(_super) {
+    __extends(ErrorBar, _super);
+
+    function ErrorBar() {
+      return ErrorBar.__super__.constructor.apply(this, arguments);
+    }
+
+    ErrorBar.prototype.afterFormLoad = function() {
+      this.fr.subviews.errorBar = new FormRenderer.Plugins.ErrorBar.View({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
+    };
+
+    return ErrorBar;
+
+  })(FormRenderer.Plugins.Base);
+
+  FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend({
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
@@ -1402,24 +1418,6 @@
       return this;
     }
   });
-
-  FormRenderer.Plugins.ErrorBar = (function(_super) {
-    __extends(ErrorBar, _super);
-
-    function ErrorBar() {
-      return ErrorBar.__super__.constructor.apply(this, arguments);
-    }
-
-    ErrorBar.prototype.afterFormLoad = function() {
-      this.fr.subviews.errorBar = new ErrorBarView({
-        form_renderer: this.fr
-      });
-      return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
-    };
-
-    return ErrorBar;
-
-  })(FormRenderer.Plugins.Base);
 
 }).call(this);
 

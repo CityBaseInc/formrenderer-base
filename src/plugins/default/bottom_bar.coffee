@@ -1,4 +1,9 @@
-BottomBarView = Backbone.View.extend
+class FormRenderer.Plugins.BottomBar extends FormRenderer.Plugins.Base
+  afterFormLoad: ->
+    @fr.subviews.bottomBar = new FormRenderer.Plugins.BottomBar.View(form_renderer: @fr)
+    @fr.$el.append @fr.subviews.bottomBar.render().el
+
+FormRenderer.Plugins.BottomBar.View = Backbone.View.extend
   events:
     'click [data-fr-previous-page]': (e) -> e.preventDefault(); @form_renderer.handlePreviousPage()
     'click [data-fr-next-page]': (e) -> e.preventDefault(); @form_renderer.handleNextPage()
@@ -16,8 +21,3 @@ BottomBarView = Backbone.View.extend
     @$el.html JST['plugins/bottom_bar'](@)
     @form_renderer.trigger 'viewRendered', @
     @
-
-class FormRenderer.Plugins.BottomBar extends FormRenderer.Plugins.Base
-  afterFormLoad: ->
-    @fr.subviews.bottomBar = new BottomBarView(form_renderer: @fr)
-    @fr.$el.append @fr.subviews.bottomBar.render().el

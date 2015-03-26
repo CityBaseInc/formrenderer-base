@@ -82,7 +82,10 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
   isConditional: ->
     @getConditions().length > 0
 
+  # Returns true if the new value is different than the old value
   calculateVisibility: ->
+    prevValue = !!@isVisible
+
     @isVisible = (
       # If we're not in a form_renderer context, it's visible
       if !@form_renderer
@@ -94,6 +97,8 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
         else
           true
     )
+
+    prevValue != @isVisible
 
   getSize: ->
     @get('field_options.size') || 'small'

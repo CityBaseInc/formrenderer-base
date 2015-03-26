@@ -478,10 +478,16 @@
       return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
     },
     runConditions: function(rf) {
+      var needsRender;
+      needsRender = false;
       _.each(this.conditionsForResponseField(rf), function(c) {
-        return c.parent.calculateVisibility();
+        if (c.parent.calculateVisibility()) {
+          return needsRender = true;
+        }
       });
-      return this.reflectConditions();
+      if (needsRender) {
+        return this.reflectConditions();
+      }
     },
     conditionsForResponseField: function(rf) {
       return _.filter(this.allConditions, function(condition) {
@@ -909,11 +915,14 @@
       return this.getConditions().length > 0;
     },
     calculateVisibility: function() {
-      return this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
+      var prevValue;
+      prevValue = !!this.isVisible;
+      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
         return function(c) {
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
+      return prevValue !== this.isVisible;
     },
     getSize: function() {
       return this.get('field_options.size') || 'small';

@@ -300,10 +300,13 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @subviews.pagination?.render()
 
   runConditions: (rf) ->
-    _.each @conditionsForResponseField(rf), (c) ->
-      c.parent.calculateVisibility()
+    needsRender = false
 
-    @reflectConditions()
+    _.each @conditionsForResponseField(rf), (c) ->
+      if c.parent.calculateVisibility()
+        needsRender = true
+
+    @reflectConditions() if needsRender
 
   conditionsForResponseField: (rf) ->
     _.filter @allConditions, (condition) ->

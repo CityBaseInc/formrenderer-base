@@ -11,6 +11,6 @@ FormRenderer.Validators.MinMaxValidator =
       parseFloat(model.get('value').replace(/,/g, ''))
 
     if min && value < min
-      'too_small'
+      'small'
     else if max && value > max
-      'too_large'
+      'large'

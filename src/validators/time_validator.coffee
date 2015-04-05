@@ -5,4 +5,4 @@ FormRenderer.Validators.TimeValidator =
     seconds = parseInt(model.get('value.seconds'), 10) || 0
 
     unless (1 <= hours <= 12) && (0 <= minutes <= 60) && (0 <= seconds <= 60)
-      'invalid_time'
+      'time'

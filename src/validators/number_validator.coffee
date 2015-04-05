@@ -6,4 +6,4 @@ FormRenderer.Validators.NumberValidator =
                  .replace(/^\+/, '')
 
     unless value.match(/^-?\d*(\.\d+)?$/)
-      'invalid_number'
+      'number'

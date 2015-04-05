@@ -32,12 +32,10 @@ FormRenderer.Views.Page = Backbone.View.extend
     for view in @views
       view.reflectConditions()
 
-  renderViews: ->
-    for view in @views
-      view.render()
-
   validate: ->
     for rf in _.filter(@models, ((rf) -> rf.input_field) )
       rf.validate()
 
-    @renderViews()
+  firstViewWithError: ->
+    _.find @views, (view) ->
+      view.model.errors.length > 0

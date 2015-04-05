@@ -55,7 +55,7 @@ describe 'Conditionals', ->
     ).to.equal(true)
 
   it 'does not trigger validations on hidden fields', ->
-    expect(@fr.validateAllPages()).to.equal(true)
+    expect(@fr.validate()).to.equal(true)
 
   describe 'pagination', ->
     it 'only shows visible pages', ->

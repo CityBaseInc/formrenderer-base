@@ -8,6 +8,6 @@ FormRenderer.Validators.MinMaxLengthValidator =
     count = FormRenderer.getLength model.getLengthValidationUnits(), model.get('value')
 
     if min && count < min
-      'too_short'
+      'short'
     else if max && count > max
-      'too_long'
+      'long'

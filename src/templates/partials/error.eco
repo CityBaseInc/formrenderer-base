@@ -1,5 +1,1 @@
-<% if @model.getError(): %>
-  <div class='fr_error'>
-    <%= @model.getError() %>
-  </div>
-<% end %>
+<div class='fr_error' data-rv-show='model.error' data-rv-text='model.error'></div>

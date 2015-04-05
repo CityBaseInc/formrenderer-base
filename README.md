@@ -73,11 +73,8 @@ Since `FormRenderer` inherits the `Backbone.View` prototype, you can listen for 
 | errorSaving | There was an error saving the form. | `(xhr)` |
 | afterSave | Triggered after the form has been saved. | |
 | afterSubmit | Triggered after the form has been submitted. | |
-| beforeValidate | Triggered before validation of a single page or the entire form. | |
-| beforeValidate:one | Triggered before the validation of a single page. | `(pageNumber)` |
-| beforeValidate:all | Triggered before the validation of the entire form. | |
-| afterValidate | Triggered after validation of a single page or the entire form. | |
-| afterValidate:one | Triggered after the validation of a single page. | `(pageNumber)` |
+| afterValidate | Triggered after validation of a single field or the entire form. | |
+| afterValidate:one | Triggered after the validation of a single field. | `(model)` |
 | afterValidate:all | Triggered after the validation of the entire form. | |
 | viewRendered | A Backbone view has been rendered. Useful if you need to change certain DOM nodes before they're rendered. | `(view)` |
 

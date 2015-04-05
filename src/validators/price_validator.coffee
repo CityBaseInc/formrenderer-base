@@ -6,4 +6,4 @@ FormRenderer.Validators.PriceValidator =
     values.push(model.get('value.cents')) if model.get('value.cents')
 
     unless _.every(values, (x) -> x.match(/^-?\d+$/))
-      'invalid_price'
+      'price'

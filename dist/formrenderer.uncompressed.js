@@ -6238,7 +6238,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
             }
           }
           if (_this.options.validateImmediately) {
-            _this.validateAllPages();
+            _this.validate();
           }
           _this.initConditions();
           _this.trigger('ready');
@@ -6292,7 +6292,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         }
         this.response_fields.add(model);
       }
-      return this.listenTo(this.response_fields, 'change', $.proxy(this._onChange, this));
+      return this.listenTo(this.response_fields, 'change:value change:value.*', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -6358,26 +6358,13 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         });
       }));
     },
-    activatePage: function(newPageNumber, opts) {
-      if (opts == null) {
-        opts = {};
-      }
-      if (!(opts.skipValidation || this.validateCurrentPage())) {
-        return;
-      }
+    activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
       this.subviews.pages[newPageNumber].show();
       return this.state.set('activePage', newPageNumber);
     },
-    validateCurrentPage: function() {
-      this.trigger('beforeValidate beforeValidate:one', this.state.get('activePage'));
-      this.subviews.pages[this.state.get('activePage')].validate();
-      this.trigger('afterValidate afterValidate:one', this.state.get('activePage'));
-      return this.isPageValid(this.state.get('activePage'));
-    },
-    validateAllPages: function() {
+    validate: function() {
       var page, _, _ref;
-      this.trigger('beforeValidate beforeValidate:all');
       _ref = this.subviews.pages;
       for (_ in _ref) {
         page = _ref[_];
@@ -6396,17 +6383,28 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return rf.input_field && rf.errors.length > 0;
       }));
     },
-    areAllPagesValid: function() {
+    focusFirstError: function() {
+      var page, view;
+      page = this.invalidPages()[0];
+      this.activatePage(page);
+      view = this.subviews.pages[page].firstViewWithError();
+      window.scrollTo(0, view.$el.offset().top);
+      return view.focus();
+    },
+    invalidPages: function() {
       var _i, _ref, _results;
-      return _.every((function() {
+      return _.filter((function() {
         _results = [];
         for (var _i = 1, _ref = this.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--){ _results.push(_i); }
         return _results;
       }).apply(this), (function(_this) {
         return function(x) {
-          return _this.isPageValid(x);
+          return _this.isPageValid(x) === false;
         };
       })(this));
+    },
+    areAllPagesValid: function() {
+      return this.invalidPages().length === 0;
     },
     visiblePages: function() {
       return _.tap([], (function(_this) {
@@ -6443,9 +6441,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       return this.visiblePages()[_.indexOf(this.visiblePages(), this.state.get('activePage')) + 1];
     },
     handlePreviousPage: function() {
-      return this.activatePage(this.previousPage(), {
-        skipValidation: true
-      });
+      return this.activatePage(this.previousPage());
     },
     handleNextPage: function() {
       if (this.isLastPage() || !this.options.enablePages) {
@@ -6551,7 +6547,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       if (opts == null) {
         opts = {};
       }
-      if (!(opts.skipValidation || this.options.skipValidation || this.validateAllPages())) {
+      if (!(opts.skipValidation || this.options.skipValidation || this.validate())) {
         return;
       }
       this.state.set('submitting', true);
@@ -6718,16 +6714,17 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 (function() {
   FormRenderer.errors = {
     blank: "This field can't be blank.",
-    invalid_date: 'Please enter a valid date.',
-    invalid_email: 'Please enter a valid email address.',
-    invalid_integer: 'Please enter a whole number.',
-    invalid_number: 'Please enter a valid number.',
-    invalid_price: 'Please enter a valid price.',
-    invalid_time: 'Please enter a valid time.',
-    too_large: 'Your answer is too large.',
-    too_long: 'Your answer is too long.',
-    too_short: 'Your answer is too short.',
-    too_small: 'Your answer is too small.'
+    identification: "Please enter your name and email address.",
+    date: 'Please enter a valid date.',
+    email: 'Please enter a valid email address.',
+    integer: 'Please enter a whole number.',
+    number: 'Please enter a valid number.',
+    price: 'Please enter a valid price.',
+    time: 'Please enter a valid time.',
+    large: 'Your answer is too large.',
+    long: 'Your answer is too long.',
+    short: 'Your answer is too short.',
+    small: 'Your answer is too small.'
   };
 
 }).call(this);
@@ -6806,7 +6803,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       day = parseInt(model.get('value.day'), 10) || 0;
       month = parseInt(model.get('value.month'), 10) || 0;
       if (!((year > 0) && ((0 < day && day <= 31)) && ((0 < month && month <= 12)))) {
-        return 'invalid_date';
+        return 'date';
       }
     }
   };
@@ -6817,7 +6814,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Validators.EmailValidator = {
     validate: function(model) {
       if (!model.get('value').match('@')) {
-        return 'invalid_email';
+        return 'email';
       }
     }
   };
@@ -6827,10 +6824,10 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 (function() {
   FormRenderer.Validators.IdentificationValidator = {
     validate: function(model) {
-      if (!model.get('value.name') || !model.get('value.email')) {
-        return 'blank';
+      if (!model.get('value.email') || !model.get('value.name')) {
+        return 'identification';
       } else if (!model.get('value.email').match('@')) {
-        return 'invalid_email';
+        return 'email';
       }
     }
   };
@@ -6844,7 +6841,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return;
       }
       if (!model.get('value').match(/^-?\d+$/)) {
-        return 'invalid_integer';
+        return 'integer';
       }
     }
   };
@@ -6862,9 +6859,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       max = parseInt(model.get('field_options.maxlength'), 10) || void 0;
       count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
       if (min && count < min) {
-        return 'too_short';
+        return 'short';
       } else if (max && count > max) {
-        return 'too_long';
+        return 'long';
       }
     }
   };
@@ -6882,9 +6879,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       max = model.get('field_options.max') && parseFloat(model.get('field_options.max'));
       value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
       if (min && value < min) {
-        return 'too_small';
+        return 'small';
       } else if (max && value > max) {
-        return 'too_large';
+        return 'large';
       }
     }
   };
@@ -6898,7 +6895,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       value = model.get('value');
       value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '');
       if (!value.match(/^-?\d*(\.\d+)?$/)) {
-        return 'invalid_number';
+        return 'number';
       }
     }
   };
@@ -6919,7 +6916,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);
       })) {
-        return 'invalid_price';
+        return 'price';
       }
     }
   };
@@ -6934,7 +6931,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       minutes = parseInt(model.get('value.minutes'), 10) || 0;
       seconds = parseInt(model.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 60)) && ((0 <= seconds && seconds <= 60)))) {
-        return 'invalid_time';
+        return 'time';
       }
     }
   };
@@ -6961,30 +6958,40 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         return this.listenTo(this, 'change:value', this.calculateLength);
       }
     },
-    validate: function() {
-      var errorKey, validator, validatorName, _ref, _results;
+    validate: function(opts) {
+      var errorIs, errorKey, errorWas, validator, validatorName, _ref;
+      if (opts == null) {
+        opts = {};
+      }
+      errorWas = this.get('error');
       this.errors = [];
       if (!this.isVisible) {
         return;
       }
       if (!this.hasValue()) {
-        if (this.get('required')) {
+        if (this.isRequired()) {
           this.errors.push(FormRenderer.errors.blank);
         }
-        return;
-      }
-      _ref = this.validators;
-      _results = [];
-      for (validatorName in _ref) {
-        validator = _ref[validatorName];
-        errorKey = validator.validate(this);
-        if (errorKey) {
-          _results.push(this.errors.push(FormRenderer.errors[errorKey]));
-        } else {
-          _results.push(void 0);
+      } else {
+        _ref = this.validators;
+        for (validatorName in _ref) {
+          validator = _ref[validatorName];
+          errorKey = validator.validate(this);
+          if (errorKey) {
+            this.errors.push(FormRenderer.errors[errorKey]);
+          }
         }
       }
-      return _results;
+      errorIs = this.getError();
+      if (opts.clearOnly && errorWas !== errorIs) {
+        this.set('error', null);
+      } else {
+        this.set('error', this.getError());
+      }
+      return this.form_renderer.trigger('afterValidate afterValidate:one', this);
+    },
+    isRequired: function() {
+      return this.get('required');
     },
     getError: function() {
       if (this.errors.length > 0) {
@@ -7078,8 +7085,11 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
     field_type: 'identification',
     validators: [FormRenderer.Validators.IdentificationValidator],
-    hasValue: function() {
+    isRequired: function() {
       return true;
+    },
+    hasValue: function() {
+      return this.hasValueHashKey(['email', 'name']);
     }
   });
 
@@ -7546,9 +7556,19 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   })(FormRenderer.Plugins.Base);
 
   FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend({
+    events: {
+      'click a': function() {
+        return this.form_renderer.focusFirstError();
+      }
+    },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
-      return this.listenTo(this.form_renderer, 'afterValidate', this.render);
+      this.listenTo(this.form_renderer, 'afterValidate:all', this.render);
+      return this.listenTo(this.form_renderer, 'afterValidate:one', function() {
+        if (this.form_renderer.areAllPagesValid()) {
+          return this.render();
+        }
+      });
     },
     render: function() {
       this.$el.html(JST['plugins/error_bar'](this));
@@ -7615,9 +7635,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
         page = parseInt(num, 10);
         if (this.fr.isPageVisible(page)) {
-          this.fr.activatePage(page, {
-            skipValidation: true
-          });
+          this.fr.activatePage(page);
         }
       }
       return this.fr.state.on('change:activePage', function(_, num) {
@@ -7714,26 +7732,22 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
       return _results;
     },
-    renderViews: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.render());
-      }
-      return _results;
-    },
     validate: function() {
-      var rf, _i, _len, _ref;
+      var rf, _i, _len, _ref, _results;
       _ref = _.filter(this.models, (function(rf) {
         return rf.input_field;
       }));
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        rf.validate();
+        _results.push(rf.validate());
       }
-      return this.renderViews();
+      return _results;
+    },
+    firstViewWithError: function() {
+      return _.find(this.views, function(view) {
+        return view.model.errors.length > 0;
+      });
     }
   });
 
@@ -7743,9 +7757,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Views.Pagination = Backbone.View.extend({
     events: {
       'click [data-activate-page]': function(e) {
-        return this.form_renderer.activatePage($(e.currentTarget).data('activate-page'), {
-          skipValidation: true
-        });
+        return this.form_renderer.activatePage($(e.currentTarget).data('activate-page'));
       }
     },
     initialize: function(options) {
@@ -7768,6 +7780,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
   FormRenderer.Views.ResponseField = Backbone.View.extend({
     field_type: void 0,
     className: 'fr_response_field',
+    events: {
+      'blur input, textarea': '_onBlur'
+    },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       if (this.form_renderer) {
@@ -7776,6 +7791,8 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
         this.showLabels = options.showLabels;
       }
       this.model = options.model;
+      this.listenTo(this.model, 'afterValidate', this.render);
+      this.listenTo(this.model, 'change', this._onInput);
       return this.$el.addClass("fr_response_field_" + this.field_type);
     },
     getDomId: function() {
@@ -7787,6 +7804,26 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       } else {
         return this.$el.hide();
       }
+    },
+    _onBlur: function(e) {
+      if (this.model.hasValue()) {
+        if (!(e.relatedTarget && ($.contains(this.el, e.relatedTarget) || this._inBottomBar(e.relatedTarget)))) {
+          return this.model.validate();
+        }
+      }
+    },
+    _inBottomBar: function(el) {
+      return this.form_renderer.subviews.bottomBar && $.contains(this.form_renderer.subviews.bottomBar.el, el);
+    },
+    _onInput: function() {
+      if (this.model.errors.length > 0) {
+        return this.model.validate({
+          clearOnly: true
+        });
+      }
+    },
+    focus: function() {
+      return this.$el.find(':input:eq(0)').focus();
     },
     render: function() {
       var _ref;
@@ -7815,9 +7852,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
     field_type: 'price',
-    events: {
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'blur [data-rv-input="model.value.cents"]': 'formatCents'
-    },
+    }),
     formatCents: function(e) {
       var cents;
       cents = $(e.target).val();
@@ -7829,10 +7866,10 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
     field_type: 'table',
-    events: {
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click .js-add-row': 'addRow',
       'click .js-remove-row': 'removeRow'
-    },
+    }),
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
@@ -7887,9 +7924,9 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
     field_type: 'file',
-    events: {
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click [data-fr-remove-file]': 'doRemove'
-    },
+    }),
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
@@ -7965,10 +8002,10 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 
   FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
     field_type: 'map_marker',
-    events: {
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click .fr_map_cover': 'enable',
       'click [data-fr-clear-map]': 'disable'
-    },
+    }),
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
@@ -9370,13 +9407,7 @@ window.JST["partials/error"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      if (this.model.getError()) {
-        _print(_safe('\n  <div class=\'fr_error\'>\n    '));
-        _print(this.model.getError());
-        _print(_safe('\n  </div>\n'));
-      }
-    
-      _print(_safe('\n'));
+      _print(_safe('<div class=\'fr_error\' data-rv-show=\'model.error\' data-rv-text=\'model.error\'></div>\n'));
     
     }).call(this);
     
@@ -9913,7 +9944,7 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>Your response has validation errors.</div>\n'));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has validation errors.\n    <a href=\'javascript:void(0)\'>Fix errors</a>\n  </div>\n'));
       }
     
       _print(_safe('\n'));

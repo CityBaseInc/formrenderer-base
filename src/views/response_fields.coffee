@@ -30,12 +30,19 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
   _onBlur: (e) ->
     if @model.hasValue()
       # Unless the new focus target is still inside of this field, or the user is changing pages
-      unless e.relatedTarget && ($.contains(@el, e.relatedTarget) || @_inBottomBar(e.relatedTarget))
-        @model.validate()
+      unless e.relatedTarget && $.contains(@el, e.relatedTarget)
+        # When changing pages, we need to defer until the page is changed
+        if @_isPageButton(e.relatedTarget)
+          deferredValidate = => @model.validate()
+          @form_renderer.state.once 'change:activePage', deferredValidate
+          # We also need to unbind the event if the entire form is validated
+          @form_renderer.once 'afterValidate:all', =>
+            @form_renderer.state.off null, deferredValidate
+        else
+          @model.validate()
 
-  _inBottomBar: (el) ->
-    @form_renderer.subviews.bottomBar &&
-    $.contains(@form_renderer.subviews.bottomBar.el, el)
+  _isPageButton: (el) ->
+    el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'))
 
   # Run validations on change if there are errors
   _onInput: ->

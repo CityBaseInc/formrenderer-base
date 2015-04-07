@@ -7806,14 +7806,29 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     _onBlur: function(e) {
+      var deferredValidate;
       if (this.model.hasValue()) {
-        if (!(e.relatedTarget && ($.contains(this.el, e.relatedTarget) || this._inBottomBar(e.relatedTarget)))) {
-          return this.model.validate();
+        if (!(e.relatedTarget && $.contains(this.el, e.relatedTarget))) {
+          if (this._isPageButton(e.relatedTarget)) {
+            deferredValidate = (function(_this) {
+              return function() {
+                return _this.model.validate();
+              };
+            })(this);
+            this.form_renderer.state.once('change:activePage', deferredValidate);
+            return this.form_renderer.once('afterValidate:all', (function(_this) {
+              return function() {
+                return _this.form_renderer.state.off(null, deferredValidate);
+              };
+            })(this));
+          } else {
+            return this.model.validate();
+          }
         }
       }
     },
-    _inBottomBar: function(el) {
-      return this.form_renderer.subviews.bottomBar && $.contains(this.form_renderer.subviews.bottomBar.el, el);
+    _isPageButton: function(el) {
+      return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
     },
     _onInput: function() {
       if (this.model.errors.length > 0) {

@@ -27,6 +27,20 @@ describe 'validations', ->
     $('[data-fr-next-page]').click()
     expect(@errorCount()).to.equal(12)
 
+  # https://github.com/dobtco/formrenderer-base/pull/58#issuecomment-90695440
+  describe 'the blur/next page edge case', ->
+    it 'does not validate when blurring with the "Next page" button', ->
+      fillIn 'Paragraph', 'asdf'
+      labelToInput('Paragraph').trigger(
+        $.Event('blur', relatedTarget: $('[data-fr-next-page]')[0])
+      )
+      expect(@errorCount()).to.equal(0)
+
+      # And once the page is changed, it validates
+      $('[data-fr-next-page]').click()
+      $('[data-fr-previous-page]').click()
+      expect(@errorCount()).to.equal(1)
+
   describe 'when validation errors exist', ->
     beforeEach ->
       $('[data-fr-next-page]').click()

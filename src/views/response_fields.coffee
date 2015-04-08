@@ -26,18 +26,14 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     else
       @$el.hide()
 
-  # Run validations on blur, only if there is present text
   _onBlur: (e) ->
+    # Only run if the value is present
     if @model.hasValue()
       # Unless the new focus target is still inside of this field, or the user is changing pages
       unless e.relatedTarget && $.contains(@el, e.relatedTarget)
-        # When changing pages, we need to defer until the page is changed
+        # When changing pages, we need to defer until after `mouseup`
         if @_isPageButton(e.relatedTarget)
-          deferredValidate = => @model.validate()
-          @form_renderer.state.once 'change:activePage', deferredValidate
-          # We also need to unbind the event if the entire form is validated
-          @form_renderer.once 'afterValidate:all', =>
-            @form_renderer.state.off null, deferredValidate
+          $(document).one 'mouseup', => @model.validate()
         else
           @model.validate()
 

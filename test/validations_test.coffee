@@ -35,10 +35,8 @@ describe 'validations', ->
         $.Event('blur', relatedTarget: $('[data-fr-next-page]')[0])
       )
       expect(@errorCount()).to.equal(0)
-
-      # And once the page is changed, it validates
-      $('[data-fr-next-page]').click()
-      $('[data-fr-previous-page]').click()
+      # After mouseup event...
+      $(document).trigger('mouseup')
       expect(@errorCount()).to.equal(1)
 
   describe 'when validation errors exist', ->

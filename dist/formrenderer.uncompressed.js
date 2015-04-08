@@ -7806,19 +7806,12 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       }
     },
     _onBlur: function(e) {
-      var deferredValidate;
       if (this.model.hasValue()) {
         if (!(e.relatedTarget && $.contains(this.el, e.relatedTarget))) {
           if (this._isPageButton(e.relatedTarget)) {
-            deferredValidate = (function(_this) {
+            return $(document).one('mouseup', (function(_this) {
               return function() {
                 return _this.model.validate();
-              };
-            })(this);
-            this.form_renderer.state.once('change:activePage', deferredValidate);
-            return this.form_renderer.once('afterValidate:all', (function(_this) {
-              return function() {
-                return _this.form_renderer.state.off(null, deferredValidate);
               };
             })(this));
           } else {

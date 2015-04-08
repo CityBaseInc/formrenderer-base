@@ -27,7 +27,7 @@ describe 'state', ->
 
     describe 'after change event is fired', ->
       before ->
-        @fr.response_fields.trigger('change')
+        @fr.response_fields.trigger('change:value')
 
       it 'has changes', ->
         expect(@fr.state.get('hasChanges')).to.equal(true)

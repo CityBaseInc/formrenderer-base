@@ -44,7 +44,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins
-      @validateAllPages() if @options.validateImmediately
+      @validate() if @options.validateImmediately
       @initConditions()
       @trigger 'ready'
       @options.onReady?()
@@ -86,7 +86,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
       @response_fields.add model
 
-    @listenTo @response_fields, 'change', $.proxy(@_onChange, @)
+    @listenTo @response_fields, 'change:value change:value.*', $.proxy(@_onChange, @)
 
   # Build pages, which contain the response fields views.
   initPages: ->
@@ -129,20 +129,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   ## Pages / Validation
 
-  activatePage: (newPageNumber, opts = {}) ->
-    return unless opts.skipValidation || @validateCurrentPage()
+  activatePage: (newPageNumber) ->
     @subviews.pages[@state.get('activePage')].hide()
     @subviews.pages[newPageNumber].show()
     @state.set 'activePage', newPageNumber
 
-  validateCurrentPage: ->
-    @trigger 'beforeValidate beforeValidate:one', @state.get('activePage')
-    @subviews.pages[@state.get('activePage')].validate()
-    @trigger 'afterValidate afterValidate:one', @state.get('activePage')
-    return @isPageValid(@state.get('activePage'))
-
-  validateAllPages: ->
-    @trigger 'beforeValidate beforeValidate:all'
+  validate: ->
     page.validate() for _, page of @subviews.pages
     @trigger 'afterValidate afterValidate:all'
     return @areAllPagesValid()
@@ -154,9 +146,19 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   isPageValid: (pageNumber) ->
     !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
 
+  focusFirstError: ->
+    page = @invalidPages()[0]
+    @activatePage page
+    view = @subviews.pages[page].firstViewWithError()
+    window.scrollTo(0, view.$el.offset().top)
+    view.focus()
+
+  invalidPages: ->
+    _.filter [1..@numPages], (x) =>
+      @isPageValid(x) == false
+
   areAllPagesValid: ->
-    _.every [1..@numPages], (x) =>
-      @isPageValid(x)
+    @invalidPages().length == 0
 
   visiblePages: ->
     _.tap [], (a) =>
@@ -178,7 +180,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @visiblePages()[_.indexOf(@visiblePages(), @state.get('activePage')) + 1]
 
   handlePreviousPage: ->
-    @activatePage @previousPage(), skipValidation: true
+    @activatePage @previousPage()
 
   handleNextPage: ->
     if @isLastPage() || !@options.enablePages
@@ -258,7 +260,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       cb()
 
   submit: (opts = {}) ->
-    return unless opts.skipValidation || @options.skipValidation || @validateAllPages()
+    return unless opts.skipValidation || @options.skipValidation || @validate()
     @state.set('submitting', true)
 
     @waitForRequests =>

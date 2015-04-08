@@ -179,6 +179,8 @@
   color: #fff;
   padding: 10px;
   margin-bottom: 20px; }
+  .fr_error_alert_bar a {
+    color: #fff; }
 
 .fr_pagination {
   list-style: none;

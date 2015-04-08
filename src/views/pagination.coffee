@@ -2,8 +2,7 @@ FormRenderer.Views.Pagination = Backbone.View.extend
   events:
     'click [data-activate-page]': (e) ->
       @form_renderer.activatePage(
-        $(e.currentTarget).data('activate-page'),
-        skipValidation: true
+        $(e.currentTarget).data('activate-page')
       )
 
   initialize: (options) ->

@@ -354,6 +354,18 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  KITCHEN_SINK_REQ: function(){
+    return {
+      project_id: 1,
+      response_fields: _.map(Fixtures.KITCHEN_SINK_FORM, function(rf){
+        return _.extend({}, rf, { required: true });
+      }),
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
+  },
   SIZES: function() {
     return {
       project_id: 1,
@@ -1024,6 +1036,13 @@ Fixtures.FormRendererOptions = {
     };
   }
 };
+
+Fixtures.FormRendererOptions.KITCHEN_IMMEDIATE_VALIDATIONS = function(){
+  return $.extend(
+    Fixtures.FormRendererOptions.KITCHEN_SINK_REQ(),
+    { validateImmediately: true }
+  );
+}
 
 Fixtures.FormRendererOptions.PAGE_STATE = function(){
   return $.extend(

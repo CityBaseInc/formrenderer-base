@@ -47,6 +47,7 @@ Of course, there's a lot more you can do...
 | enablePages | If the form contains multiple pages, render them. Set to `false` to render all response fields on the same page. | `true` |
 | validateImmediately | If the form is initialized with invalid data, immediately show errors. | `false` |
 | afterSubmit | Can be any of the following: **a function**, which will be called after submission, **a URL**, which the user will be sent to after submission, or **an Object** that looks like `{ method: 'page', html: 'Your custom HTML' }`, which will be rendered where the form once was. | Logs a sweet info message to the `console`. |
+| scrollToPadding | Formrenderer uses `window.scrollTo` in order to "jump" to the correct element on the page. Sometimes, you might have a fixed header that needs to be accounted for when calculating a scroll position. If so, you can set this value to the height of your fixed header. | `0` |
 | plugins | Enabled plugins (see below) | `['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']` |
 
 ## Plugins

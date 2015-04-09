@@ -22,6 +22,6 @@ FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend
     @form_renderer.trigger 'viewRendered', @
 
     unless @form_renderer.areAllPagesValid()
-      window.scrollTo(0, @$el.offset().top - 10)
+      window.scrollTo(0, @$el.offset().top - @form_renderer.options.scrollToPadding)
 
     @

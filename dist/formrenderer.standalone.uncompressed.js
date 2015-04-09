@@ -58,6 +58,7 @@
       skipValidation: void 0,
       saveParams: {},
       showLabels: false,
+      scrollToPadding: 0,
       plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']
     },
     constructor: function(options) {
@@ -256,7 +257,7 @@
       page = this.invalidPages()[0];
       this.activatePage(page);
       view = this.subviews.pages[page].firstViewWithError();
-      window.scrollTo(0, view.$el.offset().top);
+      window.scrollTo(0, view.$el.offset().top - this.options.scrollToPadding);
       return view.focus();
     },
     invalidPages: function() {
@@ -1447,7 +1448,7 @@
       this.$el.html(JST['plugins/error_bar'](this));
       this.form_renderer.trigger('viewRendered', this);
       if (!this.form_renderer.areAllPagesValid()) {
-        window.scrollTo(0, this.$el.offset().top - 10);
+        window.scrollTo(0, this.$el.offset().top - this.form_renderer.options.scrollToPadding);
       }
       return this;
     }

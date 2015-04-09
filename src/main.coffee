@@ -9,6 +9,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     skipValidation: undefined
     saveParams: {}
     showLabels: false
+    scrollToPadding: 0
     plugins: [
       'Autosave'
       'WarnBeforeUnload'
@@ -150,7 +151,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     page = @invalidPages()[0]
     @activatePage page
     view = @subviews.pages[page].firstViewWithError()
-    window.scrollTo(0, view.$el.offset().top)
+    window.scrollTo(0, view.$el.offset().top - @options.scrollToPadding)
     view.focus()
 
   invalidPages: ->

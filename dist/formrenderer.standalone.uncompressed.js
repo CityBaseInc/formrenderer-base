@@ -507,7 +507,12 @@
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
-  FormRenderer.FILE_TYPES = {};
+  FormRenderer.FILE_TYPES = {
+    images: ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'tif', 'tiff'],
+    videos: ['m4v', 'mp4', 'mov', 'mpg'],
+    audio: ['m4a', 'mp3', 'wav'],
+    docs: ['doc', 'docx', 'pdf', 'rtf', 'txt']
+  };
 
   FormRenderer.ADD_ROW_LINK = '+ Add another row';
 

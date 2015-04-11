@@ -52,6 +52,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @ # explicitly return self
 
+  corsSupported: ->
+    'withCredentials' of new XMLHttpRequest()
+
+  projectUrl: ->
+    "#{@options.screendoorBase}/projects/#{@options.project_id}/responses/new"
+
   # Fetch the details of this form from the Screendoor API
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
@@ -70,10 +76,17 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @options.response.responses ||= (data.response?.responses || {})
         cb()
       error: (xhr) =>
-        @$el.find('.fr_loading').text(
-          "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
-        )
-        @trigger 'errorSaving', xhr
+        if !@corsSupported()
+          @$el.find('.fr_loading').html("""
+            Sorry, your browser does not support this embedded form. Please visit
+            <a href='#{@projectUrl()}'>#{@projectUrl()}</a> to fill out
+            this form.
+          """)
+        else
+          @$el.find('.fr_loading').text(
+            "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
+          )
+          @trigger 'errorSaving', xhr
 
   # Create a collection for our response fields
   initResponseFields: ->

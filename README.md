@@ -83,6 +83,11 @@ Since `FormRenderer` inherits the `Backbone.View` prototype, you can listen for 
 
 If you're ready to dive into the full power of formrenderer and need some inspiration, take a look at some examples in the [wiki](https://github.com/dobtco/formrenderer-base/wiki).
 
+## Browser Support
+
+Most notably, formrenderer lacks support for IE9 and earlier due to its reliance on CORS requests to the Screendoor API. Users will see an error notifying them that they'll need to visit the form on Screendoor in order to respond.
+
+
 ## Developing
 
 You'll need [node and npm](http://nodejs.org/) installed.

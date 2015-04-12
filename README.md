@@ -95,8 +95,8 @@ You'll need [node and npm](http://nodejs.org/) installed.
 When you're ready to release a new version:
 
 1. `grunt test` to make sure everything is working
-2. `grunt release` to bump the patch version and create a new git tag, [etc](https://github.com/geddski/grunt-release)
-3. `grunt s3` to push to our s3 bucket
+2. `grunt release` to bump the patch version, create a new git tag, [etc](https://github.com/geddski/grunt-release), and push to s3
+3. `grunt release:autoupdated` to push to the `/0/` directory on s3.
 
 [status]: https://circleci-badges.herokuapp.com/dobtco/formrenderer-base/0532babff46c3141013e1c5aca8fd90d862affe9
 [bower]: https://img.shields.io/bower/v/formrenderer-base.svg

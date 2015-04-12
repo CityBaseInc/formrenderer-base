@@ -88,8 +88,8 @@ module.exports = (grunt) ->
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= distFolder %>/styles/main.scss'
-          '<%= distFolder %>/formrenderer.with_extras.uncompressed.css': '<%= distFolder %>/styles/with_extras.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': 'styles/main.scss'
+          '<%= distFolder %>/formrenderer.with_extras.uncompressed.css': 'styles/with_extras.scss'
 
     cssmin:
       dist:
@@ -111,7 +111,7 @@ module.exports = (grunt) ->
       build:
         files: [
           '<%= srcFolder %>/**/*.{coffee,eco}',
-          '<%= distFolder %>/styles/**/*.scss',
+          'styles/**/*.scss',
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]
@@ -138,7 +138,7 @@ module.exports = (grunt) ->
         cwd: "dist/"
         src: "**"
         dest: '<%= bower.version %>/'
-      autoupdate:
+      autoupdated:
         files: [
           src: 'dist/formrenderer.css'
           dest: '0/formrenderer.css'
@@ -172,4 +172,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']
   grunt.renameTask 'release', 'oldRelease'
-  grunt.registerTask 'release', ['oldRelease', 's3']
+  grunt.registerTask 'release', ['oldRelease', 's3:version']

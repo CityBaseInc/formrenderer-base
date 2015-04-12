@@ -134,10 +134,21 @@ module.exports = (grunt) ->
         bucket: 'formrenderer-base'
         access: 'public-read'
         gzip: true
-      build:
+      version:
         cwd: "dist/"
         src: "**"
         dest: '<%= bower.version %>/'
+      autoupdate:
+        files: [
+          src: 'dist/formrenderer.css'
+          dest: '0/formrenderer.css'
+        ,
+          src: 'dist/formrenderer.js'
+          dest: '0/formrenderer.js'
+        ]
+        options:
+          headers:
+            CacheControl: 600 # 10 minutes
 
     karma:
       main:
@@ -154,7 +165,11 @@ module.exports = (grunt) ->
       "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
     )
 
-  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all', 'coffee:extras', 'concat:all', 'concat:dist', 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all',
+                                 'coffee:extras', 'concat:all', 'concat:dist',
+                                 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']
+  grunt.renameTask 'release', 'oldRelease'
+  grunt.registerTask 'release', ['oldRelease', 's3']

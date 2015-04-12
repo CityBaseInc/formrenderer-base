@@ -15,13 +15,13 @@ This documentation will be focused on the former, while the latter should be con
 Include the formrenderer JS and CSS:
 
 ```html
-<script src='//d3q1ytufopwvkq.cloudfront.net/X.X.X/formrenderer.js'></script>
-<link href='//d3q1ytufopwvkq.cloudfront.net/X.X.X/formrenderer.css' rel='stylesheet' />
+<script src='//d3q1ytufopwvkq.cloudfront.net/0/formrenderer.js'></script>
+<link href='//d3q1ytufopwvkq.cloudfront.net/0/formrenderer.css' rel='stylesheet' />
 ```
 
-> Replace `X.X.X` with the current version number, which can be found in a badge at the top of this file.
+> **Note:** This file will automatically update with each new release of formrenderer. If you're going to customize anything, you should consider replacing "/0/" with a specific version number. (You can find the current version number in a badge at the top of this file.)
 
-The distributions in `dist/` contain all of the necessary dependencies **with the exception of jQuery**, which must be loaded before `formrenderer.js`.
+These files contain all of the necessary dependencies **with the exception of jQuery**, which must be loaded before `formrenderer.js`.
 
 Once you're ready to render a form:
 

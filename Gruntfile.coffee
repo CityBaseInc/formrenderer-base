@@ -125,7 +125,7 @@ module.exports = (grunt) ->
       options:
         file: 'bower.json'
         npm: false
-        afterRelease: ['s3']
+        afterReleaseTasks: ['s3:version']
 
     s3:
       options:
@@ -171,5 +171,3 @@ module.exports = (grunt) ->
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']
-  grunt.renameTask 'release', 'oldRelease'
-  grunt.registerTask 'release', ['oldRelease', 's3']

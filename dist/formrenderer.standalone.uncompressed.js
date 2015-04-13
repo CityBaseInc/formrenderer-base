@@ -116,6 +116,12 @@
       })(this));
       return this;
     },
+    corsSupported: function() {
+      return 'withCredentials' in new XMLHttpRequest();
+    },
+    projectUrl: function() {
+      return "" + this.options.screendoorBase + "/projects/" + this.options.project_id + "/responses/new";
+    },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
@@ -141,8 +147,12 @@
         error: (function(_this) {
           return function(xhr) {
             var _ref;
-            _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
-            return _this.trigger('errorSaving', xhr);
+            if (!_this.corsSupported()) {
+              return _this.$el.find('.fr_loading').html("Sorry, your browser does not support this embedded form. Please visit\n<a href='" + (_this.projectUrl()) + "'>" + (_this.projectUrl()) + "</a> to fill out\nthis form.");
+            } else {
+              _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
+              return _this.trigger('errorSaving', xhr);
+            }
           };
         })(this)
       });

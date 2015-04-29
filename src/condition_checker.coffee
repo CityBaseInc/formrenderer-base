@@ -1,6 +1,6 @@
 class FormRenderer.ConditionChecker
   constructor: (@form_renderer, @condition) ->
-    @value = @responseField().toText() || ''
+    @value = @responseField()?.toText() || ''
 
   method_eq: ->
     @value.toLowerCase() == @condition.value.toLowerCase()
@@ -27,6 +27,7 @@ class FormRenderer.ConditionChecker
     )
 
   isValid: ->
+    @responseField() &&
     _.all ['value', 'action', 'response_field_id', 'method'], (x) =>
       @condition[x]
 

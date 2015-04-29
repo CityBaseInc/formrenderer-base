@@ -6748,9 +6748,10 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 (function() {
   FormRenderer.ConditionChecker = (function() {
     function ConditionChecker(form_renderer, condition) {
+      var _ref;
       this.form_renderer = form_renderer;
       this.condition = condition;
-      this.value = this.responseField().toText() || '';
+      this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6782,7 +6783,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     };
 
     ConditionChecker.prototype.isValid = function() {
-      return _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
+      return this.responseField() && _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
         return function(x) {
           return _this.condition[x];
         };

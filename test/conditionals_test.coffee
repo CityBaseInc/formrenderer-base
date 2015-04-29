@@ -125,6 +125,16 @@ transformRawValue = (key, value) ->
       value
 
 describe 'ConditionChecker', ->
+  it 'handles an invalid condition', ->
+    conditional =
+      method: 'eq'
+      action: 'show'
+      value: 'asdf'
+      response_field_id: '99999'
+
+    checker = new FormRenderer.ConditionChecker(@fr, conditional)
+    expect(checker.isVisible()).to.eql(true)
+
   describe 'values', ->
     it 'gets the text value for each response field', ->
       for key, field of Fixtures.Conditional.values

@@ -125,7 +125,6 @@ module.exports = (grunt) ->
       options:
         file: 'bower.json'
         npm: false
-        afterReleaseTasks: ['s3:version']
 
     s3:
       options:

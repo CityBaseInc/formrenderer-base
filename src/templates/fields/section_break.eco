@@ -1,6 +1,9 @@
+<% formattedDescription = FormRenderer.formatHTML(@model.get('field_options.description')) %>
 <<%= @model.sizeToHeaderTag() %>><%= @model.get('label') %></<%= @model.sizeToHeaderTag() %>>
-<div class='fr_text size_<%= @model.getSize() %>'>
-  <%- FormRenderer.formatHTML(@model.get('field_options.description')) %>
-</div>
+<% if formattedDescription: %>
+  <div class='fr_text size_<%= @model.getSize() %>'>
+    <%- formattedDescription %>
+  </div>
+<% end %>
 
 <hr />

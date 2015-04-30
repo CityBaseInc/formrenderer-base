@@ -9004,7 +9004,11 @@ window.JST["fields/section_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<'));
+      var formattedDescription;
+    
+      formattedDescription = FormRenderer.formatHTML(this.model.get('field_options.description'));
+    
+      _print(_safe('\n<'));
     
       _print(this.model.sizeToHeaderTag());
     
@@ -9016,15 +9020,17 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(this.model.sizeToHeaderTag());
     
-      _print(_safe('>\n<div class=\'fr_text size_'));
+      _print(_safe('>\n'));
     
-      _print(this.model.getSize());
+      if (formattedDescription) {
+        _print(_safe('\n  <div class=\'fr_text size_'));
+        _print(this.model.getSize());
+        _print(_safe('\'>\n    '));
+        _print(_safe(formattedDescription));
+        _print(_safe('\n  </div>\n'));
+      }
     
-      _print(_safe('\'>\n  '));
-    
-      _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
-    
-      _print(_safe('\n</div>\n\n<hr />\n'));
+      _print(_safe('\n\n<hr />\n'));
     
     }).call(this);
     

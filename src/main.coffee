@@ -146,6 +146,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   activatePage: (newPageNumber) ->
     @subviews.pages[@state.get('activePage')].hide()
     @subviews.pages[newPageNumber].show()
+    window.scrollTo(0, @options.scrollToPadding)
     @state.set 'activePage', newPageNumber
 
   validate: ->

@@ -6372,6 +6372,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
       this.subviews.pages[newPageNumber].show();
+      window.scrollTo(0, this.options.scrollToPadding);
       return this.state.set('activePage', newPageNumber);
     },
     validate: function() {

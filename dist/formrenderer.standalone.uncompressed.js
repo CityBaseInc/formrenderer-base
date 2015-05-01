@@ -114,6 +114,9 @@
           return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
         };
       })(this));
+      this.$el.on('submit', function(e) {
+        return e.preventDefault();
+      });
       return this;
     },
     corsSupported: function() {

@@ -50,6 +50,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @trigger 'ready'
       @options.onReady?()
 
+    # If @$el is a <form>, make extra-sure that it can't be submitted natively
+    @$el.on 'submit', (e) ->
+      e.preventDefault()
+
     @ # explicitly return self
 
   corsSupported: ->

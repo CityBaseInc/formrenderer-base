@@ -21,6 +21,9 @@ Fixtures.Validation = {
       "dollars": ""
     }, {
       "cents": "",
+      "dollars": "$1"
+    }, {
+      "cents": "",
       "dollars": "1"
     }, {
       "cents": "",
@@ -37,6 +40,8 @@ Fixtures.Validation = {
     }],
     "invalid": [{
       "dollars": "a"
+    }, {
+      "dollars": "1$"
     }, {
       "dollars": "1a"
     }, {
@@ -102,8 +107,8 @@ Fixtures.Validation = {
     "invalid": ["a"]
   },
   "NUMBER": {
-    "invalid": ["a", "a123", "123+"],
-    "valid": ["123", "1,23", "1.23", "1-23", "+15107671234"]
+    "invalid": ["a", "a123", "123+","12 bizzles"],
+    "valid": ["123", "1,23", "1.23", "1-23", "+15107671234","12 beezles","12Beezles", "123 "]
   }
 }
 ;Fixtures.Conditional = {

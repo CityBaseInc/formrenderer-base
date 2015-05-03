@@ -42,7 +42,10 @@ describe 'EmailValidator', ->
 
 describe 'NumberValidator', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldNumber
+    @model = new FormRenderer.Models.ResponseFieldNumber(
+      field_options:
+        units: 'Beezles'
+    )
     @validator = FormRenderer.Validators.NumberValidator
 
   it 'validates properly', ->

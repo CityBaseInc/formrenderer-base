@@ -60,7 +60,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     'withCredentials' of new XMLHttpRequest()
 
   projectUrl: ->
-    "#{@options.screendoorBase}/projects/#{@options.project_id}/responses/new"
+    "#{@options.screendoorBase}/projects/#{@options.project_id}"
 
   # Fetch the details of this form from the Screendoor API
   loadFromServer: (cb) ->
@@ -83,7 +83,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         if !@corsSupported()
           @$el.find('.fr_loading').html("""
             Sorry, your browser does not support this embedded form. Please visit
-            <a href='#{@projectUrl()}'>#{@projectUrl()}</a> to fill out
+            <a href='#{@projectUrl()}?fr_not_supported=t'>#{@projectUrl()}</a> to fill out
             this form.
           """)
         else

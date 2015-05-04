@@ -59,12 +59,30 @@
       "month": "2",
       "day": "3",
       "year": "2011"
+    },{
+      "month": "2",
+      "day": "29",
+      "year": "2012"
     }],
     "invalid": [{
       "month": "2"
     }, {
       "month": "2",
       "day": "3"
+    },{
+      "month": "11",
+      "day": "31",
+      "year": "2015"
+    },
+    {
+      "month": "2",
+      "day": "29",
+      "year": "2013"
+    },
+    {
+      "month": "2",
+      "day": "29",
+      "year": "asdf"
     }]
   },
   "TIME": {

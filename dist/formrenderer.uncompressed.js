@@ -6915,9 +6915,13 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
 (function() {
   FormRenderer.Validators.NumberValidator = {
     validate: function(model) {
-      var value;
+      var units, value;
       value = model.get('value');
-      value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '');
+      units = model.get('field_options.units');
+      value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '').trim();
+      if (units) {
+        value = value.replace(new RegExp(units + '$', 'i'), '').trim();
+      }
       if (!value.match(/^-?\d*(\.\d+)?$/)) {
         return 'number';
       }
@@ -6932,7 +6936,7 @@ var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeo
       var values;
       values = [];
       if (model.get('value.dollars')) {
-        values.push(model.get('value.dollars').replace(/,/g, ''));
+        values.push(model.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
       }
       if (model.get('value.cents')) {
         values.push(model.get('value.cents'));

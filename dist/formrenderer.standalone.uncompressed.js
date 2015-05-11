@@ -1,48 +1,47 @@
-(function() {
-  var inputEvent;
+var $;
 
-  inputEvent = document.addEventListener ? 'input' : 'keyup';
+$ = jQuery;
 
-  rivets.binders.input = {
-    publishes: true,
-    routine: rivets.binders.value.routine,
-    bind: function(el) {
-      return $(el).bind("" + inputEvent + ".rivets", this.publish);
+rivets.inputEvent = document.addEventListener ? 'input' : 'keyup';
+
+rivets.binders.input = {
+  publishes: true,
+  routine: rivets.binders.value.routine,
+  bind: function(el) {
+    return $(el).bind("" + rivets.inputEvent + ".rivets", this.publish);
+  },
+  unbind: function(el) {
+    return $(el).unbind("" + rivets.inputEvent + ".rivets");
+  }
+};
+
+rivets.configure({
+  prefix: "rv",
+  adapter: {
+    subscribe: function(obj, keypath, callback) {
+      callback.wrapped = function(m, v) {
+        return callback(v);
+      };
+      return obj.on('change:' + keypath, callback.wrapped);
     },
-    unbind: function(el) {
-      return $(el).unbind("" + inputEvent + ".rivets");
-    }
-  };
-
-  rivets.configure({
-    prefix: "rv",
-    adapter: {
-      subscribe: function(obj, keypath, callback) {
-        callback.wrapped = function(m, v) {
-          return callback(v);
-        };
-        return obj.on('change:' + keypath, callback.wrapped);
-      },
-      unsubscribe: function(obj, keypath, callback) {
-        return obj.off('change:' + keypath, callback.wrapped);
-      },
-      read: function(obj, keypath) {
-        if (keypath === "cid") {
-          return obj.cid;
-        }
-        return obj.get(keypath);
-      },
-      publish: function(obj, keypath, value) {
-        if (obj.cid) {
-          return obj.set(keypath, value);
-        } else {
-          return obj[keypath] = value;
-        }
+    unsubscribe: function(obj, keypath, callback) {
+      return obj.off('change:' + keypath, callback.wrapped);
+    },
+    read: function(obj, keypath) {
+      if (keypath === "cid") {
+        return obj.cid;
+      }
+      return obj.get(keypath);
+    },
+    publish: function(obj, keypath, value) {
+      if (obj.cid) {
+        return obj.set(keypath, value);
+      } else {
+        return obj[keypath] = value;
       }
     }
-  });
-
-}).call(this);
+  }
+});
 
 (function() {
   var FormRenderer, autoLink, sanitizeConfig;

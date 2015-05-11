@@ -1,12 +1,18 @@
-inputEvent = if document.addEventListener then 'input' else 'keyup'
+## Ensure jQuery isn't in noConflict mode
+
+$ = jQuery
+
+## Rivets
+
+rivets.inputEvent = if document.addEventListener then 'input' else 'keyup'
 
 rivets.binders.input =
   publishes: true
   routine: rivets.binders.value.routine
   bind: (el) ->
-    $(el).bind("#{inputEvent}.rivets", this.publish)
+    $(el).bind("#{rivets.inputEvent}.rivets", this.publish)
   unbind: (el) ->
-    $(el).unbind("#{inputEvent}.rivets")
+    $(el).unbind("#{rivets.inputEvent}.rivets")
 
 rivets.configure
   prefix: "rv"

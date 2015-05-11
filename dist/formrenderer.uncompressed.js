@@ -6130,51 +6130,50 @@ var ISOCountryNames = {
   "ZW": "Zimbabwe",
 };
 var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
-(function() {
-  var inputEvent;
+var $;
 
-  inputEvent = document.addEventListener ? 'input' : 'keyup';
+$ = jQuery;
 
-  rivets.binders.input = {
-    publishes: true,
-    routine: rivets.binders.value.routine,
-    bind: function(el) {
-      return $(el).bind("" + inputEvent + ".rivets", this.publish);
+rivets.inputEvent = document.addEventListener ? 'input' : 'keyup';
+
+rivets.binders.input = {
+  publishes: true,
+  routine: rivets.binders.value.routine,
+  bind: function(el) {
+    return $(el).bind("" + rivets.inputEvent + ".rivets", this.publish);
+  },
+  unbind: function(el) {
+    return $(el).unbind("" + rivets.inputEvent + ".rivets");
+  }
+};
+
+rivets.configure({
+  prefix: "rv",
+  adapter: {
+    subscribe: function(obj, keypath, callback) {
+      callback.wrapped = function(m, v) {
+        return callback(v);
+      };
+      return obj.on('change:' + keypath, callback.wrapped);
     },
-    unbind: function(el) {
-      return $(el).unbind("" + inputEvent + ".rivets");
-    }
-  };
-
-  rivets.configure({
-    prefix: "rv",
-    adapter: {
-      subscribe: function(obj, keypath, callback) {
-        callback.wrapped = function(m, v) {
-          return callback(v);
-        };
-        return obj.on('change:' + keypath, callback.wrapped);
-      },
-      unsubscribe: function(obj, keypath, callback) {
-        return obj.off('change:' + keypath, callback.wrapped);
-      },
-      read: function(obj, keypath) {
-        if (keypath === "cid") {
-          return obj.cid;
-        }
-        return obj.get(keypath);
-      },
-      publish: function(obj, keypath, value) {
-        if (obj.cid) {
-          return obj.set(keypath, value);
-        } else {
-          return obj[keypath] = value;
-        }
+    unsubscribe: function(obj, keypath, callback) {
+      return obj.off('change:' + keypath, callback.wrapped);
+    },
+    read: function(obj, keypath) {
+      if (keypath === "cid") {
+        return obj.cid;
+      }
+      return obj.get(keypath);
+    },
+    publish: function(obj, keypath, value) {
+      if (obj.cid) {
+        return obj.set(keypath, value);
+      } else {
+        return obj[keypath] = value;
       }
     }
-  });
-
-}).call(this);
+  }
+});
 
 (function() {
   var FormRenderer, autoLink, sanitizeConfig;

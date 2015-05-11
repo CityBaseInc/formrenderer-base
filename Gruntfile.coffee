@@ -30,10 +30,16 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/templates.js': '<%= srcFolder %>/templates/**/*.eco'
 
     coffee:
+      config:
+        options:
+          bare: true
+        files:
+          '<%= compiledFolder %>/vendor_config.js': [
+            '<%= srcFolder %>/vendor_config.coffee'
+          ]
       all:
         files:
           '<%= compiledFolder %>/scripts.js': [
-            '<%= srcFolder %>/rivets_config.coffee'
             '<%= srcFolder %>/main.coffee'
             '<%= srcFolder %>/data.coffee'
             '<%= srcFolder %>/language.coffee'
@@ -54,7 +60,11 @@ module.exports = (grunt) ->
     concat:
       all:
         files:
-          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': '<%= compiledFolder %>/*.js'
+          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': [
+            '<%= compiledFolder %>/vendor_config.js'
+            '<%= compiledFolder %>/scripts.js'
+            '<%= compiledFolder %>/templates.js'
+          ]
           '<%= compiledFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/store.js/store.js'
@@ -164,9 +174,9 @@ module.exports = (grunt) ->
       "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
     )
 
-  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:all',
-                                 'coffee:extras', 'concat:all', 'concat:dist',
-                                 'sass:all', 'clean:compiled']
+  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:config',
+                                 'coffee:all', 'coffee:extras', 'concat:all',
+                                 'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']

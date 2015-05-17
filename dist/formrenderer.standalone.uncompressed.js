@@ -1,6 +1,8 @@
-var $;
+var $, _str;
 
 $ = jQuery;
+
+_str = _.str;
 
 rivets.inputEvent = document.addEventListener ? 'input' : 'keyup';
 
@@ -44,7 +46,7 @@ rivets.configure({
 });
 
 (function() {
-  var FormRenderer, autoLink, sanitizeConfig;
+  var FormRenderer, autoLink, sanitize, sanitizeConfig, simpleFormat;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -165,7 +167,7 @@ rivets.configure({
       _ref = this.options.response_fields;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_.str.classify(rf.field_type))](rf, {
+        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, {
           form_renderer: this
         });
         if (model.input_field) {
@@ -563,9 +565,9 @@ rivets.configure({
 
   FormRenderer.getLength = function(wordsOrChars, val) {
     if (wordsOrChars === 'words') {
-      return (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+      return (_str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
     } else {
-      return _.str.trim(val).replace(/\s/g, '').length;
+      return _str.trim(val).replace(/\s/g, '').length;
     }
   };
 
@@ -579,8 +581,35 @@ rivets.configure({
 
   sanitizeConfig.attributes.a.push('target');
 
+  sanitize = function(str, config) {
+    var c, e, n, o, s;
+    try {
+      n = document.createElement('div');
+      n.innerHTML = str;
+      s = new Sanitize(config || Sanitize.Config.RELAXED);
+      c = s.clean_node(n);
+      o = document.createElement('div');
+      o.appendChild(c.cloneNode(true));
+      return o.innerHTML;
+    } catch (_error) {
+      e = _error;
+      return _.escape(str);
+    }
+  };
+
+  simpleFormat = function(str) {
+    if (str == null) {
+      str = '';
+    }
+    return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
+  };
+
   FormRenderer.formatHTML = function(unsafeHTML) {
-    return _.sanitize(autoLink(_.simpleFormat(unsafeHTML || '', false)), sanitizeConfig);
+    return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
+  };
+
+  FormRenderer.toBoolean = function(str) {
+    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
   };
 
 }).call(this);
@@ -1054,7 +1083,7 @@ rivets.configure({
             _results = [];
             for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
               option = _ref1[i];
-              _results.push(h["" + i] = _.toBoolean(option.checked));
+              _results.push(h["" + i] = FormRenderer.toBoolean(option.checked));
             }
             return _results;
           }
@@ -1103,7 +1132,7 @@ rivets.configure({
       if (x != null ? x.selected : void 0) {
         return this.set('value', x);
       } else if ((defaultOption = _.find(this.getOptions(), (function(option) {
-        return _.toBoolean(option.checked);
+        return FormRenderer.toBoolean(option.checked);
       })))) {
         return this.set('value.selected', defaultOption.label);
       } else {
@@ -1136,7 +1165,7 @@ rivets.configure({
         return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       } else {
         checkedOption = _.find(this.getOptions(), (function(option) {
-          return _.toBoolean(option.checked);
+          return FormRenderer.toBoolean(option.checked);
         }));
         if (!checkedOption && !this.get('field_options.include_blank_option')) {
           checkedOption = _.first(this.getOptions());
@@ -1336,7 +1365,7 @@ rivets.configure({
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_.str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
+    FormRenderer.Models["ResponseField" + (_str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
       field_type: i
     });
   }
@@ -1585,7 +1614,7 @@ rivets.configure({
       _ref = this.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        view = new FormRenderer.Views["ResponseField" + (_.str.classify(rf.field_type))]({
+        view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.field_type))]({
           model: rf,
           form_renderer: this.form_renderer
         });
@@ -1986,7 +2015,7 @@ rivets.configure({
   _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
-    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.ResponseField.extend({
+    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
       field_type: i
     });
   }
@@ -1994,7 +2023,7 @@ rivets.configure({
   _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
     i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_.str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
+    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
       field_type: i
     });
   }
@@ -2443,7 +2472,7 @@ window.JST["fields/file"] = function(__obj) {
         _print(_safe('\n         />\n  <span class=\'js-upload-status\'></span>\n\n  '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n    <div class=\'fr_description\'>\n      We\'ll accept '));
-          _print(_.str.toSentence(exts));
+          _print(_str.toSentence(exts));
           _print(_safe('\n    </div>\n  '));
         }
         _print(_safe('\n'));

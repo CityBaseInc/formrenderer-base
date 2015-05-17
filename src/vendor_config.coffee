@@ -2,6 +2,10 @@
 
 $ = jQuery
 
+# Alias underscore.string in case underscore gets overriden...
+
+_str = _.str
+
 ## Rivets
 
 rivets.inputEvent = if document.addEventListener then 'input' else 'keyup'

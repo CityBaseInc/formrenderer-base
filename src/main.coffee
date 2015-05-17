@@ -97,7 +97,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @response_fields = new Backbone.Collection
 
     for rf in @options.response_fields
-      model = new FormRenderer.Models["ResponseField#{_.str.classify(rf.field_type)}"](
+      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](
         rf,
         form_renderer: @
       )
@@ -413,9 +413,9 @@ FormRenderer.initMap = (el) ->
 
 FormRenderer.getLength = (wordsOrChars, val) ->
   if wordsOrChars == 'words'
-    (_.str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
+    (_str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
   else
-    _.str.trim(val).replace(/\s/g, '').length
+    _str.trim(val).replace(/\s/g, '').length
 
 autoLink = (str) ->
   pattern = ///
@@ -432,10 +432,28 @@ autoLink = (str) ->
 sanitizeConfig = _.extend {}, Sanitize.Config.RELAXED
 sanitizeConfig.attributes.a.push 'target'
 
+sanitize = (str, config) ->
+  try
+    n = document.createElement('div')
+    n.innerHTML = str
+    s = new Sanitize(config or Sanitize.Config.RELAXED)
+    c = s.clean_node(n)
+    o = document.createElement('div')
+    o.appendChild c.cloneNode(true)
+    return o.innerHTML
+  catch e
+    return _.escape(str)
+
+simpleFormat = (str = '') ->
+  "#{str}".replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
+
 FormRenderer.formatHTML = (unsafeHTML) ->
-  _.sanitize(
+  sanitize(
     autoLink(
-      _.simpleFormat(unsafeHTML || '', false)
+      simpleFormat(unsafeHTML)
     ),
     sanitizeConfig
   )
+
+FormRenderer.toBoolean = (str) ->
+  _.contains ['True', 'Yes', 'true', '1', 1, 'yes', true], str

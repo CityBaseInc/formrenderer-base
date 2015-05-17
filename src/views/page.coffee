@@ -10,7 +10,7 @@ FormRenderer.Views.Page = Backbone.View.extend
     @hide()
 
     for rf in @models
-      view = new FormRenderer.Views["ResponseField#{_.str.classify(rf.field_type)}"](
+      view = new FormRenderer.Views["ResponseField#{_str.classify(rf.field_type)}"](
         model: rf,
         form_renderer: @form_renderer
       )

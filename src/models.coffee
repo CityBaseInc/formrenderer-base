@@ -178,7 +178,7 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
           h['other'] = x.Other
       else
         for option, i in @getOptions()
-          h["#{i}"] = _.toBoolean(option.checked)
+          h["#{i}"] = FormRenderer.toBoolean(option.checked)
 
   # transform true to 'on'
   getValue: ->
@@ -213,7 +213,7 @@ FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.exten
   setExistingValue: (x) ->
     if x?.selected
       @set 'value', x
-    else if (defaultOption = _.find @getOptions(), ( (option) -> _.toBoolean(option.checked) ))
+    else if (defaultOption = _.find @getOptions(), ( (option) -> FormRenderer.toBoolean(option.checked) ))
       @set 'value.selected', defaultOption.label
     else
       @set 'value', {}
@@ -235,7 +235,7 @@ FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.ex
     if x?
       FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     else
-      checkedOption = _.find @getOptions(), ( (option) -> _.toBoolean(option.checked) )
+      checkedOption = _.find @getOptions(), ( (option) -> FormRenderer.toBoolean(option.checked) )
 
       if !checkedOption && !@get('field_options.include_blank_option')
         checkedOption = _.first @getOptions()
@@ -378,5 +378,5 @@ FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.ext
   field_type: 'website'
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  FormRenderer.Models["ResponseField#{_.str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
+  FormRenderer.Models["ResponseField#{_str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
     field_type: i

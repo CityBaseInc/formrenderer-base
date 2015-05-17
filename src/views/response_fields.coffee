@@ -243,9 +243,9 @@ FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.exten
     @listenTo @model, 'change:value.country', @render
 
 for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price')
-  FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
+  FormRenderer.Views["ResponseField#{_str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
-  FormRenderer.Views["ResponseField#{_.str.classify(i)}"] = FormRenderer.Views.NonInputResponseField.extend
+  FormRenderer.Views["ResponseField#{_str.classify(i)}"] = FormRenderer.Views.NonInputResponseField.extend
     field_type: i

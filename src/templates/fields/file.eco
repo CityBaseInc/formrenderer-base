@@ -13,7 +13,7 @@
 
   <% if (exts = @model.getAcceptedExtensions()): %>
     <div class='fr_description'>
-      We'll accept <%= _.str.toSentence(exts) %>
+      We'll accept <%= _str.toSentence(exts) %>
     </div>
   <% end %>
 <% end %>

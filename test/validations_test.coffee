@@ -1,3 +1,10 @@
+# Need to set a timeout here since we use a timeout in our codebase
+expectErrorCount = (num, done) ->
+  setTimeout =>
+    expect(@errorCount()).to.equal(num)
+    done()
+  , 2
+
 before ->
   $('body').html('<div data-formrenderer />')
 
@@ -8,28 +15,31 @@ describe 'validations', ->
   beforeEach ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK_REQ()
 
-  it 'does not validate an input on change', ->
+  it 'does not validate an input on change', (done) ->
     fillIn 'Paragraph', 'asdf'
-    expect(@errorCount()).to.equal(0)
+    expectErrorCount.call(@, 0, done)
 
-  it 'validates an input on blur', ->
+  it 'validates an input on blur', (done) ->
     fillIn 'Paragraph', 'asdf'
     labelToInput('Paragraph').trigger('blur')
-    expect(@errorCount()).to.equal(1)
+    expectErrorCount.call(@, 1, done)
 
-  it 'does not validate when changing pages', ->
+  it 'does not validate when changing pages', (done) ->
     expect(activePageNumber()).to.equal(1)
     $('[data-fr-next-page]').click()
-    expect(activePageNumber()).to.equal(2)
+    setTimeout =>
+      expect(activePageNumber()).to.equal(2)
+      done()
+    , 2
 
-  it 'validates when submitting', ->
+  it 'validates when submitting', (done) ->
     $('[data-fr-next-page]').click()
     $('[data-fr-next-page]').click()
-    expect(@errorCount()).to.equal(12)
+    expectErrorCount.call(@, 12, done)
 
   # https://github.com/dobtco/formrenderer-base/pull/58#issuecomment-90695440
   describe 'the blur/next page edge case', ->
-    it 'does not validate when blurring with the "Next page" button', ->
+    it 'does not validate when blurring with the "Next page" button', (done) ->
       fillIn 'Paragraph', 'asdf'
       labelToInput('Paragraph').trigger(
         $.Event('blur', relatedTarget: $('[data-fr-next-page]')[0])
@@ -37,7 +47,7 @@ describe 'validations', ->
       expect(@errorCount()).to.equal(0)
       # After mouseup event...
       $(document).trigger('mouseup')
-      expect(@errorCount()).to.equal(1)
+      expectErrorCount.call(@, 1, done)
 
   describe 'when validation errors exist', ->
     beforeEach ->
@@ -48,11 +58,11 @@ describe 'validations', ->
       choose('Choice #1')
       expect(@errorCount()).to.equal(11)
 
-    it 'does not show a new error until the user blurs the input', ->
+    it 'does not show a new error until the user blurs the input', (done) ->
       fillIn('Date', 'as')
       expect(@errorCount()).to.equal(11)
       labelToInput('Date').trigger('blur')
-      expect(@errorCount()).to.equal(12)
+      expectErrorCount.call(@, 12, done)
 
     it 'navigates to the first error when the user clicks "fix errors"', ->
       expect(activePageNumber()).to.equal(2)

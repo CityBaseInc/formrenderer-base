@@ -2066,7 +2066,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label">Address</label>\n      <input type="text"\n             id="'));
+        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label">Address</label>\n      <input type="text"\n             id="'));
         _print(this.getDomId());
         _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
@@ -2074,7 +2074,7 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_input_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
+        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">City</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          State\n        '));
         } else if (this.model.get('value.country') === 'CA') {
@@ -2101,7 +2101,7 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('\n    </div>\n  </div>\n'));
       }
     
-      _print(_safe('\n\n<div class=\'fr_input_grid\'>\n  '));
+      _print(_safe('\n\n<div class=\'fr_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
@@ -2290,7 +2290,7 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
@@ -2528,7 +2528,7 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_full lap_fr_half\'>\n    <label for=\''));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.getDomId());
     
@@ -2536,7 +2536,7 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_full lap_fr_half\'>\n    <label for=\''));
+      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.getDomId());
     
@@ -2789,7 +2789,7 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">Dollars</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">Dollars</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     
@@ -3150,7 +3150,7 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_input_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
     
       _print(this.getDomId());
     

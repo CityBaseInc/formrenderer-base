@@ -34,44 +34,42 @@
 .fr_response_field {
   margin-bottom: 20px; }
 
-.fr_input_grid {
-  margin: 0 0 0 -10px;
-  font-size: 0;
-  width: 100%; }
-  .fr_input_grid > div {
-    display: inline-block;
-    padding-left: 10px;
-    vertical-align: top;
-    font-size: initial;
-    position: relative; }
-    .fr_input_grid > div.has_sub_label {
+.fr_grid {
+  margin-left: -10px; }
+  .fr_grid:before, .fr_grid:after {
+    display: table;
+    content: " "; }
+  .fr_grid:after {
+    clear: both; }
+  .fr_grid > div {
+    float: left;
+    position: relative;
+    padding-left: 10px; }
+    .fr_grid > div.has_sub_label {
       margin-top: 1.75em; }
-    .fr_input_grid > div input,
-    .fr_input_grid > div select {
+    .fr_grid > div input,
+    .fr_grid > div select {
       width: 100%; }
-  .fr_input_grid .fr_spacer {
-    vertical-align: bottom; }
+  .fr_grid .fr_spacer {
+    margin-top: 1.75em; }
 
 .fr_sub_label {
   line-height: 1.5em;
   color: #888;
   position: absolute;
-  top: -1.5em;
-  left: 10px; }
+  top: -1.5em; }
 
-.fr_full {
+.fr_full,
+.fr_half {
   width: 100%; }
 
-.fr_half {
-  width: 50%; }
-
 @media screen and (min-width: 640px) {
-  .lap_fr_half {
+  .fr_half {
     width: 50%; } }
 .fr_response_field_identification > label {
   display: none; }
 @media screen and (max-width: 639px) {
-  .fr_response_field_identification .fr_full:first-child {
+  .fr_response_field_identification .fr_half:first-child {
     margin-bottom: 20px; } }
 
 .fr_map_wrapper {

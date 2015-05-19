@@ -21,3 +21,13 @@ $fr_medium_width: 300px !default;
 $fr_medium_height: 100px !default;
 $fr_large_width: 100% !default;
 $fr_large_height: 240px !default;
+
+@mixin cf() {
+  &:before, &:after {
+    display: table;
+    content: " ";
+  }
+  &:after {
+    clear: both;
+  }
+}

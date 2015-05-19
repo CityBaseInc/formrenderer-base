@@ -57,18 +57,15 @@
 }
 
 // Add the "grid" for address, date, time, and price fields
-.fr_input_grid {
-  margin: 0 0 0 (-$fr_gutter_width);
-  font-size: 0;
-  width: 100%;
+.fr_grid {
+  @include cf;
+  margin-left: -10px;
 
   // A grid item
   > div {
-    display: inline-block;
-    padding-left: $fr_gutter_width;
-    vertical-align: top;
-    font-size: initial;
+    float: left;
     position: relative;
+    padding-left: 10px;
 
     // make room for fr_sub_label
     &.has_sub_label {
@@ -84,7 +81,7 @@
 
   // A piece of content in between grid inputs
   .fr_spacer {
-    vertical-align: bottom;
+    margin-top: $fr_sub_label_line_height + 0.25em;
   }
 }
 
@@ -94,15 +91,15 @@
   color: $fr_muted_color;
   position: absolute;
   top: -$fr_sub_label_line_height;
-  left: $fr_gutter_width;
 }
 
-// Grid item widths
-.fr_full { width: 100%; }
-.fr_half { width: 50%; }
+.fr_full,
+.fr_half {
+  width: 100%;
+}
 
 @media screen and (min-width: 640px) {
-  .lap_fr_half { width: 50%; }
+  .fr_half { width: 50%; }
 }
 
 .fr_response_field_identification {
@@ -114,7 +111,7 @@
 
   // And ensure that they stack properly on mobile
   @media screen and (max-width: 639px) {
-    .fr_full:first-child {
+    .fr_half:first-child {
       margin-bottom: $fr_rhythm;
     }
   }

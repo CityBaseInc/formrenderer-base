@@ -5,7 +5,8 @@ class FormRenderer.Plugins.ErrorBar extends FormRenderer.Plugins.Base
 
 FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend
   events:
-    'click a': ->
+    'click a': (e) ->
+      e.preventDefault()
       @form_renderer.focusFirstError()
 
   initialize: (options) ->

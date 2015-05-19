@@ -1481,7 +1481,8 @@ rivets.configure({
 
   FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend({
     events: {
-      'click a': function() {
+      'click a': function(e) {
+        e.preventDefault();
         return this.form_renderer.focusFirstError();
       }
     },
@@ -1681,6 +1682,7 @@ rivets.configure({
   FormRenderer.Views.Pagination = Backbone.View.extend({
     events: {
       'click [data-activate-page]': function(e) {
+        e.preventDefault();
         return this.form_renderer.activatePage($(e.currentTarget).data('activate-page'));
       }
     },
@@ -1819,12 +1821,14 @@ rivets.configure({
       min = Math.max(1, this.model.minRows());
       return rowIdx > (min - 1);
     },
-    addRow: function() {
+    addRow: function(e) {
+      e.preventDefault();
       this.model.numRows++;
       return this.render();
     },
     removeRow: function(e) {
       var col, idx, modelVal, newVal, vals;
+      e.preventDefault();
       idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
       modelVal = this.model.get('value');
       newVal = {};
@@ -1992,7 +1996,8 @@ rivets.configure({
       this.$cover.hide();
       return this._onMove();
     },
-    disable: function() {
+    disable: function(e) {
+      e.preventDefault();
       this.map.removeLayer(this.marker);
       this.$el.find('.fr_map_cover').show();
       return this.model.set({
@@ -2584,7 +2589,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'javascript:void(0);\'>Clear</a>\n  </div>\n</div>\n'));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    Click to set location\n  </div>\n\n  <div class=\'fr_map_toolbar fr_cf\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>N/A</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'#\'>Clear</a>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -3018,7 +3023,7 @@ window.JST["fields/table"] = function(__obj) {
         }
         _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
         if (this.canRemoveRow(i)) {
-          _print(_safe('\n            <a class=\'js-remove-row\' href=\'javascript:void(0)\'>\n              '));
+          _print(_safe('\n            <a class=\'js-remove-row\' href=\'#\'>\n              '));
           _print(_safe(FormRenderer.REMOVE_ROW_LINK));
           _print(_safe('\n            </a>\n          '));
         }
@@ -3042,7 +3047,7 @@ window.JST["fields/table"] = function(__obj) {
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    <a class=\'js-add-row\' href=\'javascript:void(0)\'>\n      '));
+        _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
         _print(_safe(FormRenderer.ADD_ROW_LINK));
         _print(_safe('\n    </a>\n  '));
       }
@@ -3671,7 +3676,7 @@ window.JST["partials/pagination"] = function(__obj) {
           } else {
             _print(_safe('\n          <a data-activate-page="'));
             _print(i);
-            _print(_safe('" href=\'javascript:void(0)\'>\n            '));
+            _print(_safe('" href=\'#\'>\n            '));
             _print(idx + 1);
             _print(_safe('\n          </a>\n        '));
           }
@@ -3882,7 +3887,7 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has validation errors.\n    <a href=\'javascript:void(0)\'>Fix errors</a>\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has validation errors.\n    <a href=\'#\'>Fix errors</a>\n  </div>\n'));
       }
     
       _print(_safe('\n'));

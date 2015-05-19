@@ -6,7 +6,7 @@
           <span><%= idx + 1 %></span>
         </li>
         <% else: %>
-          <a data-activate-page="<%= i %>" href='javascript:void(0)'>
+          <a data-activate-page="<%= i %>" href='#'>
             <%= idx + 1 %>
           </a>
         <% end %>

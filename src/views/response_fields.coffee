@@ -96,12 +96,14 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     min = Math.max(1, @model.minRows())
     rowIdx > (min - 1)
 
-  addRow: ->
+  addRow: (e) ->
+    e.preventDefault()
     @model.numRows++
     @render()
 
   # Loop through rows, decreasing index for rows above the current row
   removeRow: (e) ->
+    e.preventDefault()
     idx = $(e.currentTarget).closest('[data-row-index]').data('row-index')
     modelVal = @model.get('value')
     newVal = {}
@@ -231,7 +233,8 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @$cover.hide()
     @_onMove()
 
-  disable: ->
+  disable: (e) ->
+    e.preventDefault()
     @map.removeLayer(@marker)
     @$el.find('.fr_map_cover').show()
     @model.set value: { lat: '', lng: '' }

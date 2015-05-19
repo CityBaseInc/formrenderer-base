@@ -1,7 +1,7 @@
 <% format = @model.get('field_options.address_format') %>
 
 <% unless format in ['city_state', 'city_state_zip', 'country']: %>
-  <div class='fr_input_grid'>
+  <div class='fr_grid'>
     <div class='fr_full has_sub_label'>
       <label class="fr_sub_label">Address</label>
       <input type="text"
@@ -12,7 +12,7 @@
 <% end %>
 
 <% unless format in ['country']: %>
-  <div class='fr_input_grid'>
+  <div class='fr_grid'>
     <div class='fr_half has_sub_label'>
       <label class="fr_sub_label">City</label>
       <input type="text"
@@ -44,7 +44,7 @@
   </div>
 <% end %>
 
-<div class='fr_input_grid'>
+<div class='fr_grid'>
   <% unless format in ['city_state', 'country']: %>
     <div class='fr_half has_sub_label'>
       <label class="fr_sub_label">

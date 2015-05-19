@@ -1,4 +1,4 @@
-<div class='fr_input_grid'>
+<div class='fr_grid'>
   <div class='has_sub_label'>
     <label class="fr_sub_label">MM</label>
     <input type="text"

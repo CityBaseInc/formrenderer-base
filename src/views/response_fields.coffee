@@ -29,13 +29,17 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
   _onBlur: (e) ->
     # Only run if the value is present
     if @model.hasValue()
-      # Unless the new focus target is still inside of this field, or the user is changing pages
-      unless e.relatedTarget && $.contains(@el, e.relatedTarget)
-        # When changing pages, we need to defer until after `mouseup`
-        if @_isPageButton(e.relatedTarget)
-          $(document).one 'mouseup', => @model.validate()
-        else
-          @model.validate()
+      # This is the best method we have for getting the new active element.
+      # See http://stackoverflow.com/questions/121499/
+      setTimeout =>
+        newActive = document.activeElement
+
+        unless $.contains(@el, newActive)
+          if @_isPageButton(newActive)
+            $(document).one 'mouseup', => @model.validate()
+          else
+            @model.validate()
+      , 1
 
   _isPageButton: (el) ->
     el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'))

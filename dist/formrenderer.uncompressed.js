@@ -7829,17 +7829,21 @@ rivets.configure({
     },
     _onBlur: function(e) {
       if (this.model.hasValue()) {
-        if (!(e.relatedTarget && $.contains(this.el, e.relatedTarget))) {
-          if (this._isPageButton(e.relatedTarget)) {
-            return $(document).one('mouseup', (function(_this) {
-              return function() {
+        return setTimeout((function(_this) {
+          return function() {
+            var newActive;
+            newActive = document.activeElement;
+            if (!$.contains(_this.el, newActive)) {
+              if (_this._isPageButton(newActive)) {
+                return $(document).one('mouseup', function() {
+                  return _this.model.validate();
+                });
+              } else {
                 return _this.model.validate();
-              };
-            })(this));
-          } else {
-            return this.model.validate();
-          }
-        }
+              }
+            }
+          };
+        })(this), 1);
       }
     },
     _isPageButton: function(el) {

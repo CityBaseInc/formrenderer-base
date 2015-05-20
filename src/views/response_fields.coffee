@@ -2,7 +2,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
   field_type: undefined
   className: 'fr_response_field'
   events:
-    'blur input, textarea': '_onBlur'
+    'blur input, textarea, select': '_onBlur'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer

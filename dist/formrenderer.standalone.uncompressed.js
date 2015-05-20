@@ -1707,7 +1707,7 @@ rivets.configure({
     field_type: void 0,
     className: 'fr_response_field',
     events: {
-      'blur input, textarea': '_onBlur'
+      'blur input, textarea, select': '_onBlur'
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;

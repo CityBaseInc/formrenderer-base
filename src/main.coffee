@@ -90,7 +90,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           @$el.find('.fr_loading').text(
             "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
           )
-          @trigger 'errorSaving', xhr
 
   # Create a collection for our response fields
   initResponseFields: ->
@@ -258,16 +257,18 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         submit: if options.submit then true else undefined
       }
       complete: =>
+        @trigger 'afterSave'
         @requests -= 1
         @isSaving = false
-        @trigger 'afterSave'
       success: (data) =>
+        @trigger 'afterSave:success'
         @state.set
           hasChanges: @changedWhileSaving
           hasServerErrors: false
         @options.response.id = data.response_id
         options.cb?.apply(@, arguments)
       error: =>
+        @trigger 'afterSave:error'
         @state.set
           hasServerErrors: true
           submitting: false

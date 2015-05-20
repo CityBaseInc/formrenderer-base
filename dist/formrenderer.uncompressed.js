@@ -6250,8 +6250,7 @@ rivets.configure({
             if (!_this.corsSupported()) {
               return _this.$el.find('.fr_loading').html("Sorry, your browser does not support this embedded form. Please visit\n<a href='" + (_this.projectUrl()) + "?fr_not_supported=t'>" + (_this.projectUrl()) + "</a> to fill out\nthis form.");
             } else {
-              _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
-              return _this.trigger('errorSaving', xhr);
+              return _this.$el.find('.fr_loading').text("Error loading form: \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
             }
           };
         })(this)
@@ -6486,14 +6485,15 @@ rivets.configure({
         }),
         complete: (function(_this) {
           return function() {
+            _this.trigger('afterSave');
             _this.requests -= 1;
-            _this.isSaving = false;
-            return _this.trigger('afterSave');
+            return _this.isSaving = false;
           };
         })(this),
         success: (function(_this) {
           return function(data) {
             var _ref;
+            _this.trigger('afterSave:success');
             _this.state.set({
               hasChanges: _this.changedWhileSaving,
               hasServerErrors: false
@@ -6504,6 +6504,7 @@ rivets.configure({
         })(this),
         error: (function(_this) {
           return function() {
+            _this.trigger('afterSave:error');
             return _this.state.set({
               hasServerErrors: true,
               submitting: false
@@ -7491,14 +7492,43 @@ rivets.configure({
       return Autosave.__super__.constructor.apply(this, arguments);
     }
 
+    Autosave.prototype.defaultInterval = 5000;
+
+    Autosave.prototype.maxInterval = 40000;
+
     Autosave.prototype.afterFormLoad = function() {
-      return setInterval((function(_this) {
+      this.interval = this.defaultInterval;
+      this.fr.on('afterSave:error', (function(_this) {
         return function() {
-          if (_this.fr.state.get('hasChanges')) {
-            return _this.fr.save();
-          }
+          _this.interval = Math.min(_this.interval * 2, _this.maxInterval);
+          _this.clearTimeout();
+          return _this.setTimeout();
         };
-      })(this), 5000);
+      })(this));
+      this.fr.on('afterSave:success', (function(_this) {
+        return function() {
+          _this.interval = _this.defaultInterval;
+          _this.clearTimeout();
+          return _this.setTimeout();
+        };
+      })(this));
+      return this.setTimeout();
+    };
+
+    Autosave.prototype.autosave = function() {
+      if (this.fr.state.get('hasChanges')) {
+        this.fr.save();
+      }
+      return this.setTimeout();
+    };
+
+    Autosave.prototype.setTimeout = function() {
+      console.log("setting timeout for " + this.interval + "...");
+      return setTimeout((function(_this) {
+        return function() {
+          return _this.autosave();
+        };
+      })(this), this.interval);
     };
 
     return Autosave;

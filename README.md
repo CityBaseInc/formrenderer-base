@@ -99,10 +99,11 @@ You'll need [node and npm](http://nodejs.org/) installed.
 
 When you're ready to release a new version:
 
-1. `grunt test` to make sure everything is working
-2. `grunt release` to bump the patch version &amp; create a new git tag
-3. `grunt s3:version` to push to the version-specific s3 distribution
-4. `grunt s3:autoupdate` to push to the auto-updated s3 distribution
+1. Bump the version number inside of `version.coffee` and `bower.json`
+2. `grunt all && grunt test` to build with the updated version number (and make sure everything is working!)
+3. `git tag VERSION && git push origin --tags`
+4. `grunt s3:version` to push to the version-specific s3 distribution
+5. `grunt s3:autoupdate` to push to the auto-updated s3 distribution
 
 [status]: https://circleci-badges.herokuapp.com/dobtco/formrenderer-base/0532babff46c3141013e1c5aca8fd90d862affe9
 [bower]: https://img.shields.io/bower/v/formrenderer-base.svg

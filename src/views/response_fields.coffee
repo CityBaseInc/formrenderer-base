@@ -170,6 +170,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         response_field_id: @model.get('id')
         replace_file_id: @model.get('value.id')
         v: 0
+      headers: @form_renderer.serverHeaders
       dataType: 'json'
       uploadProgress: (_, __, ___, percentComplete) =>
         @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")

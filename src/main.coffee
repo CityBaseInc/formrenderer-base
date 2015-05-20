@@ -30,6 +30,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @$el.data 'formrenderer-instance', @
     @subviews = { pages: {} }
 
+    @serverHeaders =
+      'X-FR-Version': FormRenderer.VERSION
+      'X-FR-URL': document.URL
+
     @plugins = _.map @options.plugins, (pluginName) =>
       new FormRenderer.Plugins[pluginName](@)
 
@@ -74,6 +78,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         project_id: @options.project_id
         response_id: @options.response.id
         v: 0
+      headers: @serverHeaders
       success: (data) =>
         @options.response.id = data.response_id
         @options.response_fields ||= data.project.response_fields
@@ -257,6 +262,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         raw_responses: @getValue(),
         submit: if options.submit then true else undefined
       }
+      headers: @serverHeaders
       complete: =>
         @requests -= 1
         @isSaving = false

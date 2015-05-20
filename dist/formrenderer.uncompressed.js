@@ -6171,6 +6171,10 @@ rivets.configure({
       this.subviews = {
         pages: {}
       };
+      this.serverHeaders = {
+        'X-FR-Version': FormRenderer.VERSION,
+        'X-FR-URL': document.URL
+      };
       this.plugins = _.map(this.options.plugins, (function(_this) {
         return function(pluginName) {
           return new FormRenderer.Plugins[pluginName](_this);
@@ -6235,6 +6239,7 @@ rivets.configure({
           response_id: this.options.response.id,
           v: 0
         },
+        headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
             var _base, _base1, _ref;
@@ -6484,6 +6489,7 @@ rivets.configure({
           raw_responses: this.getValue(),
           submit: options.submit ? true : void 0
         }),
+        headers: this.serverHeaders,
         complete: (function(_this) {
           return function() {
             _this.requests -= 1;
@@ -6707,6 +6713,11 @@ rivets.configure({
   FormRenderer.toBoolean = function(str) {
     return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
   };
+
+}).call(this);
+
+(function() {
+  FormRenderer.VERSION = '0.6.0';
 
 }).call(this);
 
@@ -7999,6 +8010,7 @@ rivets.configure({
           replace_file_id: this.model.get('value.id'),
           v: 0
         },
+        headers: this.form_renderer.serverHeaders,
         dataType: 'json',
         uploadProgress: (function(_this) {
           return function(_, __, ___, percentComplete) {

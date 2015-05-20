@@ -13,12 +13,16 @@
     <% for i in [0..(@model.numRows - 1)]: %>
       <tr data-row-index="<%= i %>">
         <% for column, j in @model.getColumns(): %>
-          <td>
-            <textarea <% if @model.getPresetValue(column.label, i): %>disabled<% end %>
-                      data-col='<%= j %>'
-                      data-row='<%= i %>'
-                      data-rv-input='model.value.<%= j %>.<%= i %>'
-                      rows='1' />
+          <% if @model.getPresetValue(column.label, i): %>
+            <td class='fr_table_preset'>
+              <span data-rv-text='model.value.<%= j %>.<%= i %>'></span>
+          <% else: %>
+            <td>
+              <textarea data-col='<%= j %>'
+                        data-row='<%= i %>'
+                        data-rv-input='model.value.<%= j %>.<%= i %>'
+                        rows='1' />
+          <% end %>
           </td>
         <% end %>
 

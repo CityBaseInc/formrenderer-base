@@ -9107,19 +9107,25 @@ window.JST["fields/table"] = function(__obj) {
         _ref2 = this.model.getColumns();
         for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
           column = _ref2[j];
-          _print(_safe('\n          <td>\n            <textarea '));
+          _print(_safe('\n          '));
           if (this.model.getPresetValue(column.label, i)) {
-            _print(_safe('disabled'));
+            _print(_safe('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.'));
+            _print(j);
+            _print(_safe('.'));
+            _print(i);
+            _print(_safe('\'></span>\n          '));
+          } else {
+            _print(_safe('\n            <td>\n              <textarea data-col=\''));
+            _print(j);
+            _print(_safe('\'\n                        data-row=\''));
+            _print(i);
+            _print(_safe('\'\n                        data-rv-input=\'model.value.'));
+            _print(j);
+            _print(_safe('.'));
+            _print(i);
+            _print(_safe('\'\n                        rows=\'1\' />\n          '));
           }
-          _print(_safe('\n                      data-col=\''));
-          _print(j);
-          _print(_safe('\'\n                      data-row=\''));
-          _print(i);
-          _print(_safe('\'\n                      data-rv-input=\'model.value.'));
-          _print(j);
-          _print(_safe('.'));
-          _print(i);
-          _print(_safe('\'\n                      rows=\'1\' />\n          </td>\n        '));
+          _print(_safe('\n          </td>\n        '));
         }
         _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
         if (this.canRemoveRow(i)) {

@@ -1030,6 +1030,46 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  TABLE: function() {
+    return {
+      project_id: 1,
+      response_fields: [
+        {
+          id: 49,
+          form_id: 5,
+          label: "Table",
+          field_options: {
+            columns: [
+              {
+                label: "column one"
+              }, {
+                label: "column two"
+              }, {
+                label: "column three"
+              }, {
+                label: "column four"
+              }
+            ],
+            minrows: "4",
+            preset_values: {
+              "column one": ['123', '456', '', 'This is more preset row value goodness']
+            }
+          },
+          required: false,
+          blind: false,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.524Z",
+          updated_at: "2014-08-22T20:50:37.524Z",
+          field_type: "table",
+          cid: null
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
+  },
   SD: function() {
     return {
       project_id: 1

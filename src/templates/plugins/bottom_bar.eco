@@ -1,4 +1,4 @@
-<div class='fr_bottom fr_cf'>
+<div class='fr_bottom'>
   <% if 'Autosave' in @form_renderer.options.plugins: %>
     <div class='fr_bottom_l'>
       <% if @form_renderer.state.get('hasServerErrors'): %>

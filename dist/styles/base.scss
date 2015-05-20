@@ -3,17 +3,6 @@
   box-sizing: border-box;
 }
 
-.fr_cf {
-  &:before,
-  &:after {
-    display: table;
-    content: " ";
-  }
-  &:after {
-    clear: both;
-  }
-}
-
 // Loading style
 .fr_loading {
   color: $fr_muted_color;
@@ -131,6 +120,7 @@
   cursor: pointer;
 }
 .fr_map_toolbar {
+  @include cf;
   height: $fr_map_toolbar_height;
   line-height: $fr_map_toolbar_height;
   padding: 0 5px;

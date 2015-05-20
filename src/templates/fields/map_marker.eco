@@ -5,7 +5,7 @@
     Click to set location
   </div>
 
-  <div class='fr_map_toolbar fr_cf'>
+  <div class='fr_map_toolbar'>
     <div class='fr_map_coord'>
       <strong>Coordinates:</strong>
       <span data-rv-show='model.value.lat'>

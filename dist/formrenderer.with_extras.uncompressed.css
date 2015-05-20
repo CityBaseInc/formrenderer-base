@@ -1,12 +1,6 @@
 .fr_form * {
   box-sizing: border-box; }
 
-.fr_cf:before, .fr_cf:after {
-  display: table;
-  content: " "; }
-.fr_cf:after {
-  clear: both; }
-
 .fr_loading {
   color: #888;
   font-size: 125%;
@@ -92,6 +86,11 @@
   padding: 0 5px;
   background-color: #eee;
   font-size: 90%; }
+  .fr_map_toolbar:before, .fr_map_toolbar:after {
+    display: table;
+    content: " "; }
+  .fr_map_toolbar:after {
+    clear: both; }
   .fr_map_toolbar .fr_map_coord {
     float: left; }
   .fr_map_toolbar a {

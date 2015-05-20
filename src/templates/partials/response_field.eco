@@ -1,5 +1,5 @@
 <%- JST["partials/label"](@) %>
-<div class='fr_field_wrapper fr_cf'>
+<div class='fr_field_wrapper'>
   <%- JST["fields/#{@field_type}"](@) %>
 </div>
 

@@ -3,16 +3,6 @@
   box-sizing: border-box;
 }
 
-// Utilities
-.fr_clear {
-  display: block;
-  visibility: hidden;
-  clear: both;
-  overflow: hidden;
-  width: 0;
-  height: 0;
-}
-
 .fr_cf {
   &:before,
   &:after {
@@ -154,6 +144,16 @@
   }
 }
 
+.fr_field_wrapper {
+  position: relative;
+}
+
+.fr_length_counter {
+  padding: 1px 4px;
+  background: rgba(0, 0, 0, 0.1);
+  font-size: $fr_font_small;
+}
+
 // Input sizes
 
 .fr_response_field_text {
@@ -227,16 +227,4 @@
   padding: 0;
   text-align: center;
   vertical-align: middle;
-}
-
-// Min / max option
-
-.fr_min_max {
-  position: relative;
-}
-
-.fr_min_max_counter {
-  position: absolute;
-  right: 0;
-  top: 0;
 }

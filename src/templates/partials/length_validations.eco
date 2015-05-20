@@ -8,6 +8,6 @@
       Enter less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
     <% end %>
 
-    <span class='fr_min_max_counter'> <b data-rv-text='model.currentLength'></b> <%= @model.getLengthValidationUnits() %></span>
+    <%- JST["partials/length_counter"](@) %>
   </div>
 <% end %>

@@ -15,6 +15,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @model = options.model
     @listenTo @model, 'afterValidate', @render
     @listenTo @model, 'change', @_onInput
+    @listenTo @model, 'change:currentLength', @auditLength
     @$el.addClass "fr_response_field_#{@field_type}"
 
   getDomId: ->
@@ -52,10 +53,24 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
   focus: ->
     @$el.find(':input:eq(0)').focus()
 
+  auditLength: ->
+    return unless @model.hasLengthValidations()
+    return unless ($lc = @$el.find('.fr_length_counter'))[0]
+
+    validation = FormRenderer.Validators.MinMaxLengthValidator.validate(@model)
+
+    if validation == 'short'
+      $lc.addClass('is_short').removeClass('is_long')
+    else if validation == 'long'
+      $lc.addClass('is_long').removeClass('is_short')
+    else
+      $lc.removeClass('is_short is_long')
+
   render: ->
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
     @$el.html JST['partials/response_field'](@)
     rivets.bind @$el, { model: @model }
+    @auditLength()
     @form_renderer?.trigger 'viewRendered', @
     @
 

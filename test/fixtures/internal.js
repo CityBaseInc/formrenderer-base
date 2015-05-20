@@ -376,7 +376,6 @@ Fixtures.FormRendererOptions = {
           label: "Text (small)",
           field_options: {
             size: 'small',
-            minlength: 10,
             maxlength: 20
           },
           required: true,
@@ -394,7 +393,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             size: 'medium',
             minlength: 10,
-            maxlength: 20
           },
           required: true,
           blind: true,
@@ -428,7 +426,8 @@ Fixtures.FormRendererOptions = {
           field_options: {
             size: 'small',
             minlength: 10,
-            maxlength: 20
+            maxlength: 20,
+            min_max_length_units: 'words'
           },
           required: true,
           blind: true,

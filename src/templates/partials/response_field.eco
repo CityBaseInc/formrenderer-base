@@ -1,7 +1,7 @@
 <%- JST["partials/label"](@) %>
-<%- JST["fields/#{@field_type}"](@) %>
-
-<div class='fr_clear' />
+<div class='fr_field_wrapper fr_cf'>
+  <%- JST["fields/#{@field_type}"](@) %>
+</div>
 
 <%- JST["partials/length_validations"](@) %>
 <%- JST["partials/min_max_validations"](@) %>

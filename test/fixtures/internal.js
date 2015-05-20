@@ -375,7 +375,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "Text (small)",
           field_options: {
-            size: 'small'
+            size: 'small',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,
@@ -390,7 +392,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "Text (medium)",
           field_options: {
-            size: 'medium'
+            size: 'medium',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,
@@ -405,7 +409,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "Text (large)",
           field_options: {
-            size: 'large'
+            size: 'large',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,
@@ -420,7 +426,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "paragraph (small)",
           field_options: {
-            size: 'small'
+            size: 'small',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,
@@ -435,7 +443,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "paragraph (medium)",
           field_options: {
-            size: 'medium'
+            size: 'medium',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,
@@ -450,7 +460,9 @@ Fixtures.FormRendererOptions = {
           form_id: 5,
           label: "paragraph (large)",
           field_options: {
-            size: 'large'
+            size: 'large',
+            minlength: 10,
+            maxlength: 20
           },
           required: true,
           blind: true,

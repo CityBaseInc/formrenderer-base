@@ -3461,6 +3461,51 @@ window.JST["partials/label"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["partials/length_counter"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<span class=\'fr_length_counter\' data-rv-text=\'model.currentLength\'></span>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["partials/length_validations"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -3505,9 +3550,9 @@ window.JST["partials/length_validations"] = function(__obj) {
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n    '));
         }
-        _print(_safe('\n\n    <span class=\'fr_min_max_counter\'> <b data-rv-text=\'model.currentLength\'></b> '));
-        _print(this.model.getLengthValidationUnits());
-        _print(_safe('</span>\n  </div>\n'));
+        _print(_safe('\n\n    '));
+        _print(_safe(JST["partials/length_counter"](this)));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -3742,11 +3787,11 @@ window.JST["partials/response_field"] = function(__obj) {
     (function() {
       _print(_safe(JST["partials/label"](this)));
     
-      _print(_safe('\n'));
+      _print(_safe('\n<div class=\'fr_field_wrapper fr_cf\'>\n  '));
     
       _print(_safe(JST["fields/" + this.field_type](this)));
     
-      _print(_safe('\n\n<div class=\'fr_clear\' />\n\n'));
+      _print(_safe('\n</div>\n\n'));
     
       _print(_safe(JST["partials/length_validations"](this)));
     

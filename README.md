@@ -101,7 +101,7 @@ When you're ready to release a new version:
 
 1. Bump the version number inside of `version.coffee` and `bower.json`
 2. `grunt all && grunt test` to build with the updated version number (and make sure everything is working!)
-3. `git commit -am 'release VERSION' && git tag VERSION && git push origin --tags`
+3. `git commit -am 'release VERSION' && git tag VERSION && git push origin master --tags`
 4. `grunt s3:version` to push to the version-specific s3 distribution
 5. `grunt s3:autoupdate` to push to the auto-updated s3 distribution
 

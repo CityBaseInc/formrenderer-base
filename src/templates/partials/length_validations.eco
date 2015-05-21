@@ -1,12 +1,14 @@
 <% if @model.hasLengthValidations(): %>
   <div class='fr_min_max'>
-    <% if @model.get('field_options.minlength') && @model.get('field_options.maxlength'): %>
-      Enter between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
-    <% else if @model.get('field_options.minlength'): %>
-      Enter more than <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
-    <% else if @model.get('field_options.maxlength'): %>
-      Enter less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
-    <% end %>
+    <span class='fr_min_max_guide'>
+      <% if @model.get('field_options.minlength') && @model.get('field_options.maxlength'): %>
+        Enter between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
+      <% else if @model.get('field_options.minlength'): %>
+        Enter more than <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
+      <% else if @model.get('field_options.maxlength'): %>
+        Enter less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
+      <% end %>
+    </span>
 
     <%- JST["partials/length_counter"](@) %>
   </div>

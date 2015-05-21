@@ -7826,6 +7826,7 @@ rivets.configure({
       this.model = options.model;
       this.listenTo(this.model, 'afterValidate', this.render);
       this.listenTo(this.model, 'change', this._onInput);
+      this.listenTo(this.model, 'change:currentLength', this.auditLength);
       return this.$el.addClass("fr_response_field_" + this.field_type);
     },
     getDomId: function() {
@@ -7870,6 +7871,23 @@ rivets.configure({
     focus: function() {
       return this.$el.find(':input:eq(0)').focus();
     },
+    auditLength: function() {
+      var $lc, validation;
+      if (!this.model.hasLengthValidations()) {
+        return;
+      }
+      if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
+        return;
+      }
+      validation = FormRenderer.Validators.MinMaxLengthValidator.validate(this.model);
+      if (validation === 'short') {
+        return $lc.addClass('is_short').removeClass('is_long');
+      } else if (validation === 'long') {
+        return $lc.addClass('is_long').removeClass('is_short');
+      } else {
+        return $lc.removeClass('is_short is_long');
+      }
+    },
     render: function() {
       var _ref;
       this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
@@ -7877,6 +7895,7 @@ rivets.configure({
       rivets.bind(this.$el, {
         model: this.model
       });
+      this.auditLength();
       if ((_ref = this.form_renderer) != null) {
         _ref.trigger('viewRendered', this);
       }
@@ -9636,29 +9655,29 @@ window.JST["partials/length_validations"] = function(__obj) {
     };
     (function() {
       if (this.model.hasLengthValidations()) {
-        _print(_safe('\n  <div class=\'fr_min_max\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
         if (this.model.get('field_options.minlength') && this.model.get('field_options.maxlength')) {
-          _print(_safe('\n      Enter between '));
+          _print(_safe('\n        Enter between '));
           _print(this.model.get('field_options.minlength'));
           _print(_safe(' and '));
           _print(this.model.get('field_options.maxlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
-          _print(_safe('.\n    '));
+          _print(_safe('.\n      '));
         } else if (this.model.get('field_options.minlength')) {
-          _print(_safe('\n      Enter more than '));
+          _print(_safe('\n        Enter more than '));
           _print(this.model.get('field_options.minlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
-          _print(_safe('.\n    '));
+          _print(_safe('.\n      '));
         } else if (this.model.get('field_options.maxlength')) {
-          _print(_safe('\n      Enter less than '));
+          _print(_safe('\n        Enter less than '));
           _print(this.model.get('field_options.maxlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
-          _print(_safe('.\n    '));
+          _print(_safe('.\n      '));
         }
-        _print(_safe('\n\n    '));
+        _print(_safe('\n    </span>\n\n    '));
         _print(_safe(JST["partials/length_counter"](this)));
         _print(_safe('\n  </div>\n'));
       }

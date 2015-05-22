@@ -513,7 +513,7 @@ rivets.configure({
       });
     },
     isConditionalVisible: function(condition) {
-      return new FormRenderer.ConditionChecker(this, condition).isVisible();
+      return (new FormRenderer.ConditionChecker(this, condition)).isVisible();
     }
   });
 
@@ -621,7 +621,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.6.2';
+  FormRenderer.VERSION = '0.6.3';
 
 }).call(this);
 

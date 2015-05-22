@@ -340,7 +340,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       "#{condition.response_field_id}" == "#{rf.id}"
 
   isConditionalVisible: (condition) ->
-    new FormRenderer.ConditionChecker(@, condition).isVisible()
+    (new FormRenderer.ConditionChecker(@, condition)).isVisible()
 
 ## Master list of field types
 

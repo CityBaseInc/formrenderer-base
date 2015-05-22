@@ -24,7 +24,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
       @errors.push(FormRenderer.errors.blank) if @isRequired()
     else
       # If value is present, run all the other validators
-      for validatorName, validator of @validators
+      for validator in @validators
         errorKey = validator.validate(@)
         @errors.push(FormRenderer.errors[errorKey]) if errorKey
 

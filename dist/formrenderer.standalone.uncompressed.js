@@ -894,7 +894,7 @@ rivets.configure({
       }
     },
     validate: function(opts) {
-      var errorIs, errorKey, errorWas, validator, validatorName, _ref;
+      var errorIs, errorKey, errorWas, validator, _i, _len, _ref;
       if (opts == null) {
         opts = {};
       }
@@ -909,8 +909,8 @@ rivets.configure({
         }
       } else {
         _ref = this.validators;
-        for (validatorName in _ref) {
-          validator = _ref[validatorName];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          validator = _ref[_i];
           errorKey = validator.validate(this);
           if (errorKey) {
             this.errors.push(FormRenderer.errors[errorKey]);

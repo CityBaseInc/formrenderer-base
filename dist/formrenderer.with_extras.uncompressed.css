@@ -172,7 +172,7 @@
   color: #fff;
   padding: 10px;
   margin-bottom: 20px; }
-  .fr_error_alert_bar a {
+  .fr_error_alert_bar a, .fr_error_alert_bar a:hover {
     color: #fff; }
 
 .fr_pagination {

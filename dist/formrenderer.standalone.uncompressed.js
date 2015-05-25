@@ -517,7 +517,7 @@ rivets.configure({
     }
   });
 
-  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
+  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'phone', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
 
   FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
 
@@ -651,7 +651,9 @@ rivets.configure({
     large: 'Your answer is too large.',
     long: 'Your answer is too long.',
     short: 'Your answer is too short.',
-    small: 'Your answer is too small.'
+    small: 'Your answer is too small.',
+    phone: 'Please enter a valid phone number.',
+    us_phone: 'Please enter a valid 10-digit phone number.'
   };
 
 }).call(this);
@@ -831,6 +833,25 @@ rivets.configure({
       }
       if (!value.match(/^-?\d*(\.\d+)?$/)) {
         return 'number';
+      }
+    }
+  };
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.PhoneValidator = {
+    validate: function(model) {
+      var digitsOnly, isUs, minDigits, _ref;
+      isUs = model.get('field_options.phone_format') === 'us';
+      minDigits = isUs ? 10 : 7;
+      digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      if (!(digitsOnly.length >= minDigits)) {
+        if (isUs) {
+          return 'us_phone';
+        } else {
+          return 'phone';
+        }
       }
     }
   };
@@ -1371,6 +1392,11 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
     field_type: 'website'
+  });
+
+  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
+    field_type: 'phone',
+    validators: [FormRenderer.Validators.PhoneValidator]
   });
 
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
@@ -2052,7 +2078,16 @@ rivets.configure({
     }
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price');
+  FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
+    field_type: 'phone',
+    phonePlaceholder: function() {
+      if (this.model.get('field_options.phone_format') === 'us') {
+        return 'XXX-XXX-XXXX';
+      }
+    }
+  });
+
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price', 'phone');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
@@ -2780,6 +2815,59 @@ window.JST["fields/paragraph"] = function(__obj) {
       _print(this.model.getSize());
     
       _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["fields/phone"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
+    
+      _print(this.phonePlaceholder());
+    
+      _print(_safe('" />\n'));
     
     }).call(this);
     

@@ -377,6 +377,12 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
 FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend
   field_type: 'website'
 
+FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend
+  field_type: 'phone'
+  validators: [
+    FormRenderer.Validators.PhoneValidator
+  ]
+
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
   FormRenderer.Models["ResponseField#{_str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
     field_type: i

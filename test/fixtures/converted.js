@@ -109,6 +109,14 @@ Fixtures.Validation = {
   "NUMBER": {
     "invalid": ["a", "a123", "123+","12 bizzles"],
     "valid": ["123", "1,23", "1.23", "1-23", "+15107671234","12 beezles","12Beezles", "123 "]
+  },
+  "US_PHONE": {
+    "invalid": ["510123456", "(123", "123-4567"],
+    "valid": ["1234567890", "+1 510 123 4567", "(123)456-7890", "1230000000 ext 123"]
+  },
+  "INTL_PHONE": {
+    "invalid": ["asdf", "123456"],
+    "valid": ["1234567"]
   }
 }
 ;Fixtures.Conditional = {

@@ -354,6 +354,7 @@ FormRenderer.INPUT_FIELD_TYPES = [
   'file'
   'number'
   'paragraph'
+  'phone'
   'price'
   'radio'
   'table'

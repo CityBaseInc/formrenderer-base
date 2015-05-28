@@ -17,6 +17,23 @@ describe '#formatCents', ->
     expect($cents.val()).to.equal('03')
     expect(price.get('value.cents')).to.equal('03')
 
+describe 'adding and removing rows', ->
+  before ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+
+  it 'functions properly', ->
+    $('button:contains("Next page")').click()
+    table = @fr.response_fields.find (rf) -> rf.field_type == 'table'
+    $('[data-rv-input="model.value.0.0"]').val('hi').trigger('input')
+    expect(_.size(table.get('value')[0])).to.eql 2
+    expect($('[data-rv-input="model.value.0.2"]').length).to.eql 0
+    $('.js-add-row').click()
+    expect($('[data-rv-input="model.value.0.2"]').length).to.eql 1
+    $('[data-rv-input="model.value.0.2"]').val('hi').trigger('input')
+    expect(_.size(table.get('value')[0])).to.eql 3
+    $('.js-remove-row').click()
+    expect(_.size(table.get('value')[0])).to.eql 2
+
 describe 'state', ->
   before ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()

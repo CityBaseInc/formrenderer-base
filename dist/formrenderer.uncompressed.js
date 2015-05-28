@@ -6717,7 +6717,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.6.4';
+  FormRenderer.VERSION = '0.6.5';
 
 }).call(this);
 
@@ -8009,7 +8009,7 @@ rivets.configure({
       }
       this.model.numRows--;
       this.model.attributes.value = newVal;
-      this.model.trigger('change change:value');
+      this.model.trigger('change change:value', this.model);
       return this.render();
     }
   });

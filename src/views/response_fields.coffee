@@ -141,7 +141,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
 
     @model.numRows--
     @model.attributes.value = newVal # setting this directly.. ugh
-    @model.trigger('change change:value')
+    @model.trigger('change change:value', @model)
     @render()
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend

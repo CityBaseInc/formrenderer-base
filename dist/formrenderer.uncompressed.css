@@ -116,7 +116,8 @@
     width: 100%; }
 
 .fr_response_field_email input,
-.fr_response_field_website input {
+.fr_response_field_website input,
+.fr_response_field_phone input {
   width: 200px; }
 
 .fr_response_field_paragraph textarea {

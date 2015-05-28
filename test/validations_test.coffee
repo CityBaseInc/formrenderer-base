@@ -35,7 +35,7 @@ describe 'validations', ->
   it 'validates when submitting', (done) ->
     $('[data-fr-next-page]').click()
     $('[data-fr-next-page]').click()
-    expectErrorCount.call(@, 12, done)
+    expectErrorCount.call(@, 13, done)
 
   # https://github.com/dobtco/formrenderer-base/pull/58#issuecomment-90695440
   describe 'the blur/next page edge case', ->
@@ -56,13 +56,13 @@ describe 'validations', ->
 
     it 'allows the user to fix errors', ->
       choose('Choice #1')
-      expect(@errorCount()).to.equal(11)
+      expect(@errorCount()).to.equal(12)
 
     it 'does not show a new error until the user blurs the input', (done) ->
       fillIn('Date', 'as')
-      expect(@errorCount()).to.equal(11)
+      expect(@errorCount()).to.equal(12)
       labelToInput('Date').trigger('blur')
-      expectErrorCount.call(@, 12, done)
+      expectErrorCount.call(@, 13, done)
 
     it 'navigates to the first error when the user clicks "fix errors"', ->
       expect(activePageNumber()).to.equal(2)

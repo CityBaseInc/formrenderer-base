@@ -303,6 +303,20 @@ Fixtures.KITCHEN_SINK_FORM = [
     updated_at: "2014-08-22T20:50:37.547Z",
     field_type: "map_marker",
     cid: null
+  }, {
+    id: 51,
+    form_id: 5,
+    label: "Phone (US)",
+    field_options: {
+      "phone_format": "us"
+    },
+    required: false,
+    blind: false,
+    admin_only: false,
+    created_at: "2014-08-22T20:50:37.547Z",
+    updated_at: "2014-08-22T20:50:37.547Z",
+    field_type: "phone",
+    cid: null
   }
 ];
 

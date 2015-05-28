@@ -265,7 +265,13 @@ FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.exten
     FormRenderer.Views.ResponseField::initialize.apply @, arguments
     @listenTo @model, 'change:value.country', @render
 
-for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price')
+FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend
+  field_type: 'phone'
+  phonePlaceholder: ->
+    if @model.get('field_options.phone_format') == 'us'
+      '(xxx) xxx-xxxx'
+
+for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price', 'phone')
   FormRenderer.Views["ResponseField#{_str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 

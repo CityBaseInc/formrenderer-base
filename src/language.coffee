@@ -11,3 +11,5 @@ FormRenderer.errors =
   long: 'Your answer is too long.'
   short: 'Your answer is too short.'
   small: 'Your answer is too small.'
+  phone: 'Please enter a valid phone number.'
+  us_phone: 'Please enter a valid 10-digit phone number.'

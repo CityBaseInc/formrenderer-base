@@ -135,3 +135,31 @@ describe 'IntegerValidator', ->
 
     for x in Fixtures.Validation.INTEGER.invalid
       @assertInvalid.call @, x
+
+describe 'PhoneValidator', ->
+  describe 'US format', ->
+    before ->
+      @model = new FormRenderer.Models.ResponseFieldPhone(
+        field_options: { phone_format: 'us' }
+      )
+
+      @validator = FormRenderer.Validators.PhoneValidator
+
+    it 'validates properly', ->
+      for x in Fixtures.Validation.US_PHONE.valid
+        @assertValid.call @, x
+
+      for x in Fixtures.Validation.US_PHONE.invalid
+        @assertInvalid.call @, x
+
+  describe 'Intl format', ->
+    before ->
+      @model = new FormRenderer.Models.ResponseFieldPhone()
+      @validator = FormRenderer.Validators.PhoneValidator
+
+    it 'validates properly', ->
+      for x in Fixtures.Validation.INTL_PHONE.valid
+        @assertValid.call @, x
+
+      for x in Fixtures.Validation.INTL_PHONE.invalid
+        @assertInvalid.call @, x

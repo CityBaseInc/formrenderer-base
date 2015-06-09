@@ -31,9 +31,9 @@ var fr = new FormRenderer($.extend(
   }
 ));
 
-fr.save = function(){
-  this.state.set({
-    hasChanges: false
-  });
-  console.log(this.getValue());
-};
+// fr.save = function(){
+//   this.state.set({
+//     hasChanges: false
+//   });
+//   console.log(this.getValue());
+// };

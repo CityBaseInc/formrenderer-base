@@ -167,13 +167,20 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
 
 FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
+  initialize: ->
+    FormRenderer.Models.ResponseField::initialize.apply @, arguments
+
+    # Hide/show the other field
+    @on 'change:value.other_checkbox', (_, val) ->
+      @set 'showOther', val
+
   setExistingValue: (x) ->
     @set 'value', _.tap {}, (h) =>
       if !_.isEmpty(x)
         for option, i in @getOptions()
           h["#{i}"] = x[option.label]
 
-        if x.Other
+        if x.Other?
           h['other_checkbox'] = true
           h['other'] = x.Other
       else
@@ -210,6 +217,13 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
 
 FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend
   field_type: 'radio'
+  initialize: ->
+    FormRenderer.Models.ResponseField::initialize.apply @, arguments
+
+    # Hide/show the other field
+    @on 'change:value.selected', (_, val) ->
+      @set 'showOther', (val == 'Other')
+
   setExistingValue: (x) ->
     if x?.selected
       @set 'value', x

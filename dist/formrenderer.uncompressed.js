@@ -6717,7 +6717,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.6.5';
+  FormRenderer.VERSION = '0.6.6-rc1';
 
 }).call(this);
 
@@ -7192,6 +7192,12 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
+    initialize: function() {
+      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('change:value.other_checkbox', function(_, val) {
+        return this.set('showOther', val);
+      });
+    },
     setExistingValue: function(x) {
       return this.set('value', _.tap({}, (function(_this) {
         return function(h) {
@@ -7202,7 +7208,7 @@ rivets.configure({
               option = _ref[i];
               h["" + i] = x[option.label];
             }
-            if (x.Other) {
+            if (x.Other != null) {
               h['other_checkbox'] = true;
               return h['other'] = x.Other;
             }
@@ -7255,6 +7261,12 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend({
     field_type: 'radio',
+    initialize: function() {
+      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('change:value.selected', function(_, val) {
+        return this.set('showOther', val === 'Other');
+      });
+    },
     setExistingValue: function(x) {
       var defaultOption;
       if (x != null ? x.selected : void 0) {
@@ -8408,7 +8420,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));
@@ -9086,7 +9098,7 @@ window.JST["fields/radio"] = function(__obj) {
         _print(this.getDomId());
         _print(_safe('"\n             name="'));
         _print(this.getDomId());
-        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
+        _print(_safe('"\n             value="Other" />\n      Other\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\'Write your answer here\' />\n  </div>\n'));
       }
     
       _print(_safe('\n'));

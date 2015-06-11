@@ -3669,13 +3669,13 @@ window.JST["partials/length_validations"] = function(__obj) {
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n      '));
         } else if (this.model.get('field_options.minlength')) {
-          _print(_safe('\n        Enter more than '));
+          _print(_safe('\n        Enter at least '));
           _print(this.model.get('field_options.minlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
           _print(_safe('.\n      '));
         } else if (this.model.get('field_options.maxlength')) {
-          _print(_safe('\n        Enter less than '));
+          _print(_safe('\n        Enter up to '));
           _print(this.model.get('field_options.maxlength'));
           _print(_safe(' '));
           _print(this.model.getLengthValidationUnits());
@@ -3740,11 +3740,11 @@ window.JST["partials/min_max_validations"] = function(__obj) {
           _print(this.model.get('field_options.max'));
           _print(_safe('.\n    '));
         } else if (this.model.get('field_options.min')) {
-          _print(_safe('\n      More than '));
+          _print(_safe('\n      Enter a number that is at least '));
           _print(this.model.get('field_options.min'));
           _print(_safe('.\n    '));
         } else if (this.model.get('field_options.max')) {
-          _print(_safe('\n      Less than '));
+          _print(_safe('\n      Enter a number up to '));
           _print(this.model.get('field_options.max'));
           _print(_safe('.\n    '));
         }

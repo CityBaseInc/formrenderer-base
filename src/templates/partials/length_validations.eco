@@ -4,9 +4,9 @@
       <% if @model.get('field_options.minlength') && @model.get('field_options.maxlength'): %>
         Enter between <%= @model.get('field_options.minlength') %> and <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
       <% else if @model.get('field_options.minlength'): %>
-        Enter more than <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
+        Enter at least <%= @model.get('field_options.minlength') %> <%= @model.getLengthValidationUnits() %>.
       <% else if @model.get('field_options.maxlength'): %>
-        Enter less than <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
+        Enter up to <%= @model.get('field_options.maxlength') %> <%= @model.getLengthValidationUnits() %>.
       <% end %>
     </span>
 

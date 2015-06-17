@@ -1,16 +1,8 @@
-getUrlParam = (name) ->
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]")
-  regex = new RegExp("[\\?&]" + name + "=([^&#]*)")
-  results = regex.exec(location.search)
-  if results == null
-    ''
-  else
-    decodeURIComponent(results[1].replace(/\+/g, " "))
-
 class FormRenderer.Plugins.Prefill extends FormRenderer.Plugins.Base
   afterFormLoad: ->
-    # Only prefill for new respondents
-    return unless _.isEmpty(@fr.options.response.responses)
+    @fr.on 'afterSave', ->
+      window.location.hash = encodeURIComponent(JSON.stringify(@getValue()))
+
     return unless (json = @getPrefillJson())
 
     initHasChanges = @fr.state.get('hasChanges')
@@ -23,6 +15,6 @@ class FormRenderer.Plugins.Prefill extends FormRenderer.Plugins.Base
 
   getPrefillJson: ->
     try
-      $.parseJSON(getUrlParam('prefill'))
+      $.parseJSON(decodeURIComponent(window.location.hash.replace(/^\#/, '')))
     catch
       ''

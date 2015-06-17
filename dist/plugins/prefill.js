@@ -1,19 +1,6 @@
 (function() {
-  var getUrlParam,
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  getUrlParam = function(name) {
-    var regex, results;
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-    results = regex.exec(location.search);
-    if (results === null) {
-      return '';
-    } else {
-      return decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
-  };
 
   FormRenderer.Plugins.Prefill = (function(_super) {
     __extends(Prefill, _super);
@@ -24,9 +11,9 @@
 
     Prefill.prototype.afterFormLoad = function() {
       var initHasChanges, json;
-      if (!_.isEmpty(this.fr.options.response.responses)) {
-        return;
-      }
+      this.fr.on('afterSave', function() {
+        return window.location.hash = encodeURIComponent(JSON.stringify(this.getValue()));
+      });
       if (!(json = this.getPrefillJson())) {
         return;
       }
@@ -42,7 +29,7 @@
 
     Prefill.prototype.getPrefillJson = function() {
       try {
-        return $.parseJSON(getUrlParam('prefill'));
+        return $.parseJSON(decodeURIComponent(window.location.hash.replace(/^\#/, '')));
       } catch (_error) {
         return '';
       }

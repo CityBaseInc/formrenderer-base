@@ -151,9 +151,7 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
   field_type: 'address'
   setExistingValue: (x) ->
     FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
-
-    unless @get('field_options.address_format') in ['city_state', 'city_state_zip']
-      @set('value.country', 'US') unless x?.country
+    @set('value.country', 'US') unless x?.country
 
   hasValue: ->
     if @get('field_options.address_format') == 'country'

@@ -1,6 +1,5 @@
 <% unless @form_renderer.areAllPagesValid(): %>
   <div class='fr_error_alert_bar'>
-    Your response has validation errors.
-    <a href='#'>Fix errors</a>
+    Your response has <a href='#'>validation errors</a>.
   </div>
 <% end %>

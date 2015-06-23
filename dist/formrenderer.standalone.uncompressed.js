@@ -4070,7 +4070,7 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has validation errors.\n    <a href=\'#\'>Fix errors</a>\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has <a href=\'#\'>validation errors</a>.\n  </div>\n'));
       }
     
       _print(_safe('\n'));

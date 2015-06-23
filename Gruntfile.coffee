@@ -61,11 +61,6 @@ module.exports = (grunt) ->
     concat:
       all:
         files:
-          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': [
-            '<%= compiledFolder %>/vendor_config.js'
-            '<%= compiledFolder %>/scripts.js'
-            '<%= compiledFolder %>/templates.js'
-          ]
           '<%= compiledFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/store.js/store.js'
@@ -80,11 +75,19 @@ module.exports = (grunt) ->
             'bower_components/iso-country-names/index.js'
             'bower_components/require_once/require_once.js'
           ]
+          '<%= compiledFolder %>/formrenderer.js': [
+            '<%= compiledFolder %>/vendor_config.js'
+            '<%= compiledFolder %>/scripts.js'
+            '<%= compiledFolder %>/templates.js'
+          ]
       dist:
         files:
+          '<%= distFolder %>/formrenderer.standalone.uncompressed.js': [
+            '<%= compiledFolder %>/formrenderer.js'
+          ]
           '<%= distFolder %>/formrenderer.uncompressed.js': [
             '<%= compiledFolder %>/vendor.js'
-            '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
+            '<%= compiledFolder %>/formrenderer.js'
           ]
         options:
           # Add lazy encapsulation

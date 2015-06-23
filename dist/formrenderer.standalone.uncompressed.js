@@ -1,4 +1,4 @@
-var $, _str;
+(function(window){var $, _str;
 
 $ = jQuery;
 
@@ -4096,3 +4096,4 @@ window.JST["plugins/error_bar"] = function(__obj) {
     return obj;
   })());
 };
+})(window);

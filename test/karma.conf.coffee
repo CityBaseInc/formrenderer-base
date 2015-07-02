@@ -58,7 +58,7 @@ module.exports = (config) ->
       'karma-mocha'
       'karma-coffee-preprocessor'
       'karma-phantomjs-launcher'
-        # 'karma-chrome-launcher'
-        # 'karma-firefox-launcher'
-        # 'karma-safari-launcher'
-      ]
+      'karma-chrome-launcher'
+      'karma-firefox-launcher'
+      'karma-safari-launcher'
+    ]

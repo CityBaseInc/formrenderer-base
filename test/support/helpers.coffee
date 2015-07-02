@@ -19,7 +19,7 @@ window.select = (label, value) ->
 window.check = (label, value) ->
   $label = $("label:contains(\"#{label}\")")
   $input = $label.parent().find("label:contains(\"#{value}\")").find('input[type=checkbox]')
-  $input.attr('checked', true).trigger('change')
+  $input.prop('checked', true).trigger('change')
 
 window.choose = (label, value) ->
   $label = $("label:contains(\"#{label}\")")

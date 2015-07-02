@@ -66,7 +66,7 @@ describe 'validations', ->
 
     it 'navigates to the first error when the user clicks "fix errors"', ->
       expect(activePageNumber()).to.equal(2)
-      $('a:contains("Fix errors")').click()
+      $('a:contains("validation errors")').click()
       expect(activePageNumber()).to.equal(1)
       expect($(document.activeElement).attr('id')).
         to.equal(labelToInput('Text').attr('id'))
@@ -75,7 +75,7 @@ describe 'validations', ->
       fillIn 'Text', 'foo'
       $('[data-fr-next-page]').click()
       $('[data-fr-next-page]').click()
-      $('a:contains("Fix errors")').click()
+      $('a:contains("validation errors")').click()
       expect(activePageNumber()).to.equal(1)
       expect($(document.activeElement).attr('id')).
         to.equal(labelToInput('Paragraph').attr('id'))

@@ -118,7 +118,7 @@
 .fr_response_field_email input,
 .fr_response_field_website input,
 .fr_response_field_phone input {
-  width: 200px; }
+  width: 160px; }
 
 .fr_response_field_paragraph textarea {
   width: 160px;

@@ -41,7 +41,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
     @get('required')
 
   getError: ->
-    @errors.join('. ') if @errors.length > 0
+    @errors.join(' ') if @errors.length > 0
 
   hasLengthValidations: ->
     (FormRenderer.Validators.MinMaxLengthValidator in @validators) &&

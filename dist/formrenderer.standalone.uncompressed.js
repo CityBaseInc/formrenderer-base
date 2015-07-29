@@ -951,7 +951,7 @@ rivets.configure({
     },
     getError: function() {
       if (this.errors.length > 0) {
-        return this.errors.join('. ');
+        return this.errors.join(' ');
       }
     },
     hasLengthValidations: function() {

@@ -9751,27 +9751,51 @@ window.JST["partials/length_validations"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      var max, min, units;
+    
+      min = this.model.get('field_options.minlength');
+    
+      _print(_safe('\n'));
+    
+      max = this.model.get('field_options.maxlength');
+    
+      _print(_safe('\n'));
+    
+      units = this.model.getLengthValidationUnits();
+    
+      _print(_safe('\n\n'));
+    
       if (this.model.hasLengthValidations()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
-        if (this.model.get('field_options.minlength') && this.model.get('field_options.maxlength')) {
-          _print(_safe('\n        Enter between '));
-          _print(this.model.get('field_options.minlength'));
-          _print(_safe(' and '));
-          _print(this.model.get('field_options.maxlength'));
-          _print(_safe(' '));
-          _print(this.model.getLengthValidationUnits());
-          _print(_safe('.\n      '));
-        } else if (this.model.get('field_options.minlength')) {
+        if (min && max) {
+          _print(_safe('\n        '));
+          if (min === max) {
+            _print(_safe('\n          Enter '));
+            _print(min);
+            _print(_safe(' '));
+            _print(units);
+            _print(_safe('.\n        '));
+          } else {
+            _print(_safe('\n          Enter between '));
+            _print(min);
+            _print(_safe(' and '));
+            _print(max);
+            _print(_safe(' '));
+            _print(units);
+            _print(_safe('.\n        '));
+          }
+          _print(_safe('\n      '));
+        } else if (min) {
           _print(_safe('\n        Enter at least '));
-          _print(this.model.get('field_options.minlength'));
+          _print(min);
           _print(_safe(' '));
-          _print(this.model.getLengthValidationUnits());
+          _print(units);
           _print(_safe('.\n      '));
-        } else if (this.model.get('field_options.maxlength')) {
+        } else if (max) {
           _print(_safe('\n        Enter up to '));
-          _print(this.model.get('field_options.maxlength'));
+          _print(max);
           _print(_safe(' '));
-          _print(this.model.getLengthValidationUnits());
+          _print(units);
           _print(_safe('.\n      '));
         }
         _print(_safe('\n    </span>\n\n    '));

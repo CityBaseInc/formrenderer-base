@@ -1087,7 +1087,7 @@ rivets.configure({
       }
     },
     toText: function() {
-      return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
+      return _.values(_.pick(this.getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
     }
   });
 
@@ -1343,7 +1343,7 @@ rivets.configure({
       return this.hasValueHashKey(['month', 'day', 'year']);
     },
     toText: function() {
-      return _.values(_.pick(this.getValue(), 'month', 'day', 'year')).join('/');
+      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
     }
   });
 

@@ -161,7 +161,7 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
       @hasValueHashKey ['street', 'city', 'state', 'zipcode']
 
   toText: ->
-    _.values(_.pick(@getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ')
+    _.values(_.pick(@getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ')
 
 FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
@@ -340,7 +340,7 @@ FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   hasValue: ->
     @hasValueHashKey ['month', 'day', 'year']
   toText: ->
-    _.values(_.pick(@getValue(), 'month', 'day', 'year')).join('/')
+    _.values(_.pick(@getValue() || {}, 'month', 'day', 'year')).join('/')
 
 FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.EmailValidator]

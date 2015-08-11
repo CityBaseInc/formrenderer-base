@@ -249,6 +249,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
         lng: center.lng.toFixed(7)
 
   enable: ->
+    return unless @map
     @map.addLayer(@marker)
     @$cover.hide()
     @_onMove()

@@ -8158,6 +8158,9 @@ rivets.configure({
       });
     },
     enable: function() {
+      if (!this.map) {
+        return;
+      }
       this.map.addLayer(this.marker);
       this.$cover.hide();
       return this._onMove();

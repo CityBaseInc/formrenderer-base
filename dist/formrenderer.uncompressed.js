@@ -6768,7 +6768,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.method_contains = function() {
-      return !!this.value.toLowerCase().match(this.condition.value.toLowerCase());
+      return this.value.toLowerCase().indexOf(this.condition.value.toLowerCase()) > -1;
     };
 
     ConditionChecker.prototype.method_gt = function() {

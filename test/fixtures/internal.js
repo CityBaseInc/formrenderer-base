@@ -44,7 +44,7 @@ Fixtures.KITCHEN_SINK_FORM = [
       options: [
         {
           checked: "false",
-          label: "Choice #1"
+          label: "Choice #1 (yas)"
         }, {
           checked: "false",
           label: "Choice #2"

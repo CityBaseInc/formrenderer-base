@@ -146,7 +146,7 @@ Fixtures.Validation = {
         "field_options": {
           "options": [
             {
-              "label": "bar",
+              "label": "bar (baz)",
               "checked": false
             }
           ]
@@ -155,10 +155,10 @@ Fixtures.Validation = {
       "tests": [
         {
           "in": {
-            "bar": true,
+            "bar (baz)": true,
             "Other": "who"
           },
-          "out": "bar who"
+          "out": "bar (baz) who"
         }
       ]
     },
@@ -289,9 +289,9 @@ Fixtures.Validation = {
       "false": ["as"]
     },
     "contains": {
-      "value": "foo",
-      "true": ["foobar", "foo"],
-      "false": ["fo"]
+      "value": "foo (bar)",
+      "true": ["foo (bar)", "foo (bar) baz"],
+      "false": ["foo bar", "foo (bar"]
     },
     "lt": {
       "value": "12.99",

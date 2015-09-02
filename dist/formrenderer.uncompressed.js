@@ -9654,10 +9654,8 @@ window.JST["partials/label"] = function(__obj) {
     
       _print(this.model.get('label'));
     
-      _print(_safe('\n  '));
-    
       if (this.model.get('required')) {
-        _print(_safe('<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
+        _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
     
       _print(_safe('\n\n  '));

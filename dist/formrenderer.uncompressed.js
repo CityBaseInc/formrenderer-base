@@ -8220,7 +8220,7 @@ rivets.configure({
 
 }).call(this);
 
-FormRenderer.t = {"address":"Address","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","email":"Email","error":"Error","error_filename":"Error reading filename","error_loading":"Error loading form","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","na":"N/A","name":"Name","not_supported":"Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","state":"State","state_province_region":"State / Province / Region","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+FormRenderer.t = {"address":"Address","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_filename":"Error reading filename","error_loading":"Error loading form","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","na":"N/A","name":"Name","not_supported":"Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","state":"State","state_province_region":"State / Province / Region","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (!window.JST) {
   window.JST = {};
 }
@@ -9833,30 +9833,28 @@ window.JST["partials/length_validations"] = function(__obj) {
         if (min && max) {
           _print(_safe('\n        '));
           if (min === max) {
-            _print(_safe('\n          Enter '));
-            _print(min);
+            _print(_safe('\n          '));
+            _print(FormRenderer.t.enter_exactly.replace(':num', min));
             _print(_safe(' '));
             _print(units);
             _print(_safe('.\n        '));
           } else {
-            _print(_safe('\n          Enter between '));
-            _print(min);
-            _print(_safe(' and '));
-            _print(max);
+            _print(_safe('\n          '));
+            _print(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max));
             _print(_safe(' '));
             _print(units);
             _print(_safe('.\n        '));
           }
           _print(_safe('\n      '));
         } else if (min) {
-          _print(_safe('\n        Enter at least '));
-          _print(min);
+          _print(_safe('\n        '));
+          _print(FormRenderer.t.enter_at_least.replace(':min', min));
           _print(_safe(' '));
           _print(units);
           _print(_safe('.\n      '));
         } else if (max) {
-          _print(_safe('\n        Enter up to '));
-          _print(max);
+          _print(_safe('\n        '));
+          _print(FormRenderer.t.enter_up_to.replace(':max', max));
           _print(_safe(' '));
           _print(units);
           _print(_safe('.\n      '));

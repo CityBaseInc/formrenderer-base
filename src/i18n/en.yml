@@ -6,6 +6,10 @@ en:
   click_to_set: 'Click to set location'
   country: 'Country'
   dollars: 'Dollars'
+  enter_exactly: Enter :num
+  enter_between: Enter between :min and :max
+  enter_at_least: Enter at least :min
+  enter_up_to: Enter up to :max
   email: 'Email'
   error: 'Error'
   error_filename: 'Error reading filename'

@@ -1,5 +1,4 @@
 module.exports = (grunt) ->
-
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-contrib-concat')
   grunt.loadNpmTasks('grunt-contrib-cssmin')
@@ -8,13 +7,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
-  grunt.loadNpmTasks('grunt-release')
   grunt.loadNpmTasks('grunt-karma')
   grunt.loadNpmTasks('grunt-aws')
 
   grunt.initConfig
     aws: if grunt.file.exists("credentials.json") then grunt.file.readJSON("credentials.json") else {}
-    bower: grunt.file.readJSON("bower.json")
+    version: grunt.file.read("src/version.coffee").match(/\'([0-9\.]+)\'\s/)[1]
     pkg: '<json:package.json>'
     srcFolder: 'src'
     compiledFolder: 'compiled' # Temporary holding area.
@@ -131,12 +129,6 @@ module.exports = (grunt) ->
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
         tasks: 'test'
 
-    # # To test, run `grunt --no-write -v releaseTask`
-    release:
-      options:
-        file: 'bower.json'
-        npm: false
-
     s3:
       options:
         accessKeyId: "<%= aws.accessKeyId %>"
@@ -147,7 +139,7 @@ module.exports = (grunt) ->
       version:
         cwd: "dist/"
         src: "**"
-        dest: '<%= bower.version %>/'
+        dest: '<%= version %>/'
       autoupdate:
         files: [
           src: 'dist/formrenderer.css'

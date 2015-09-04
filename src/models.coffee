@@ -290,12 +290,15 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
           h["#{j}"]["#{i}"] = @getPresetValue(column.label, i) || x?[column.label]?[i]
 
   hasValue: ->
-    _.some @get('value'), (colVals, colNumber) ->
-      _.some colVals, (v, k) ->
-        !!v
+    _.some @get('value'), (colVals, colNumber) =>
+      _.some colVals, (v, k) =>
+        !@getPresetValueByIndices(colNumber, k) && !!v
 
-  getPresetValue: (columnLabel, rowIndex) ->
-    @get("field_options.preset_values.#{columnLabel}")?[rowIndex]
+  getPresetValue: (columnLabel, row) ->
+    @get("field_options.preset_values.#{columnLabel}")?[row]
+
+  getPresetValueByIndices: (col, row) ->
+    @get("field_options.preset_values.#{@getColumns()[col].label}")?[row]
 
   # transform value to { '0' => ['a', 'b'], '1' => ['c', 'd'] } groups
   getValue: ->

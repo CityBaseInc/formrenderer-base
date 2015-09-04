@@ -1115,3 +1115,9 @@ Fixtures.FormRendererOptions.PAGE_STATE = function(){
     { plugins: _.union(FormRenderer.prototype.defaults.plugins, ['PageState']) }
   );
 }
+
+Fixtures.FormRendererOptions.TABLE_REQ = function(){
+  table = Fixtures.FormRendererOptions.TABLE();
+  table.response_fields[0].required = true;
+  return table;
+}

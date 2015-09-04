@@ -79,3 +79,13 @@ describe 'validations', ->
       expect(activePageNumber()).to.equal(1)
       expect($(document.activeElement).attr('id')).
         to.equal(labelToInput('Paragraph').attr('id'))
+
+  describe 'table field w/ preset values', ->
+    beforeEach ->
+      @fr = new FormRenderer Fixtures.FormRendererOptions.TABLE_REQ()
+
+    it 'validates when submitting', (done) ->
+      $('[data-fr-next-page]').click()
+      expectErrorCount.call @, 1, =>
+        $('[data-rv-input="model.value.1.0"]').val('foo').trigger('input')
+        expectErrorCount.call(@, 0, done)

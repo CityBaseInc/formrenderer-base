@@ -8,6 +8,10 @@ es:
   country: País
   dollars: Dólares
   email: Por favor, introduce una dirección de correo electrónico válida.
+  enter_at_least: Introducir al menos :min
+  enter_between: Introducir entre :min y :max
+  enter_exactly: Introducir :num
+  enter_up_to: Introducir hasta :max
   error: Error
   errors:
     blank: Este campo no puede estar en blanco.

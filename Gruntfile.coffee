@@ -175,7 +175,7 @@ module.exports = (grunt) ->
       language = file.match(/\/([a-z]+)\.yml/)[1]
       grunt.file.write(
         "dist/i18n/#{language}.js",
-        "FormRenderer.t = #{JSON.stringify(grunt.file.readYAML(file))};"
+        "FormRenderer.t = #{JSON.stringify(grunt.file.readYAML(file)[language])};"
       )
 
   grunt.registerTask 'convertJsonFixtures', '', ->

@@ -2,7 +2,7 @@
   <div class='fr_spacer'>$</div>
 
   <div class='has_sub_label'>
-    <label class="fr_sub_label">Dollars</label>
+    <label class="fr_sub_label"><%= FormRenderer.t.dollars %></label>
     <input type="text"
            id="<%= @getDomId() %>"
            data-rv-input='model.value.dollars'
@@ -12,7 +12,7 @@
   <% unless @model.get('field_options.disable_cents'): %>
     <div class='fr_spacer'>.</div>
     <div class='has_sub_label'>
-      <label class="fr_sub_label">Cents</label>
+      <label class="fr_sub_label"><%= FormRenderer.t.cents %></label>
       <input type="text"
              data-rv-input='model.value.cents'
              maxlength='2'

@@ -87,6 +87,9 @@ If you're ready to dive into the full power of formrenderer and need some inspir
 
 Most notably, formrenderer lacks support for IE9 and earlier due to its reliance on CORS requests to the Screendoor API. Users will see an error notifying them that they'll need to visit the form on Screendoor in order to respond.
 
+## i18n
+
+All language strings have been placed in a `FormRenderer.t` object, and the default distribution contains language files for English only. To render a form in another language, simply modify or replace the strings inside of `FormRenderer.t`.
 
 ## Developing
 

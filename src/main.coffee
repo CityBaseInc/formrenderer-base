@@ -86,14 +86,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         cb()
       error: (xhr) =>
         if !@corsSupported()
-          @$el.find('.fr_loading').html("""
-            Sorry, your browser does not support this embedded form. Please visit
-            <a href='#{@projectUrl()}?fr_not_supported=t'>#{@projectUrl()}</a> to fill out
-            this form.
-          """)
+          @$el.
+            find('.fr_loading').
+            html(FormRenderer.t.not_supported.replace(':url', @projectUrl()))
         else
           @$el.find('.fr_loading').text(
-            "Error loading form: \"#{xhr.responseJSON?.error || 'Unknown'}\""
+            "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""
           )
           @trigger 'errorSaving', xhr
 

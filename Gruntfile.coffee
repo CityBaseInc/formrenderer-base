@@ -43,7 +43,6 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/main.coffee'
             '<%= srcFolder %>/version.coffee'
             '<%= srcFolder %>/data.coffee'
-            '<%= srcFolder %>/language.coffee'
             '<%= srcFolder %>/condition_checker.coffee'
             '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/models.coffee'
@@ -78,6 +77,7 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/formrenderer.js': [
             '<%= compiledFolder %>/vendor_config.js'
             '<%= compiledFolder %>/scripts.js'
+            '<%= distFolder %>/i18n/en.js' # load english by default
             '<%= compiledFolder %>/templates.js'
           ]
       dist:
@@ -168,15 +168,25 @@ module.exports = (grunt) ->
           reporters: 'dots'
 
 
-  grunt.registerTask 'convertYamlFixtures', '', ->
+  grunt.registerTask 'convertI18nToJs', '', ->
+    files = grunt.file.expand('src/i18n/*.yml')
+
+    for file in files
+      language = file.match(/\/([a-z]+)\.yml/)[1]
+      grunt.file.write(
+        "dist/i18n/#{language}.js",
+        "FormRenderer.t = #{JSON.stringify(grunt.file.readYAML(file))};"
+      )
+
+  grunt.registerTask 'convertJsonFixtures', '', ->
     grunt.file.write(
       'test/fixtures/converted.js',
       "Fixtures.Validation = #{grunt.file.read('fixtures/validation.json')};" +
       "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
     )
 
-  grunt.registerTask 'default', ['convertYamlFixtures', 'eco:all', 'coffee:config',
-                                 'coffee:all', 'coffee:extras', 'concat:all',
+  grunt.registerTask 'default', ['convertI18nToJs', 'convertJsonFixtures', 'eco:all',
+                                 'coffee:config', 'coffee:all', 'coffee:extras', 'concat:all',
                                  'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
   grunt.registerTask 'all', ['default', 'dist']

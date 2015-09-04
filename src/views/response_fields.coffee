@@ -164,11 +164,11 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     else if e.target.value
       e.target.value.replace(/^.+\\/, '')
     else
-      'Error reading filename'
+      FormRenderer.t.error_filename
 
     @model.set 'value.filename', newFilename, silent: true
     @$el.find('.js-filename').text newFilename
-    @$status.text 'Uploading...'
+    @$status.text FormRenderer.t.uploading
     @doUpload()
 
   doUpload: ->
@@ -188,7 +188,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
       headers: @form_renderer.serverHeaders
       dataType: 'json'
       uploadProgress: (_, __, ___, percentComplete) =>
-        @$status.text(if percentComplete == 100 then 'Finishing up...' else "Uploading... (#{percentComplete}%)")
+        @$status.text(if percentComplete == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{percentComplete}%)")
       complete: =>
         @form_renderer.requests -= 1
         $tmpForm.remove()
@@ -197,7 +197,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         @render()
       error: (data) =>
         errorText = data.responseJSON?.errors
-        @$status.text(if errorText then "Error: #{errorText}" else 'Error')
+        @$status.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
         @$status.addClass('fr_error')
         setTimeout =>
           @render()

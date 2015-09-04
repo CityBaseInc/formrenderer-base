@@ -2,7 +2,7 @@
   <div class='fr_map_map' />
 
   <div class='fr_map_cover'>
-    Click to set location
+    <%= FormRenderer.t.click_to_set %>
   </div>
 
   <div class='fr_map_toolbar'>
@@ -12,8 +12,8 @@
         <span data-rv-text='model.value.lat' />,
         <span data-rv-text='model.value.lng' />
       </span>
-      <span data-rv-hide='model.value.lat' class='fr_map_no_location'>N/A</span>
+      <span data-rv-hide='model.value.lat' class='fr_map_no_location'><%= FormRenderer.t.na %></span>
     </div>
-    <a class='fr_map_clear' data-fr-clear-map data-rv-show='model.value.lat' href='#'>Clear</a>
+    <a class='fr_map_clear' data-fr-clear-map data-rv-show='model.value.lat' href='#'><%= FormRenderer.t.clear %></a>
   </div>
 </div>

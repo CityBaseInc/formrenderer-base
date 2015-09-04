@@ -17,9 +17,9 @@
              id="<%= @getDomId() %>"
              name="<%= @getDomId() %>"
              value="Other" />
-      Other
+      <%= FormRenderer.t.other %>
     </label>
 
-    <input type='text' data-rv-show='model.showOther' data-rv-input='model.value.other' placeholder='Write your answer here' />
+    <input type='text' data-rv-show='model.showOther' data-rv-input='model.value.other' placeholder='<%= FormRenderer.t.write_here %>' />
   </div>
 <% end %>

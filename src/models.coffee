@@ -21,12 +21,12 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
     # Presence is a special-case, since it will stop us from running any other validators
     if !@hasValue()
-      @errors.push(FormRenderer.errors.blank) if @isRequired()
+      @errors.push(FormRenderer.t.errors.blank) if @isRequired()
     else
       # If value is present, run all the other validators
       for validator in @validators
         errorKey = validator.validate(@)
-        @errors.push(FormRenderer.errors[errorKey]) if errorKey
+        @errors.push(FormRenderer.t.errors[errorKey]) if errorKey
 
     errorIs = @getError()
 

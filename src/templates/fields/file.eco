@@ -1,6 +1,6 @@
 <% if @model.hasValue(): %>
   <span class='js-filename'><%= @model.get('value.filename') %></span>
-  <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'>Remove</button>
+  <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.clear %></button>
 <% else: %>
   <input type='file'
          id='<%= @getDomId() %>'
@@ -13,7 +13,7 @@
 
   <% if (exts = @model.getAcceptedExtensions()): %>
     <div class='fr_description'>
-      We'll accept <%= _str.toSentence(exts) %>
+      <%= FormRenderer.t.we_accept %> <%= _str.toSentence(exts) %>
     </div>
   <% end %>
 <% end %>

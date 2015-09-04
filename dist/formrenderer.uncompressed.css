@@ -156,7 +156,9 @@
 
 .fr_bottom {
   display: table;
-  width: 100%; }
+  width: 100%;
+  background-color: #eee;
+  padding: 20px; }
 
 .fr_bottom_l,
 .fr_bottom_r {
@@ -174,13 +176,59 @@
   padding: 10px;
   margin-bottom: 20px; }
   .fr_error_alert_bar a, .fr_error_alert_bar a:hover {
-    color: #fff; }
+    color: #fff;
+    text-decoration: underline; }
 
 .fr_pagination {
+  background-color: #eee;
   list-style: none;
   margin: 0 0 20px;
-  padding: 0; }
-  .fr_pagination:before {
-    content: 'Pages: '; }
-  .fr_pagination li {
-    display: inline; }
+  padding: 0;
+  overflow: hidden; }
+  .fr_pagination:before, .fr_pagination:after {
+    display: table;
+    content: " "; }
+  .fr_pagination:after {
+    clear: both; }
+  .fr_pagination li a, .fr_pagination li span {
+    display: block;
+    float: left;
+    padding: 10px 0 10px 50px;
+    position: relative; }
+    .fr_pagination li a:before, .fr_pagination li span:before {
+      content: " ";
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 50px solid transparent;
+      border-bottom: 50px solid transparent;
+      border-left: 30px solid #eee;
+      position: absolute;
+      top: 50%;
+      margin-top: -50px;
+      left: 100%;
+      z-index: 2; }
+    .fr_pagination li a:after, .fr_pagination li span:after {
+      content: " ";
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 50px solid transparent;
+      border-bottom: 50px solid transparent;
+      border-left: 30px solid #fff;
+      position: absolute;
+      top: 50%;
+      margin-top: -50px;
+      left: 100%;
+      margin-left: 1px;
+      z-index: 1; }
+    .fr_pagination li a:focus, .fr_pagination li span:focus {
+      outline: none; }
+  .fr_pagination li:first-child a, .fr_pagination li:first-child span {
+    margin-left: -25px; }
+  .fr_pagination li span, .fr_pagination li a:hover {
+    background-color: #ccc; }
+    .fr_pagination li span:before, .fr_pagination li a:hover:before {
+      border-left-color: #ccc; }
+  .fr_pagination li a {
+    text-decoration: none; }

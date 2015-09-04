@@ -1,13 +1,70 @@
 .fr_pagination {
+  @include cf;
+  background-color: $fr_light_gray;
   list-style: none;
   margin: 0 0 $fr_rhythm;
   padding: 0;
-
-  &:before {
-    content: 'Pages: ';
-  }
+  overflow: hidden;
 
   li {
-    display: inline;
+    a, span {
+      display: block;
+      float: left;
+      padding: 10px 0 10px 50px;
+      position: relative;
+
+      &:before {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 50px solid transparent;
+        border-bottom: 50px solid transparent;
+        border-left: 30px solid $fr_light_gray;
+        position: absolute;
+        top: 50%;
+        margin-top: -50px;
+        left: 100%;
+        z-index: 2;
+      }
+
+      &:after {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 50px solid transparent;
+        border-bottom: 50px solid transparent;
+        border-left: 30px solid #fff;
+        position: absolute;
+        top: 50%;
+        margin-top: -50px;
+        left: 100%;
+        margin-left: 1px;
+        z-index: 1;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &:first-child {
+      a, span {
+        margin-left: -25px;
+      }
+    }
+
+    span, a:hover {
+      background-color: #ccc;
+
+      &:before {
+        border-left-color: #ccc;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
   }
 }

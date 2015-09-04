@@ -15,7 +15,6 @@ $('.config_select').change(function(){
 
 // Load libraries
 $('head').
-  append($('<link rel="stylesheet" type="text/css" />').attr('href', $('#main').val())).
   append($('<link rel="stylesheet" type="text/css" />').attr('href', $('#lib').val()));
 
 FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary'

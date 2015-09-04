@@ -12,7 +12,7 @@ Fixtures.Validation = {
     "invalid": ["1", "4.99999", "10.9"]
   },
   "INTEGER": {
-    "valid": ["1"],
+    "valid": ["1", "3,000"],
     "invalid": ["1.2", "1.0"]
   },
   "PRICE": {

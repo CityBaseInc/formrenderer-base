@@ -6728,6 +6728,15 @@ rivets.configure({
     return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
   };
 
+  FormRenderer.normalizeNumber = function(value, units) {
+    var returnVal;
+    returnVal = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '').trim();
+    if (units) {
+      returnVal = returnVal.replace(new RegExp(units + '$', 'i'), '').trim();
+    }
+    return returnVal;
+  };
+
 }).call(this);
 
 (function() {
@@ -6880,10 +6889,12 @@ rivets.configure({
 (function() {
   FormRenderer.Validators.IntegerValidator = {
     validate: function(model) {
+      var normalized;
       if (!model.get('field_options.integer_only')) {
         return;
       }
-      if (!model.get('value').match(/^-?\d+$/)) {
+      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('field_options.units'));
+      if (!normalized.match(/^-?\d+$/)) {
         return 'integer';
       }
     }
@@ -6934,14 +6945,9 @@ rivets.configure({
 (function() {
   FormRenderer.Validators.NumberValidator = {
     validate: function(model) {
-      var units, value;
-      value = model.get('value');
-      units = model.get('field_options.units');
-      value = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '').trim();
-      if (units) {
-        value = value.replace(new RegExp(units + '$', 'i'), '').trim();
-      }
-      if (!value.match(/^-?\d*(\.\d+)?$/)) {
+      var normalized;
+      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('field_options.units'));
+      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
         return 'number';
       }
     }

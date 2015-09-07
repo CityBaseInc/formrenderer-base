@@ -1,6 +1,10 @@
 FormRenderer.Validators.DateValidator =
   validate: (model) ->
-    year = parseInt(model.get('value.year'), 10) || 0
+    if model.get('field_options.date_format') == 'month_day'
+      year = 2000 # Just a dummy constant
+    else
+      year = parseInt(model.get('value.year'), 10) || 0
+
     day = parseInt(model.get('value.day'), 10) || 0
     month = parseInt(model.get('value.month'), 10) || 0
 

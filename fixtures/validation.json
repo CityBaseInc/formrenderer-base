@@ -90,6 +90,23 @@
       "year": "asdf"
     }]
   },
+  "DATE_MONTH_DAY": {
+    "valid": [
+      {
+        "month": "2",
+        "day": "3"
+      }
+    ],
+    "invalid": [
+      {
+        "month": "2"
+      },
+      {
+        "month": "11",
+        "day": "31"
+      }
+    ]
+  },
   "TIME": {
     "valid": [{
       "hours": "1",

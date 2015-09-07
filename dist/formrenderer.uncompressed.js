@@ -6829,7 +6829,11 @@ rivets.configure({
   FormRenderer.Validators.DateValidator = {
     validate: function(model) {
       var day, daysPerMonth, febDays, maxDays, month, year;
-      year = parseInt(model.get('value.year'), 10) || 0;
+      if (model.get('field_options.date_format') === 'month_day') {
+        year = 2000;
+      } else {
+        year = parseInt(model.get('value.year'), 10) || 0;
+      }
       day = parseInt(model.get('value.day'), 10) || 0;
       month = parseInt(model.get('value.month'), 10) || 0;
       febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
@@ -8501,7 +8505,13 @@ window.JST["fields/date"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">YYYY</label>\n    <input type="text"\n           data-rv-input=\'model.value.year\'\n           maxlength=\'4\'\n           size=\'4\' />\n  </div>\n</div>\n'));
+      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
+    
+      if (this.model.get('field_options.date_format') !== 'month_day') {
+        _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\' />\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     

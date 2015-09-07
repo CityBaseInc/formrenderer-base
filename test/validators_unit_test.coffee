@@ -28,6 +28,19 @@ describe 'DateValidator', ->
     for x in Fixtures.Validation.DATE.invalid
       @assertInvalid.call @, x
 
+describe 'DateValidator for month/day only', ->
+  before ->
+    @model = new FormRenderer.Models.ResponseFieldDate
+    @model.set 'field_options.date_format', 'month_day'
+    @validator = FormRenderer.Validators.DateValidator
+
+  it 'validates properly', ->
+    for x in Fixtures.Validation.DATE_MONTH_DAY.valid
+      @assertValid.call @, x
+
+    for x in Fixtures.Validation.DATE_MONTH_DAY.invalid
+      @assertInvalid.call @, x
+
 describe 'EmailValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldEmail

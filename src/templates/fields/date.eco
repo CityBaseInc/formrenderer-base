@@ -18,13 +18,15 @@
            size='2' />
   </div>
 
-  <div class='fr_spacer'>/</div>
+  <% unless @model.get('field_options.disable_year'): %>
+    <div class='fr_spacer'>/</div>
 
-  <div class='has_sub_label'>
-    <label class="fr_sub_label">YYYY</label>
-    <input type="text"
-           data-rv-input='model.value.year'
-           maxlength='4'
-           size='4' />
-  </div>
+    <div class='has_sub_label'>
+      <label class="fr_sub_label">YYYY</label>
+      <input type="text"
+             data-rv-input='model.value.year'
+             maxlength='4'
+             size='4' />
+    </div>
+  <% end %>
 </div>

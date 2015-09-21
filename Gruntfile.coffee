@@ -145,6 +145,9 @@ module.exports = (grunt) ->
         ,
           src: 'dist/formrenderer.js'
           dest: '0/formrenderer.js'
+        ,
+          src: 'dist/i18n/es.js'
+          dest: '0/i18n/es.js'
         ]
         options:
           headers:

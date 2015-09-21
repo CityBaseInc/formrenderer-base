@@ -91,6 +91,12 @@ Most notably, formrenderer lacks support for IE9 and earlier due to its reliance
 
 All language strings have been placed in a `FormRenderer.t` object, and the default distribution contains language files for English only. To render a form in another language, simply modify or replace the strings inside of `FormRenderer.t`.
 
+If you simply need to add translations to your embedded form, include the following Javascript _after_ `formrenderer.js`:
+
+```
+<script src="//d3q1ytufopwvkq.cloudfront.net/0/i18n/es.js"></script>
+```
+
 ## Developing
 
 You'll need [node and npm](http://nodejs.org/) installed.

@@ -1,3 +1,5 @@
+deepExtend = require 'deep-extend'
+
 module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-contrib-concat')
@@ -163,12 +165,15 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'convertI18nToJs', '', ->
     files = grunt.file.expand('src/i18n/*.yml')
+    en = grunt.file.readYAML('src/i18n/en.yml').en
 
     for file in files
       language = file.match(/\/([a-z]+)\.yml/)[1]
+      new_lang = grunt.file.readYAML(file)[language]
+      merged_lang = deepExtend {}, en, new_lang
       grunt.file.write(
         "dist/i18n/#{language}.js",
-        "var FormRenderer#{language.toUpperCase()} = #{JSON.stringify(grunt.file.readYAML(file)[language])};\n" +
+        "var FormRenderer#{language.toUpperCase()} = #{JSON.stringify(merged_lang)};\n" +
         "if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRenderer#{language.toUpperCase()};"
       )
 

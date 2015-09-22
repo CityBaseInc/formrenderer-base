@@ -2113,7 +2113,7 @@ rivets.configure({
 
 }).call(this);
 
-var FormRendererEN = {"address":"Address","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_filename":"Error reading filename","error_loading":"Error loading form","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","na":"N/A","name":"Name","not_supported":"Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","state":"State","state_province_region":"State / Province / Region","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -3453,7 +3453,11 @@ window.JST["main"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_loading\'>\n  Loading form...\n</div>'));
+      _print(_safe('<div class=\'fr_loading\'>\n  '));
+    
+      _print(FormRenderer.t.loading_form);
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     
@@ -4068,11 +4072,17 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
-          _print(_safe('\n        Error saving\n      '));
+          _print(_safe('\n        '));
+          _print(FormRenderer.t.error_saving);
+          _print(_safe('\n      '));
         } else if (this.form_renderer.state.get('hasChanges')) {
-          _print(_safe('\n        Saving...\n      '));
+          _print(_safe('\n        '));
+          _print(FormRenderer.t.saving);
+          _print(_safe('\n      '));
         } else {
-          _print(_safe('\n        Saved\n      '));
+          _print(_safe('\n        '));
+          _print(FormRenderer.t.saved);
+          _print(_safe('\n      '));
         }
         _print(_safe('\n    </div>\n  '));
       }
@@ -4082,8 +4092,8 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       if (!this.form_renderer.isFirstPage()) {
         _print(_safe('\n      <button data-fr-previous-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Back to page '));
-        _print(this.form_renderer.previousPage());
+        _print(_safe('\'>\n        '));
+        _print(FormRenderer.t.back_to_page.replace(':num', this.form_renderer.previousPage()));
         _print(_safe('\n      </button>\n    '));
       }
     
@@ -4092,15 +4102,17 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       if (this.form_renderer.state.get('submitting')) {
         _print(_safe('\n      <button disabled class=\''));
         _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        Submitting...\n      </button>\n    '));
+        _print(_safe('\'>\n        '));
+        _print(FormRenderer.t.submitting);
+        _print(_safe('\n      </button>\n    '));
       } else {
         _print(_safe('\n      <button data-fr-next-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n        '));
         if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-          _print(_safe('Submit'));
+          _print(FormRenderer.t.submit);
         } else {
-          _print(_safe('Next page'));
+          _print(FormRenderer.t.next_page);
         }
         _print(_safe('\n      </button>\n    '));
       }
@@ -4151,7 +4163,9 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    Your response has <a href=\'#\'>validation errors</a>.\n  </div>\n'));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    '));
+        _print(_safe(FormRenderer.t.error_bar.errors));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n'));

@@ -1,5 +1,6 @@
 en:
   address: 'Address'
+  back_to_page: Back to page :num
   cents: 'Cents'
   city: 'City'
   clear: 'Clear'
@@ -12,8 +13,11 @@ en:
   enter_up_to: Enter up to :max
   email: 'Email'
   error: 'Error'
+  error_bar:
+    errors: "Your response has <a href='#'>validation errors</a>."
   error_filename: 'Error reading filename'
   error_loading: 'Error loading form'
+  error_saving: Error saving
   errors:
     blank: "This field can't be blank."
     date: 'Please enter a valid date.'
@@ -30,14 +34,20 @@ en:
     time: 'Please enter a valid time.'
     us_phone: 'Please enter a valid 10-digit phone number.'
   finishing_up: 'Finishing up...'
+  loading_form: Loading form...
   na: 'N/A'
   name: 'Name'
+  next_page: Next page
   not_supported: "Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form."
   other: 'Other'
   postal_code: 'Postal Code'
   province: 'Province'
+  saved: Saved
+  saving: Saving...
   state: 'State'
   state_province_region: 'State / Province / Region'
+  submit: Submit
+  submitting: Submitting
   uploading: 'Uploading...'
   we_accept: "We'll accept"
   write_here: 'Write your answer here'

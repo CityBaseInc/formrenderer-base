@@ -1,13 +1,14 @@
 ---
 es:
   address: Dirección
+  back_to_page: Volver a la página núm
   cents: Céntimos
   city: Ciudad
   clear: Eliminar
   click_to_set: Haga clic para fijar la ubicación
   country: País
   dollars: Dólares
-  email: Email
+  email: Correo electrónico
   enter_at_least: Introduzca al menos :min
   enter_between: Introduzca entre :min y :max
   enter_exactly: Introduzca :num
@@ -28,19 +29,27 @@ es:
     small: Su respuesta es demasiado corta.
     time: Introduzca una fecha válida.
     us_phone: Introduzca un número de teléfono de 10 dígitos.
+  error_bar:
+    errors: Su respuesta tiene <a href='#'>errores de validación</a>.
   error_filename: Error al leer el nombre del archivo
   error_loading: Error al cargar el formulario
+  error_saving: Error al guardar
   finishing_up: Terminando...
+  loading_form: Cargando formulario...
   na: N/A
   name: Nombre
+  next_page: Siguiente página
   not_supported: Lo sentimos, su navegador no soporta esta forma integrada. Por favor,
     visite <a href=':url?fr_not_supported=t'>:url</a> para rellenar este formulario.
   other: Otro
   postal_code: Código postal
   province: Provincia
-  remove: Eliminar
+  saved: Guardado
+  saving: Guardando...
   state: Estado
   state_province_region: Estado / Provincia / Región
+  submit: Enviar
+  submitting: Enviando
   uploading: Subiendo...
   we_accept: Aceptaremos
   write_here: Escriba su respuesta aquí

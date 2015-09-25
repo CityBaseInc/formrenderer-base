@@ -1121,3 +1121,9 @@ Fixtures.FormRendererOptions.TABLE_REQ = function(){
   table.response_fields[0].required = true;
   return table;
 }
+
+Fixtures.FormRendererOptions.CONDITIONAL_THREE_ANY = function(){
+  form = Fixtures.FormRendererOptions.CONDITIONAL_THREE();
+  form.response_fields[2].field_options.condition_method = 'any';
+  return form;
+}

@@ -1002,12 +1002,19 @@ rivets.configure({
     calculateVisibility: function() {
       var prevValue;
       prevValue = !!this.isVisible;
-      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
+      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
         return function(c) {
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
+    },
+    conditionMethod: function() {
+      if (this.get('field_options.condition_method') === 'any') {
+        return 'any';
+      } else {
+        return 'all';
+      }
     },
     getSize: function() {
       return this.get('field_options.size') || 'small';

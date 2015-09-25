@@ -146,7 +146,6 @@ describe 'ConditionChecker', ->
   it 'handles an invalid condition', ->
     conditional =
       method: 'eq'
-      action: 'show'
       value: 'asdf'
       response_field_id: '99999'
 
@@ -171,7 +170,6 @@ describe 'ConditionChecker', ->
       for method, deets of Fixtures.Conditional.methods
         conditional =
           method: method
-          action: 'show'
           value: deets.value
           response_field_id: '35'
 

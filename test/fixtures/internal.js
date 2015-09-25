@@ -662,7 +662,6 @@ Fixtures.FormRendererOptions = {
             size: 'large',
             conditions: [
               {
-                action: 'show',
                 response_field_id: 35,
                 method: 'eq',
                 value: 'No'
@@ -694,7 +693,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 37,
                 method: 'contains',
                 value: 'whitehouse'
@@ -712,16 +710,7 @@ Fixtures.FormRendererOptions = {
           id: 39,
           form_id: 5,
           label: "What's the most boring part of the job?",
-          field_options: {
-            conditions: [
-              {
-                action: 'hide',
-                response_field_id: 37,
-                method: 'contains',
-                value: 'whitehouse'
-              }
-            ]
-          },
+          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -763,7 +752,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 40,
                 method: 'gt',
                 value: '5'
@@ -807,7 +795,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 42,
                 method: 'gt',
                 value: '5.00'
@@ -870,7 +857,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 35,
                 method: 'shorter',
                 value: '10'
@@ -891,7 +877,6 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 36,
                 method: 'longer',
                 value: '10'
@@ -968,12 +953,10 @@ Fixtures.FormRendererOptions = {
           field_options: {
             conditions: [
               {
-                action: 'show',
                 response_field_id: 35,
                 method: 'contains',
                 value: 'Yes'
               }, {
-                action: 'show',
                 response_field_id: 36,
                 method: 'contains',
                 value: 'Yes'

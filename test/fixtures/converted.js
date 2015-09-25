@@ -305,10 +305,20 @@ Fixtures.Validation = {
       "true": ["asd", "ASD"],
       "false": ["as"]
     },
+    "not": {
+      "value": "asd",
+      "false": ["asd", "ASD"],
+      "true": ["as"]
+    },
     "contains": {
       "value": "foo (bar)",
       "true": ["foo (bar)", "foo (bar) baz"],
       "false": ["foo bar", "foo (bar"]
+    },
+    "does_not_contain": {
+      "value": "foo (bar)",
+      "false": ["foo (bar)", "foo (bar) baz"],
+      "true": ["foo bar", "foo (bar"]
     },
     "lt": {
       "value": "12.99",

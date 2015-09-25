@@ -6775,6 +6775,14 @@ rivets.configure({
       return this.value.toLowerCase().indexOf(this.condition.value.toLowerCase()) > -1;
     };
 
+    ConditionChecker.prototype.method_not = function() {
+      return !this.method_eq();
+    };
+
+    ConditionChecker.prototype.method_does_not_contain = function() {
+      return !this.method_contains();
+    };
+
     ConditionChecker.prototype.method_gt = function() {
       return parseFloat(this.value) > parseFloat(this.condition.value);
     };
@@ -6796,7 +6804,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.isValid = function() {
-      return this.responseField() && _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
+      return this.responseField() && _.all(['value', 'response_field_id', 'method'], (function(_this) {
         return function(x) {
           return _this.condition[x];
         };
@@ -6805,14 +6813,10 @@ rivets.configure({
 
     ConditionChecker.prototype.isVisible = function() {
       if (this.isValid()) {
-        return this.actionBool() === this["method_" + this.condition.method]();
+        return this["method_" + this.condition.method]();
       } else {
         return true;
       }
-    };
-
-    ConditionChecker.prototype.actionBool = function() {
-      return this.condition.action === 'show';
     };
 
     ConditionChecker.prototype.responseField = function() {

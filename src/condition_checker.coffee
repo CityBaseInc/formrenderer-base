@@ -8,6 +8,12 @@ class FormRenderer.ConditionChecker
   method_contains: ->
     @value.toLowerCase().indexOf(@condition.value.toLowerCase()) > -1
 
+  method_not: ->
+    !@method_eq()
+
+  method_does_not_contain: ->
+    !@method_contains()
+
   method_gt: ->
     parseFloat(@value) > parseFloat(@condition.value)
 
@@ -28,17 +34,14 @@ class FormRenderer.ConditionChecker
 
   isValid: ->
     @responseField() &&
-    _.all ['value', 'action', 'response_field_id', 'method'], (x) =>
+    _.all ['value', 'response_field_id', 'method'], (x) =>
       @condition[x]
 
   isVisible: ->
     if @isValid()
-      @actionBool() == @["method_#{@condition.method}"]()
+      @["method_#{@condition.method}"]()
     else
       true
-
-  actionBool: ->
-    @condition.action == 'show'
 
   responseField: ->
     @form_renderer.response_fields.get(@condition.response_field_id)

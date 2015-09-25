@@ -630,7 +630,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.7.1';
+  FormRenderer.VERSION = '0.7.2';
 
 }).call(this);
 
@@ -664,6 +664,14 @@ rivets.configure({
       return this.value.toLowerCase().indexOf(this.condition.value.toLowerCase()) > -1;
     };
 
+    ConditionChecker.prototype.method_not = function() {
+      return !this.method_eq();
+    };
+
+    ConditionChecker.prototype.method_does_not_contain = function() {
+      return !this.method_contains();
+    };
+
     ConditionChecker.prototype.method_gt = function() {
       return parseFloat(this.value) > parseFloat(this.condition.value);
     };
@@ -685,7 +693,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.isValid = function() {
-      return this.responseField() && _.all(['value', 'action', 'response_field_id', 'method'], (function(_this) {
+      return this.responseField() && _.all(['value', 'response_field_id', 'method'], (function(_this) {
         return function(x) {
           return _this.condition[x];
         };
@@ -694,14 +702,10 @@ rivets.configure({
 
     ConditionChecker.prototype.isVisible = function() {
       if (this.isValid()) {
-        return this.actionBool() === this["method_" + this.condition.method]();
+        return this["method_" + this.condition.method]();
       } else {
         return true;
       }
-    };
-
-    ConditionChecker.prototype.actionBool = function() {
-      return this.condition.action === 'show';
     };
 
     ConditionChecker.prototype.responseField = function() {
@@ -1002,12 +1006,19 @@ rivets.configure({
     calculateVisibility: function() {
       var prevValue;
       prevValue = !!this.isVisible;
-      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _.all(this.getConditions(), (function(_this) {
+      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
         return function(c) {
           return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
+    },
+    conditionMethod: function() {
+      if (this.get('field_options.condition_method') === 'any') {
+        return 'any';
+      } else {
+        return 'all';
+      }
     },
     getSize: function() {
       return this.get('field_options.size') || 'small';

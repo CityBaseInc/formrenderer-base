@@ -104,13 +104,19 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
         true
       else
         if @isConditional()
-          _.all @getConditions(), (c) =>
+          _[@conditionMethod()] @getConditions(), (c) =>
             @form_renderer.isConditionalVisible(c)
         else
           true
     )
 
     prevValue != @isVisible
+
+  conditionMethod: ->
+    if @get('field_options.condition_method') == 'any'
+      'any'
+    else
+      'all'
 
   getSize: ->
     @get('field_options.size') || 'small'

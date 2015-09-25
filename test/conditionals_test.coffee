@@ -43,6 +43,24 @@ describe 'Conditionals', ->
     check 'Question 2', 'Yes'
     expect(isVisible()).to.equal(true)
 
+  it 'can match on any', ->
+    $('body').html('<div data-formrenderer />')
+    @fr = new FormRenderer Fixtures.FormRendererOptions.CONDITIONAL_THREE_ANY()
+
+    isVisible = ->
+      $('.fr_response_field:contains("Why do you like the word")').is(':visible')
+
+    expect(isVisible()).to.equal(false)
+    check 'Question 1', 'Yes'
+    expect(isVisible()).to.equal(true)
+    check 'Question 2', 'No'
+    expect(isVisible()).to.equal(true)
+    check 'Question 2', 'Yes'
+    expect(isVisible()).to.equal(true)
+    uncheck 'Question 1', 'Yes'
+    uncheck 'Question 2', 'Yes'
+    expect(isVisible()).to.equal(false)
+
   it 'does not show hidden fields', ->
     expect(
       $('.fr_response_field:contains("Dang, that sucks.")').is(':visible')
@@ -128,7 +146,6 @@ describe 'ConditionChecker', ->
   it 'handles an invalid condition', ->
     conditional =
       method: 'eq'
-      action: 'show'
       value: 'asdf'
       response_field_id: '99999'
 
@@ -153,7 +170,6 @@ describe 'ConditionChecker', ->
       for method, deets of Fixtures.Conditional.methods
         conditional =
           method: method
-          action: 'show'
           value: deets.value
           response_field_id: '35'
 

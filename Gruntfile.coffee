@@ -77,6 +77,7 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/formrenderer.js': [
             '<%= compiledFolder %>/vendor_config.js'
             '<%= compiledFolder %>/scripts.js'
+            '<%= compiledFolder %>/file_types.js'
             '<%= distFolder %>/i18n/en.js' # load english by default
             '<%= compiledFolder %>/templates.js'
           ]
@@ -182,6 +183,11 @@ module.exports = (grunt) ->
       'test/fixtures/converted.js',
       "Fixtures.Validation = #{grunt.file.read('fixtures/validation.json')};" +
       "Fixtures.Conditional = #{grunt.file.read('fixtures/conditional.json')};"
+    )
+
+    grunt.file.write(
+      'compiled/file_types.js',
+      "FormRenderer.FILE_TYPES = #{grunt.file.read('fixtures/file_types.json')};"
     )
 
   grunt.registerTask 'default', ['convertI18nToJs', 'convertJsonFixtures', 'eco:all',

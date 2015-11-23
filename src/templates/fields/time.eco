@@ -15,7 +15,7 @@
     <input type="text"
            data-rv-input='model.value.minutes'
            maxlength='2'
-           size='2' />
+           size='2' placeholder='MM' />
   </div>
 
   <% unless @model.get('field_options.disable_seconds'): %>
@@ -26,7 +26,7 @@
       <input type="text"
              data-rv-input='model.value.seconds'
              maxlength='2'
-             size='2' />
+             size='2' placeholder='MM' />
     </div>
   <% end %>
 

@@ -5,7 +5,7 @@
            id="<%= @getDomId() %>"
            data-rv-input='model.value.month'
            maxlength='2'
-           size='2' />
+           size='2' placeholder='MM'/>
   </div>
 
   <div class='fr_spacer'>/</div>
@@ -15,7 +15,7 @@
     <input type="text"
            data-rv-input='model.value.day'
            maxlength='2'
-           size='2' />
+           size='2'placeholder='DD' />
   </div>
 
   <% unless @model.get('field_options.disable_year'): %>
@@ -26,7 +26,7 @@
       <input type="text"
              data-rv-input='model.value.year'
              maxlength='4'
-             size='4' />
+             size='4' placeholder='YYYY' />
     </div>
   <% end %>
 </div>

@@ -6,7 +6,7 @@
       <label class="fr_sub_label"><%= FormRenderer.t.address %></label>
       <input type="text"
              id="<%= @getDomId() %>"
-             data-rv-input='model.value.street' />
+             data-rv-input='model.value.street' placeholder='Address' />
     </div>
   </div>
 <% end %>
@@ -16,7 +16,7 @@
     <div class='fr_half has_sub_label'>
       <label class="fr_sub_label"><%= FormRenderer.t.city %></label>
       <input type="text"
-             data-rv-input='model.value.city' />
+             data-rv-input='model.value.city' placeholder='City' />
     </div>
 
     <div class='fr_half has_sub_label'>
@@ -55,7 +55,7 @@
         <% end %>
       </label>
       <input type="text"
-             data-rv-input='model.value.zipcode' />
+             data-rv-input='model.value.zipcode' placeholder = 'ZIP / Postal Code' />
     </div>
   <% end %>
 

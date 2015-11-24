@@ -38,7 +38,7 @@ en:
   na: 'N/A'
   name: 'Name'
   next_page: Next page
-  not_supported: "Sorry, your browser does not support this embedded form. Please visit<a href=':url?fr_not_supported=t'>:url</a> to fill out this form."
+  not_supported: "Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form."
   other: 'Other'
   postal_code: 'Postal Code'
   province: 'Province'

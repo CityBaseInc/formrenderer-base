@@ -169,13 +169,14 @@ module.exports = (grunt) ->
     en = grunt.file.readYAML('src/i18n/en.yml').en
 
     for file in files
-      language = file.match(/\/([a-z]+)\.yml/)[1]
+      language = file.match(/\/([a-z\-]+)\.yml/)[1]
+      languageVar = "FormRenderer#{language.replace('-', '_').toUpperCase()}"
       new_lang = grunt.file.readYAML(file)[language]
       merged_lang = deepExtend {}, en, new_lang
       grunt.file.write(
         "dist/i18n/#{language}.js",
-        "var FormRenderer#{language.toUpperCase()} = #{JSON.stringify(merged_lang)};\n" +
-        "if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRenderer#{language.toUpperCase()};"
+        "var #{languageVar} = #{JSON.stringify(merged_lang)};\n" +
+        "if (typeof FormRenderer !== 'undefined') FormRenderer.t = #{languageVar};"
       )
 
   grunt.registerTask 'convertJsonFixtures', '', ->

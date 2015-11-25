@@ -19,10 +19,6 @@ $('head').
 
 FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary'
 
-if ($('#lang').val()) {
-  FormRenderer.t = window['FormRenderer' + $('#lang').val().toUpperCase()];
-}
-
 // Initialize form
 var fr = new FormRenderer($.extend(
   Fixtures.FormRendererOptions[$('#fixture').val()](),

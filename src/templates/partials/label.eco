@@ -1,15 +1,4 @@
 <label for="<%= @getDomId() %>">
   <%= @model.get('label') %><% if @model.get('required'): %>&nbsp;<abbr class='fr_required' title='required'>*</abbr><% end %>
-
-  <% if @showLabels: %>
-    <% if @model.get('blind'): %>
-      <span class='label'>Blind</span>
-    <% end %>
-    <% if @model.get('admin_only'): %>
-      <span class='label'>Hidden</span>
-    <% end %>
-    <% if @model.isConditional(): %>
-      <span class='label'>Hidden until rules are met</span>
-    <% end %>
-  <% end %>
+  <%- JST["partials/labels"](@) %>
 </label>

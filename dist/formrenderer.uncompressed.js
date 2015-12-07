@@ -6734,7 +6734,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.7.5';
+  FormRenderer.VERSION = '0.7.6';
 
 }).call(this);
 
@@ -8405,7 +8405,9 @@ window.JST["fields/block_of_text"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_text size_'));
+      _print(_safe(JST["partials/labels"](this)));
+    
+      _print(_safe('\n\n<div class=\'fr_text size_'));
     
       _print(this.model.getSize());
     
@@ -9245,6 +9247,10 @@ window.JST["fields/section_break"] = function(__obj) {
     (function() {
       var formattedDescription;
     
+      _print(_safe(JST["partials/labels"](this)));
+    
+      _print(_safe('\n\n'));
+    
       formattedDescription = FormRenderer.formatHTML(this.model.get('field_options.description'));
     
       _print(_safe('\n<'));
@@ -9745,25 +9751,72 @@ window.JST["partials/label"] = function(__obj) {
         _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
     
-      _print(_safe('\n\n  '));
+      _print(_safe('\n  '));
     
-      if (this.showLabels) {
-        _print(_safe('\n    '));
-        if (this.model.get('blind')) {
-          _print(_safe('\n      <span class=\'label\'>Blind</span>\n    '));
-        }
-        _print(_safe('\n    '));
-        if (this.model.get('admin_only')) {
-          _print(_safe('\n      <span class=\'label\'>Hidden</span>\n    '));
-        }
-        _print(_safe('\n    '));
-        if (this.model.isConditional()) {
-          _print(_safe('\n      <span class=\'label\'>Hidden until rules are met</span>\n    '));
-        }
-        _print(_safe('\n  '));
-      }
+      _print(_safe(JST["partials/labels"](this)));
     
       _print(_safe('\n</label>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/labels"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      if (this.showLabels) {
+        _print(_safe('\n  '));
+        if (this.model.get('blind')) {
+          _print(_safe('\n    <span class=\'label\'>Blind</span>\n  '));
+        }
+        _print(_safe('\n  '));
+        if (this.model.get('admin_only')) {
+          _print(_safe('\n    <span class=\'label\'>Hidden</span>\n  '));
+        }
+        _print(_safe('\n  '));
+        if (this.model.isConditional()) {
+          _print(_safe('\n    <span class=\'label\'>Hidden until rules are met</span>\n  '));
+        }
+        _print(_safe('\n'));
+      }
+    
+      _print(_safe('\n'));
     
     }).call(this);
     

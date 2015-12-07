@@ -1,3 +1,5 @@
+<%- JST["partials/labels"](@) %>
+
 <div class='fr_text size_<%= @model.getSize() %>'>
   <%- FormRenderer.formatHTML(@model.get('field_options.description')) %>
 </div>

@@ -1,3 +1,5 @@
+<%- JST["partials/labels"](@) %>
+
 <% formattedDescription = FormRenderer.formatHTML(@model.get('field_options.description')) %>
 <<%= @model.sizeToHeaderTag() %>><%= @model.get('label') %></<%= @model.sizeToHeaderTag() %>>
 <% if formattedDescription: %>

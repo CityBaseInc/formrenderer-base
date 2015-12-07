@@ -331,7 +331,15 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
         if _.isNaN(num) then memo else memo + num
       , 0
 
-      @set "columnTotals.#{j}", if columnSum > 0 then parseFloat(columnSum.toFixed(10)) else ''
+      @set "columnTotals.#{j}", @formatColumnSum(columnSum)
+
+  formatColumnSum: (num) ->
+    if num > 0
+      parsed = parseFloat(num.toFixed(10))
+      precision = "#{parsed}".split('.')[1]?.length || 0
+      _str.numberFormat(parsed, precision, '.', ',')
+    else
+      ''
 
 FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'

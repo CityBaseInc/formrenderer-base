@@ -1312,9 +1312,19 @@ rivets.configure({
             return memo + num;
           }
         }, 0);
-        _results.push(this.set("columnTotals." + j, columnSum > 0 ? parseFloat(columnSum.toFixed(10)) : ''));
+        _results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
       }
       return _results;
+    },
+    formatColumnSum: function(num) {
+      var parsed, precision, _ref;
+      if (num > 0) {
+        parsed = parseFloat(num.toFixed(10));
+        precision = ((_ref = ("" + parsed).split('.')[1]) != null ? _ref.length : void 0) || 0;
+        return _str.numberFormat(parsed, precision, '.', ',');
+      } else {
+        return '';
+      }
     }
   });
 

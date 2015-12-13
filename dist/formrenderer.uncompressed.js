@@ -7621,7 +7621,25 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
     validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
-    field_type: 'number'
+    field_type: 'number',
+    calculateSize: function() {
+      var digits, digitsInt;
+      if ((digitsInt = parseInt(this.get('field_options.max'), 10))) {
+        digits = ("" + digitsInt).length;
+      } else {
+        digits = 6;
+      }
+      if (!this.get('field_options.integer_only')) {
+        digits += 2;
+      }
+      if (digits > 6) {
+        return 'seven_plus';
+      } else if (digits > 3) {
+        return 'four_six';
+      } else {
+        return 'one_three';
+      }
+    }
   });
 
   FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
@@ -9036,7 +9054,11 @@ window.JST["fields/number"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n       data-rv-input=\'model.value\' />\n\n'));
+      _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
+    
+      _print(this.model.calculateSize());
+    
+      _print(_safe('" />\n\n'));
     
       if (this.model.get('field_options.units')) {
         _print(_safe('\n  <span class=\'fr_units\'>\n    '));

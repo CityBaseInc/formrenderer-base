@@ -202,6 +202,18 @@
 .fr_response_field_number {
   input[type=text] {
     width: $fr_small_width;
+
+    &.size_one_three {
+      width: $fr_number_base_width * 3;
+    }
+
+    &.size_four_six {
+      width: $fr_number_base_width * 6;
+    }
+
+    &.size_seven_plus {
+      width: $fr_number_base_width * 9;
+    }
   }
 
   .fr_units {

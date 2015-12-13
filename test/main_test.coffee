@@ -158,6 +158,43 @@ describe 'options', ->
       @fr = new FormRenderer _.extend({}, Fixtures.FormRendererOptions.KITCHEN_SINK(), validateImmediately: true)
       expect($('.fr_error_alert_bar').length).to.not.equal(0)
 
+describe 'number field classes', ->
+  it 'functions properly', ->
+    expectations = {
+      one_three: [
+        ['9', false]
+        ['9', true]
+        ['900', true]
+      ]
+      four_six: [
+        ['90', false]
+        ['999', false]
+        ['123000.00', true]
+        ['', true]
+      ]
+      seven_plus: [
+        ['', false]
+        [undefined, false]
+      ]
+    }
+
+    for className, examples of expectations
+      for example in examples
+        @fr = new FormRenderer(
+          project_id: 'dummy_val'
+          response_fields: [
+            field_type: 'number'
+            field_options:
+              max: example[0]
+              integer_only: example[1]
+          ]
+          response:
+            id: 'xxx'
+            responses: {}
+        )
+
+        expect($(".size_#{className}").length).to.eql 1
+
 # Need to mock AJAX requests for these...
 describe '#save', ->
   it 'handles additional changes while saving'

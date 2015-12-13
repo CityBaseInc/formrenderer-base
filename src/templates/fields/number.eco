@@ -1,6 +1,7 @@
 <input type="text"
        id="<%= @getDomId() %>"
-       data-rv-input='model.value' />
+       data-rv-input='model.value'
+       class="size_<%= @model.calculateSize() %>" />
 
 <% if @model.get('field_options.units'): %>
   <span class='fr_units'>

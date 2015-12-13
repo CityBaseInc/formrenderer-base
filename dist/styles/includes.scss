@@ -21,6 +21,9 @@ $fr_medium_height: 100px !default;
 $fr_large_width: 100% !default;
 $fr_large_height: 240px !default;
 
+// Number sizes
+$fr_number_base_width: 1em !default;
+
 @mixin cf() {
   &:before, &:after {
     display: table;

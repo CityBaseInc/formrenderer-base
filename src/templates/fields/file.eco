@@ -4,7 +4,6 @@
 <% else: %>
   <input type='file'
          id='<%= @getDomId() %>'
-         name='file'
          <% if (exts = @model.getAcceptedExtensions()): %>
           accept='<%= exts.join(',') %>'
          <% end %>

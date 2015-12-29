@@ -152,56 +152,35 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
     @$status = @$el.find('.js-upload-status')
-    @bindChangeEvent()
-    return @
 
-  bindChangeEvent: ->
-    @$input.on 'change', $.proxy(@fileChanged, @)
-
-  fileChanged: (e) ->
-    newFilename = if e.target.files?[0]?
-      e.target.files[0].name
-    else if e.target.value
-      e.target.value.replace(/^.+\\/, '')
-    else
-      FormRenderer.t.error_filename
-
-    @model.set 'value.filename', newFilename, silent: true
-    @$el.find('.js-filename').text newFilename
-    @$status.text FormRenderer.t.uploading
-    @doUpload()
-
-  doUpload: ->
-    $tmpForm = $("<form method='post' style='display: inline;' />")
-    $oldInput = @$input
-    @$input = $oldInput.clone().hide().val('').insertBefore($oldInput)
-    @bindChangeEvent()
-    $oldInput.appendTo($tmpForm)
-    $tmpForm.insertBefore(@$input)
-    @form_renderer.requests += 1
-    $tmpForm.ajaxSubmit
-      url: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file"
-      data:
-        response_field_id: @model.get('id')
-        replace_file_id: @model.get('value.id')
-        v: 0
-      headers: @form_renderer.serverHeaders
-      dataType: 'json'
-      uploadProgress: (_, __, ___, percentComplete) =>
-        @$status.text(if percentComplete == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{percentComplete}%)")
-      complete: =>
-        @form_renderer.requests -= 1
-        $tmpForm.remove()
-      success: (data) =>
-        @model.set 'value.id', data.file_id
-        @render()
-      error: (data) =>
-        errorText = data.responseJSON?.errors
-        @$status.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
-        @$status.addClass('fr_error')
-        setTimeout =>
+    if @form_renderer
+      @$input.inlineFileUpload
+        method: 'post'
+        action: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file",
+        additionalParams:
+          response_field_id: @model.get('id')
+          v: 0
+        start: (data) =>
+          @model.set 'value.filename', data.filename, silent: true
+          @$el.find('.js-filename').text data.filename
+          @$status.text FormRenderer.t.uploading
+          @form_renderer.requests += 1
+        progress: (data) =>
+          @$status.text(if data.percent == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{data.percent}%)")
+        complete: =>
+          @form_renderer.requests -= 1
+        success: (data) =>
+          @model.set 'value.id', data.data.file_id
           @render()
-        , 2000
+        error: (data) =>
+          errorText = data.xhr.responseJSON?.errors
+          @$status.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
+          @$status.addClass('fr_error')
+          setTimeout =>
+            @render()
+          , 2000
+
+    return @
 
   doRemove: ->
     @model.set 'value', {}

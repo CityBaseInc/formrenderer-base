@@ -1216,6 +1216,152 @@ function log() {
 }));
 
 
+var slice = [].slice;
+
+(function($, window) {
+  var InlineFileUpload;
+  InlineFileUpload = (function() {
+    InlineFileUpload.prototype.defaults = {
+      name: 'file',
+      action: void 0,
+      method: void 0,
+      additionalParams: {}
+    };
+
+    function InlineFileUpload($input, options) {
+      var $form, base, base1;
+      this.$input = $input;
+      this.options = $.extend({}, this.defaults, options, this.$input.data('ifu-options'));
+      $form = this.$input.closest('form');
+      (base = this.options).action || (base.action = $form.attr('action'));
+      (base1 = this.options).method || (base1.method = $form.find('[name=_method]').val() || $form.attr('method'));
+      this._bindInputChange();
+    }
+
+    InlineFileUpload.prototype._baseParams = function() {
+      return $.extend({
+        inline_file_upload: true
+      }, this.options.additionalParams);
+    };
+
+    InlineFileUpload.prototype._ajaxUpload = function() {
+      var $tmpForm;
+      $tmpForm = this._createTemporaryForm();
+      return $tmpForm.ajaxSubmit({
+        dataType: 'json',
+        data: this._baseParams(),
+        uploadProgress: (function(_this) {
+          return function(_, __, ___, percentComplete) {
+            var base, cbData;
+            cbData = {
+              percent: percentComplete
+            };
+            if (typeof (base = _this.options).progress === "function") {
+              base.progress(cbData);
+            }
+            return _this.$input.trigger('inline_file_upload:progress', cbData);
+          };
+        })(this),
+        success: (function(_this) {
+          return function(data) {
+            var base, cbData;
+            cbData = {
+              data: data
+            };
+            if (typeof (base = _this.options).success === "function") {
+              base.success(cbData);
+            }
+            return _this.$input.trigger('inline_file_upload:success', cbData);
+          };
+        })(this),
+        error: (function(_this) {
+          return function(xhr) {
+            var base, cbData;
+            cbData = {
+              xhr: xhr
+            };
+            if (typeof (base = _this.options).error === "function") {
+              base.error(cbData);
+            }
+            return _this.$input.trigger('inline_file_upload:error', cbData);
+          };
+        })(this),
+        complete: (function(_this) {
+          return function(xhr) {
+            var base, cbData;
+            $tmpForm.remove();
+            cbData = {
+              xhr: xhr
+            };
+            if (typeof (base = _this.options).complete === "function") {
+              base.complete(cbData);
+            }
+            return _this.$input.trigger('inline_file_upload:complete', cbData);
+          };
+        })(this)
+      });
+    };
+
+    InlineFileUpload.prototype._createTemporaryForm = function() {
+      var $oldInput, form;
+      form = $("<form action='" + this.options.action + "' method='post' style='display:inline'>\n  <input type='hidden' name='_method' value='" + this.options.method + "' />\n</form>");
+      $oldInput = this.$input;
+      this.$input = $oldInput.clone().hide().val('').insertBefore($oldInput);
+      this._bindInputChange();
+      $oldInput.appendTo(form);
+      $oldInput.attr('name', this.options.name);
+      form.insertBefore(this.$input);
+      return form;
+    };
+
+    InlineFileUpload.prototype._eventToFilename = function(e) {
+      if (e.target.files != null) {
+        return e.target.files[0].name;
+      } else if (e.target.value) {
+        return e.target.value.replace(/^.+\\/, '');
+      }
+    };
+
+    InlineFileUpload.prototype._onChange = function(e) {
+      var base, cbData;
+      if (!this.$input.val()) {
+        return;
+      }
+      cbData = {
+        filename: this._eventToFilename(e)
+      };
+      if (typeof (base = this.options).start === "function") {
+        base.start(cbData);
+      }
+      this.$input.trigger('inline_file_upload:start', cbData);
+      return this._ajaxUpload();
+    };
+
+    InlineFileUpload.prototype._bindInputChange = function() {
+      return this.$input.on('change', $.proxy(this._onChange, this));
+    };
+
+    return InlineFileUpload;
+
+  })();
+  return $.fn.extend({
+    inlineFileUpload: function() {
+      var args, option;
+      option = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      return this.each(function() {
+        var data;
+        data = $(this).data('inline-file-upload');
+        if (!data) {
+          $(this).data('inline-file-upload', (data = new InlineFileUpload($(this), option)));
+        }
+        if (typeof option === 'string') {
+          return data[option].apply(data, args);
+        }
+      });
+    }
+  });
+})(window.jQuery, window);
+
 ;(function(win){
 	var store = {},
 		doc = win.document,
@@ -8057,69 +8203,54 @@ rivets.configure({
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
       this.$status = this.$el.find('.js-upload-status');
-      this.bindChangeEvent();
-      return this;
-    },
-    bindChangeEvent: function() {
-      return this.$input.on('change', $.proxy(this.fileChanged, this));
-    },
-    fileChanged: function(e) {
-      var newFilename, _ref;
-      newFilename = ((_ref = e.target.files) != null ? _ref[0] : void 0) != null ? e.target.files[0].name : e.target.value ? e.target.value.replace(/^.+\\/, '') : FormRenderer.t.error_filename;
-      this.model.set('value.filename', newFilename, {
-        silent: true
-      });
-      this.$el.find('.js-filename').text(newFilename);
-      this.$status.text(FormRenderer.t.uploading);
-      return this.doUpload();
-    },
-    doUpload: function() {
-      var $oldInput, $tmpForm;
-      $tmpForm = $("<form method='post' style='display: inline;' />");
-      $oldInput = this.$input;
-      this.$input = $oldInput.clone().hide().val('').insertBefore($oldInput);
-      this.bindChangeEvent();
-      $oldInput.appendTo($tmpForm);
-      $tmpForm.insertBefore(this.$input);
-      this.form_renderer.requests += 1;
-      return $tmpForm.ajaxSubmit({
-        url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
-        data: {
-          response_field_id: this.model.get('id'),
-          replace_file_id: this.model.get('value.id'),
-          v: 0
-        },
-        headers: this.form_renderer.serverHeaders,
-        dataType: 'json',
-        uploadProgress: (function(_this) {
-          return function(_, __, ___, percentComplete) {
-            return _this.$status.text(percentComplete === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + percentComplete + "%)");
-          };
-        })(this),
-        complete: (function(_this) {
-          return function() {
-            _this.form_renderer.requests -= 1;
-            return $tmpForm.remove();
-          };
-        })(this),
-        success: (function(_this) {
-          return function(data) {
-            _this.model.set('value.id', data.file_id);
-            return _this.render();
-          };
-        })(this),
-        error: (function(_this) {
-          return function(data) {
-            var errorText, _ref;
-            errorText = (_ref = data.responseJSON) != null ? _ref.errors : void 0;
-            _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
-            _this.$status.addClass('fr_error');
-            return setTimeout(function() {
+      if (this.form_renderer) {
+        this.$input.inlineFileUpload({
+          method: 'post',
+          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          additionalParams: {
+            response_field_id: this.model.get('id'),
+            v: 0
+          },
+          start: (function(_this) {
+            return function(data) {
+              _this.model.set('value.filename', data.filename, {
+                silent: true
+              });
+              _this.$el.find('.js-filename').text(data.filename);
+              _this.$status.text(FormRenderer.t.uploading);
+              return _this.form_renderer.requests += 1;
+            };
+          })(this),
+          progress: (function(_this) {
+            return function(data) {
+              return _this.$status.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+            };
+          })(this),
+          complete: (function(_this) {
+            return function() {
+              return _this.form_renderer.requests -= 1;
+            };
+          })(this),
+          success: (function(_this) {
+            return function(data) {
+              _this.model.set('value.id', data.data.file_id);
               return _this.render();
-            }, 2000);
-          };
-        })(this)
-      });
+            };
+          })(this),
+          error: (function(_this) {
+            return function(data) {
+              var errorText, _ref;
+              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
+              _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
+              _this.$status.addClass('fr_error');
+              return setTimeout(function() {
+                return _this.render();
+              }, 2000);
+            };
+          })(this)
+        });
+      }
+      return this;
     },
     doRemove: function() {
       this.model.set('value', {});
@@ -8713,7 +8844,7 @@ window.JST["fields/file"] = function(__obj) {
       } else {
         _print(_safe('\n  <input type=\'file\'\n         id=\''));
         _print(this.getDomId());
-        _print(_safe('\'\n         name=\'file\'\n         '));
+        _print(_safe('\'\n         '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n          accept=\''));
           _print(exts.join(','));

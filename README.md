@@ -1,7 +1,7 @@
 formrenderer-base [![status]](https://circleci.com/gh/dobtco/formrenderer-base/tree/master) ![bower]
 =================
 
-formrenderer-base is a JavaScript library for rendering an HTML form from a JSON definition, and persisting form submissions back to a server via AJAX. This is the library used for rendering forms inside of [Screendoor](http://www.dobt.co/screendoor), and as such, it's pretty tightly coupled to Screendoor's server API. There's a couple different ways this library can be used:
+formrenderer-base is a JavaScript library for rendering an HTML form from a JSON definition, and persisting form submissions back to a server via AJAX. This is the library used for rendering forms inside of [Screendoor](https://www.dobt.co/screendoor), and as such, it's pretty tightly coupled to Screendoor's server API. There's a couple different ways this library can be used:
 
 ## Ways to use it
 

@@ -114,5 +114,5 @@ When you're ready to release a new version:
 4. `grunt s3:version` to push to the version-specific s3 distribution
 5. `grunt s3:autoupdate` to push to the auto-updated s3 distribution
 
-[status]: https://circleci-badges.herokuapp.com/dobtco/formrenderer-base/0532babff46c3141013e1c5aca8fd90d862affe9
+[status]: https://circleci.com/gh/dobtco/formrenderer-base.svg?style=shield&circle-token=0532babff46c3141013e1c5aca8fd90d862affe9
 [bower]: https://img.shields.io/bower/v/formrenderer-base.svg

@@ -1946,69 +1946,54 @@ rivets.configure({
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
       this.$status = this.$el.find('.js-upload-status');
-      this.bindChangeEvent();
-      return this;
-    },
-    bindChangeEvent: function() {
-      return this.$input.on('change', $.proxy(this.fileChanged, this));
-    },
-    fileChanged: function(e) {
-      var newFilename, _ref;
-      newFilename = ((_ref = e.target.files) != null ? _ref[0] : void 0) != null ? e.target.files[0].name : e.target.value ? e.target.value.replace(/^.+\\/, '') : FormRenderer.t.error_filename;
-      this.model.set('value.filename', newFilename, {
-        silent: true
-      });
-      this.$el.find('.js-filename').text(newFilename);
-      this.$status.text(FormRenderer.t.uploading);
-      return this.doUpload();
-    },
-    doUpload: function() {
-      var $oldInput, $tmpForm;
-      $tmpForm = $("<form method='post' style='display: inline;' />");
-      $oldInput = this.$input;
-      this.$input = $oldInput.clone().hide().val('').insertBefore($oldInput);
-      this.bindChangeEvent();
-      $oldInput.appendTo($tmpForm);
-      $tmpForm.insertBefore(this.$input);
-      this.form_renderer.requests += 1;
-      return $tmpForm.ajaxSubmit({
-        url: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
-        data: {
-          response_field_id: this.model.get('id'),
-          replace_file_id: this.model.get('value.id'),
-          v: 0
-        },
-        headers: this.form_renderer.serverHeaders,
-        dataType: 'json',
-        uploadProgress: (function(_this) {
-          return function(_, __, ___, percentComplete) {
-            return _this.$status.text(percentComplete === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + percentComplete + "%)");
-          };
-        })(this),
-        complete: (function(_this) {
-          return function() {
-            _this.form_renderer.requests -= 1;
-            return $tmpForm.remove();
-          };
-        })(this),
-        success: (function(_this) {
-          return function(data) {
-            _this.model.set('value.id', data.file_id);
-            return _this.render();
-          };
-        })(this),
-        error: (function(_this) {
-          return function(data) {
-            var errorText, _ref;
-            errorText = (_ref = data.responseJSON) != null ? _ref.errors : void 0;
-            _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
-            _this.$status.addClass('fr_error');
-            return setTimeout(function() {
+      if (this.form_renderer) {
+        this.$input.inlineFileUpload({
+          method: 'post',
+          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          additionalParams: {
+            response_field_id: this.model.get('id'),
+            v: 0
+          },
+          start: (function(_this) {
+            return function(data) {
+              _this.model.set('value.filename', data.filename, {
+                silent: true
+              });
+              _this.$el.find('.js-filename').text(data.filename);
+              _this.$status.text(FormRenderer.t.uploading);
+              return _this.form_renderer.requests += 1;
+            };
+          })(this),
+          progress: (function(_this) {
+            return function(data) {
+              return _this.$status.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+            };
+          })(this),
+          complete: (function(_this) {
+            return function() {
+              return _this.form_renderer.requests -= 1;
+            };
+          })(this),
+          success: (function(_this) {
+            return function(data) {
+              _this.model.set('value.id', data.data.file_id);
               return _this.render();
-            }, 2000);
-          };
-        })(this)
-      });
+            };
+          })(this),
+          error: (function(_this) {
+            return function(data) {
+              var errorText, _ref;
+              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
+              _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
+              _this.$status.addClass('fr_error');
+              return setTimeout(function() {
+                return _this.render();
+              }, 2000);
+            };
+          })(this)
+        });
+      }
+      return this;
     },
     doRemove: function() {
       this.model.set('value', {});
@@ -2602,7 +2587,7 @@ window.JST["fields/file"] = function(__obj) {
       } else {
         _print(_safe('\n  <input type=\'file\'\n         id=\''));
         _print(this.getDomId());
-        _print(_safe('\'\n         name=\'file\'\n         '));
+        _print(_safe('\'\n         '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n          accept=\''));
           _print(exts.join(','));

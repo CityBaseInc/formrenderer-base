@@ -1,6 +1,6 @@
 before ->
   @fr = new FormRenderer
-    project_id: 2
+    project_id: 'dummy_val'
     response:
       id: 'xxx'
       responses: {}

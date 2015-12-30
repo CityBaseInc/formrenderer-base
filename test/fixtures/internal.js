@@ -323,7 +323,7 @@ Fixtures.KITCHEN_SINK_FORM = [
 Fixtures.FormRendererOptions = {
   LOADED: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [],
       response: {
         id: 'xxx',
@@ -333,7 +333,7 @@ Fixtures.FormRendererOptions = {
   },
   RESPONSE_LOADED: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response: {
         responses: {
           '1': 'hey'
@@ -343,7 +343,7 @@ Fixtures.FormRendererOptions = {
   },
   PROJECT_LOADED: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [_.clone(Fixtures.RESPONSE_FIELD)],
       response: {
         id: 'xxx'
@@ -352,7 +352,7 @@ Fixtures.FormRendererOptions = {
   },
   NOT_LOADED: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response: {
         id: 'xxx'
       }
@@ -360,7 +360,7 @@ Fixtures.FormRendererOptions = {
   },
   KITCHEN_SINK: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: Fixtures.KITCHEN_SINK_FORM,
       response: {
         id: 'xxx',
@@ -370,7 +370,7 @@ Fixtures.FormRendererOptions = {
   },
   KITCHEN_SINK_REQ: function(){
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: _.map(Fixtures.KITCHEN_SINK_FORM, function(rf){
         return _.extend({}, rf, { required: true });
       }),
@@ -382,7 +382,7 @@ Fixtures.FormRendererOptions = {
   },
   SIZES: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 1,
@@ -590,7 +590,7 @@ Fixtures.FormRendererOptions = {
   },
   SHORT: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 34,
@@ -630,7 +630,7 @@ Fixtures.FormRendererOptions = {
   },
   CONDITIONAL: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 35,
@@ -818,7 +818,7 @@ Fixtures.FormRendererOptions = {
   },
   CONDITIONAL_TWO: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 35,
@@ -900,7 +900,7 @@ Fixtures.FormRendererOptions = {
   },
   CONDITIONAL_THREE: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 35,
@@ -980,7 +980,7 @@ Fixtures.FormRendererOptions = {
   },
   BLANK: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [],
       response: {
         id: 'xxx',
@@ -990,7 +990,7 @@ Fixtures.FormRendererOptions = {
   },
   BLANK_IDENTIFIED: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 34,
@@ -1014,7 +1014,7 @@ Fixtures.FormRendererOptions = {
   },
   FILE: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 35,
@@ -1040,7 +1040,7 @@ Fixtures.FormRendererOptions = {
   },
   TABLE: function() {
     return {
-      project_id: 1,
+      project_id: 'dummy_val',
       response_fields: [
         {
           id: 49,
@@ -1076,11 +1076,6 @@ Fixtures.FormRendererOptions = {
         id: 'xxx',
         responses: {}
       }
-    };
-  },
-  SD: function() {
-    return {
-      project_id: 1
     };
   }
 };

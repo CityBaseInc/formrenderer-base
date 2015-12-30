@@ -1306,7 +1306,7 @@ var slice = [].slice;
       var $oldInput, form;
       form = $("<form action='" + this.options.action + "' method='post' style='display:inline'>\n  <input type='hidden' name='_method' value='" + this.options.method + "' />\n</form>");
       $oldInput = this.$input;
-      this.$input = $oldInput.clone().hide().val('').insertBefore($oldInput);
+      this.$input = $oldInput.clone().val('').insertBefore($oldInput);
       this._bindInputChange();
       $oldInput.appendTo(form);
       $oldInput.attr('name', this.options.name);

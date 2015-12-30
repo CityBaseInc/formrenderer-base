@@ -3,7 +3,7 @@ before ->
 
   @createFormRendererWithFieldDescription = (x) ->
     new FormRenderer
-      project_id: 1
+      project_id: 'dummy_val'
       response:
         id: 'xxx'
         responses: {}
@@ -36,7 +36,7 @@ google.com'>This is a link</a><script>alert('hi')</script>"
 describe 'handling of undefiend', ->
   before ->
     new FormRenderer
-      project_id: 1
+      project_id: 'dummy_val'
       response:
         id: 'xxx'
         responses: {}

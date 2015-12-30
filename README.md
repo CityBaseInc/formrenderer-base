@@ -30,7 +30,7 @@ Once you're ready to render a form:
 
 <script>
   new FormRenderer({
-    "project_id": 2, // REQUIRED: your Screendoor project ID.
+    "project_id": "w90Xe5IM5IlP7FqU", // Your project's embed token
   });
 </script>
 ```
@@ -41,7 +41,7 @@ Of course, there's a lot more you can do...
 
 | option | description | default |
 | --- | --- | --- |
-| project_id | Your Screendoor project ID, which can be found on your project settings page |  |
+| project_id | Your Screendoor project's embed token, which can be found on your embed code page. |  |
 | onReady | A function to call once the form is fully-loaded |  |
 | target | jQuery selector for the element in which to render your form. Can also be a DOM node. | `'[data-formrenderer]'` |
 | enablePages | If the form contains multiple pages, render them. Set to `false` to render all response fields on the same page. | `true` |

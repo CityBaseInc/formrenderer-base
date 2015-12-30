@@ -8,14 +8,14 @@
 </head>
 <body>
   <div id='container'>
-    <select id='lib' class='config_select'>
+    <select id='lib' class='js_stored_val config_select'>
       <option value=''>No library</option>
       <option value='css/cardinal.css'>Cardinal</option>
       <option value='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css'>Bootstrap</option>
       <option value='https://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'>Foundation</option>
     </select>
 
-    <select id='fixture' class='config_select'>
+    <select id='fixture' class='js_stored_val config_select'>
       <option value='KITCHEN_SINK'>Kitchen Sink</option>
       <option value='KITCHEN_SINK_REQ'>Kitchen Sink (All req'd)</option>
       <option value='KITCHEN_IMMEDIATE_VALIDATIONS'>Kitchen Sink (Req'd, Immediate Validation)</option>
@@ -30,8 +30,11 @@
       <option value='BLANK_IDENTIFIED'>Blank (identified)</option>
       <option value='SIZES'>All sizes</option>
       <option value='TABLE'>Table</option>
-      <option value='SD'>Screendoor</option>
     </select>
+
+    Or
+
+    <input type='text' class='js_stored_val' id='screendoor_project_id' placeholder='Embed token' />
 
     <hr />
 

@@ -2832,7 +2832,7 @@ window.JST["fields/page_break"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n'));
+      _print(_safe('<div class=\'fr_page_break_inner\'>\n  <span>Page Break</span>\n</div>\n'));
     
     }).call(this);
     

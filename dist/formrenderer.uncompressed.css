@@ -139,6 +139,12 @@
 
 .fr_response_field_number input[type=text] {
   width: 160px; }
+  .fr_response_field_number input[type=text].size_one_three {
+    width: 3em; }
+  .fr_response_field_number input[type=text].size_four_six {
+    width: 6em; }
+  .fr_response_field_number input[type=text].size_seven_plus {
+    width: 9em; }
 .fr_response_field_number .fr_units {
   font-size: 90%; }
 

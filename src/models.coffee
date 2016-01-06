@@ -370,6 +370,21 @@ FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.exte
     FormRenderer.Validators.IntegerValidator
   ]
   field_type: 'number'
+  calculateSize: ->
+    if (digitsInt = parseInt(@get('field_options.max'), 10))
+      digits = "#{digitsInt}".length
+    else
+      digits = 6
+
+    unless @get('field_options.integer_only')
+      digits += 2
+
+    if digits > 6
+      'seven_plus'
+    else if digits > 3
+      'four_six'
+    else
+      'one_three'
 
 FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend
   field_type: 'paragraph'

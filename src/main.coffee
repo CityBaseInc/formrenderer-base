@@ -5,6 +5,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     target: '[data-formrenderer]'
     validateImmediately: false
     response: {}
+    responderLanguage: undefined
     preview: false
     skipValidation: undefined
     saveParams: {}
@@ -232,6 +233,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       response_id: @options.response.id
       project_id: @options.project_id
       skip_validation: @options.skipValidation
+      responder_language: @options.responderLanguage
     ,
       @options.saveParams
 

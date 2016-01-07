@@ -55,6 +55,7 @@ rivets.configure({
       target: '[data-formrenderer]',
       validateImmediately: false,
       response: {},
+      responderLanguage: void 0,
       preview: false,
       skipValidation: void 0,
       saveParams: {},
@@ -366,7 +367,8 @@ rivets.configure({
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        skip_validation: this.options.skipValidation
+        skip_validation: this.options.skipValidation,
+        responder_language: this.options.responderLanguage
       }, this.options.saveParams);
     },
     _onChange: function() {

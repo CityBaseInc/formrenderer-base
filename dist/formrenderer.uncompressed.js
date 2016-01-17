@@ -1304,7 +1304,7 @@ var slice = [].slice;
 
     InlineFileUpload.prototype._createTemporaryForm = function() {
       var $oldInput, form;
-      form = $("<form action='" + this.options.action + "' method='post' style='display:inline'>\n  <input type='hidden' name='_method' value='" + this.options.method + "' />\n</form>");
+      form = $("<form action='" + this.options.action + "' method='post' style='position:fixed;left:-9999px;'>\n  <input type='hidden' name='_method' value='" + this.options.method + "' />\n</form>");
       $oldInput = this.$input;
       this.$input = $oldInput.clone().val('').insertBefore($oldInput);
       this._bindInputChange();

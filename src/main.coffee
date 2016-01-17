@@ -89,7 +89,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         if !@corsSupported()
           @$el.
             find('.fr_loading').
-            html(FormRenderer.t.not_supported.replace(':url', @projectUrl()))
+            html(FormRenderer.t.not_supported.replace(/\:url/g, @projectUrl()))
         else
           @$el.find('.fr_loading').text(
             "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""

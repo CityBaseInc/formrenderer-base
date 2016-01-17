@@ -158,7 +158,7 @@ rivets.configure({
           return function(xhr) {
             var _ref;
             if (!_this.corsSupported()) {
-              return _this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(':url', _this.projectUrl()));
+              return _this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(/\:url/g, _this.projectUrl()));
             } else {
               _this.$el.find('.fr_loading').text("" + FormRenderer.t.error_loading + ": \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
               return _this.trigger('errorSaving', xhr);

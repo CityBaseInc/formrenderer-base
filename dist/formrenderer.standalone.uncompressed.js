@@ -1332,17 +1332,20 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     field_type: 'file',
-    getAttachments: function() {
-      return this.get('value.attachments') || [];
+    getFiles: function() {
+      return this.get('value.files') || [];
+    },
+    canAddFile: function() {
+      return this.getFiles().length < this.maxFiles();
     },
     getValue: function() {
-      return _.compact(_.pluck(this.getAttachments(), 'id'));
+      return _.compact(_.pluck(this.getFiles(), 'id'));
     },
     toText: function() {
-      return _.compact(_.pluck(this.getAttachments(), 'filename')).join(' ');
+      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
     },
     hasValue: function() {
-      return _.any(this.getAttachments(), function(h) {
+      return _.any(this.getFiles(), function(h) {
         return !!h.id;
       });
     },
@@ -1352,6 +1355,13 @@ rivets.configure({
         return _.map(x, function(x) {
           return "." + x;
         });
+      }
+    },
+    maxFiles: function() {
+      if (this.get('field_options.allow_multiple_files')) {
+        return 10;
+      } else {
+        return 1;
       }
     }
   });
@@ -2007,14 +2017,14 @@ rivets.configure({
           })(this),
           success: (function(_this) {
             return function(data) {
-              var attachments, newAttachment;
-              attachments = _this.model.getAttachments().slice(0);
-              newAttachment = {
+              var files, newFile;
+              files = _this.model.getFiles().slice(0);
+              newFile = {
                 id: data.data.file_id,
                 filename: uploadingFilename
               };
-              attachments.push(newAttachment);
-              _this.model.set('value.attachments', attachments);
+              files.push(newFile);
+              _this.model.set('value.files', files);
               return _this.render();
             };
           })(this),
@@ -2032,7 +2042,14 @@ rivets.configure({
       }
       return this;
     },
-    doRemove: function() {}
+    doRemove: function(e) {
+      var files, idx;
+      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
+      files = this.model.getFiles().slice(0);
+      files.splice(idx, 1);
+      this.model.set('value.files', files);
+      return this.render();
+    }
   });
 
   FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
@@ -2612,55 +2629,47 @@ window.JST["fields/file"] = function(__obj) {
     
       _print(_safe('<div class=\'fr_files\'>\n  '));
     
-      _ref = this.model.getAttachments();
+      _ref = this.model.getFiles();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         attachment = _ref[_i];
         _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
         _print(attachment.filename);
-        _print(_safe('</span>\n      <button data-fr-remove-file=\''));
-        _print(attachment.id);
-        _print(_safe('\' class=\''));
+        _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>'));
         _print(FormRenderer.t.clear);
         _print(_safe('</button>\n    </div>\n  '));
       }
     
-      _print(_safe('\n</div>\n\n<div class=\'fr_add_file\'>\n  <label for=\''));
+      _print(_safe('\n</div>\n\n'));
     
-      _print(this.getDomId());
-    
-      _print(_safe('\' class=\''));
-    
-      _print(FormRenderer.BUTTON_CLASS);
-    
-      _print(_safe('\'>\n    '));
-    
-      _print(FormRenderer.t.upload);
-    
-      _print(_safe('\n  </label>\n\n  <div class=\'fr_error\' style=\'display:none\'></div>\n\n  <input type=\'file\'\n         id=\''));
-    
-      _print(this.getDomId());
-    
-      _print(_safe('\'\n         style=\'position:fixed;left:-9999px;\'\n         '));
-    
-      if ((exts = this.model.getAcceptedExtensions())) {
-        _print(_safe('\n          accept=\''));
-        _print(exts.join(','));
-        _print(_safe('\'\n         '));
+      if (this.model.canAddFile()) {
+        _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
+        _print(this.getDomId());
+        _print(_safe('\' class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n      '));
+        _print(FormRenderer.t.upload);
+        _print(_safe('\n    </label>\n\n    <div class=\'fr_error\' style=\'display:none\'></div>\n\n    <input type=\'file\'\n           id=\''));
+        _print(this.getDomId());
+        _print(_safe('\'\n           style=\'position:fixed;left:-9999px;\'\n           '));
+        if ((exts = this.model.getAcceptedExtensions())) {
+          _print(_safe('\n            accept=\''));
+          _print(exts.join(','));
+          _print(_safe('\'\n           '));
+        }
+        _print(_safe('\n           />\n\n    '));
+        if ((exts = this.model.getAcceptedExtensions())) {
+          _print(_safe('\n      <div class=\'fr_description\'>\n        '));
+          _print(FormRenderer.t.we_accept);
+          _print(_safe(' '));
+          _print(_str.toSentence(exts));
+          _print(_safe('\n      </div>\n    '));
+        }
+        _print(_safe('\n  </div>\n'));
       }
     
-      _print(_safe('\n         />\n\n  '));
-    
-      if ((exts = this.model.getAcceptedExtensions())) {
-        _print(_safe('\n    <div class=\'fr_description\'>\n      '));
-        _print(FormRenderer.t.we_accept);
-        _print(_safe(' '));
-        _print(_str.toSentence(exts));
-        _print(_safe('\n    </div>\n  '));
-      }
-    
-      _print(_safe('\n</div>\n'));
+      _print(_safe('\n'));
     
     }).call(this);
     

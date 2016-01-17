@@ -174,13 +174,13 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           @form_renderer.requests -= 1
           @$label.html(originalLabelHtml).removeClass('disabled')
         success: (data) =>
-          attachments = @model.getAttachments().slice(0)
-          newAttachment = {
+          files = @model.getFiles().slice(0)
+          newFile = {
             id: data.data.file_id
             filename: uploadingFilename
           }
-          attachments.push(newAttachment)
-          @model.set 'value.attachments', attachments
+          files.push(newFile)
+          @model.set 'value.files', files
           @render()
         error: (data) =>
           errorText = data.xhr.responseJSON?.errors
@@ -191,9 +191,12 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
 
     return @
 
-  doRemove: ->
-    # @model.set 'value', {}
-    # @render()
+  doRemove: (e) ->
+    idx = @$el.find('[data-fr-remove-file]').index(e.target)
+    files = @model.getFiles().slice(0)
+    files.splice(idx, 1)
+    @model.set 'value.files', files
+    @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'

@@ -6882,7 +6882,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.7.8';
+  FormRenderer.VERSION = '0.8.0';
 
 }).call(this);
 
@@ -7589,11 +7589,19 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     field_type: 'file',
+    getAttachments: function() {
+      return this.get('value.attachments') || [];
+    },
     getValue: function() {
-      return this.get('value.id') || '';
+      return _.compact(_.pluck(this.getAttachments(), 'id'));
+    },
+    toText: function() {
+      return _.compact(_.pluck(this.getAttachments(), 'filename')).join(' ');
     },
     hasValue: function() {
-      return this.hasValueHashKey(['id']);
+      return _.any(this.getAttachments(), function(h) {
+        return !!h.id;
+      });
     },
     getAcceptedExtensions: function() {
       var x;
@@ -8220,9 +8228,13 @@ rivets.configure({
       'click [data-fr-remove-file]': 'doRemove'
     }),
     render: function() {
+      var originalLabelHtml, uploadingFilename;
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
-      this.$status = this.$el.find('.js-upload-status');
+      this.$label = this.$input.prev('label');
+      this.$error = this.$label.next('.fr_error');
+      uploadingFilename = void 0;
+      originalLabelHtml = this.$label.html();
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',
@@ -8233,27 +8245,33 @@ rivets.configure({
           },
           start: (function(_this) {
             return function(data) {
-              _this.model.set('value.filename', data.filename, {
-                silent: true
-              });
-              _this.$el.find('.js-filename').text(data.filename);
-              _this.$status.text(FormRenderer.t.uploading);
+              uploadingFilename = data.filename;
+              _this.$label.addClass('disabled');
+              _this.$label.text(FormRenderer.t.uploading);
               return _this.form_renderer.requests += 1;
             };
           })(this),
           progress: (function(_this) {
             return function(data) {
-              return _this.$status.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
             };
           })(this),
           complete: (function(_this) {
             return function() {
-              return _this.form_renderer.requests -= 1;
+              _this.form_renderer.requests -= 1;
+              return _this.$label.html(originalLabelHtml).removeClass('disabled');
             };
           })(this),
           success: (function(_this) {
             return function(data) {
-              _this.model.set('value.id', data.data.file_id);
+              var attachments, newAttachment;
+              attachments = _this.model.getAttachments().slice(0);
+              newAttachment = {
+                id: data.data.file_id,
+                filename: uploadingFilename
+              };
+              attachments.push(newAttachment);
+              _this.model.set('value.attachments', attachments);
               return _this.render();
             };
           })(this),
@@ -8261,8 +8279,7 @@ rivets.configure({
             return function(data) {
               var errorText, _ref;
               errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
-              _this.$status.addClass('fr_error');
+              _this.$error.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
               return setTimeout(function() {
                 return _this.render();
               }, 2000);
@@ -8272,10 +8289,7 @@ rivets.configure({
       }
       return this;
     },
-    doRemove: function() {
-      this.model.set('value', {});
-      return this.render();
-    }
+    doRemove: function() {}
   });
 
   FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
@@ -8399,7 +8413,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","upload":"Upload a file","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -8851,37 +8865,59 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var exts;
+      var attachment, exts, _i, _len, _ref;
     
-      if (this.model.hasValue()) {
-        _print(_safe('\n  <span class=\'js-filename\'>'));
-        _print(this.model.get('value.filename'));
-        _print(_safe('</span>\n  <button data-fr-remove-file class=\''));
+      _print(_safe('<div class=\'fr_files\'>\n  '));
+    
+      _ref = this.model.getAttachments();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        attachment = _ref[_i];
+        _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
+        _print(attachment.filename);
+        _print(_safe('</span>\n      <button data-fr-remove-file=\''));
+        _print(attachment.id);
+        _print(_safe('\' class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>'));
         _print(FormRenderer.t.clear);
-        _print(_safe('</button>\n'));
-      } else {
-        _print(_safe('\n  <input type=\'file\'\n         id=\''));
-        _print(this.getDomId());
-        _print(_safe('\'\n         '));
-        if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n          accept=\''));
-          _print(exts.join(','));
-          _print(_safe('\'\n         '));
-        }
-        _print(_safe('\n         />\n  <span class=\'js-upload-status\'></span>\n\n  '));
-        if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n    <div class=\'fr_description\'>\n      '));
-          _print(FormRenderer.t.we_accept);
-          _print(_safe(' '));
-          _print(_str.toSentence(exts));
-          _print(_safe('\n    </div>\n  '));
-        }
-        _print(_safe('\n'));
+        _print(_safe('</button>\n    </div>\n  '));
       }
     
-      _print(_safe('\n'));
+      _print(_safe('\n</div>\n\n<div class=\'fr_add_file\'>\n  <label for=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('\' class=\''));
+    
+      _print(FormRenderer.BUTTON_CLASS);
+    
+      _print(_safe('\'>\n    '));
+    
+      _print(FormRenderer.t.upload);
+    
+      _print(_safe('\n  </label>\n\n  <div class=\'fr_error\' style=\'display:none\'></div>\n\n  <input type=\'file\'\n         id=\''));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('\'\n         style=\'position:fixed;left:-9999px;\'\n         '));
+    
+      if ((exts = this.model.getAcceptedExtensions())) {
+        _print(_safe('\n          accept=\''));
+        _print(exts.join(','));
+        _print(_safe('\'\n         '));
+      }
+    
+      _print(_safe('\n         />\n\n  '));
+    
+      if ((exts = this.model.getAcceptedExtensions())) {
+        _print(_safe('\n    <div class=\'fr_description\'>\n      '));
+        _print(FormRenderer.t.we_accept);
+        _print(_safe(' '));
+        _print(_str.toSentence(exts));
+        _print(_safe('\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n'));
     
     }).call(this);
     

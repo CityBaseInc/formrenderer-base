@@ -151,7 +151,10 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
-    @$status = @$el.find('.js-upload-status')
+    @$label = @$input.prev('label')
+    @$error = @$label.next('.fr_error')
+    uploadingFilename = undefined
+    originalLabelHtml = @$label.html()
 
     if @form_renderer
       @$input.inlineFileUpload
@@ -161,21 +164,27 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           response_field_id: @model.get('id')
           v: 0
         start: (data) =>
-          @model.set 'value.filename', data.filename, silent: true
-          @$el.find('.js-filename').text data.filename
-          @$status.text FormRenderer.t.uploading
+          uploadingFilename = data.filename
+          @$label.addClass('disabled')
+          @$label.text FormRenderer.t.uploading
           @form_renderer.requests += 1
         progress: (data) =>
-          @$status.text(if data.percent == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{data.percent}%)")
+          @$label.text(if data.percent == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{data.percent}%)")
         complete: =>
           @form_renderer.requests -= 1
+          @$label.html(originalLabelHtml).removeClass('disabled')
         success: (data) =>
-          @model.set 'value.id', data.data.file_id
+          attachments = @model.getAttachments().slice(0)
+          newAttachment = {
+            id: data.data.file_id
+            filename: uploadingFilename
+          }
+          attachments.push(newAttachment)
+          @model.set 'value.attachments', attachments
           @render()
         error: (data) =>
           errorText = data.xhr.responseJSON?.errors
-          @$status.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
-          @$status.addClass('fr_error')
+          @$error.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
           setTimeout =>
             @render()
           , 2000
@@ -183,8 +192,8 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     return @
 
   doRemove: ->
-    @model.set 'value', {}
-    @render()
+    # @model.set 'value', {}
+    # @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
   field_type: 'map_marker'

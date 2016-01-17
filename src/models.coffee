@@ -343,10 +343,15 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
 FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
+  getAttachments: ->
+    @get('value.attachments') || []
   getValue: ->
-    @get('value.id') || ''
+    _.compact(_.pluck(@getAttachments(), 'id'))
+  toText: ->
+    _.compact(_.pluck(@getAttachments(), 'filename')).join(' ')
   hasValue: ->
-    @hasValueHashKey ['id']
+    _.any @getAttachments(), (h) ->
+      !!h.id
   getAcceptedExtensions: ->
     if (x = FormRenderer.FILE_TYPES[@get('field_options.file_types')])
       _.map x, (x) -> ".#{x}"

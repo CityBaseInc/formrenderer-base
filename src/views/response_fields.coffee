@@ -182,11 +182,11 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           @model.set 'value.files', files
           @render()
         error: (data) =>
-          @$label.html(originalLabelHtml).removeClass('disabled')
+          @render()
           errorText = data.xhr.responseJSON?.errors
           @$error.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error).show()
           setTimeout =>
-            @render()
+            @$error.hide()
           , 2000
 
     return @

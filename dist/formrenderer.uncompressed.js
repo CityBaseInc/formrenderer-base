@@ -6782,7 +6782,7 @@ rivets.configure({
 
   FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
 
-  FormRenderer.BUTTON_CLASS = '';
+  FormRenderer.BUTTON_CLASS = 'fr_button';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
 
@@ -8287,11 +8287,11 @@ rivets.configure({
           error: (function(_this) {
             return function(data) {
               var errorText, _ref;
-              _this.$label.html(originalLabelHtml).removeClass('disabled');
+              _this.render();
               errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
               _this.$error.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error).show();
               return setTimeout(function() {
-                return _this.render();
+                return _this.$error.hide();
               }, 2000);
             };
           })(this)
@@ -8915,7 +8915,7 @@ window.JST["fields/file"] = function(__obj) {
           _print(exts.join(','));
           _print(_safe('\'\n           '));
         }
-        _print(_safe('\n           />\n\n    <div class=\'fr_error\' style=\'display:none\'></div>\n\n    '));
+        _print(_safe('\n           />\n\n    <span class=\'fr_error\' style=\'display:none\'></span>\n\n    '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n      <div class=\'fr_description\'>\n        '));
           _print(FormRenderer.t.we_accept);

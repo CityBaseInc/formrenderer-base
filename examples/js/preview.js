@@ -17,7 +17,8 @@ $('.js_stored_val').change(function(){
 $('head').
   append($('<link rel="stylesheet" type="text/css" />').attr('href', $('#lib').val()));
 
-FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary'
+// Just append every possible class, it's easiest for now
+FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary fr_button'
 
 // Initialize form
 if ($('#screendoor_project_id').val()) {

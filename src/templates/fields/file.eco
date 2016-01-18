@@ -21,7 +21,7 @@
            <% end %>
            />
 
-    <div class='fr_error' style='display:none'></div>
+    <span class='fr_error' style='display:none'></span>
 
     <% if (exts = @model.getAcceptedExtensions()): %>
       <div class='fr_description'>

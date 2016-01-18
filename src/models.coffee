@@ -343,6 +343,14 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
 FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
+  addFile: (id, filename) ->
+    files = @getFiles().slice(0)
+    files.push({ id, filename })
+    @set 'value.files', files
+  removeFile: (idx) ->
+    files = @getFiles().slice(0)
+    files.splice(idx, 1)
+    @set 'value.files', files
   getFiles: ->
     @get('value.files') || []
   canAddFile: ->

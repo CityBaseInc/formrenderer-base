@@ -1225,7 +1225,8 @@ var slice = [].slice;
       name: 'file',
       action: void 0,
       method: void 0,
-      additionalParams: {}
+      additionalParams: {},
+      ajaxOpts: {}
     };
 
     function InlineFileUpload($input, options) {
@@ -1247,7 +1248,7 @@ var slice = [].slice;
     InlineFileUpload.prototype._ajaxUpload = function() {
       var $tmpForm;
       $tmpForm = this._createTemporaryForm();
-      return $tmpForm.ajaxSubmit({
+      return $tmpForm.ajaxSubmit($.extend({
         dataType: 'json',
         data: this._baseParams(),
         uploadProgress: (function(_this) {
@@ -1299,7 +1300,7 @@ var slice = [].slice;
             return _this.$input.trigger('inline_file_upload:complete', cbData);
           };
         })(this)
-      });
+      }, this.options.ajaxOpts));
     };
 
     InlineFileUpload.prototype._createTemporaryForm = function() {
@@ -7589,6 +7590,21 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     field_type: 'file',
+    addFile: function(id, filename) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.push({
+        id: id,
+        filename: filename
+      });
+      return this.set('value.files', files);
+    },
+    removeFile: function(idx) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.splice(idx, 1);
+      return this.set('value.files', files);
+    },
     getFiles: function() {
       return this.get('value.files') || [];
     },
@@ -8238,13 +8254,12 @@ rivets.configure({
       'click [data-fr-remove-file]': 'doRemove'
     }),
     render: function() {
-      var originalLabelHtml, uploadingFilename;
+      var uploadingFilename;
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
-      this.$label = this.$input.prev('label');
-      this.$error = this.$input.next('.fr_error');
+      this.$label = this.$el.find('.fr_add_file label');
+      this.$error = this.$el.find('.fr_add_file .fr_error');
       uploadingFilename = void 0;
-      originalLabelHtml = this.$label.html();
       this.$label.on('click', function(e) {
         if ($(this).hasClass('disabled')) {
           return e.preventDefault();
@@ -8254,6 +8269,9 @@ rivets.configure({
         this.$input.inlineFileUpload({
           method: 'post',
           action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          ajaxOpts: {
+            headers: this.form_renderer.serverHeaders
+          },
           additionalParams: {
             response_field_id: this.model.get('id'),
             v: 0
@@ -8278,14 +8296,7 @@ rivets.configure({
           })(this),
           success: (function(_this) {
             return function(data) {
-              var files, newFile;
-              files = _this.model.getFiles().slice(0);
-              newFile = {
-                id: data.data.file_id,
-                filename: uploadingFilename
-              };
-              files.push(newFile);
-              _this.model.set('value.files', files);
+              _this.model.addFile(data.data.file_id, uploadingFilename);
               return _this.render();
             };
           })(this),
@@ -8305,11 +8316,9 @@ rivets.configure({
       return this;
     },
     doRemove: function(e) {
-      var files, idx;
+      var idx;
       idx = this.$el.find('[data-fr-remove-file]').index(e.target);
-      files = this.model.getFiles().slice(0);
-      files.splice(idx, 1);
-      this.model.set('value.files', files);
+      this.model.removeFile(idx);
       return this.render();
     }
   });

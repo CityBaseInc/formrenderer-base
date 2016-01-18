@@ -16,6 +16,8 @@
 
 .fr_response_field label {
   display: block; }
+.fr_response_field .fr_add_file label {
+  display: inline-block; }
 
 .fr_response_field {
   margin-bottom: 20px; }
@@ -159,6 +161,9 @@
   padding: 0;
   text-align: center;
   vertical-align: middle; }
+
+.fr_file {
+  margin-bottom: 0.25em; }
 
 .fr_bottom {
   display: table;

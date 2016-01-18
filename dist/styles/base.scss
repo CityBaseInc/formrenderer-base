@@ -28,6 +28,11 @@
   label {
     display: block;
   }
+
+  // Except the file label
+  .fr_add_file label {
+    display: inline-block;
+  }
 }
 
 // Add vertical rhythm
@@ -238,4 +243,8 @@
   padding: 0;
   text-align: center;
   vertical-align: middle;
+}
+
+.fr_file {
+  margin-bottom: 0.25em;
 }

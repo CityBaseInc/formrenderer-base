@@ -293,7 +293,7 @@
   font-size: $fr_font_small;
   font-family: inherit; // remove browser styles
 
-  @include button_color($fr_light_gray, #444);
+  @include button_color(#fff, #444);
 
   &:hover,
   &:focus {

@@ -176,18 +176,18 @@
   font-weight: normal;
   font-size: 90%;
   font-family: inherit;
-  background: #eee;
-  border: 1px solid gainsboro;
+  background: #fff;
+  border: 1px solid #ededed;
   color: #444; }
   .fr_button:hover, .fr_button:focus {
-    background: gainsboro;
-    border: 1px solid #c8c8c8;
+    background: #ededed;
+    border: 1px solid #d9d9d9;
     color: #444; }
   .fr_button:active {
-    box-shadow: inset 0 1px 2px #bbbbbb; }
+    box-shadow: inset 0 1px 2px #cccccc; }
   .fr_button.disabled:hover, .fr_button.disabled:focus, .fr_button.disabled:active, .fr_button[disabled]:hover, .fr_button[disabled]:focus, .fr_button[disabled]:active {
-    border: 1px solid gainsboro;
-    background: #eee;
+    border: 1px solid #ededed;
+    background: #fff;
     box-shadow: none; }
   .fr_button:hover, .fr_button:focus {
     text-decoration: none; }

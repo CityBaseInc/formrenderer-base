@@ -152,7 +152,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
     @$label = @$input.prev('label')
-    @$error = @$label.next('.fr_error')
+    @$error = @$input.next('.fr_error')
     uploadingFilename = undefined
     originalLabelHtml = @$label.html()
 
@@ -172,7 +172,6 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           @$label.text(if data.percent == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{data.percent}%)")
         complete: =>
           @form_renderer.requests -= 1
-          @$label.html(originalLabelHtml).removeClass('disabled')
         success: (data) =>
           files = @model.getFiles().slice(0)
           newFile = {
@@ -183,8 +182,9 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           @model.set 'value.files', files
           @render()
         error: (data) =>
+          @$label.html(originalLabelHtml).removeClass('disabled')
           errorText = data.xhr.responseJSON?.errors
-          @$error.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
+          @$error.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error).show()
           setTimeout =>
             @render()
           , 2000

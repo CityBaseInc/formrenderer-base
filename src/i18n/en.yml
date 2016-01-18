@@ -42,6 +42,7 @@ en:
   other: 'Other'
   postal_code: 'Postal Code'
   province: 'Province'
+  remove: Remove
   saved: Saved
   saving: Saving...
   state: 'State'
@@ -49,6 +50,7 @@ en:
   submit: Submit
   submitting: Submitting
   upload: Upload a file
+  upload_another: Upload another file
   uploading: 'Uploading...'
   we_accept: "We'll accept"
   write_here: 'Write your answer here'

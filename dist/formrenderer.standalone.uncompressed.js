@@ -1985,7 +1985,7 @@ rivets.configure({
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
       this.$label = this.$input.prev('label');
-      this.$error = this.$label.next('.fr_error');
+      this.$error = this.$input.next('.fr_error');
       uploadingFilename = void 0;
       originalLabelHtml = this.$label.html();
       if (this.form_renderer) {
@@ -2011,8 +2011,7 @@ rivets.configure({
           })(this),
           complete: (function(_this) {
             return function() {
-              _this.form_renderer.requests -= 1;
-              return _this.$label.html(originalLabelHtml).removeClass('disabled');
+              return _this.form_renderer.requests -= 1;
             };
           })(this),
           success: (function(_this) {
@@ -2031,8 +2030,9 @@ rivets.configure({
           error: (function(_this) {
             return function(data) {
               var errorText, _ref;
+              _this.$label.html(originalLabelHtml).removeClass('disabled');
               errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$error.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
+              _this.$error.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error).show();
               return setTimeout(function() {
                 return _this.render();
               }, 2000);
@@ -2173,7 +2173,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","upload":"Upload a file","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","upload":"Upload a file","upload_another":"Upload another file","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -2637,7 +2637,7 @@ window.JST["fields/file"] = function(__obj) {
         _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>'));
-        _print(FormRenderer.t.clear);
+        _print(FormRenderer.t.remove);
         _print(_safe('</button>\n    </div>\n  '));
       }
     
@@ -2649,8 +2649,8 @@ window.JST["fields/file"] = function(__obj) {
         _print(_safe('\' class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n      '));
-        _print(FormRenderer.t.upload);
-        _print(_safe('\n    </label>\n\n    <div class=\'fr_error\' style=\'display:none\'></div>\n\n    <input type=\'file\'\n           id=\''));
+        _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
+        _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
         _print(this.getDomId());
         _print(_safe('\'\n           style=\'position:fixed;left:-9999px;\'\n           '));
         if ((exts = this.model.getAcceptedExtensions())) {
@@ -2658,7 +2658,7 @@ window.JST["fields/file"] = function(__obj) {
           _print(exts.join(','));
           _print(_safe('\'\n           '));
         }
-        _print(_safe('\n           />\n\n    '));
+        _print(_safe('\n           />\n\n    <div class=\'fr_error\' style=\'display:none\'></div>\n\n    '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n      <div class=\'fr_description\'>\n        '));
           _print(FormRenderer.t.we_accept);

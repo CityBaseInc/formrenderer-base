@@ -2,7 +2,7 @@
   <% for attachment in @model.getFiles(): %>
     <div class='fr_file'>
       <span><%= attachment.filename %></span>
-      <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.clear %></button>
+      <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.remove %></button>
     </div>
   <% end %>
 </div>
@@ -10,10 +10,8 @@
 <% if @model.canAddFile(): %>
   <div class='fr_add_file'>
     <label for='<%= @getDomId() %>' class='<%= FormRenderer.BUTTON_CLASS %>'>
-      <%= FormRenderer.t.upload %>
+      <%= if @model.getFiles().length then FormRenderer.t.upload_another else FormRenderer.t.upload %>
     </label>
-
-    <div class='fr_error' style='display:none'></div>
 
     <input type='file'
            id='<%= @getDomId() %>'
@@ -22,6 +20,8 @@
             accept='<%= exts.join(',') %>'
            <% end %>
            />
+
+    <div class='fr_error' style='display:none'></div>
 
     <% if (exts = @model.getAcceptedExtensions()): %>
       <div class='fr_description'>

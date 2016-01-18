@@ -122,8 +122,7 @@ You'll need [node and npm](http://nodejs.org/) installed.
 
 ### To release a new version
 
-1. Bump the version number inside of `version.coffee`
-2. `script/release X.X.X`
+1. `script/release X.X.X`
 
 [status]: https://circleci.com/gh/dobtco/formrenderer-base.svg?style=shield&circle-token=0532babff46c3141013e1c5aca8fd90d862affe9
 [bower]: https://img.shields.io/bower/v/formrenderer-base.svg

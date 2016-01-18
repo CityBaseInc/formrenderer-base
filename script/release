@@ -9,6 +9,7 @@ fi
 
 set -e
 
+echo "FormRenderer.VERSION = '$version'" > src/version.coffee
 grunt all
 grunt test
 git commit -am "release $version"

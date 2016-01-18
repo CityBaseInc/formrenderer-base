@@ -100,20 +100,30 @@ If you simply need to add translations to your embedded form, include the follow
 
 ## Developing
 
+### Getting started
+
 You'll need [node and npm](http://nodejs.org/) installed.
 
-1. `npm install`
-2. `bower install`
-3. `grunt all && grunt watch`
-4. open `examples/index.html` and you're all set! To run tests: `grunt test`
+1. `script/bootstrap`
+2. Open `examples/index.html`
+3. `grunt all` to build your changes, or `grunt watch` to automatically build when a file is changed
+4. `grunt test` to run tests
 
-When you're ready to release a new version:
+### To pull translations to PhraseApp
+
+**Warning:** only run this from the master branch.
+
+1. `PHRASEAPP_ACCESS_TOKEN=XXX phraseapp push`
+
+### To pull new translations from PhraseApp
+
+1. `PHRASEAPP_ACCESS_TOKEN=XXX phraseapp pull`
+2. `grunt all`
+
+### To release a new version
 
 1. Bump the version number inside of `version.coffee`
-2. `grunt all && grunt test` to build with the updated version number (and make sure everything is working!)
-3. `git commit -am 'release VERSION' && git tag VERSION && git push origin master --tags`
-4. `grunt s3:version` to push to the version-specific s3 distribution
-5. `grunt s3:autoupdate` to push to the auto-updated s3 distribution
+2. `script/release X.X.X`
 
 [status]: https://circleci.com/gh/dobtco/formrenderer-base.svg?style=shield&circle-token=0532babff46c3141013e1c5aca8fd90d862affe9
 [bower]: https://img.shields.io/bower/v/formrenderer-base.svg

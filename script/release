@@ -1,0 +1,18 @@
+#!/bin/sh
+
+version=$1
+
+if [ -z "$version" ]; then
+  echo 'You must pass a semantic version number as the first (and only) argument.'
+  exit 1
+fi
+
+set -e
+
+grunt all
+grunt test
+git commit -am "release $version"
+git tag $version
+git push origin master --tags
+grunt s3:version
+grunt s3:autoupdate

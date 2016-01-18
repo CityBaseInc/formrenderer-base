@@ -156,6 +156,9 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     uploadingFilename = undefined
     originalLabelHtml = @$label.html()
 
+    @$label.on 'click', (e) ->
+      e.preventDefault() if $(@).hasClass('disabled')
+
     if @form_renderer
       @$input.inlineFileUpload
         method: 'post'

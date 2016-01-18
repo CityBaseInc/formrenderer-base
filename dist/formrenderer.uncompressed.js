@@ -8245,6 +8245,11 @@ rivets.configure({
       this.$error = this.$input.next('.fr_error');
       uploadingFilename = void 0;
       originalLabelHtml = this.$label.html();
+      this.$label.on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+          return e.preventDefault();
+        }
+      });
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',

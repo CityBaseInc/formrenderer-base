@@ -1,0 +1,14 @@
+phraseapp:
+  project_id: 5736769f7d0e1d5fb3db2b7fa6ea7c96
+  file_format: yml
+  push:
+    sources:
+    - file: ./src/i18n/en.yml
+      params:
+        file_format: yml
+        update_translations: true
+  pull:
+    targets:
+    - file: ./src/i18n/<locale_name>.yml
+      params:
+        file_format: yml

@@ -6883,7 +6883,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.8.1';
+  FormRenderer.VERSION = '0.8.2';
 
 }).call(this);
 

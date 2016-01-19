@@ -356,7 +356,10 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   canAddFile: ->
     @getFiles().length < @maxFiles()
   getValue: ->
-    _.compact(_.pluck(@getFiles(), 'id'))
+    if @hasValue()
+      _.compact(_.pluck(@getFiles(), 'id'))
+    else
+      false
   toText: ->
     _.compact(_.pluck(@getFiles(), 'filename')).join(' ')
   hasValue: ->

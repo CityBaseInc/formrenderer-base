@@ -7612,7 +7612,11 @@ rivets.configure({
       return this.getFiles().length < this.maxFiles();
     },
     getValue: function() {
-      return _.compact(_.pluck(this.getFiles(), 'id'));
+      if (this.hasValue()) {
+        return _.compact(_.pluck(this.getFiles(), 'id'));
+      } else {
+        return false;
+      }
     },
     toText: function() {
       return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');

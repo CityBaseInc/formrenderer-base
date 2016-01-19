@@ -165,6 +165,10 @@
 .fr_file {
   margin-bottom: 0.25em; }
 
+.fr_add_file input {
+  position: absolute;
+  top: -99999px; }
+
 .fr_button {
   display: inline-block;
   margin: 0;

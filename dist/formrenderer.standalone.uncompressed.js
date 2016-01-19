@@ -2665,7 +2665,7 @@ window.JST["fields/file"] = function(__obj) {
         _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
         _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
         _print(this.getDomId());
-        _print(_safe('\'\n           style=\'position:fixed;left:-9999px;\'\n           '));
+        _print(_safe('\'\n           '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n            accept=\''));
           _print(exts.join(','));

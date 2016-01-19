@@ -15,7 +15,6 @@
 
     <input type='file'
            id='<%= @getDomId() %>'
-           style='position:fixed;left:-9999px;'
            <% if (exts = @model.getAcceptedExtensions()): %>
             accept='<%= exts.join(',') %>'
            <% end %>

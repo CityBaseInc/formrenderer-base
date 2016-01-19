@@ -249,6 +249,13 @@
   margin-bottom: 0.25em;
 }
 
+.fr_add_file {
+  input {
+    position: absolute;
+    top: -99999px;
+  }
+}
+
 // We now include button styles, yo:
 
 @mixin button_color($bg, $text) {

@@ -625,7 +625,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.8.0';
+  FormRenderer.VERSION = '0.8.1';
 
 }).call(this);
 

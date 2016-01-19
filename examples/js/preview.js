@@ -17,7 +17,14 @@ $('.js_stored_val').change(function(){
 $('head').
   append($('<link rel="stylesheet" type="text/css" />').attr('href', $('#lib').val()));
 
-FormRenderer.BUTTON_CLASS = 'button button-primary btn btn-primary'
+// Just append every possible class, it's easiest for now
+if ($('#lib').val().match('cardinal')) {
+  FormRenderer.BUTTON_CLASS = 'button button-primary'
+} else if ($('#lib').val().match('bootstrap')) {
+  FormRenderer.BUTTON_CLASS = 'btn btn-primary'
+} else if ($('#lib').val().match('foundation')) {
+  FormRenderer.BUTTON_CLASS = 'button button-primary'
+}
 
 // Initialize form
 if ($('#screendoor_project_id').val()) {

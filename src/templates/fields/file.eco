@@ -1,18 +1,31 @@
-<% if @model.hasValue(): %>
-  <span class='js-filename'><%= @model.get('value.filename') %></span>
-  <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.clear %></button>
-<% else: %>
-  <input type='file'
-         id='<%= @getDomId() %>'
-         <% if (exts = @model.getAcceptedExtensions()): %>
-          accept='<%= exts.join(',') %>'
-         <% end %>
-         />
-  <span class='js-upload-status'></span>
-
-  <% if (exts = @model.getAcceptedExtensions()): %>
-    <div class='fr_description'>
-      <%= FormRenderer.t.we_accept %> <%= _str.toSentence(exts) %>
+<div class='fr_files'>
+  <% for attachment in @model.getFiles(): %>
+    <div class='fr_file'>
+      <span><%= attachment.filename %></span>
+      <button data-fr-remove-file class='<%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.remove %></button>
     </div>
   <% end %>
+</div>
+
+<% if @model.canAddFile(): %>
+  <div class='fr_add_file'>
+    <label for='<%= @getDomId() %>' class='<%= FormRenderer.BUTTON_CLASS %>'>
+      <%= if @model.getFiles().length then FormRenderer.t.upload_another else FormRenderer.t.upload %>
+    </label>
+
+    <input type='file'
+           id='<%= @getDomId() %>'
+           <% if (exts = @model.getAcceptedExtensions()): %>
+            accept='<%= exts.join(',') %>'
+           <% end %>
+           />
+
+    <span class='fr_error' style='display:none'></span>
+
+    <% if (exts = @model.getAcceptedExtensions()): %>
+      <div class='fr_description'>
+        <%= FormRenderer.t.we_accept %> <%= _str.toSentence(exts) %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

@@ -151,39 +151,58 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   render: ->
     FormRenderer.Views.ResponseField::render.apply @, arguments
     @$input = @$el.find('input')
-    @$status = @$el.find('.js-upload-status')
+    @$label = @$el.find('.fr_add_file label')
+    @$error = @$el.find('.fr_add_file .fr_error')
+    uploadingFilename = undefined
+
+    # While label is "disabled", don't open the filepicker
+    @$label.on 'click', (e) ->
+      e.preventDefault() if $(@).hasClass('disabled')
 
     if @form_renderer
       @$input.inlineFileUpload
         method: 'post'
         action: "#{@form_renderer.options.screendoorBase}/api/form_renderer/file",
+        ajaxOpts:
+          headers: @form_renderer.serverHeaders
         additionalParams:
           response_field_id: @model.get('id')
           v: 0
         start: (data) =>
-          @model.set 'value.filename', data.filename, silent: true
-          @$el.find('.js-filename').text data.filename
-          @$status.text FormRenderer.t.uploading
+          uploadingFilename = data.filename
+          @$label.addClass('disabled')
+          @$label.text FormRenderer.t.uploading
           @form_renderer.requests += 1
         progress: (data) =>
-          @$status.text(if data.percent == 100 then FormRenderer.t.finishing_up else "#{FormRenderer.t.uploading} (#{data.percent}%)")
+          @$label.text(
+            if data.percent == 100
+              FormRenderer.t.finishing_up
+            else
+              "#{FormRenderer.t.uploading} (#{data.percent}%)"
+          )
         complete: =>
           @form_renderer.requests -= 1
         success: (data) =>
-          @model.set 'value.id', data.data.file_id
+          @model.addFile(data.data.file_id, uploadingFilename)
           @render()
         error: (data) =>
+          @render()
           errorText = data.xhr.responseJSON?.errors
-          @$status.text(if errorText then "#{FormRenderer.t.error}: #{errorText}" else FormRenderer.t.error)
-          @$status.addClass('fr_error')
+          @$error.text(
+            if errorText
+              "#{FormRenderer.t.error}: #{errorText}"
+            else
+              FormRenderer.t.error
+          ).show()
           setTimeout =>
-            @render()
+            @$error.hide()
           , 2000
 
     return @
 
-  doRemove: ->
-    @model.set 'value', {}
+  doRemove: (e) ->
+    idx = @$el.find('[data-fr-remove-file]').index(e.target)
+    @model.removeFile(idx)
     @render()
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend

@@ -6783,7 +6783,7 @@ rivets.configure({
 
   FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
 
-  FormRenderer.BUTTON_CLASS = '';
+  FormRenderer.BUTTON_CLASS = 'fr_button';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
 
@@ -6883,7 +6883,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.7.10';
+  FormRenderer.VERSION = '0.8.0';
 
 }).call(this);
 
@@ -7590,11 +7590,37 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     field_type: 'file',
+    addFile: function(id, filename) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.push({
+        id: id,
+        filename: filename
+      });
+      return this.set('value.files', files);
+    },
+    removeFile: function(idx) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.splice(idx, 1);
+      return this.set('value.files', files);
+    },
+    getFiles: function() {
+      return this.get('value.files') || [];
+    },
+    canAddFile: function() {
+      return this.getFiles().length < this.maxFiles();
+    },
     getValue: function() {
-      return this.get('value.id') || '';
+      return _.compact(_.pluck(this.getFiles(), 'id'));
+    },
+    toText: function() {
+      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
     },
     hasValue: function() {
-      return this.hasValueHashKey(['id']);
+      return _.any(this.getFiles(), function(h) {
+        return !!h.id;
+      });
     },
     getAcceptedExtensions: function() {
       var x;
@@ -7602,6 +7628,13 @@ rivets.configure({
         return _.map(x, function(x) {
           return "." + x;
         });
+      }
+    },
+    maxFiles: function() {
+      if (this.get('field_options.allow_multiple_files')) {
+        return 10;
+      } else {
+        return 1;
       }
     }
   });
@@ -8221,30 +8254,39 @@ rivets.configure({
       'click [data-fr-remove-file]': 'doRemove'
     }),
     render: function() {
+      var uploadingFilename;
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$input = this.$el.find('input');
-      this.$status = this.$el.find('.js-upload-status');
+      this.$label = this.$el.find('.fr_add_file label');
+      this.$error = this.$el.find('.fr_add_file .fr_error');
+      uploadingFilename = void 0;
+      this.$label.on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+          return e.preventDefault();
+        }
+      });
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',
           action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          ajaxOpts: {
+            headers: this.form_renderer.serverHeaders
+          },
           additionalParams: {
             response_field_id: this.model.get('id'),
             v: 0
           },
           start: (function(_this) {
             return function(data) {
-              _this.model.set('value.filename', data.filename, {
-                silent: true
-              });
-              _this.$el.find('.js-filename').text(data.filename);
-              _this.$status.text(FormRenderer.t.uploading);
+              uploadingFilename = data.filename;
+              _this.$label.addClass('disabled');
+              _this.$label.text(FormRenderer.t.uploading);
               return _this.form_renderer.requests += 1;
             };
           })(this),
           progress: (function(_this) {
             return function(data) {
-              return _this.$status.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
             };
           })(this),
           complete: (function(_this) {
@@ -8254,18 +8296,18 @@ rivets.configure({
           })(this),
           success: (function(_this) {
             return function(data) {
-              _this.model.set('value.id', data.data.file_id);
+              _this.model.addFile(data.data.file_id, uploadingFilename);
               return _this.render();
             };
           })(this),
           error: (function(_this) {
             return function(data) {
               var errorText, _ref;
+              _this.render();
               errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$status.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error);
-              _this.$status.addClass('fr_error');
+              _this.$error.text(errorText ? "" + FormRenderer.t.error + ": " + errorText : FormRenderer.t.error).show();
               return setTimeout(function() {
-                return _this.render();
+                return _this.$error.hide();
               }, 2000);
             };
           })(this)
@@ -8273,8 +8315,10 @@ rivets.configure({
       }
       return this;
     },
-    doRemove: function() {
-      this.model.set('value', {});
+    doRemove: function(e) {
+      var idx;
+      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
+      this.model.removeFile(idx);
       return this.render();
     }
   });
@@ -8400,7 +8444,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","enter_exactly":"Enter :num","enter_between":"Enter between :min and :max","enter_at_least":"Enter at least :min","enter_up_to":"Enter up to :max","email":"Email","error":"Error","error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","upload":"Upload a file","upload_another":"Upload another file","uploading":"Uploading...","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -8852,34 +8896,48 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var exts;
+      var attachment, exts, _i, _len, _ref;
     
-      if (this.model.hasValue()) {
-        _print(_safe('\n  <span class=\'js-filename\'>'));
-        _print(this.model.get('value.filename'));
-        _print(_safe('</span>\n  <button data-fr-remove-file class=\''));
+      _print(_safe('<div class=\'fr_files\'>\n  '));
+    
+      _ref = this.model.getFiles();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        attachment = _ref[_i];
+        _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
+        _print(attachment.filename);
+        _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>'));
-        _print(FormRenderer.t.clear);
-        _print(_safe('</button>\n'));
-      } else {
-        _print(_safe('\n  <input type=\'file\'\n         id=\''));
+        _print(FormRenderer.t.remove);
+        _print(_safe('</button>\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n\n'));
+    
+      if (this.model.canAddFile()) {
+        _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
         _print(this.getDomId());
-        _print(_safe('\'\n         '));
+        _print(_safe('\' class=\''));
+        _print(FormRenderer.BUTTON_CLASS);
+        _print(_safe('\'>\n      '));
+        _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
+        _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
+        _print(this.getDomId());
+        _print(_safe('\'\n           '));
         if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n          accept=\''));
+          _print(_safe('\n            accept=\''));
           _print(exts.join(','));
-          _print(_safe('\'\n         '));
+          _print(_safe('\'\n           '));
         }
-        _print(_safe('\n         />\n  <span class=\'js-upload-status\'></span>\n\n  '));
+        _print(_safe('\n           />\n\n    <span class=\'fr_error\' style=\'display:none\'></span>\n\n    '));
         if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n    <div class=\'fr_description\'>\n      '));
+          _print(_safe('\n      <div class=\'fr_description\'>\n        '));
           _print(FormRenderer.t.we_accept);
           _print(_safe(' '));
           _print(_str.toSentence(exts));
-          _print(_safe('\n    </div>\n  '));
+          _print(_safe('\n      </div>\n    '));
         }
-        _print(_safe('\n'));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n'));

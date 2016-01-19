@@ -343,13 +343,33 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
 FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
+  addFile: (id, filename) ->
+    files = @getFiles().slice(0)
+    files.push({ id, filename })
+    @set 'value.files', files
+  removeFile: (idx) ->
+    files = @getFiles().slice(0)
+    files.splice(idx, 1)
+    @set 'value.files', files
+  getFiles: ->
+    @get('value.files') || []
+  canAddFile: ->
+    @getFiles().length < @maxFiles()
   getValue: ->
-    @get('value.id') || ''
+    _.compact(_.pluck(@getFiles(), 'id'))
+  toText: ->
+    _.compact(_.pluck(@getFiles(), 'filename')).join(' ')
   hasValue: ->
-    @hasValueHashKey ['id']
+    _.any @getFiles(), (h) ->
+      !!h.id
   getAcceptedExtensions: ->
     if (x = FormRenderer.FILE_TYPES[@get('field_options.file_types')])
       _.map x, (x) -> ".#{x}"
+  maxFiles: ->
+    if @get('field_options.allow_multiple_files')
+      10
+    else
+      1
 
 FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   field_type: 'date'

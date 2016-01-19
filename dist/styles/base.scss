@@ -251,8 +251,8 @@
 
 .fr_add_file {
   input {
-    position: absolute;
-    top: -99999px;
+    position: fixed;
+    left: -9999px;
   }
 }
 

@@ -328,7 +328,8 @@ Fixtures.FormRendererOptions = {
       response: {
         id: 'xxx',
         responses: {}
-      }
+      },
+      afterSubmit: false
     };
   },
   RESPONSE_LOADED: function() {
@@ -338,7 +339,8 @@ Fixtures.FormRendererOptions = {
         responses: {
           '1': 'hey'
         }
-      }
+      },
+      afterSubmit: false
     };
   },
   PROJECT_LOADED: function() {
@@ -347,7 +349,8 @@ Fixtures.FormRendererOptions = {
       response_fields: [_.clone(Fixtures.RESPONSE_FIELD)],
       response: {
         id: 'xxx'
-      }
+      },
+      afterSubmit: false
     };
   },
   NOT_LOADED: function() {
@@ -355,7 +358,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response: {
         id: 'xxx'
-      }
+      },
+      afterSubmit: false
     };
   },
   KITCHEN_SINK: function() {

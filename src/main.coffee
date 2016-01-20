@@ -84,6 +84,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @options.response.id = data.response_id
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
+
+        if !@options.afterSubmit?
+          @options.afterSubmit =
+            method: 'page'
+            html: data.project.after_response_page_html || "<p>#{FormRenderer.t.thanks}</p>"
+
         cb()
       error: (xhr) =>
         if !@corsSupported()

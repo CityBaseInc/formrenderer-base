@@ -205,7 +205,8 @@
   display: table;
   width: 100%;
   background-color: #eee;
-  padding: 20px; }
+  padding: 20px;
+  border-collapse: separate; }
 
 .fr_bottom_l,
 .fr_bottom_r {

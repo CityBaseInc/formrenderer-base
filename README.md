@@ -58,10 +58,10 @@ FormRenderer exposes a simple plugin system that allows for extending its core f
 You can add or remove plugins using the following convenience methods:
 
 ```js
-FormRenderer.addPlugin('Foo') 
+FormRenderer.addPlugin('Foo')
 // -> will look for FormRenderer.Plugins.Foo when initializing a form
 
-FormRenderer.removePlugin('ErrorBar') 
+FormRenderer.removePlugin('ErrorBar')
 // -> forms created will no longer include the ErrorBar plugin
 ```
 
@@ -109,7 +109,7 @@ You'll need [node and npm](http://nodejs.org/) installed.
 3. `grunt all` to build your changes, or `grunt watch` to automatically build when a file is changed
 4. `grunt test` to run tests
 
-### To pull translations to PhraseApp
+### To push translations to PhraseApp
 
 **Warning:** only run this from the master branch.
 

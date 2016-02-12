@@ -1,11 +1,15 @@
 ---
 it:
   address: Indirizzo
+  add_another_row: Aggiungi un'altra riga
   back_to_page: Torna alla pagina :num
+  blind: Cieco
   cents: Centesimi
+  characters: caratteri
   city: Città
   clear: Cancella
   click_to_set: Clicca per impostare la posizione
+  coordinates: Coordinate
   country: Paese
   dollars: Dollari
   email: Email
@@ -35,6 +39,8 @@ it:
   error_loading: Errore nel caricamento del modulo
   error_saving: Errore nel salvataggio
   finishing_up: Ultimando...
+  hidden: Nascosto
+  hidden_until_rules_met: Nascosto fino a quando i requisiti non vengono soddisfatti.
   loading_form: Caricamento modulo...
   na: N/D
   name: Nome
@@ -45,13 +51,18 @@ it:
   other: Altro
   postal_code: Codice Postale
   province: Provincia
+  remove: Rimuovi
   saved: Salvato
   saving: Salvataggio in corso...
   state: Stato
   state_province_region: Stato / Provincia / Regione
   submit: Invia
   submitting: Invio in corso
+  thanks: Grazie per aver inviato il nostro modulo!
+  upload: Carica un file
   uploading: In upload...
+  upload_another: Carica un altro file
   we_accept: Accetteremo
+  words: parole
   write_here: Scrivi la tua risposta qui
   zip_code: CAP

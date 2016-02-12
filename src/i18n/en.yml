@@ -1,15 +1,15 @@
 ---
 en:
-  add_another_row: Add another row
   address: Address
+  add_another_row: Add another row
   back_to_page: Back to page :num
   blind: Blind
   cents: Cents
   characters: characters
-  coordinates: Coordinates
   city: City
   clear: Clear
   click_to_set: Click to set location
+  coordinates: Coordinates
   country: Country
   dollars: Dollars
   email: Email

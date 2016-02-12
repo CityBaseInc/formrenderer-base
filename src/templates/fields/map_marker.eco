@@ -7,7 +7,7 @@
 
   <div class='fr_map_toolbar'>
     <div class='fr_map_coord'>
-      <strong>Coordinates:</strong>
+      <strong><%= FormRenderer.t.coordinates %>:</strong>
       <span data-rv-show='model.value.lat'>
         <span data-rv-text='model.value.lat' />,
         <span data-rv-text='model.value.lng' />

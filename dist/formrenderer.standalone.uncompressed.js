@@ -537,9 +537,9 @@ rivets.configure({
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
-  FormRenderer.ADD_ROW_LINK = '+ Add another row';
+  FormRenderer.ADD_ROW_ICON = '+';
 
-  FormRenderer.REMOVE_ROW_LINK = '-';
+  FormRenderer.REMOVE_ROW_ICON = '-';
 
   FormRenderer.Views = {};
 
@@ -631,7 +631,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.8.3';
+  FormRenderer.VERSION = '0.9.0';
 
 }).call(this);
 
@@ -2196,7 +2196,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","back_to_page":"Back to page :num","cents":"Cents","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"add_another_row":"Add another row","address":"Address","back_to_page":"Back to page :num","blind":"Blind","cents":"Cents","characters":"characters","coordinates":"Coordinates","city":"City","clear":"Clear","click_to_set":"Click to set location","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -2810,7 +2810,11 @@ window.JST["fields/map_marker"] = function(__obj) {
     
       _print(FormRenderer.t.click_to_set);
     
-      _print(_safe('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>Coordinates:</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>'));
+      _print(_safe('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>'));
+    
+      _print(FormRenderer.t.coordinates);
+    
+      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>'));
     
       _print(FormRenderer.t.na);
     
@@ -3330,7 +3334,7 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
         if (this.canRemoveRow(i)) {
           _print(_safe('\n            <a class=\'js-remove-row\' href=\'#\'>\n              '));
-          _print(_safe(FormRenderer.REMOVE_ROW_LINK));
+          _print(_safe(FormRenderer.REMOVE_ROW_ICON));
           _print(_safe('\n            </a>\n          '));
         }
         _print(_safe('\n        </td>\n      </tr>\n    '));
@@ -3354,7 +3358,9 @@ window.JST["fields/table"] = function(__obj) {
     
       if (this.model.canAddRows()) {
         _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
-        _print(_safe(FormRenderer.ADD_ROW_LINK));
+        _print(_safe(FormRenderer.ADD_ROW_ICON));
+        _print(_safe('\n      '));
+        _print(FormRenderer.t.add_another_row);
         _print(_safe('\n    </a>\n  '));
       }
     
@@ -3769,15 +3775,21 @@ window.JST["partials/labels"] = function(__obj) {
       if (this.showLabels) {
         _print(_safe('\n  '));
         if (this.model.get('blind')) {
-          _print(_safe('\n    <span class=\'label\'>Blind</span>\n  '));
+          _print(_safe('\n    <span class=\'label\'>'));
+          _print(FormRenderer.t.blind);
+          _print(_safe('</span>\n  '));
         }
         _print(_safe('\n  '));
         if (this.model.get('admin_only')) {
-          _print(_safe('\n    <span class=\'label\'>Hidden</span>\n  '));
+          _print(_safe('\n    <span class=\'label\'>'));
+          _print(FormRenderer.t.hidden);
+          _print(_safe('</span>\n  '));
         }
         _print(_safe('\n  '));
         if (this.model.isConditional()) {
-          _print(_safe('\n    <span class=\'label\'>Hidden until rules are met</span>\n  '));
+          _print(_safe('\n    <span class=\'label\'>'));
+          _print(FormRenderer.t.hidden_until_rules_met);
+          _print(_safe('</span>\n  '));
         }
         _print(_safe('\n'));
       }
@@ -3894,13 +3906,13 @@ window.JST["partials/length_validations"] = function(__obj) {
             _print(_safe('\n          '));
             _print(FormRenderer.t.enter_exactly.replace(':num', min));
             _print(_safe(' '));
-            _print(units);
+            _print(FormRenderer.t[units]);
             _print(_safe('.\n        '));
           } else {
             _print(_safe('\n          '));
             _print(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max));
             _print(_safe(' '));
-            _print(units);
+            _print(FormRenderer.t[units]);
             _print(_safe('.\n        '));
           }
           _print(_safe('\n      '));
@@ -3908,13 +3920,13 @@ window.JST["partials/length_validations"] = function(__obj) {
           _print(_safe('\n        '));
           _print(FormRenderer.t.enter_at_least.replace(':min', min));
           _print(_safe(' '));
-          _print(units);
+          _print(FormRenderer.t[units]);
           _print(_safe('.\n      '));
         } else if (max) {
           _print(_safe('\n        '));
           _print(FormRenderer.t.enter_up_to.replace(':max', max));
           _print(_safe(' '));
-          _print(units);
+          _print(FormRenderer.t[units]);
           _print(_safe('.\n      '));
         }
         _print(_safe('\n    </span>\n\n    '));
@@ -3967,21 +3979,25 @@ window.JST["partials/min_max_validations"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      var max, min;
+    
       if (this.model.hasMinMaxValidations()) {
-        _print(_safe('\n  <div class=\'fr_min_max\'>\n    '));
-        if (this.model.get('field_options.min') && this.model.get('field_options.max')) {
-          _print(_safe('\n      Between '));
-          _print(this.model.get('field_options.min'));
-          _print(_safe(' and '));
-          _print(this.model.get('field_options.max'));
+        _print(_safe('\n  '));
+        min = this.model.get('field_options.min');
+        _print(_safe('\n  '));
+        max = this.model.get('field_options.max');
+        _print(_safe('\n\n  <div class=\'fr_min_max\'>\n    '));
+        if (min && max) {
+          _print(_safe('\n      '));
+          _print(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max));
           _print(_safe('.\n    '));
-        } else if (this.model.get('field_options.min')) {
-          _print(_safe('\n      Enter a number that is at least '));
-          _print(this.model.get('field_options.min'));
+        } else if (min) {
+          _print(_safe('\n      '));
+          _print(FormRenderer.t.enter_at_least.replace(':min', min));
           _print(_safe('.\n    '));
-        } else if (this.model.get('field_options.max')) {
-          _print(_safe('\n      Enter a number up to '));
-          _print(this.model.get('field_options.max'));
+        } else if (max) {
+          _print(_safe('\n      '));
+          _print(FormRenderer.t.enter_up_to.replace(':max', max));
           _print(_safe('.\n    '));
         }
         _print(_safe('\n  </div>\n'));

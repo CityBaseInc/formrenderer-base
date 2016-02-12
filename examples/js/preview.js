@@ -1,3 +1,20 @@
+// Uncomment for fake i18n
+// fakei18n = function (obj) {
+//   if (typeof obj === 'string') {
+//     return Array(obj.length + 1).join('_');
+//   } else {
+//     for (i in obj) {
+//       obj[i] = fakei18n(obj[i]);
+//     }
+//
+//     return obj;
+//   }
+// }
+//
+// for (i in FormRenderer.t) {
+//   FormRenderer.t[i] = fakei18n(FormRenderer.t[i])
+// }
+
 $('.js_stored_val').each(function(){
   var stored = store.get($(this).attr('id'));
 

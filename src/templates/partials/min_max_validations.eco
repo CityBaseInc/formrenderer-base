@@ -1,11 +1,14 @@
 <% if @model.hasMinMaxValidations(): %>
+  <% min = @model.get('field_options.min') %>
+  <% max = @model.get('field_options.max') %>
+
   <div class='fr_min_max'>
-    <% if @model.get('field_options.min') && @model.get('field_options.max'): %>
-      Between <%= @model.get('field_options.min') %> and <%= @model.get('field_options.max') %>.
-    <% else if @model.get('field_options.min'): %>
-      Enter a number that is at least <%= @model.get('field_options.min') %>.
-    <% else if @model.get('field_options.max'): %>
-      Enter a number up to <%= @model.get('field_options.max') %>.
+    <% if min && max: %>
+      <%= FormRenderer.t.enter_between.replace(':min', min).replace(':max', max) %>.
+    <% else if min: %>
+      <%= FormRenderer.t.enter_at_least.replace(':min', min) %>.
+    <% else if max: %>
+      <%= FormRenderer.t.enter_up_to.replace(':max', max) %>.
     <% end %>
   </div>
 <% end %>

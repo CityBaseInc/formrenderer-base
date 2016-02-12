@@ -1,8 +1,12 @@
 ---
 en:
+  add_another_row: Add another row
   address: Address
   back_to_page: Back to page :num
+  blind: Blind
   cents: Cents
+  characters: characters
+  coordinates: Coordinates
   city: City
   clear: Clear
   click_to_set: Click to set location
@@ -35,6 +39,8 @@ en:
   error_loading: Error loading form
   error_saving: Error saving
   finishing_up: Finishing up...
+  hidden: Hidden
+  hidden_until_rules_met: Hidden until rules are met
   loading_form: Loading form...
   na: N/A
   name: Name
@@ -56,5 +62,6 @@ en:
   uploading: Uploading...
   upload_another: Upload another file
   we_accept: We'll accept
+  words: words
   write_here: Write your answer here
   zip_code: ZIP Code

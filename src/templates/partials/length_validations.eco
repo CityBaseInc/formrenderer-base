@@ -7,14 +7,14 @@
     <span class='fr_min_max_guide'>
       <% if min && max: %>
         <% if min == max: %>
-          <%= FormRenderer.t.enter_exactly.replace(':num', min) %> <%= units %>.
+          <%= FormRenderer.t.enter_exactly.replace(':num', min) %> <%= FormRenderer.t[units] %>.
         <% else: %>
-          <%= FormRenderer.t.enter_between.replace(':min', min).replace(':max', max) %> <%= units %>.
+          <%= FormRenderer.t.enter_between.replace(':min', min).replace(':max', max) %> <%= FormRenderer.t[units] %>.
         <% end %>
       <% else if min: %>
-        <%= FormRenderer.t.enter_at_least.replace(':min', min) %> <%= units %>.
+        <%= FormRenderer.t.enter_at_least.replace(':min', min) %> <%= FormRenderer.t[units] %>.
       <% else if max: %>
-        <%= FormRenderer.t.enter_up_to.replace(':max', max) %> <%= units %>.
+        <%= FormRenderer.t.enter_up_to.replace(':max', max) %> <%= FormRenderer.t[units] %>.
       <% end %>
     </span>
 

@@ -1,11 +1,11 @@
 <% if @showLabels: %>
   <% if @model.get('blind'): %>
-    <span class='label'>Blind</span>
+    <span class='label'><%= FormRenderer.t.blind %></span>
   <% end %>
   <% if @model.get('admin_only'): %>
-    <span class='label'>Hidden</span>
+    <span class='label'><%= FormRenderer.t.hidden %></span>
   <% end %>
   <% if @model.isConditional(): %>
-    <span class='label'>Hidden until rules are met</span>
+    <span class='label'><%= FormRenderer.t.hidden_until_rules_met %></span>
   <% end %>
 <% end %>

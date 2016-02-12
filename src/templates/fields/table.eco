@@ -29,7 +29,7 @@
         <td class='fr_table_col_remove'>
           <% if @canRemoveRow(i): %>
             <a class='js-remove-row' href='#'>
-              <%- FormRenderer.REMOVE_ROW_LINK %>
+              <%- FormRenderer.REMOVE_ROW_ICON %>
             </a>
           <% end %>
         </td>
@@ -52,7 +52,8 @@
 <div class='fr_table_add_row_wrapper'>
   <% if @model.canAddRows(): %>
     <a class='js-add-row' href='#'>
-      <%- FormRenderer.ADD_ROW_LINK %>
+      <%- FormRenderer.ADD_ROW_ICON %>
+      <%= FormRenderer.t.add_another_row %>
     </a>
   <% end %>
 </div>

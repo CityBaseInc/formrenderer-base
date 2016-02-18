@@ -35,9 +35,14 @@ Once you're ready to render a form:
 </script>
 ```
 
-Of course, there's a lot more you can do...
+## Styling the form
 
-## Options
+Because formrenderer is implemented in JavaScript, without the use of iframes, your embedded form should adopt the look-and-feel of your website. However, some users may wish to customize or tweak the appearance of their form. We recommend starting with the following:
+
+1. After instantiating the form with `new FormRenderer(...)`, set the variable `FormRenderer.BUTTON_CLASS` to the CSS class that your website uses for buttons. (For example, if you're using Bootstrap, you would write `FormRenderer.BUTTON_CLASS = 'btn btn-primary'`.)
+2. Override formrenderer's default CSS by using your browser's "inspect element" feature to view the CSS class names, or by discovering them in [main.scss](https://github.com/dobtco/formrenderer-base/blob/master/dist/styles/main.scss).
+
+## Customization options
 
 | option | description | default |
 | --- | --- | --- |

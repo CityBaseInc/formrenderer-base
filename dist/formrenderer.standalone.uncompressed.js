@@ -631,7 +631,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.9.1';
+  FormRenderer.VERSION = '0.9.2';
 
 }).call(this);
 
@@ -2416,7 +2416,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
         _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
         _print(i);
         _print(_safe('\' />\n    '));
-        _print(option.label);
+        _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
     
@@ -2549,9 +2549,9 @@ window.JST["fields/dropdown"] = function(__obj) {
         option = _ref[_i];
         _print(_safe('\n    <option value="'));
         _print(option.label);
-        _print(_safe('">'));
-        _print(option.label);
-        _print(_safe('</option>\n  '));
+        _print(_safe('">\n      '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n    </option>\n  '));
       }
     
       _print(_safe('\n</select>\n'));
@@ -3152,7 +3152,7 @@ window.JST["fields/radio"] = function(__obj) {
         _print(_safe('"\n           value="'));
         _print(option.label);
         _print(_safe('" />\n    '));
-        _print(option.label);
+        _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
     
@@ -3298,7 +3298,7 @@ window.JST["fields/table"] = function(__obj) {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         column = _ref[_i];
         _print(_safe('\n        <th>'));
-        _print(column.label);
+        _print(column.translated_label || column.label);
         _print(_safe('</th>\n      '));
       }
     

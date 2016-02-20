@@ -1,7 +1,7 @@
 <% for option, i in @model.getOptions(): %>
   <label class='fr_option control'>
     <input type='checkbox' data-rv-checked='model.value.<%= i %>' />
-    <%= option.label %>
+    <%= option.translated_label || option.label %>
   </label>
 <% end %>
 

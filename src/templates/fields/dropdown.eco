@@ -4,6 +4,8 @@
   <% end %>
 
   <% for option in @model.getOptions(): %>
-    <option value="<%= option.label %>"><%= option.label %></option>
+    <option value="<%= option.label %>">
+      <%= option.translated_label || option.label %>
+    </option>
   <% end %>
 </select>

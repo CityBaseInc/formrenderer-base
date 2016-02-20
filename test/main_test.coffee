@@ -200,3 +200,45 @@ describe '#save', ->
   it 'handles additional changes while saving'
   it 'sets state on success'
   it 'sets state on error'
+
+describe 'translated content', ->
+  it 'translates properly', ->
+    @fr = new FormRenderer
+      project_id: 'dummy_val'
+      response_fields: [
+        field_type: 'checkboxes'
+        field_options:
+          options: [
+            label: 'check1'
+            translated_label: 'check2'
+          ]
+      ,
+        field_type: 'dropdown'
+        field_options:
+          options: [
+            label: 'drop1'
+            translated_label: 'drop2'
+          ]
+      ,
+        field_type: 'radio'
+        field_options:
+          options: [
+            label: 'rad1'
+            translated_label: 'rad2'
+          ]
+      ,
+        field_type: 'table'
+        field_options:
+          columns: [
+            label: 'col1'
+            translated_label: 'col2'
+          ]
+      ]
+      response:
+        id: 'xxx'
+        responses: {}
+
+    expect($("label:contains('check2')").length).to.eql 1
+    expect($("option:contains('drop2')").length).to.eql 1
+    expect($("label:contains('rad2')").length).to.eql 1
+    expect($("th:contains('col2')").length).to.eql 1

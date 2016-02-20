@@ -5,7 +5,7 @@
            id="<%= @getDomId() %>"
            name="<%= @getDomId() %>"
            value="<%= option.label %>" />
-    <%= option.label %>
+    <%= option.translated_label || option.label %>
   </label>
 <% end %>
 

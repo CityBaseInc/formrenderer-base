@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <% for column in @model.getColumns(): %>
-        <th><%= column.label %></th>
+        <th><%= column.translated_label || column.label %></th>
       <% end %>
 
       <th class='fr_table_col_remove'></th>

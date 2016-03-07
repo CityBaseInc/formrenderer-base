@@ -1,7 +1,16 @@
+<% if @usesFieldset: %>
+<fieldset class='fr_fieldset'>
+  <legend><%= @model.get('label') %></legend>
+<% end %>
+
 <%- JST["partials/label"](@) %>
 <div class='fr_field_wrapper'>
   <%- JST["fields/#{@field_type}"](@) %>
 </div>
+
+<% if @usesFieldset: %>
+</fieldset>
+<% end %>
 
 <%- JST["partials/length_validations"](@) %>
 <%- JST["partials/min_max_validations"](@) %>

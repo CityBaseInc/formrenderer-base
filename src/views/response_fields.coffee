@@ -81,6 +81,7 @@ FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.exte
     @
 
 FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
   field_type: 'price'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'blur [data-rv-input="model.value.cents"]': 'formatCents'
@@ -145,6 +146,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     @render()
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
   field_type: 'file'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'click [data-fr-remove-file]': 'doRemove'
@@ -259,6 +261,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @model.set value: { lat: '', lng: '' }
 
 FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
   field_type: 'address'
   initialize: ->
     FormRenderer.Views.ResponseField::initialize.apply @, arguments
@@ -270,7 +273,23 @@ FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend
     if @model.get('field_options.phone_format') == 'us'
       '(xxx) xxx-xxxx'
 
-for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price', 'phone')
+FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
+  field_type: 'checkboxes'
+
+FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
+  field_type: 'radio'
+
+FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
+  field_type: 'time'
+
+FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend
+  usesFieldset: true
+  field_type: 'date'
+
+for i in _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time')
   FormRenderer.Views["ResponseField#{_str.classify(i)}"] = FormRenderer.Views.ResponseField.extend
     field_type: i
 

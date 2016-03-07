@@ -59,9 +59,11 @@ describe 'validations', ->
       expect(@errorCount()).to.equal(12)
 
     it 'does not show a new error until the user blurs the input', (done) ->
-      fillIn('Date', 'as')
+      id = $(".fr_response_field_date label:contains(\"MM\")").attr('for')
+      $date = $("##{id}")
+      $date.val('as').trigger('input')
       expect(@errorCount()).to.equal(12)
-      labelToInput('Date').trigger('blur')
+      $date.trigger('blur')
       expectErrorCount.call(@, 13, done)
 
     it 'navigates to the first error when the user clicks "fix errors"', ->

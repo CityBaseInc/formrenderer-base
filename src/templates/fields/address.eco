@@ -3,9 +3,9 @@
 <% unless format in ['city_state', 'city_state_zip', 'country']: %>
   <div class='fr_grid'>
     <div class='fr_full has_sub_label'>
-      <label class="fr_sub_label"><%= FormRenderer.t.address %></label>
+      <label class="fr_sub_label" for='<%= @getDomId() %>_street'><%= FormRenderer.t.address %></label>
       <input type="text"
-             id="<%= @getDomId() %>"
+             id="<%= @getDomId() %>_street"
              data-rv-input='model.value.street' />
     </div>
   </div>
@@ -14,13 +14,14 @@
 <% unless format in ['country']: %>
   <div class='fr_grid'>
     <div class='fr_half has_sub_label'>
-      <label class="fr_sub_label"><%= FormRenderer.t.city %></label>
+      <label class="fr_sub_label" for='<%= @getDomId() %>_city'><%= FormRenderer.t.city %></label>
       <input type="text"
-             data-rv-input='model.value.city' />
+             data-rv-input='model.value.city'
+             id='<%= @getDomId() %>_city' />
     </div>
 
     <div class='fr_half has_sub_label'>
-      <label class="fr_sub_label">
+      <label class="fr_sub_label" for='<%= @getDomId() %>_state'>
         <% if @model.get('value.country') == 'US': %>
           <%= FormRenderer.t.state %>
         <% else if @model.get('value.country') == 'CA': %>
@@ -31,14 +32,14 @@
       </label>
 
       <% if @model.get('value.country') in ['US', 'CA']: %>
-        <select data-rv-value='model.value.state' data-width='100%'>
+        <select data-rv-value='model.value.state' data-width='100%' id='<%= @getDomId() %>_state'>
           <option></option>
           <% for x in FormRenderer["PROVINCES_#{@model.get('value.country')}"]: %>
             <option value='<%= x %>'><%= x %></option>
           <% end %>
         </select>
       <% else: %>
-        <input type="text" data-rv-input='model.value.state' />
+        <input type="text" data-rv-input='model.value.state' id='<%= @getDomId() %>_state' />
       <% end %>
     </div>
   </div>
@@ -47,7 +48,7 @@
 <div class='fr_grid'>
   <% unless format in ['city_state', 'country']: %>
     <div class='fr_half has_sub_label'>
-      <label class="fr_sub_label">
+      <label class="fr_sub_label" for='<%= @getDomId() %>_zipcode'>
         <% if @model.get('value.country') == 'US': %>
           <%= FormRenderer.t.zip_code %>
         <% else: %>
@@ -55,14 +56,15 @@
         <% end %>
       </label>
       <input type="text"
-             data-rv-input='model.value.zipcode' />
+             data-rv-input='model.value.zipcode'
+             id='<%= @getDomId() %>_zipcode' />
     </div>
   <% end %>
 
   <% unless format in ['city_state', 'city_state_zip']: %>
     <div class='fr_half has_sub_label'>
-      <label class="fr_sub_label"><%= FormRenderer.t.country %></label>
-      <select data-rv-value='model.value.country' data-width='100%'>
+      <label class="fr_sub_label" for='<%= @getDomId() %>_country'><%= FormRenderer.t.country %></label>
+      <select data-rv-value='model.value.country' data-width='100%' id='<%= @getDomId() %>_country'>
         <% for x in FormRenderer.ORDERED_COUNTRIES: %>
           <option value='<%= x %>'><%= ISOCountryNames[x] || '---' %></option>
         <% end %>

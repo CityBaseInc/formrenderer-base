@@ -16,6 +16,19 @@
 
 .fr_response_field label {
   display: block; }
+.fr_response_field .fr_fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0; }
+.fr_response_field legend {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  border: 0; }
 .fr_response_field .fr_add_file label {
   display: inline-block; }
 

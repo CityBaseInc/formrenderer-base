@@ -17,12 +17,12 @@ window.select = (label, value) ->
   labelToInput(label).val(value).trigger('change')
 
 window.check = (label, value) ->
-  $label = $("label:contains(\"#{label}\")")
+  $label = $("legend:contains(\"#{label}\")")
   $input = $label.parent().find("label:contains(\"#{value}\")").find('input[type=checkbox]')
   $input.prop('checked', true).trigger('change')
 
 window.uncheck = (label, value) ->
-  $label = $("label:contains(\"#{label}\")")
+  $label = $("legend:contains(\"#{label}\")")
   $input = $label.parent().find("label:contains(\"#{value}\")").find('input[type=checkbox]')
   $input.prop('checked', false).trigger('change')
 

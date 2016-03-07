@@ -631,7 +631,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.9.2';
+  FormRenderer.VERSION = '0.10.0';
 
 }).call(this);
 
@@ -1927,6 +1927,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
     field_type: 'price',
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'blur [data-rv-input="model.value.cents"]': 'formatCents'
@@ -2001,6 +2002,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
     field_type: 'file',
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click [data-fr-remove-file]': 'doRemove'
@@ -2152,6 +2154,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
     field_type: 'address',
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -2168,7 +2171,27 @@ rivets.configure({
     }
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'table', 'file', 'map_marker', 'price', 'phone');
+  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
+    field_type: 'checkboxes'
+  });
+
+  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
+    field_type: 'radio'
+  });
+
+  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
+    field_type: 'time'
+  });
+
+  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
+    usesFieldset: true,
+    field_type: 'date'
+  });
+
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
@@ -2229,19 +2252,27 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label">'));
+        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
+        _print(this.getDomId());
+        _print(_safe('_street\'>'));
         _print(FormRenderer.t.address);
         _print(_safe('</label>\n      <input type="text"\n             id="'));
         _print(this.getDomId());
-        _print(_safe('"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
+        _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
     
       _print(_safe('\n\n'));
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">'));
+        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
+        _print(this.getDomId());
+        _print(_safe('_city\'>'));
         _print(FormRenderer.t.city);
-        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
+        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\'\n             id=\''));
+        _print(this.getDomId());
+        _print(_safe('_city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
+        _print(this.getDomId());
+        _print(_safe('_state\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
           _print(FormRenderer.t.state);
@@ -2257,7 +2288,9 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n      </label>\n\n      '));
         if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
-          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\'>\n          <option></option>\n          '));
+          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
+          _print(this.getDomId());
+          _print(_safe('_state\'>\n          <option></option>\n          '));
           _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             x = _ref1[_i];
@@ -2269,7 +2302,9 @@ window.JST["fields/address"] = function(__obj) {
           }
           _print(_safe('\n        </select>\n      '));
         } else {
-          _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' />\n      '));
+          _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' id=\''));
+          _print(this.getDomId());
+          _print(_safe('_state\' />\n      '));
         }
         _print(_safe('\n    </div>\n  </div>\n'));
       }
@@ -2277,7 +2312,9 @@ window.JST["fields/address"] = function(__obj) {
       _print(_safe('\n\n<div class=\'fr_grid\'>\n  '));
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">\n        '));
+        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
+        _print(this.getDomId());
+        _print(_safe('_zipcode\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
           _print(FormRenderer.t.zip_code);
@@ -2287,15 +2324,21 @@ window.JST["fields/address"] = function(__obj) {
           _print(FormRenderer.t.postal_code);
           _print(_safe('\n        '));
         }
-        _print(_safe('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\' />\n    </div>\n  '));
+        _print(_safe('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\'\n             id=\''));
+        _print(this.getDomId());
+        _print(_safe('_zipcode\' />\n    </div>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label">'));
+        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
+        _print(this.getDomId());
+        _print(_safe('_country\'>'));
         _print(FormRenderer.t.country);
-        _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\'>\n        '));
+        _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
+        _print(this.getDomId());
+        _print(_safe('_country\'>\n        '));
         _ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           x = _ref2[_j];
@@ -2475,14 +2518,30 @@ window.JST["fields/date"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
+      _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_day" />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_year')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
+        _print(this.getDomId());
+        _print(_safe('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="'));
+        _print(this.getDomId());
+        _print(_safe('_year" />\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -3079,7 +3138,11 @@ window.JST["fields/price"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_dollars">'));
     
       _print(FormRenderer.t.dollars);
     
@@ -3087,12 +3150,16 @@ window.JST["fields/price"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
+      _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_cents')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">'));
+        _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
+        _print(this.getDomId());
+        _print(_safe('_cents">'));
         _print(FormRenderer.t.cents);
-        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
+        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
+        _print(this.getDomId());
+        _print(_safe('_cents" />\n    </div>\n  '));
       }
     
       _print(_safe('\n</div>\n'));
@@ -3145,11 +3212,7 @@ window.JST["fields/radio"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           id="'));
-        _print(this.getDomId());
-        _print(_safe('"\n           name="'));
-        _print(this.getDomId());
-        _print(_safe('"\n           value="'));
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           value="'));
         _print(option.label);
         _print(_safe('" />\n    '));
         _print(option.translated_label || option.label);
@@ -3159,11 +3222,7 @@ window.JST["fields/radio"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('field_options.include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             id="'));
-        _print(this.getDomId());
-        _print(_safe('"\n             name="'));
-        _print(this.getDomId());
-        _print(_safe('"\n             value="Other" />\n      '));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             value="Other" />\n      '));
         _print(FormRenderer.t.other);
         _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
         _print(FormRenderer.t.write_here);
@@ -3327,7 +3386,17 @@ window.JST["fields/table"] = function(__obj) {
             _print(j);
             _print(_safe('.'));
             _print(i);
-            _print(_safe('\'\n                        rows=\'1\' />\n          '));
+            _print(_safe('\'\n                        rows=\'1\'\n                        aria-label="'));
+            _print(column.translated_label || column.label);
+            _print(_safe(' #'));
+            _print(i + 1);
+            _print(_safe('"\n                        '));
+            if (j === 0 && i === 0) {
+              _print(_safe('id=\''));
+              _print(this.getDomId());
+              _print(_safe('\''));
+            }
+            _print(_safe(' />\n          '));
           }
           _print(_safe('\n          </td>\n        '));
         }
@@ -3462,17 +3531,33 @@ window.JST["fields/time"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">HH</label>\n    <input type="text"\n           id="'));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
       _print(this.getDomId());
     
-      _print(_safe('"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  '));
+      _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
+    
+      _print(this.getDomId());
+    
+      _print(_safe('_minutes" />\n  </div>\n\n  '));
     
       if (!this.model.get('field_options.disable_seconds')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\' />\n    </div>\n  '));
+        _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
+        _print(this.getDomId());
+        _print(_safe('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
+        _print(this.getDomId());
+        _print(_safe('_seconds" />\n    </div>\n  '));
       }
     
-      _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
+      _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\' aria-label=\'AM/PM\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
     
     }).call(this);
     
@@ -3715,7 +3800,13 @@ window.JST["partials/label"] = function(__obj) {
     
       _print(this.getDomId());
     
-      _print(_safe('">\n  '));
+      _print(_safe('" '));
+    
+      if (this.usesFieldset) {
+        _print(_safe('aria-hidden="true"'));
+      }
+    
+      _print(_safe('>\n  '));
     
       _print(this.model.get('label'));
     
@@ -4168,6 +4259,14 @@ window.JST["partials/response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      if (this.usesFieldset) {
+        _print(_safe('\n<fieldset class=\'fr_fieldset\'>\n  <legend>'));
+        _print(this.model.get('label'));
+        _print(_safe('</legend>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
       _print(_safe(JST["partials/label"](this)));
     
       _print(_safe('\n<div class=\'fr_field_wrapper\'>\n  '));
@@ -4175,6 +4274,12 @@ window.JST["partials/response_field"] = function(__obj) {
       _print(_safe(JST["fields/" + this.field_type](this)));
     
       _print(_safe('\n</div>\n\n'));
+    
+      if (this.usesFieldset) {
+        _print(_safe('\n</fieldset>\n'));
+      }
+    
+      _print(_safe('\n\n'));
     
       _print(_safe(JST["partials/length_validations"](this)));
     

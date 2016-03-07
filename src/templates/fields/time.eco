@@ -1,8 +1,8 @@
 <div class='fr_grid'>
   <div class='has_sub_label'>
-    <label class="fr_sub_label">HH</label>
+    <label class="fr_sub_label" for="<%= @getDomId() %>_hours">HH</label>
     <input type="text"
-           id="<%= @getDomId() %>"
+           id="<%= @getDomId() %>_hours"
            data-rv-input='model.value.hours'
            maxlength='2'
            size='2' />
@@ -11,27 +11,29 @@
   <div class='fr_spacer'>:</div>
 
   <div class='has_sub_label'>
-    <label class="fr_sub_label">MM</label>
+    <label class="fr_sub_label" for="<%= @getDomId() %>_minutes">MM</label>
     <input type="text"
            data-rv-input='model.value.minutes'
            maxlength='2'
-           size='2' />
+           size='2'
+           id="<%= @getDomId() %>_minutes" />
   </div>
 
   <% unless @model.get('field_options.disable_seconds'): %>
     <div class='fr_spacer'>:</div>
 
     <div class='has_sub_label'>
-      <label class="fr_sub_label">SS</label>
+      <label class="fr_sub_label" for="<%= @getDomId() %>_seconds">SS</label>
       <input type="text"
              data-rv-input='model.value.seconds'
              maxlength='2'
-             size='2' />
+             size='2'
+             id="<%= @getDomId() %>_seconds" />
     </div>
   <% end %>
 
   <div class='has_sub_label'>
-    <select data-rv-value='model.value.am_pm' data-width='auto'>
+    <select data-rv-value='model.value.am_pm' data-width='auto' aria-label='AM/PM'>
       <option value='AM'>AM</option>
       <option value='PM'>PM</option>
     </select>

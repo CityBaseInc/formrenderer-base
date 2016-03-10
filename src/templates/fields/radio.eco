@@ -2,8 +2,6 @@
   <label class='fr_option control'>
     <input type='radio'
            data-rv-checked='model.value.selected'
-           id="<%= @getDomId() %>"
-           name="<%= @getDomId() %>"
            value="<%= option.label %>" />
     <%= option.translated_label || option.label %>
   </label>
@@ -14,8 +12,6 @@
     <label class='control'>
       <input type='radio'
              data-rv-checked='model.value.selected'
-             id="<%= @getDomId() %>"
-             name="<%= @getDomId() %>"
              value="Other" />
       <%= FormRenderer.t.other %>
     </label>

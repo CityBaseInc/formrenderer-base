@@ -29,6 +29,17 @@
     display: block;
   }
 
+  // Reset fieldset styles
+  .fr_fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    @include hidden;
+  }
+
   // Except the file label
   .fr_add_file label {
     display: inline-block;

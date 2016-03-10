@@ -10054,14 +10054,14 @@ window.JST["partials/label"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<label for="'));
-    
-      _print(this.getDomId());
-    
-      _print(_safe('" '));
+      _print(_safe('<label '));
     
       if (this.usesFieldset) {
         _print(_safe('aria-hidden="true"'));
+      } else {
+        _print(_safe('for="'));
+        _print(this.getDomId());
+        _print(_safe('"'));
       }
     
       _print(_safe('>\n  '));

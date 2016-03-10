@@ -1,4 +1,4 @@
-<label for="<%= @getDomId() %>" <% if @usesFieldset: %>aria-hidden="true"<% end %>>
+<label <% if @usesFieldset: %>aria-hidden="true"<% else: %>for="<%= @getDomId() %>"<% end %>>
   <%= @model.get('label') %><% if @model.get('required'): %>&nbsp;<abbr class='fr_required' title='required'>*</abbr><% end %>
   <%- JST["partials/labels"](@) %>
 </label>

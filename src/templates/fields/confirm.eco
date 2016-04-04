@@ -1,4 +1,4 @@
 <label class='fr_option control'>
   <input type='checkbox' data-rv-checked='model.value' />
-  <%= @model.get('label') %>
+  <%= @model.get('label') %><%- JST["partials/required"](@) %>
 </label>

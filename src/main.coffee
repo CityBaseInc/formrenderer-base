@@ -368,6 +368,7 @@ FormRenderer.INPUT_FIELD_TYPES = [
   'time'
   'website'
   'map_marker'
+  'confirm'
 ]
 
 FormRenderer.NON_INPUT_FIELD_TYPES = [

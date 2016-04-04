@@ -317,6 +317,17 @@ Fixtures.KITCHEN_SINK_FORM = [
     updated_at: "2014-08-22T20:50:37.547Z",
     field_type: "phone",
     cid: null
+  }, {
+    id: 52,
+    form_id: 5,
+    label: "I accept the terms of Service.",
+    required: true,
+    blind: false,
+    admin_only: false,
+    created_at: "2014-08-22T20:50:37.547Z",
+    updated_at: "2014-08-22T20:50:37.547Z",
+    field_type: "confirm",
+    cid: null
   }
 ];
 

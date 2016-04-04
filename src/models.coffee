@@ -450,6 +450,9 @@ FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.exten
     FormRenderer.Validators.PhoneValidator
   ]
 
+FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend
+  field_type: 'confirm'
+
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
   FormRenderer.Models["ResponseField#{_str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
     field_type: i

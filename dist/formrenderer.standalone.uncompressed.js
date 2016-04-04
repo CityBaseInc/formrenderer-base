@@ -1482,7 +1482,20 @@ rivets.configure({
   });
 
   FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
-    field_type: 'confirm'
+    field_type: 'confirm',
+    getValue: function() {
+      return this.get('value') || false;
+    },
+    setExistingValue: function(x) {
+      return this.set('value', x === 't');
+    },
+    toText: function() {
+      if (this.get('value')) {
+        return 'Yes';
+      } else {
+        return 'No';
+      }
+    }
   });
 
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;

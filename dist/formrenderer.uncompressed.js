@@ -6783,7 +6783,7 @@ rivets.configure({
     }
   });
 
-  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'phone', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker'];
+  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'phone', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker', 'confirm'];
 
   FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
 
@@ -7739,6 +7739,23 @@ rivets.configure({
     validators: [FormRenderer.Validators.PhoneValidator]
   });
 
+  FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
+    field_type: 'confirm',
+    getValue: function() {
+      return this.get('value') || false;
+    },
+    setExistingValue: function(x) {
+      return this.set('value', x === 't');
+    },
+    toText: function() {
+      if (this.get('value')) {
+        return 'Yes';
+      } else {
+        return 'No';
+      }
+    }
+  });
+
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
@@ -8081,6 +8098,7 @@ rivets.configure({
   var i, _i, _j, _len, _len1, _ref, _ref1;
 
   FormRenderer.Views.ResponseField = Backbone.View.extend({
+    wrapper: 'label',
     field_type: void 0,
     className: 'fr_response_field',
     events: {
@@ -8185,7 +8203,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'price',
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'blur [data-rv-input="model.value.cents"]': 'formatCents'
@@ -8260,7 +8278,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'file',
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click [data-fr-remove-file]': 'doRemove'
@@ -8412,7 +8430,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'address',
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
@@ -8430,26 +8448,31 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'checkboxes'
   });
 
   FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'radio'
   });
 
   FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'time'
   });
 
   FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
-    usesFieldset: true,
+    wrapper: 'fieldset',
     field_type: 'date'
   });
 
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time');
+  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'none',
+    field_type: 'confirm'
+  });
+
+  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time', 'confirm');
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     i = _ref[_i];
     FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
@@ -8732,6 +8755,57 @@ window.JST["fields/checkboxes"] = function(__obj) {
       }
     
       _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["fields/confirm"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<label class=\'fr_option control\'>\n  <input type=\'checkbox\' data-rv-checked=\'model.value\' />\n  '));
+    
+      _print(this.model.get('label'));
+    
+      _print(_safe(JST["partials/required"](this)));
+    
+      _print(_safe('\n</label>\n'));
     
     }).call(this);
     
@@ -10068,9 +10142,7 @@ window.JST["partials/label"] = function(__obj) {
     
       _print(this.model.get('label'));
     
-      if (this.model.get('required')) {
-        _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
-      }
+      _print(_safe(JST["partials/required"](this)));
     
       _print(_safe('\n  '));
     
@@ -10496,6 +10568,55 @@ window.JST["partials/pagination"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["partials/required"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      if (this.model.get('required')) {
+        _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
+      }
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["partials/response_field"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -10517,24 +10638,24 @@ window.JST["partials/response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      if (this.usesFieldset) {
-        _print(_safe('\n<fieldset class=\'fr_fieldset\'>\n  <legend>'));
+      if (this.wrapper === 'fieldset') {
+        _print(_safe('\n  <fieldset class=\'fr_fieldset\'>\n    <legend>'));
         _print(this.model.get('label'));
-        _print(_safe('</legend>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      _print(_safe(JST["partials/label"](this)));
-    
-      _print(_safe('\n<div class=\'fr_field_wrapper\'>\n  '));
-    
-      _print(_safe(JST["fields/" + this.field_type](this)));
-    
-      _print(_safe('\n</div>\n\n'));
-    
-      if (this.usesFieldset) {
-        _print(_safe('\n</fieldset>\n'));
+        _print(_safe('</legend>\n    '));
+        _print(_safe(JST["partials/label"](this)));
+        _print(_safe('\n    <div class=\'fr_field_wrapper\'>\n      '));
+        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe('\n    </div>\n  </fieldset>\n'));
+      } else if (this.wrapper === 'label') {
+        _print(_safe('\n  '));
+        _print(_safe(JST["partials/label"](this)));
+        _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
+        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe('\n  </div>\n'));
+      } else {
+        _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
+        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe('\n  </div>\n'));
       }
     
       _print(_safe('\n\n'));

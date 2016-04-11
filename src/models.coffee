@@ -450,6 +450,19 @@ FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.exten
     FormRenderer.Validators.PhoneValidator
   ]
 
+FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend
+  field_type: 'confirm'
+  getValue: ->
+    @get('value') || false # Send `false` instead of null
+  setExistingValue: (x) ->
+    @set('value', x == 't')
+  toText: ->
+    # These act as constants
+    if @get('value')
+      'Yes'
+    else
+      'No'
+
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
   FormRenderer.Models["ResponseField#{_str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend
     field_type: i

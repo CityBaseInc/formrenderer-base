@@ -297,6 +297,14 @@ Fixtures.Validation = {
           "out": "Foo"
         }
       ]
+    },
+    "confirm": {
+      "tests": [
+        {
+          "in": "t",
+          "out": "Yes"
+        }
+      ]
     }
   },
   "methods": {
@@ -342,5 +350,4 @@ Fixtures.Validation = {
     }
   }
 }
-
 ;

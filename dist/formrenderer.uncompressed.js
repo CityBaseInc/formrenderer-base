@@ -7882,7 +7882,12 @@ rivets.configure({
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
-      this.listenTo(this.form_renderer, 'afterValidate:all', this.render);
+      this.listenTo(this.form_renderer, 'afterValidate:all', (function(_this) {
+        return function() {
+          _this.render();
+          return _this.$el.find('.fr_error_alert_bar > a').focus();
+        };
+      })(this));
       return this.listenTo(this.form_renderer, 'afterValidate:one', function() {
         if (this.form_renderer.areAllPagesValid()) {
           return this.render();

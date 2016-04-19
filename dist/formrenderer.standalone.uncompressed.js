@@ -631,7 +631,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.11.1';
+  FormRenderer.VERSION = '0.11.2';
 
 }).call(this);
 
@@ -1627,7 +1627,7 @@ rivets.configure({
       this.listenTo(this.form_renderer, 'afterValidate:all', (function(_this) {
         return function() {
           _this.render();
-          return _this.$el.find('.fr_error_alert_bar > a').focus();
+          return _this.$el.find('.fr_error_alert_bar a').focus();
         };
       })(this));
       return this.listenTo(this.form_renderer, 'afterValidate:one', function() {

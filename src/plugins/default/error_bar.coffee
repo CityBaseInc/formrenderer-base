@@ -13,7 +13,7 @@ FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend
     @form_renderer = options.form_renderer
     @listenTo @form_renderer, 'afterValidate:all', =>
       @render()
-      @$el.find('.fr_error_alert_bar > a').focus()
+      @$el.find('.fr_error_alert_bar a').focus()
 
     # When validating a single field, we only go from shown -> hidden
     @listenTo @form_renderer, 'afterValidate:one', ->

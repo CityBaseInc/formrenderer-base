@@ -1,1 +1,1 @@
-FormRenderer.VERSION = '0.11.1'
+FormRenderer.VERSION = '0.11.2'

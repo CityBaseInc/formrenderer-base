@@ -10817,7 +10817,7 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\' role=\'alert\'>\n    '));
         _print(_safe(FormRenderer.t.error_bar.errors));
         _print(_safe('\n  </div>\n'));
       }

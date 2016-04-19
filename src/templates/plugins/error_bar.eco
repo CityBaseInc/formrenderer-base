@@ -1,5 +1,5 @@
 <% unless @form_renderer.areAllPagesValid(): %>
-  <div class='fr_error_alert_bar'>
+  <div class='fr_error_alert_bar' role='alert'>
     <%- FormRenderer.t.error_bar.errors %>
   </div>
 <% end %>

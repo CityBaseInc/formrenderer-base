@@ -1624,7 +1624,12 @@ rivets.configure({
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
-      this.listenTo(this.form_renderer, 'afterValidate:all', this.render);
+      this.listenTo(this.form_renderer, 'afterValidate:all', (function(_this) {
+        return function() {
+          _this.render();
+          return _this.$el.find('.fr_error_alert_bar > a').focus();
+        };
+      })(this));
       return this.listenTo(this.form_renderer, 'afterValidate:one', function() {
         if (this.form_renderer.areAllPagesValid()) {
           return this.render();
@@ -4559,7 +4564,7 @@ window.JST["plugins/error_bar"] = function(__obj) {
     };
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\'>\n    '));
+        _print(_safe('\n  <div class=\'fr_error_alert_bar\' role=\'alert\'>\n    '));
         _print(_safe(FormRenderer.t.error_bar.errors));
         _print(_safe('\n  </div>\n'));
       }

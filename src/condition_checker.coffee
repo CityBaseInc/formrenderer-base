@@ -40,8 +40,8 @@ class FormRenderer.ConditionChecker
 
   isValid: ->
     @responseField() &&
-    _.all ['value', 'response_field_id', 'method'], (x) =>
-      @condition[x]
+    _.all(['response_field_id', 'method'], ( (x) => @condition[x] )) &&
+    (@condition.method in ['present', 'blank'] || @condition['value'])
 
   isVisible: ->
     if @isValid()

@@ -26,6 +26,12 @@ class FormRenderer.ConditionChecker
   method_longer: ->
     @length() > parseInt(@condition.value, 10)
 
+  method_present: ->
+    !!@value.match(/\S/)
+
+  method_blank: ->
+    !@method_present()
+
   length: ->
     FormRenderer.getLength(
       @responseField().getLengthValidationUnits(),

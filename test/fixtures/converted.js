@@ -347,6 +347,16 @@ Fixtures.Validation = {
       "value": "5",
       "true": ["asdfaa", "asdfaaa"],
       "false": ["asdfa", "a"]
+    },
+    "present": {
+      "value": "",
+      "true": ["a", " a"],
+      "false": ["", "   ", "\n\r", "\u00a0"]
+    },
+    "blank": {
+      "value": "",
+      "false": ["a"],
+      "true": [""]
     }
   }
 }

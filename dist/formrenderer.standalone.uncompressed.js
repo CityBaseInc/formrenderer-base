@@ -689,6 +689,14 @@ rivets.configure({
       return this.length() > parseInt(this.condition.value, 10);
     };
 
+    ConditionChecker.prototype.method_present = function() {
+      return !!this.value.match(/\S/);
+    };
+
+    ConditionChecker.prototype.method_blank = function() {
+      return !this.method_present();
+    };
+
     ConditionChecker.prototype.length = function() {
       return FormRenderer.getLength(this.responseField().getLengthValidationUnits(), this.value);
     };

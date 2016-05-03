@@ -26,6 +26,12 @@ class FormRenderer.ConditionChecker
   method_longer: ->
     @length() > parseInt(@condition.value, 10)
 
+  method_present: ->
+    !!@value.match(/\S/)
+
+  method_blank: ->
+    !@method_present()
+
   length: ->
     FormRenderer.getLength(
       @responseField().getLengthValidationUnits(),
@@ -34,8 +40,8 @@ class FormRenderer.ConditionChecker
 
   isValid: ->
     @responseField() &&
-    _.all ['value', 'response_field_id', 'method'], (x) =>
-      @condition[x]
+    _.all(['response_field_id', 'method'], ( (x) => @condition[x] )) &&
+    (@condition.method in ['present', 'blank'] || @condition['value'])
 
   isVisible: ->
     if @isValid()

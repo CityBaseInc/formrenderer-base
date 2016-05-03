@@ -6947,16 +6947,25 @@ rivets.configure({
       return this.length() > parseInt(this.condition.value, 10);
     };
 
+    ConditionChecker.prototype.method_present = function() {
+      return !!this.value.match(/\S/);
+    };
+
+    ConditionChecker.prototype.method_blank = function() {
+      return !this.method_present();
+    };
+
     ConditionChecker.prototype.length = function() {
       return FormRenderer.getLength(this.responseField().getLengthValidationUnits(), this.value);
     };
 
     ConditionChecker.prototype.isValid = function() {
-      return this.responseField() && _.all(['value', 'response_field_id', 'method'], (function(_this) {
+      var _ref;
+      return this.responseField() && _.all(['response_field_id', 'method'], ((function(_this) {
         return function(x) {
           return _this.condition[x];
         };
-      })(this));
+      })(this))) && (((_ref = this.condition.method) === 'present' || _ref === 'blank') || this.condition['value']);
     };
 
     ConditionChecker.prototype.isVisible = function() {

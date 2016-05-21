@@ -6705,7 +6705,7 @@ rivets.configure({
       if (typeof as === 'function') {
         return as.call(this);
       } else if (typeof as === 'string') {
-        return window.location = as.replace(':id', this.options.response.id);
+        return window.location = as.replace(':id', this.options.response.id.split(',')[0]);
       } else if (typeof as === 'object' && as.method === 'page') {
         $page = $("<div class='fr_after_submit_page'>" + as.html + "</div>");
         return this.$el.replaceWith($page);
@@ -6717,7 +6717,7 @@ rivets.configure({
       var cb;
       cb = (function(_this) {
         return function() {
-          return window.location = _this.options.preview.replace(':id', _this.options.response.id);
+          return window.location = _this.options.preview.replace(':id', _this.options.response.id.split(',')[0]);
         };
       })(this);
       if (!this.state.get('hasChanges') && this.options.response.id) {

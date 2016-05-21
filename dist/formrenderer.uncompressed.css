@@ -231,6 +231,10 @@
 .fr_bottom_r {
   text-align: right; }
 
+.fr_bookmark {
+  font-size: 90%;
+  margin-top: 10px; }
+
 .fr_error_alert_bar {
   background-color: #c12f2e;
   color: #fff;

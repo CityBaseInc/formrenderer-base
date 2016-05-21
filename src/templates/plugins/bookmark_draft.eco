@@ -1,0 +1,3 @@
+<div class='fr_bookmark'>
+  <a href='#' class='js-fr-bookmark'><%= FormRenderer.t.finish_later %></a>
+</div>

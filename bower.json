@@ -20,6 +20,7 @@
     "underscore": "~1.6.0",
     "underscore.string": "~2.3.3",
     "ajb-sanitize": "~1.0.1",
+    "js-cookie": "~2.1.1",
     "backbone-deep-model": "~0.10.4",
     "rivets-dobt": "1.0.0",
     "iso-country-names": "~0.1.0",

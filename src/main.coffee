@@ -16,7 +16,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'WarnBeforeUnload'
       'BottomBar'
       'ErrorBar'
-      'LocalStorage'
+      'SavedSession'
     ]
 
   ## Initialization logic

@@ -61,7 +61,7 @@ rivets.configure({
       saveParams: {},
       showLabels: false,
       scrollToPadding: 0,
-      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'LocalStorage']
+      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'SavedSession']
     },
     constructor: function(options) {
       var p, _i, _len, _ref;
@@ -1661,43 +1661,6 @@ rivets.configure({
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  FormRenderer.Plugins.LocalStorage = (function(_super) {
-    __extends(LocalStorage, _super);
-
-    function LocalStorage() {
-      return LocalStorage.__super__.constructor.apply(this, arguments);
-    }
-
-    LocalStorage.prototype.beforeFormLoad = function() {
-      var draftKey, _base;
-      if (!store.enabled) {
-        return;
-      }
-      draftKey = "project-" + this.fr.options.project_id + "-response-id";
-      (_base = this.fr.options.response).id || (_base.id = store.get(draftKey));
-      this.fr.on('afterSave', function() {
-        if (!this.state.get('submitting')) {
-          return store.set(draftKey, this.options.response.id);
-        }
-      });
-      this.fr.on('afterSubmit', function() {
-        return store.remove(draftKey);
-      });
-      return this.fr.on('errorSaving', function() {
-        return store.remove(draftKey);
-      });
-    };
-
-    return LocalStorage;
-
-  })(FormRenderer.Plugins.Base);
-
-}).call(this);
-
-(function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
   FormRenderer.Plugins.PageState = (function(_super) {
     __extends(PageState, _super);
 
@@ -1719,6 +1682,40 @@ rivets.configure({
     };
 
     return PageState;
+
+  })(FormRenderer.Plugins.Base);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  FormRenderer.Plugins.SavedSession = (function(_super) {
+    __extends(SavedSession, _super);
+
+    function SavedSession() {
+      return SavedSession.__super__.constructor.apply(this, arguments);
+    }
+
+    SavedSession.prototype.beforeFormLoad = function() {
+      var draftKey, _base;
+      draftKey = "project-" + this.fr.options.project_id + "-response-id";
+      (_base = this.fr.options.response).id || (_base.id = Cookies.get(draftKey));
+      this.fr.on('afterSave', function() {
+        if (!this.state.get('submitting')) {
+          return Cookies.set(draftKey, this.options.response.id);
+        }
+      });
+      this.fr.on('afterSubmit', function() {
+        return Cookies.remove(draftKey);
+      });
+      return this.fr.on('errorSaving', function() {
+        return Cookies.remove(draftKey);
+      });
+    };
+
+    return SavedSession;
 
   })(FormRenderer.Plugins.Base);
 

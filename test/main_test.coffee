@@ -114,14 +114,14 @@ describe '#loadFromServer', ->
   it 'removes the draft ID on error', ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.PROJECT_LOADED()
 
-    storeSpy =
+    cookieSpy =
       remove: sinon.spy()
 
-    window.store = storeSpy
+    window.Cookies = cookieSpy
 
     @server.requests[0].respond 400, { "Content-Type": "application/json" }, JSON.stringify({})
 
-    expect(storeSpy.remove).to.have.been.called
+    expect(cookieSpy.remove).to.have.been.called
 
 describe '#submit', ->
   before ->

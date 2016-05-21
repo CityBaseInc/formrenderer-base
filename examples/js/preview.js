@@ -46,14 +46,14 @@ if ($('#lib').val().match('cardinal')) {
 // Initialize form
 if ($('#screendoor_project_id').val()) {
   var fr = new FormRenderer({
-      screendoorBase: 'http://screendoor.dobt.dev',
+      screendoorBase: 'https://screendoor.dobt.dev',
       project_id: $('#screendoor_project_id').val()
   });
 } else {
   var fr = new FormRenderer($.extend(
     Fixtures.FormRendererOptions[$('#fixture').val()](),
     {
-      screendoorBase: 'http://screendoor.dobt.dev',
+      screendoorBase: 'https://screendoor.dobt.dev',
       onReady: function(){
         console.log('Form is ready!');
       }

@@ -63,7 +63,7 @@ module.exports = (grunt) ->
           '<%= compiledFolder %>/vendor.js': [
             'bower_components/jquery-form/jquery.form.js'
             'bower_components/inline_file_upload/dist/inline_file_upload.js'
-            'bower_components/store.js/store.js'
+            'bower_components/js-cookie/src/js.cookie.js'
             'bower_components/underscore/underscore.js'
             'bower_components/backbone/backbone.js'
             'bower_components/underscore.string/dist/underscore.string.min.js'

@@ -16,7 +16,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'WarnBeforeUnload'
       'BottomBar'
       'ErrorBar'
-      'LocalStorage'
+      'SavedSession'
     ]
 
   ## Initialization logic
@@ -308,7 +308,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     if typeof as == 'function'
       as.call @
     else if typeof as == 'string'
-      window.location = as.replace(':id', @options.response.id)
+      window.location = as.replace(':id', @options.response.id.split(',')[0])
     else if typeof as == 'object' && as.method == 'page'
       $page = $("<div class='fr_after_submit_page'>#{as.html}</div>")
       @$el.replaceWith($page)
@@ -317,7 +317,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   _preview: ->
     cb = =>
-      window.location = @options.preview.replace(':id', @options.response.id)
+      window.location = @options.preview.replace(':id', @options.response.id.split(',')[0])
 
     # If we know the response ID and there are no changes, we can bypass
     # the call to @save() entirely

@@ -6232,6 +6232,8 @@ var ISOCountryNames = {
 };
 
 var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
+;eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('(9(h){\'1X 1W\';5 j={r:\'r\',Q:\'1V\',t:\'t\',8:\'1T\',q:\'1P\',C:\'C\'};5 k={1O:1N,1M:1K,1J:18,1I:1c,1H:18,1G:1c};9 Y(a,b){5 c,G,i,O;m(W V===\'R\'&&W L===\'9\'){c=\'1A://\'+(1z.1x.I(/^1w/i)?\'/\':\'\')+L(\'1u\').1s(\'.\');m(b&&b.J(0)!==\'/\'&&!b.I(/^\\w+:\\/\\//)){b=c+L(\'8\').1r+b}G=L(\'1q\').Y(b||c)}F{c=V.1p.19;G=V.1o(\'a\');G.19=b||c}O=(b||c).I(/\\/\\/(.*?)(?::(.*?))?@/)||[];y(i K j){a[i]=G[j[i]]||\'\'}a.r=a.r.p(/:$/,\'\');a.q=a.q.p(/^\\?/,\'\');a.C=v(a.C.p(/^#/,\'\'));a.M=v(O[1]||\'\');a.N=v(O[2]||\'\');a.t=(k[a.r]===a.t||a.t===0)?\'\':a.t;m(!a.r&&!/^([a-z]+:)?\\/\\/\\/?/.1D(b)){5 d=1a o(c.I(/(.*\\/)/)[0]);5 e=d.8.P(\'/\');5 f=a.8.P(\'/\');5 g=[\'r\',\'M\',\'N\',\'Q\',\'t\'];5 s=g.H;e.1f();y(i=0;i<s;i++){a[g[i]]=d[g[i]]}1g(f[0]==\'..\'){e.1f();f.1k()}a.8=(b.J(0)!=\'/\'?e.17(\'/\'):\'\')+\'/\'+f.17(\'/\')}F{a.8=a.8.p(/^\\/?/,\'/\')}a.1i((a.8.J(0)==\'/\'?a.8.1j(1):a.8).P(\'/\'));a.q=1a 15(a.q)}9 x(s){l 1l(s).p(/\'/g,\'%1m\')}9 v(s){s=s.p(/\\+/g,\' \');s=s.p(/%([1n][0-A-f])%([T][0-A-f])%([T][0-A-f])/13,9(a,b,c,d){5 e=B(b,16)-1t;5 f=B(c,16)-10;m(e===0&&f<1v){l a}5 g=B(d,16)-10;5 n=(e<<12)+(f<<6)+g;m(n>1y){l a}l U.X(n)});s=s.p(/%([1B][0-A-f])%([T][0-A-f])/13,9(a,b,c){5 d=B(b,16)-1C;m(d<2){l a}5 e=B(c,16)-10;l U.X((d<<6)+e)});l s.p(/%([0-7][0-A-f])/13,9(a,b){l U.X(B(b,16))})}9 15(a){5 b=/([^=&]+)(=([^&]*))?/g;5 c;1g((c=b.1E(a))){5 d=1F(c[1].p(/\\+/g,\' \'));5 e=c[3]?v(c[3]):\'\';m(!(4[d]===R||4[d]===1b)){m(!(4[d]D 1h)){4[d]=[4[d]]}4[d].1L(e)}F{4[d]=e}}}15.u.Z=9(){5 s=\'\';5 e=x;5 i,E;y(i K 4){m(4[i]D 11||4[i]===1b){1Q}m(4[i]D 1h){5 a=4[i].H;m(a){y(E=0;E<a;E++){s+=s?\'&\':\'\';s+=e(i)+\'=\'+e(4[i][E])}}F{s+=(s?\'&\':\'\')+e(i)+\'=\'}}F{s+=s?\'&\':\'\';s+=e(i)+\'=\'+e(4[i])}}l s};9 o(a){Y(4,a)}o.u.1R=9(){y(5 a K 4.q){m(!(4.q[a]D 11)){1S 4.q[a]}}l 4};o.u.1e=9(){5 a=0;5 b;y(b K 4){m(!(4[b]D 11)){a++}}l a};o.u.1U=9(){l 4.1e()===0};o.u.1i=9(a){5 b=\'\';5 i=0;5 s;m(a&&a.H&&a+\'\'!==a){m(4.1d()){b=\'/\'}y(s=a.H;i<s;i++){a[i]=!i&&a[i].I(/^\\w:$/)?a[i]:x(a[i])}4.8=b+a.17(\'/\')}a=(4.8.J(0)===\'/\'?4.8.1j(1):4.8).P(\'/\');y(i=0,s=a.H;i<s;i++){a[i]=v(a[i])}l a};o.u.x=x;o.u.v=v;o.u.1d=9(){l 4.r||4.8.J(0)===\'/\'};o.u.Z=9(){l((4.r&&(4.r+\'://\'))+(4.M&&(x(4.M)+(4.N&&(\':\'+x(4.N)))+\'@\'))+(4.Q&&4.Q)+(4.t&&(\':\'+4.t))+(4.8&&4.8)+(4.q.Z()&&(\'?\'+4.q))+(4.C&&(\'#\'+x(4.C))))};h[h.14?\'14\':\'o\']=o}(W S!==\'R\'&&S.14?S:1Y));',62,123,'||||this|var|||path|function||||||||||||return|if||Url|replace|query|protocol||port|prototype|decode||encode|for||9a|parseInt|hash|instanceof|ii|else|link|length|match|charAt|in|require|user|pass|auth|split|host|undefined|module|89ab|String|document|typeof|fromCharCode|parse|toString|0x80|Function||gi|exports|QueryString||join|80|href|new|null|443|isAbsolute|queryLength|pop|while|Array|paths|slice|shift|encodeURIComponent|27|ef|createElement|location|url|sep|realpathSync|0xE0|fs|32|win|platform|0xFFFF|process|file|cd|0xC0|test|exec|decodeURIComponent|wss|ws|https|http|70|push|gopher|21|ftp|search|continue|clearQuery|delete|pathname|isEmptyQuery|hostname|strict|use|window'.split('|'),0,{}));
+
 var $, _str;
 
 $ = jQuery;
@@ -6295,7 +6297,7 @@ rivets.configure({
       saveParams: {},
       showLabels: false,
       scrollToPadding: 0,
-      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'SavedSession', 'BookmarkDraft']
+      plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'SavedSession']
     },
     constructor: function(options) {
       var p, _i, _len, _ref;
@@ -7839,7 +7841,7 @@ rivets.configure({
 
   FormRenderer.Plugins.BookmarkDraft.View = Backbone.View.extend({
     events: {
-      'click .js-fr-bookmark': 'showBookmark'
+      'click .js-fr-bookmark': 'requestBookmark'
     },
     initialize: function(options) {
       return this.form_renderer = options.form_renderer;
@@ -7849,19 +7851,22 @@ rivets.configure({
       this.form_renderer.trigger('viewRendered', this);
       return this;
     },
-    finishLink: function() {
-      var sep, url;
-      url = document.URL;
-      sep = url.indexOf('?') > -1 ? '&' : '?';
-      return "" + url + sep + paramName + "=" + this.form_renderer.options.response.id;
+    showBookmark: function(url) {
+      return prompt(FormRenderer.t.bookmark_hint, url);
     },
-    showBookmark: function(e) {
+    getUrl: function() {
+      var u;
+      u = new Url;
+      u.query[paramName] = this.form_renderer.options.response.id;
+      return u.toString();
+    },
+    requestBookmark: function(e) {
       var cb;
       e.preventDefault();
       cb = (function(_this) {
         return function() {
           _this.render();
-          return prompt(FormRenderer.t.bookmark_hint, _this.finishLink());
+          return _this.showBookmark(_this.getUrl());
         };
       })(this);
       if (this.form_renderer.options.response.id) {
@@ -8582,7 +8587,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","bookmark_hint":"To finish your response later, copy the below link.","blind":"Blind","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finish_later":"Finish this later","finishing_up":"Finishing up...","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","bookmark_hint":"To finish your response later, copy the link below.","blind":"Blind","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finish_later":"Finish this later","finishing_up":"Finishing up...","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};

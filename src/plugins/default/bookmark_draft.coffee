@@ -5,10 +5,8 @@ getUrlParam = (name) ->
   name = name.replace(/[\[\]]/g, "\\$&");
   regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)")
   results = regex.exec(url)
-  if !results
-    return null
-  if !results[2]
-    return ''
+  return null unless results
+  return '' unless results[2]
   decodeURIComponent(results[2].replace(/\+/g, " "))
 
 class FormRenderer.Plugins.BookmarkDraft extends FormRenderer.Plugins.Base
@@ -22,7 +20,7 @@ class FormRenderer.Plugins.BookmarkDraft extends FormRenderer.Plugins.Base
 
 FormRenderer.Plugins.BookmarkDraft.View = Backbone.View.extend
   events:
-    'click .js-fr-bookmark': 'showBookmark'
+    'click .js-fr-bookmark': 'requestBookmark'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
@@ -32,17 +30,20 @@ FormRenderer.Plugins.BookmarkDraft.View = Backbone.View.extend
     @form_renderer.trigger 'viewRendered', @
     @
 
-  finishLink: ->
-    url = document.URL
-    sep = if url.indexOf('?') > -1 then '&' else '?'
-    "#{url}#{sep}#{paramName}=#{@form_renderer.options.response.id}"
+  showBookmark: (url) ->
+    prompt(FormRenderer.t.bookmark_hint, url)
 
-  showBookmark: (e) ->
+  getUrl: ->
+    u = new Url
+    u.query[paramName] = @form_renderer.options.response.id
+    u.toString()
+
+  requestBookmark: (e) ->
     e.preventDefault()
 
     cb = =>
       @render()
-      prompt(FormRenderer.t.bookmark_hint, @finishLink())
+      @showBookmark(@getUrl())
 
     if @form_renderer.options.response.id
       cb()

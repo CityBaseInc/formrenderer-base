@@ -17,7 +17,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'BottomBar'
       'ErrorBar'
       'SavedSession'
-      'BookmarkDraft'
     ]
 
   ## Initialization logic

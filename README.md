@@ -70,6 +70,13 @@ FormRenderer.removePlugin('ErrorBar')
 // -> forms created will no longer include the ErrorBar plugin
 ```
 
+### Additional plugins
+
+| Name | Description |
+| --- | --- |
+| BookmarkDraft | Appends a "Finish this later" link to the bottom of your form, which display a URL that allows a respondent to return to their unfinished draft. |
+| PageState | Appends the current page to `window.location.hash`, which allows respondents to refresh the page without returning to the first page of the form. |
+
 ## Events
 
 Since `FormRenderer` inherits the `Backbone.View` prototype, you can listen for the following events using the standard [Backbone syntax](http://backbonejs.org/#Events).

@@ -1109,6 +1109,13 @@ Fixtures.FormRendererOptions.PAGE_STATE = function(){
   );
 }
 
+Fixtures.FormRendererOptions.BOOKMARK_DRAFT = function(){
+  return $.extend(
+    Fixtures.FormRendererOptions.CONDITIONAL(),
+    { plugins: _.union(FormRenderer.prototype.defaults.plugins, ['PageState', 'BookmarkDraft']) }
+  );
+}
+
 Fixtures.FormRendererOptions.TABLE_REQ = function(){
   table = Fixtures.FormRendererOptions.TABLE();
   table.response_fields[0].required = true;

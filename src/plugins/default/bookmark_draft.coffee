@@ -12,7 +12,7 @@ getUrlParam = (name) ->
 class FormRenderer.Plugins.BookmarkDraft extends FormRenderer.Plugins.Base
   beforeFormLoad: ->
     if (id = getUrlParam(paramName))
-      @fr.options.response.id ||= id
+      @fr.options.response.id = id
 
   afterFormLoad: ->
     @fr.subviews.bookmarkDraft = new FormRenderer.Plugins.BookmarkDraft.View(form_renderer: @fr)

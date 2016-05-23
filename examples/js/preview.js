@@ -15,6 +15,8 @@
 //   FormRenderer.t[i] = fakei18n(FormRenderer.t[i])
 // }
 
+FormRenderer.addPlugin('BookmarkDraft');
+
 $('.js_stored_val').each(function(){
   var stored = store.get($(this).attr('id'));
 

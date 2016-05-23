@@ -7822,9 +7822,9 @@ rivets.configure({
     }
 
     BookmarkDraft.prototype.beforeFormLoad = function() {
-      var id, _base;
+      var id;
       if ((id = getUrlParam(paramName))) {
-        return (_base = this.fr.options.response).id || (_base.id = id);
+        return this.fr.options.response.id = id;
       }
     };
 

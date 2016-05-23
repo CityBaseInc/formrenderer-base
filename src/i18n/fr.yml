@@ -4,6 +4,7 @@ fr:
   add_another_row: Ajouter une autre rangée
   back_to_page: Retour à la page :num
   blind: Aveugle
+  bookmark_hint: Pour terminer votre réponse ultérieurement, copiez le lien ci-dessous.
   cents: Cents
   characters: caractères
   city: Ville
@@ -39,6 +40,7 @@ fr:
   error_loading: Erreur de chargement du formulaire
   error_saving: Erreur de sauvegarde
   finishing_up: En train de s'achever...
+  finish_later: Finir cela plus tard
   hidden: Masqué
   hidden_until_rules_met: Masqué jusqu'à ce que les conditions soient remplies
   loading_form: Chargement du formulaire...

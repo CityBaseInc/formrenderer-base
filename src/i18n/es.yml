@@ -4,6 +4,7 @@ es:
   add_another_row: Añadir otra fila
   back_to_page: Volver a la página núm
   blind: Ciego
+  bookmark_hint: Para finalizar su respuesta más tarde, copie el enlace aparece abajo.
   cents: Céntimos
   characters: caracteres
   city: Ciudad
@@ -39,6 +40,7 @@ es:
   error_loading: Error al cargar el formulario
   error_saving: Error al guardar
   finishing_up: Terminando...
+  finish_later: Acabar esto más tarde
   hidden: Oculto
   hidden_until_rules_met: Oculto hasta que se cumplan las normas
   loading_form: Cargando formulario...

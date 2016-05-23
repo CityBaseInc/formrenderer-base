@@ -4,6 +4,8 @@ it:
   add_another_row: Aggiungi un'altra riga
   back_to_page: Torna alla pagina :num
   blind: Cieco
+  bookmark_hint: Per completare la tua risposta in un secondo momento, copia il link
+    qui sotto.
   cents: Centesimi
   characters: caratteri
   city: Città
@@ -39,6 +41,7 @@ it:
   error_loading: Errore nel caricamento del modulo
   error_saving: Errore nel salvataggio
   finishing_up: Ultimando...
+  finish_later: Finisci dopo
   hidden: Nascosto
   hidden_until_rules_met: Nascosto fino a quando i requisiti non vengono soddisfatti.
   loading_form: Caricamento modulo...

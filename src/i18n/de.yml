@@ -4,6 +4,8 @@ de:
   add_another_row: Eine weitere Zeile hinzufügen
   back_to_page: Zurück zu Seite :num
   blind: blind
+  bookmark_hint: Um Ihre Antwort später fertigzustellen, kopieren Sie den unten stehenden
+    Link.
   cents: Rappen
   characters: Zeichen
   city: 'Stadt '
@@ -39,6 +41,7 @@ de:
   error_loading: Fehler beim Laden des Formulars
   error_saving: Fehler beim Speichern
   finishing_up: Fertigstellen...
+  finish_later: Später fertigstellen
   hidden: Verborgen
   hidden_until_rules_met: Verborgen, bis Vorschriften erfüllt sind
   loading_form: Formular wird geladen...

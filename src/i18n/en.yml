@@ -3,8 +3,8 @@ en:
   address: Address
   add_another_row: Add another row
   back_to_page: Back to page :num
-  bookmark_hint: To finish your response later, copy the link below.
   blind: Blind
+  bookmark_hint: To finish your response later, copy the link below.
   cents: Cents
   characters: characters
   city: City
@@ -39,8 +39,8 @@ en:
   error_filename: Error reading filename
   error_loading: Error loading form
   error_saving: Error saving
-  finish_later: Finish this later
   finishing_up: Finishing up...
+  finish_later: Finish this later
   hidden: Hidden
   hidden_until_rules_met: Hidden until rules are met
   loading_form: Loading form...

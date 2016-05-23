@@ -81,7 +81,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         v: 0
       headers: @serverHeaders
       success: (data) =>
-        @options.response.id = data.response_id
+        @options.response.id ||= data.response_id
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
 

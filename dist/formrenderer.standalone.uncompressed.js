@@ -147,10 +147,10 @@ rivets.configure({
         headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
-            var _base, _base1, _ref;
-            _this.options.response.id = data.response_id;
-            (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
+            var _base, _base1, _base2, _ref;
+            (_base = _this.options.response).id || (_base.id = data.response_id);
+            (_base1 = _this.options).response_fields || (_base1.response_fields = data.project.response_fields);
+            (_base2 = _this.options.response).responses || (_base2.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
             if (_this.options.afterSubmit == null) {
               _this.options.afterSubmit = {
                 method: 'page',
@@ -1557,6 +1557,104 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  var getUrlParam, paramName,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  paramName = 'frDraft';
+
+  getUrlParam = function(name) {
+    var regex, results, url;
+    url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+    results = regex.exec(url);
+    if (!results) {
+      return null;
+    }
+    if (!results[2]) {
+      return '';
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  };
+
+  FormRenderer.Plugins.BookmarkDraft = (function(_super) {
+    __extends(BookmarkDraft, _super);
+
+    function BookmarkDraft() {
+      return BookmarkDraft.__super__.constructor.apply(this, arguments);
+    }
+
+    BookmarkDraft.prototype.beforeFormLoad = function() {
+      var id;
+      if ((id = getUrlParam(paramName))) {
+        return this.fr.options.response.id = id;
+      }
+    };
+
+    BookmarkDraft.prototype.afterFormLoad = function() {
+      this.fr.subviews.bookmarkDraft = new FormRenderer.Plugins.BookmarkDraft.View({
+        form_renderer: this.fr
+      });
+      return this.fr.$el.append(this.fr.subviews.bookmarkDraft.render().el);
+    };
+
+    return BookmarkDraft;
+
+  })(FormRenderer.Plugins.Base);
+
+  FormRenderer.Plugins.BookmarkDraft.View = Backbone.View.extend({
+    events: {
+      'click .js-fr-bookmark': 'requestBookmark'
+    },
+    initialize: function(options) {
+      return this.form_renderer = options.form_renderer;
+    },
+    render: function() {
+      this.$el.html(JST['plugins/bookmark_draft'](this));
+      this.form_renderer.trigger('viewRendered', this);
+      return this;
+    },
+    showBookmark: function(url) {
+      return prompt(FormRenderer.t.bookmark_hint, url);
+    },
+    getUrl: function() {
+      var u;
+      u = new Url;
+      u.query[paramName] = this.form_renderer.options.response.id;
+      return u.toString();
+    },
+    requestBookmark: function(e) {
+      var cb;
+      e.preventDefault();
+      cb = (function(_this) {
+        return function() {
+          _this.render();
+          return _this.showBookmark(_this.getUrl());
+        };
+      })(this);
+      if (this.form_renderer.options.response.id) {
+        return cb();
+      } else {
+        this.$el.find('a').text(FormRenderer.t.saving);
+        return this.form_renderer.waitForRequests((function(_this) {
+          return function() {
+            if (_this.form_renderer.options.response.id) {
+              return cb();
+            } else {
+              return _this.form_renderer.save({
+                cb: cb
+              });
+            }
+          };
+        })(this));
+      }
+    }
+  });
+
+}).call(this);
+
+(function() {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -2253,7 +2351,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","bookmark_hint":"To finish your response later, copy the link below.","blind":"Blind","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finish_later":"Finish this later","finishing_up":"Finishing up...","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -4428,6 +4526,55 @@ window.JST["partials/response_field"] = function(__obj) {
       _print(_safe(JST["partials/description"](this)));
     
       _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["plugins/bookmark_draft"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'fr_bookmark\'>\n  <a href=\'#\' class=\'js-fr-bookmark\'>'));
+    
+      _print(FormRenderer.t.finish_later);
+    
+      _print(_safe('</a>\n</div>\n'));
     
     }).call(this);
     

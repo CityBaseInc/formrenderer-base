@@ -2,7 +2,11 @@
   <% if 'Autosave' in @form_renderer.options.plugins: %>
     <div class='fr_bottom_l'>
       <% if @form_renderer.state.get('hasServerErrors'): %>
-        <%= FormRenderer.t.error_saving %>
+        <% if @form_renderer.state.get('serverErrorText'): %>
+          <%= FormRenderer.t.error_details.replace(':error', @form_renderer.state.get('serverErrorText')) %>
+        <% else: %>
+          <%= FormRenderer.t.error_saving %>
+        <% end %>
       <% else if @form_renderer.state.get('hasChanges'): %>
         <%= FormRenderer.t.saving %>
       <% else: %>

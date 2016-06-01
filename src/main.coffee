@@ -279,9 +279,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           hasServerErrors: false
         @options.response.id = data.response_id
         options.cb?.apply(@, arguments)
-      error: =>
+      error: (xhr) =>
         @state.set
           hasServerErrors: true
+          serverErrorText: xhr.responseJSON?.error
           submitting: false
 
   waitForRequests: (cb) ->

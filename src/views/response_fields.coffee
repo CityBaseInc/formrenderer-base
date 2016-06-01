@@ -193,7 +193,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
           errorText = data.xhr.responseJSON?.errors
           @$error.text(
             if errorText
-              "#{FormRenderer.t.error}: #{errorText}"
+              FormRenderer.t.error_details.replace(':error', errorText)
             else
               FormRenderer.t.error
           ).show()

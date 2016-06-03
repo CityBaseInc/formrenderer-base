@@ -191,12 +191,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         error: (data) =>
           @render()
           errorText = data.xhr.responseJSON?.errors
-          @$error.text(
-            if errorText
-              FormRenderer.t.error_details.replace(':error', errorText)
-            else
-              FormRenderer.t.error
-          ).show()
+          @$error.text(errorText || FormRenderer.t.error).show()
           setTimeout =>
             @$error.hide()
           , 2000

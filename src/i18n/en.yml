@@ -19,7 +19,6 @@ en:
   enter_exactly: Enter :num
   enter_up_to: Enter up to :max
   error: Error
-  error_details: "Error: :error"
   errors:
     blank: This field can't be blank.
     date: Please enter a valid date.

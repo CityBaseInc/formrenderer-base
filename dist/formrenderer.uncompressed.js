@@ -6658,10 +6658,11 @@ rivets.configure({
         })(this),
         error: (function(_this) {
           return function(xhr) {
-            var _ref;
+            var _ref, _ref1;
             return _this.state.set({
               hasServerErrors: true,
               serverErrorText: (_ref = xhr.responseJSON) != null ? _ref.error : void 0,
+              serverErrorKey: (_ref1 = xhr.responseJSON) != null ? _ref1.error_key : void 0,
               submitting: false
             });
           };

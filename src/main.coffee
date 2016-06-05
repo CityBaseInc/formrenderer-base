@@ -283,6 +283,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @state.set
           hasServerErrors: true
           serverErrorText: xhr.responseJSON?.error
+          serverErrorKey: xhr.responseJSON?.error_key
           submitting: false
 
   waitForRequests: (cb) ->

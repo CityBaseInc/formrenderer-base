@@ -6375,11 +6375,7 @@ rivets.configure({
         url: "" + this.options.screendoorBase + "/api/form_renderer/load",
         type: 'get',
         dataType: 'json',
-        data: {
-          project_id: this.options.project_id,
-          response_id: this.options.response.id,
-          v: 0
-        },
+        data: this.loadParams(),
         headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
@@ -6604,13 +6600,17 @@ rivets.configure({
         };
       })(this));
     },
-    saveParams: function() {
-      return _.extend({
+    loadParams: function() {
+      return {
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        skip_validation: this.options.skipValidation,
         responder_language: this.options.responderLanguage
+      };
+    },
+    saveParams: function() {
+      return _.extend(this.loadParams(), {
+        skip_validation: this.options.skipValidation
       }, this.options.saveParams);
     },
     _onChange: function() {

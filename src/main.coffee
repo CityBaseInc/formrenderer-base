@@ -75,10 +75,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       url: "#{@options.screendoorBase}/api/form_renderer/load"
       type: 'get'
       dataType: 'json'
-      data:
-        project_id: @options.project_id
-        response_id: @options.response.id
-        v: 0
+      data: @loadParams()
       headers: @serverHeaders
       success: (data) =>
         @options.response.id = data.response_id
@@ -233,15 +230,22 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         else
           h[rf.get('id')] = gotValue
 
-  saveParams: ->
-    _.extend
+  loadParams: ->
+    {
       v: 0
       response_id: @options.response.id
       project_id: @options.project_id
-      skip_validation: @options.skipValidation
       responder_language: @options.responderLanguage
-    ,
+    }
+
+  saveParams: ->
+    _.extend(
+      @loadParams(),
+      {
+        skip_validation: @options.skipValidation
+      },
       @options.saveParams
+    )
 
   _onChange: ->
     @state.set('hasChanges', true)

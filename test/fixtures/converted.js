@@ -120,8 +120,8 @@ Fixtures.Validation = {
     }]
   },
   "EMAIL": {
-    "valid": ["a@a"],
-    "invalid": ["a"]
+    "valid": ["a@a.com", "b@b.co", "c@de.ch.ok"],
+    "invalid": ["a", "a@", "foo@emailcom"]
   },
   "NUMBER": {
     "invalid": ["a", "a123", "123+","12 bizzles"],

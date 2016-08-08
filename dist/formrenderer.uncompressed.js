@@ -6991,8 +6991,9 @@ rivets.configure({
 
 (function() {
   FormRenderer.Validators.EmailValidator = {
+    VALID_REGEX: /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i,
     validate: function(model) {
-      if (!model.get('value').match('@')) {
+      if (!model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
         return 'email';
       }
     }
@@ -7005,7 +7006,7 @@ rivets.configure({
     validate: function(model) {
       if (!model.get('value.email') || !model.get('value.name')) {
         return 'identification';
-      } else if (!model.get('value.email').match('@')) {
+      } else if (!model.get('value.email').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
         return 'email';
       }
     }

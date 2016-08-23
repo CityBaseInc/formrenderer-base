@@ -43,6 +43,30 @@ describe 'Conditionals', ->
     check 'Question 2', 'Yes'
     expect(isVisible()).to.equal(true)
 
+  it 'handles chained conditionals', ->
+    $('body').html('<div data-formrenderer />')
+    @fr = new FormRenderer Fixtures.FormRendererOptions.CONDITIONAL_CHAINED()
+
+    isVisible = ->
+      $('.fr_response_field:contains("A and D are selected")').is(':visible')
+
+    fieldA = @fr.response_fields.get(35)
+    fieldB = @fr.response_fields.get(36)
+    fieldC = @fr.response_fields.get(37)
+
+    expect(@fr.conditionTree).to.eql(
+      35: [fieldB, fieldC],
+      36: [fieldC]
+    )
+
+    expect(isVisible()).to.equal(false)
+    choose 'A'
+    expect(isVisible()).to.equal(false)
+    choose 'D'
+    expect(isVisible()).to.equal(true)
+    choose 'B'
+    expect(isVisible()).to.equal(false)
+
   it 'can match on any', ->
     $('body').html('<div data-formrenderer />')
     @fr = new FormRenderer Fixtures.FormRendererOptions.CONDITIONAL_THREE_ANY()

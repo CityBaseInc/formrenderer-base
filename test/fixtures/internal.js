@@ -993,6 +993,89 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  CONDITIONAL_CHAINED: function() {
+    return {
+      project_id: 'dummy_val',
+      response_fields: [
+        {
+          id: 35,
+          form_id: 5,
+          label: "A or B",
+          field_options: {
+            options: [
+              {
+                label: 'A',
+                checked: false
+              }, {
+                label: 'B',
+                checked: false
+              }
+            ]
+          },
+          required: false,
+          blind: false,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "radio",
+          cid: null
+        }, {
+          id: 36,
+          form_id: 5,
+          label: "C or D",
+          field_options: {
+            options: [
+              {
+                label: 'C',
+                checked: false
+              }, {
+                label: 'D',
+                checked: false
+              }
+            ],
+            conditions: [
+              {
+                response_field_id: 35,
+                method: 'eq',
+                value: 'A'
+              }
+            ]
+          },
+          required: false,
+          blind: false,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "radio",
+          cid: null
+        }, {
+          id: 37,
+          form_id: 5,
+          label: "A and D are selected",
+          field_options: {
+            conditions: [
+              {
+                response_field_id: 36,
+                method: 'eq',
+                value: 'D'
+              }
+            ]
+          },
+          required: false,
+          blind: false,
+          admin_only: false,
+          created_at: "2014-08-22T20:50:37.152Z",
+          updated_at: "2014-08-22T20:50:37.152Z",
+          field_type: "text",
+          cid: null
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
+  },
   BLANK: function() {
     return {
       project_id: 'dummy_val',

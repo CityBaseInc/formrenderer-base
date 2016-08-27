@@ -45,6 +45,7 @@ class FormRenderer.ConditionChecker
 
   isVisible: ->
     if @isValid()
+      @responseField().isVisible &&
       @["method_#{@condition.method}"]()
     else
       true

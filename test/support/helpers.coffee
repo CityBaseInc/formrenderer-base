@@ -26,7 +26,7 @@ window.uncheck = (label, value) ->
   $input = $label.parent().find("label:contains(\"#{value}\")").find('input[type=checkbox]')
   $input.prop('checked', false).trigger('change')
 
-window.choose = (label, value) ->
+window.choose = (label) ->
   $label = $("label:contains(\"#{label}\")")
   $label.find('input[type=radio]').click()
 

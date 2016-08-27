@@ -6753,7 +6753,6 @@ rivets.configure({
     },
     reflectConditions: function() {
       var page, _, _ref, _ref1;
-      console.log('rerender');
       _ref = this.subviews.pages;
       for (_ in _ref) {
         page = _ref[_];
@@ -6881,7 +6880,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.14.0';
+  FormRenderer.VERSION = '0.15.0';
 
 }).call(this);
 

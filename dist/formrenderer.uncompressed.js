@@ -6472,36 +6472,18 @@ rivets.configure({
       return _results;
     },
     initConditions: function() {
-      var recursivelyAdd;
       this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
         return function(rf) {
-          if (rf) {
-            return _this.runConditions(rf);
-          }
+          return _this.runConditions(rf);
         };
       })(this));
-      this.allConditions = _.flatten(this.response_fields.map(function(rf) {
+      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
         return _.map(rf.getConditions(), function(c) {
           return _.extend({}, c, {
-            responseField: rf
+            parent: rf
           });
         });
       }));
-      this.conditionTree = {};
-      recursivelyAdd = (function(_this) {
-        return function(conditions, rf) {
-          return _.each(conditions, function(c) {
-            var parent, _base, _name;
-            parent = _this.response_fields.get(c.response_field_id);
-            (_base = _this.conditionTree)[_name = parent.id] || (_base[_name] = []);
-            _this.conditionTree[parent.id].push(rf);
-            return recursivelyAdd(parent.getConditions(), rf);
-          });
-        };
-      })(this);
-      return this.response_fields.each(function(rf) {
-        return recursivelyAdd(rf.getConditions(), rf);
-      });
     },
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
@@ -6753,7 +6735,6 @@ rivets.configure({
     },
     reflectConditions: function() {
       var page, _, _ref, _ref1;
-      console.log('rerender');
       _ref = this.subviews.pages;
       for (_ in _ref) {
         page = _ref[_];
@@ -6764,14 +6745,22 @@ rivets.configure({
     runConditions: function(rf) {
       var needsRender;
       needsRender = false;
-      _.each(this.conditionTree[rf.id], function(rf) {
-        if (rf.calculateVisibility()) {
+      _.each(this.conditionsForResponseField(rf), function(c) {
+        if (c.parent.calculateVisibility()) {
           return needsRender = true;
         }
       });
       if (needsRender) {
         return this.reflectConditions();
       }
+    },
+    conditionsForResponseField: function(rf) {
+      return _.filter(this.allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    },
+    isConditionalVisible: function(condition) {
+      return (new FormRenderer.ConditionChecker(this, condition)).isVisible();
     }
   });
 
@@ -6962,7 +6951,7 @@ rivets.configure({
 
     ConditionChecker.prototype.isVisible = function() {
       if (this.isValid()) {
-        return this.responseField().isVisible && this["method_" + this.condition.method]();
+        return this["method_" + this.condition.method]();
       } else {
         return true;
       }
@@ -7269,7 +7258,7 @@ rivets.configure({
       prevValue = !!this.isVisible;
       this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
         return function(c) {
-          return (new FormRenderer.ConditionChecker(_this.form_renderer, c)).isVisible();
+          return _this.form_renderer.isConditionalVisible(c);
         };
       })(this)) : true);
       return prevValue !== this.isVisible;

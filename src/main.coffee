@@ -144,37 +144,13 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   initConditions: ->
     @listenTo @response_fields, 'change:value change:value.*', (rf) =>
-      @runConditions(rf) if rf
+      @runConditions(rf)
 
     @allConditions = _.flatten(
       @response_fields.map (rf) ->
         _.map rf.getConditions(), (c) ->
-          _.extend {}, c, responseField: rf
+          _.extend {}, c, parent: rf
     )
-
-    # Setup a data structure to keep track of condition chains.
-    # If B depends on A, and C depends on B:
-    #
-    # {
-    #   A: [B, C],
-    #   B: [C]
-    # }
-    #
-    #  B: conditions: { A: 'blah' }
-    #  C: conditions: { B: 'blah' }
-    #
-    #
-    @conditionTree = {}
-
-    recursivelyAdd = (conditions, rf) =>
-      _.each conditions, (c) =>
-        parent = @response_fields.get(c.response_field_id)
-        @conditionTree[parent.id] ||= []
-        @conditionTree[parent.id].push rf
-        recursivelyAdd(parent.getConditions(), rf)
-
-    @response_fields.each (rf) ->
-      recursivelyAdd(rf.getConditions(), rf)
 
   ## Pages / Validation
 
@@ -365,11 +341,18 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   runConditions: (rf) ->
     needsRender = false
 
-    _.each @conditionTree[rf.id], (rf) ->
-      if rf.calculateVisibility()
+    _.each @conditionsForResponseField(rf), (c) ->
+      if c.parent.calculateVisibility()
         needsRender = true
 
     @reflectConditions() if needsRender
+
+  conditionsForResponseField: (rf) ->
+    _.filter @allConditions, (condition) ->
+      "#{condition.response_field_id}" == "#{rf.id}"
+
+  isConditionalVisible: (condition) ->
+    (new FormRenderer.ConditionChecker(@, condition)).isVisible()
 
 ## Master list of field types
 

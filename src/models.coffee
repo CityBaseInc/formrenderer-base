@@ -105,7 +105,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
       else
         if @isConditional()
           _[@conditionMethod()] @getConditions(), (c) =>
-            (new FormRenderer.ConditionChecker(@form_renderer, c)).isVisible()
+            @form_renderer.isConditionalVisible(c)
         else
           true
     )

@@ -169,12 +169,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     recursivelyAdd = (conditions, rf) =>
       _.each conditions, (c) =>
         parent = @response_fields.get(c.response_field_id)
-
-        # Check for presence of parent, and prevent infinite recursion
-        if parent && (parent.id != rf.id)
-          @conditionTree[parent.id] ||= []
-          @conditionTree[parent.id].push rf
-          recursivelyAdd(parent.getConditions(), rf)
+        @conditionTree[parent.id] ||= []
+        @conditionTree[parent.id].push rf
+        recursivelyAdd(parent.getConditions(), rf)
 
     @response_fields.each (rf) ->
       recursivelyAdd(rf.getConditions(), rf)

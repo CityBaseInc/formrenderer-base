@@ -6493,11 +6493,9 @@ rivets.configure({
           return _.each(conditions, function(c) {
             var parent, _base, _name;
             parent = _this.response_fields.get(c.response_field_id);
-            if (parent && (parent.id !== rf.id)) {
-              (_base = _this.conditionTree)[_name = parent.id] || (_base[_name] = []);
-              _this.conditionTree[parent.id].push(rf);
-              return recursivelyAdd(parent.getConditions(), rf);
-            }
+            (_base = _this.conditionTree)[_name = parent.id] || (_base[_name] = []);
+            _this.conditionTree[parent.id].push(rf);
+            return recursivelyAdd(parent.getConditions(), rf);
           });
         };
       })(this);

@@ -1,3 +1,5 @@
+presenceMethods = ['present', 'blank']
+
 class FormRenderer.ConditionChecker
   constructor: (@form_renderer, @condition) ->
     @value = @responseField()?.toText() || ''
@@ -41,13 +43,16 @@ class FormRenderer.ConditionChecker
   isValid: ->
     @responseField() &&
     _.all(['response_field_id', 'method'], ( (x) => @condition[x] )) &&
-    (@condition.method in ['present', 'blank'] || @condition['value'])
+    (@condition.method in presenceMethods || @condition['value'])
 
   isVisible: ->
-    if @isValid()
+    return true unless @isValid()
+
+    if @condition.method in presenceMethods
       @["method_#{@condition.method}"]()
     else
-      true
+      @method_present() &&
+      @["method_#{@condition.method}"]()
 
   responseField: ->
     @form_renderer.response_fields.get(@condition.response_field_id)

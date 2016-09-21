@@ -177,7 +177,7 @@
     },
     "not": {
       "value": "asd",
-      "false": ["asd", "ASD"],
+      "false": ["asd", "ASD", ""],
       "true": ["as"]
     },
     "contains": {
@@ -187,28 +187,28 @@
     },
     "does_not_contain": {
       "value": "foo (bar)",
-      "false": ["foo (bar)", "foo (bar) baz"],
+      "false": ["foo (bar)", "foo (bar) baz", ""],
       "true": ["foo bar", "foo (bar"]
     },
     "lt": {
       "value": "12.99",
       "true": ["12.98", "12", "1"],
-      "false": ["12.999", "13", "100"]
+      "false": ["12.999", "13", "100", ""]
     },
     "gt": {
       "value": "12.99",
       "true": ["12.999", "13", "100"],
-      "false": ["12.98", "12", "1"]
+      "false": ["12.98", "12", "1", ""]
     },
     "shorter": {
       "value": "5",
       "true": ["asdf", "a"],
-      "false": ["asdfa", "asdfaa"]
+      "false": ["asdfa", "asdfaa", ""]
     },
     "longer": {
       "value": "5",
       "true": ["asdfaa", "asdfaaa"],
-      "false": ["asdfa", "a"]
+      "false": ["asdfa", "a", ""]
     },
     "present": {
       "value": "",

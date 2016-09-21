@@ -652,6 +652,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  var presenceMethods,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  presenceMethods = ['present', 'blank'];
+
   FormRenderer.ConditionChecker = (function() {
     function ConditionChecker(form_renderer, condition) {
       var _ref;
@@ -710,14 +715,18 @@ rivets.configure({
         return function(x) {
           return _this.condition[x];
         };
-      })(this))) && (((_ref = this.condition.method) === 'present' || _ref === 'blank') || this.condition['value']);
+      })(this))) && ((_ref = this.condition.method, __indexOf.call(presenceMethods, _ref) >= 0) || this.condition['value']);
     };
 
     ConditionChecker.prototype.isVisible = function() {
-      if (this.isValid()) {
+      var _ref;
+      if (!this.isValid()) {
+        return true;
+      }
+      if (_ref = this.condition.method, __indexOf.call(presenceMethods, _ref) >= 0) {
         return this["method_" + this.condition.method]();
       } else {
-        return true;
+        return this.method_present() && this["method_" + this.condition.method]();
       }
     };
 

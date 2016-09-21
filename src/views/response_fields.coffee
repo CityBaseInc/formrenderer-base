@@ -19,6 +19,9 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @listenTo @model, 'change:currentLength', @auditLength
     @$el.addClass "fr_response_field_#{@field_type}"
 
+    if @model.id
+      @$el.attr('id', "fr_response_field_#{@model.id}")
+
   getDomId: ->
     @model.cid
 

@@ -1979,7 +1979,10 @@ rivets.configure({
       this.listenTo(this.model, 'afterValidate', this.render);
       this.listenTo(this.model, 'change', this._onInput);
       this.listenTo(this.model, 'change:currentLength', this.auditLength);
-      return this.$el.addClass("fr_response_field_" + this.field_type);
+      this.$el.addClass("fr_response_field_" + this.field_type);
+      if (this.model.id) {
+        return this.$el.attr('id', "fr_response_field_" + this.model.id);
+      }
     },
     getDomId: function() {
       return this.model.cid;

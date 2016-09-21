@@ -17,3 +17,12 @@ git tag $version
 git push origin master --tags
 grunt s3:version
 grunt s3:autoupdate
+
+# Create a new gem on rails-assets
+curl -H "Content-Type: application/json" \
+     -X POST \
+     -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
+     "https://rails-assets.org/components"
+
+echo "All done! Consider drafting a new release on GitHub: \n\n" \
+     "https://github.com/dobtco/formrenderer-base/releases/new"

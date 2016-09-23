@@ -1,7 +1,7 @@
 Fixtures.Validation = {
   "MIN_MAX_LENGTH_CHARACTERS": {
-    "valid": ["Boooo", "   Boooo        ", " Boooooooo  ", ";oooo:"],
-    "invalid": ["Boo", "Boooooooooooooooooooo"]
+    "valid": ["Boooo", "B o o", "   Boooo        ", " Boooooooo  ", ";oooo:"],
+    "invalid": ["Boo", "Boooooooooooooooooooo", "B         o"]
   },
   "MIN_MAX_LENGTH_WORDS": {
     "valid": ["Boo hoo   ", " Boo hoo hoo"],

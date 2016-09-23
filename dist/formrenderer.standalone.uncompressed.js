@@ -574,10 +574,12 @@ rivets.configure({
   };
 
   FormRenderer.getLength = function(wordsOrChars, val) {
+    var trimmed;
+    trimmed = _str.trim(val);
     if (wordsOrChars === 'words') {
-      return (_str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+      return (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
     } else {
-      return _str.trim(val).replace(/\s/g, '').length;
+      return trimmed.length;
     }
   };
 

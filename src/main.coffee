@@ -425,10 +425,12 @@ FormRenderer.initMap = (el) ->
   L.mapbox.map(el, 'adamjacobbecker.ja7plkah')
 
 FormRenderer.getLength = (wordsOrChars, val) ->
+  trimmed = _str.trim(val)
+
   if wordsOrChars == 'words'
-    (_str.trim(val).replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
+    (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
   else
-    _str.trim(val).replace(/\s/g, '').length
+    trimmed.length
 
 autoLink = (str) ->
   pattern = ///

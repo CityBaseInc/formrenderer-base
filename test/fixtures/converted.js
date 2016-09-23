@@ -340,8 +340,8 @@ Fixtures.Validation = {
     },
     "shorter": {
       "value": "5",
-      "true": ["asdf", "a"],
-      "false": ["asdfa", "asdfaa", ""]
+      "true": ["asdf", "a", "a        "],
+      "false": ["asdfa", "asdfaa", "", "a    a"]
     },
     "longer": {
       "value": "5",

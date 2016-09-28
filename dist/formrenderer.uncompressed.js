@@ -7141,7 +7141,7 @@ rivets.configure({
       hours = parseInt(model.get('value.hours'), 10) || 0;
       minutes = parseInt(model.get('value.minutes'), 10) || 0;
       seconds = parseInt(model.get('value.seconds'), 10) || 0;
-      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 60)) && ((0 <= seconds && seconds <= 60)))) {
+      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
         return 'time';
       }
     }

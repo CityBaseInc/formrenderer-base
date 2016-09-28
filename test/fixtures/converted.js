@@ -114,9 +114,14 @@ Fixtures.Validation = {
     }],
     "invalid": [{
       "hours": "0"
-    }, {
+    },
+    {
       "hours": "0",
       "minutes": "1"
+    },
+    {
+      "hours": "1",
+      "minutes": "60"
     }]
   },
   "EMAIL": {

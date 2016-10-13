@@ -172,6 +172,7 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
         ajaxOpts:
           headers: @form_renderer.serverHeaders
         additionalParams:
+          project_id: @form_renderer.options.project_id
           response_field_id: @model.get('id')
           v: 0
         start: (data) =>

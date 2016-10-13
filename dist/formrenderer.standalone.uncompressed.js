@@ -2172,6 +2172,7 @@ rivets.configure({
             headers: this.form_renderer.serverHeaders
           },
           additionalParams: {
+            project_id: this.form_renderer.options.project_id,
             response_field_id: this.model.get('id'),
             v: 0
           },

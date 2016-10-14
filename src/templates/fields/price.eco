@@ -9,7 +9,7 @@
            size='6' />
   </div>
 
-  <% unless @model.get('field_options.disable_cents'): %>
+  <% unless @model.get('disable_cents'): %>
     <div class='fr_spacer'>.</div>
     <div class='has_sub_label'>
       <label class="fr_sub_label" for="<%= @getDomId() %>_cents"><%= FormRenderer.t.cents %></label>

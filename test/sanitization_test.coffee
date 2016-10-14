@@ -10,8 +10,7 @@ before ->
       response_fields: [
         field_type: 'text'
         label: 'yooo'
-        field_options:
-          description: x
+        description: x
       ]
 
 describe 'basic sanitization', ->
@@ -42,7 +41,6 @@ describe 'handling of undefiend', ->
         responses: {}
       response_fields: [
         field_type: 'block_of_text'
-        field_options: {}
       ]
 
   it 'does not render undefined text', ->

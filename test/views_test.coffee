@@ -51,7 +51,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
   describe 'with allow_multiple', ->
     beforeEach ->
       fix = Fixtures.FormRendererOptions.FILE()
-      fix.response_fields[0].field_options.allow_multiple_files = true
+      fix.response_fields[0].allow_multiple_files = true
       @fr = new FormRenderer fix
       @ifu = $('input[type=file]').data('inline-file-upload')
 

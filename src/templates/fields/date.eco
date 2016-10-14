@@ -19,7 +19,7 @@
            id="<%= @getDomId() %>_day" />
   </div>
 
-  <% unless @model.get('field_options.disable_year'): %>
+  <% unless @model.get('disable_year'): %>
     <div class='fr_spacer'>/</div>
 
     <div class='has_sub_label'>

@@ -1,6 +1,6 @@
 FormRenderer.Validators.PhoneValidator =
   validate: (model) ->
-    isUs = model.get('field_options.phone_format') == 'us'
+    isUs = model.get('phone_format') == 'us'
 
     # For US phone numbers, we validate the full 10-digit number.
     # For international numbers, our validation errs on relaxation :D

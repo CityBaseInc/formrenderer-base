@@ -1,5 +1,5 @@
-<% min = @model.get('field_options.minlength') %>
-<% max = @model.get('field_options.maxlength') %>
+<% min = @model.get('minlength') %>
+<% max = @model.get('maxlength') %>
 <% units = @model.getLengthValidationUnits() %>
 
 <% if @model.hasLengthValidations(): %>

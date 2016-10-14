@@ -11,7 +11,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 35,
     form_id: 5,
     label: "Text",
-    field_options: {},
     required: true,
     blind: true,
     admin_only: false,
@@ -23,12 +22,9 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 36,
     form_id: 5,
     label: "Paragraph",
-    field_options: {
-      size: "large",
-      required: true,
-      description: "How would you complete this project?",
-      minlength: "10"
-    },
+    size: "large",
+    description: "How would you complete this project?",
+    minlength: "10",
     required: false,
     blind: false,
     admin_only: true,
@@ -40,18 +36,15 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 37,
     form_id: 5,
     label: "Checkboxes",
-    field_options: {
-      options: [
-        {
-          checked: "false",
-          label: "Choice #1 (yas)"
-        }, {
-          checked: "false",
-          label: "Choice #2"
-        }
-      ],
-      required: true
-    },
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1 (yas)"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
     required: false,
     blind: false,
     admin_only: false,
@@ -74,7 +67,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 100,
     form_id: 5,
     label: "",
-    field_options: {},
     required: false,
     blind: false,
     admin_only: false,
@@ -86,9 +78,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 101,
     form_id: 5,
     label: "New page",
-    field_options: {
-      description: "hey hey hey."
-    },
+    description: "hey hey hey.",
     required: false,
     blind: false,
     admin_only: false,
@@ -100,9 +90,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 102,
     form_id: 5,
     label: "",
-    field_options: {
-      description: "Howdyhowdyhowdy"
-    },
+    description: "Howdyhowdyhowdy",
     required: false,
     blind: false,
     admin_only: false,
@@ -114,18 +102,15 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 39,
     form_id: 5,
     label: "Radio",
-    field_options: {
-      options: [
-        {
-          checked: "false",
-          label: "Choice #1"
-        }, {
-          checked: "false",
-          label: "Choice #2"
-        }
-      ],
-      required: true
-    },
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
     required: false,
     blind: false,
     admin_only: false,
@@ -137,19 +122,16 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 40,
     form_id: 5,
     label: "Dropdown",
-    field_options: {
-      options: [
-        {
-          checked: "false",
-          label: "Choice #1"
-        }, {
-          checked: "false",
-          label: "Choice #2"
-        }
-      ],
-      required: true,
-      include_blank_option: true
-    },
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
+    include_blank_option: true,
     required: false,
     blind: false,
     admin_only: false,
@@ -161,9 +143,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 41,
     form_id: 5,
     label: "Price",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -175,10 +154,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 42,
     form_id: 5,
     label: "Number",
-    field_options: {
-      required: true,
-      units: "things"
-    },
+    units: "things",
     required: false,
     blind: false,
     admin_only: false,
@@ -190,9 +166,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 43,
     form_id: 5,
     label: "Date",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -204,9 +177,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 44,
     form_id: 5,
     label: "Time",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -218,9 +188,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 45,
     form_id: 5,
     label: "Website",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -232,9 +199,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 46,
     form_id: 5,
     label: "File",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -246,9 +210,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 47,
     form_id: 5,
     label: "Email",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -260,9 +221,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 48,
     form_id: 5,
     label: "Address",
-    field_options: {
-      required: true
-    },
     required: false,
     blind: false,
     admin_only: false,
@@ -274,16 +232,14 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 49,
     form_id: 5,
     label: "Table",
-    field_options: {
-      columns: [
-        {
-          label: "column one"
-        }, {
-          label: "column two"
-        }
-      ],
-      minrows: "2"
-    },
+    columns: [
+      {
+        label: "column one"
+      }, {
+        label: "column two"
+      }
+    ],
+    minrows: "2",
     required: false,
     blind: false,
     admin_only: false,
@@ -295,7 +251,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 50,
     form_id: 5,
     label: "MapMarker",
-    field_options: {},
     required: false,
     blind: false,
     admin_only: false,
@@ -307,9 +262,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     id: 51,
     form_id: 5,
     label: "Phone (US)",
-    field_options: {
-      "phone_format": "us"
-    },
+    phone_format: "us",
     required: false,
     blind: false,
     admin_only: false,
@@ -403,10 +356,8 @@ Fixtures.FormRendererOptions = {
           id: 1,
           form_id: 5,
           label: "Text (small)",
-          field_options: {
-            size: 'small',
-            maxlength: 20
-          },
+          size: 'small',
+          maxlength: 20,
           required: true,
           blind: true,
           admin_only: false,
@@ -419,10 +370,8 @@ Fixtures.FormRendererOptions = {
           id: 2,
           form_id: 5,
           label: "Text (medium)",
-          field_options: {
-            size: 'medium',
-            minlength: 10,
-          },
+          size: 'medium',
+          minlength: 10,
           required: true,
           blind: true,
           admin_only: false,
@@ -435,11 +384,9 @@ Fixtures.FormRendererOptions = {
           id: 3,
           form_id: 5,
           label: "Text (large)",
-          field_options: {
-            size: 'large',
-            minlength: 10,
-            maxlength: 20
-          },
+          size: 'large',
+          minlength: 10,
+          maxlength: 20,
           required: true,
           blind: true,
           admin_only: false,
@@ -452,12 +399,10 @@ Fixtures.FormRendererOptions = {
           id: 4,
           form_id: 5,
           label: "paragraph (small)",
-          field_options: {
-            size: 'small',
-            minlength: 10,
-            maxlength: 20,
-            min_max_length_units: 'words'
-          },
+          size: 'small',
+          minlength: 10,
+          maxlength: 20,
+          min_max_length_units: 'words',
           required: true,
           blind: true,
           admin_only: false,
@@ -470,11 +415,9 @@ Fixtures.FormRendererOptions = {
           id: 5,
           form_id: 5,
           label: "paragraph (medium)",
-          field_options: {
-            size: 'medium',
-            minlength: 10,
-            maxlength: 20
-          },
+          size: 'medium',
+          minlength: 10,
+          maxlength: 20,
           required: true,
           blind: true,
           admin_only: false,
@@ -487,11 +430,9 @@ Fixtures.FormRendererOptions = {
           id: 6,
           form_id: 5,
           label: "paragraph (large)",
-          field_options: {
-            size: 'large',
-            minlength: 10,
-            maxlength: 20
-          },
+          size: 'large',
+          minlength: 10,
+          maxlength: 20,
           required: true,
           blind: true,
           admin_only: false,
@@ -504,10 +445,8 @@ Fixtures.FormRendererOptions = {
           id: 7,
           form_id: 5,
           label: "block_of_text (small)",
-          field_options: {
-            size: 'small',
-            description: 'i am a block of text, yo'
-          },
+          size: 'small',
+          description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -520,10 +459,8 @@ Fixtures.FormRendererOptions = {
           id: 8,
           form_id: 5,
           label: "block_of_text (medium)",
-          field_options: {
-            size: 'medium',
-            description: 'i am a block of text, yo'
-          },
+          size: 'medium',
+          description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -536,10 +473,8 @@ Fixtures.FormRendererOptions = {
           id: 9,
           form_id: 5,
           label: "block_of_text (large)",
-          field_options: {
-            size: 'large',
-            description: 'i am a block of text, yo'
-          },
+          size: 'large',
+          description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -552,10 +487,8 @@ Fixtures.FormRendererOptions = {
           id: 10,
           form_id: 5,
           label: "section_break (small)",
-          field_options: {
-            size: 'small',
-            description: 'i am a section break, yo'
-          },
+          size: 'small',
+          description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -568,10 +501,8 @@ Fixtures.FormRendererOptions = {
           id: 11,
           form_id: 5,
           label: "section_break (medium)",
-          field_options: {
-            size: 'medium',
-            description: 'i am a section break, yo'
-          },
+          size: 'medium',
+          description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -584,10 +515,8 @@ Fixtures.FormRendererOptions = {
           id: 12,
           form_id: 5,
           label: "section_break (large)",
-          field_options: {
-            size: 'large',
-            description: 'i am a section break, yo'
-          },
+          size: 'large',
+          description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
@@ -611,7 +540,6 @@ Fixtures.FormRendererOptions = {
           id: 34,
           form_id: 5,
           label: "",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -623,7 +551,6 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Text",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -651,17 +578,15 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Do you like conditional form fields?",
-          field_options: {
-            options: [
-              {
-                label: 'Yes',
-                checked: true
-              }, {
-                label: 'No',
-                checked: false
-              }
-            ]
-          },
+          options: [
+            {
+              label: 'Yes',
+              checked: true
+            }, {
+              label: 'No',
+              checked: false
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -673,16 +598,14 @@ Fixtures.FormRendererOptions = {
           id: 36,
           form_id: 5,
           label: "Dang, that sucks.",
-          field_options: {
-            size: 'large',
-            conditions: [
-              {
-                response_field_id: 35,
-                method: 'eq',
-                value: 'No'
-              }
-            ]
-          },
+          size: 'large',
+          conditions: [
+            {
+              response_field_id: 35,
+              method: 'eq',
+              value: 'No'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -705,15 +628,13 @@ Fixtures.FormRendererOptions = {
           id: 38,
           form_id: 5,
           label: "What are the nuclear launch codes?",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 37,
-                method: 'contains',
-                value: 'whitehouse'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 37,
+              method: 'contains',
+              value: 'whitehouse'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -725,7 +646,6 @@ Fixtures.FormRendererOptions = {
           id: 39,
           form_id: 5,
           label: "What's the most boring part of the job?",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -740,10 +660,8 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          field_options: {
-            min: 1,
-            max: 10
-          },
+          min: 1,
+          max: 10,
           created_at: "2014-08-22T20:50:37.152Z",
           updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "number",
@@ -752,7 +670,6 @@ Fixtures.FormRendererOptions = {
           id: 100,
           form_id: 5,
           label: "",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -764,15 +681,13 @@ Fixtures.FormRendererOptions = {
           id: 41,
           form_id: 5,
           label: "Why do you like big numbers?",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 40,
-                method: 'gt',
-                value: '5'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 40,
+              method: 'gt',
+              value: '5'
+            }
+          ],
           required: true,
           blind: false,
           admin_only: false,
@@ -784,7 +699,6 @@ Fixtures.FormRendererOptions = {
           id: 101,
           form_id: 5,
           label: "",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -807,15 +721,13 @@ Fixtures.FormRendererOptions = {
           id: 43,
           form_id: 5,
           label: "Why so expensive?",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 42,
-                method: 'gt',
-                value: '5.00'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 42,
+              method: 'gt',
+              value: '5.00'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -839,10 +751,8 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Essay 1",
-          field_options: {
-            min_max_length_units: 'words',
-            maxlength: 100
-          },
+          min_max_length_units: 'words',
+          maxlength: 100,
           required: false,
           blind: false,
           admin_only: false,
@@ -854,10 +764,8 @@ Fixtures.FormRendererOptions = {
           id: 36,
           form_id: 5,
           label: "Essay 2",
-          field_options: {
-            min_max_length_units: 'characters',
-            maxlength: 100
-          },
+          min_max_length_units: 'characters',
+          maxlength: 100,
           required: false,
           blind: false,
           admin_only: false,
@@ -869,15 +777,13 @@ Fixtures.FormRendererOptions = {
           id: 37,
           form_id: 5,
           label: "Please elaborate... (lt 10 words)",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 35,
-                method: 'shorter',
-                value: '10'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 35,
+              method: 'shorter',
+              value: '10'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -889,15 +795,13 @@ Fixtures.FormRendererOptions = {
           id: 38,
           form_id: 5,
           label: "No more! (gt 10 characters)",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 36,
-                method: 'longer',
-                value: '10'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 36,
+              method: 'longer',
+              value: '10'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -921,17 +825,15 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Question 1",
-          field_options: {
-            options: [
-              {
-                label: 'Yes',
-                checked: false
-              }, {
-                label: 'No',
-                checked: false
-              }
-            ]
-          },
+          options: [
+            {
+              label: 'Yes',
+              checked: false
+            }, {
+              label: 'No',
+              checked: false
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -943,17 +845,15 @@ Fixtures.FormRendererOptions = {
           id: 36,
           form_id: 5,
           label: "Question 2",
-          field_options: {
-            options: [
-              {
-                label: 'Yes',
-                checked: false
-              }, {
-                label: 'No',
-                checked: false
-              }
-            ]
-          },
+          options: [
+            {
+              label: 'Yes',
+              checked: false
+            }, {
+              label: 'No',
+              checked: false
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -965,19 +865,17 @@ Fixtures.FormRendererOptions = {
           id: 37,
           form_id: 5,
           label: "Why do you like the word 'yes'?",
-          field_options: {
-            conditions: [
-              {
-                response_field_id: 35,
-                method: 'contains',
-                value: 'Yes'
-              }, {
-                response_field_id: 36,
-                method: 'contains',
-                value: 'Yes'
-              }
-            ]
-          },
+          conditions: [
+            {
+              response_field_id: 35,
+              method: 'contains',
+              value: 'Yes'
+            }, {
+              response_field_id: 36,
+              method: 'contains',
+              value: 'Yes'
+            }
+          ],
           required: false,
           blind: false,
           admin_only: false,
@@ -1011,7 +909,6 @@ Fixtures.FormRendererOptions = {
           id: 34,
           form_id: 5,
           label: "",
-          field_options: {},
           required: false,
           blind: false,
           admin_only: false,
@@ -1035,9 +932,7 @@ Fixtures.FormRendererOptions = {
           id: 35,
           form_id: 5,
           label: "Text",
-          field_options: {
-            file_types: 'images'
-          },
+          file_types: 'images',
           required: false,
           blind: false,
           admin_only: false,
@@ -1061,22 +956,20 @@ Fixtures.FormRendererOptions = {
           id: 49,
           form_id: 5,
           label: "Table",
-          field_options: {
-            columns: [
-              {
-                label: "column one"
-              }, {
-                label: "column two"
-              }, {
-                label: "column three"
-              }, {
-                label: "column four"
-              }
-            ],
-            minrows: "4",
-            preset_values: {
-              "column one": ['123', '456', '', 'This is more preset row value goodness']
+          columns: [
+            {
+              label: "column one"
+            }, {
+              label: "column two"
+            }, {
+              label: "column three"
+            }, {
+              label: "column four"
             }
+          ],
+          minrows: "4",
+          preset_values: {
+            "column one": ['123', '456', '', 'This is more preset row value goodness']
           },
           required: false,
           blind: false,
@@ -1124,6 +1017,6 @@ Fixtures.FormRendererOptions.TABLE_REQ = function(){
 
 Fixtures.FormRendererOptions.CONDITIONAL_THREE_ANY = function(){
   form = Fixtures.FormRendererOptions.CONDITIONAL_THREE();
-  form.response_fields[2].field_options.condition_method = 'any';
+  form.response_fields[2].condition_method = 'any';
   return form;
 }

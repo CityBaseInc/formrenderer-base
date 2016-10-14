@@ -746,7 +746,7 @@ rivets.configure({
   FormRenderer.Validators.DateValidator = {
     validate: function(model) {
       var day, daysPerMonth, febDays, maxDays, month, year;
-      if (model.get('field_options.disable_year')) {
+      if (model.get('disable_year')) {
         year = 2000;
       } else {
         year = parseInt(model.get('value.year'), 10) || 0;
@@ -793,10 +793,10 @@ rivets.configure({
   FormRenderer.Validators.IntegerValidator = {
     validate: function(model) {
       var normalized;
-      if (!model.get('field_options.integer_only')) {
+      if (!model.get('integer_only')) {
         return;
       }
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('field_options.units'));
+      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
       if (!normalized.match(/^-?\d+$/)) {
         return 'integer';
       }
@@ -809,11 +809,11 @@ rivets.configure({
   FormRenderer.Validators.MinMaxLengthValidator = {
     validate: function(model) {
       var count, max, min;
-      if (!(model.get('field_options.minlength') || model.get('field_options.maxlength'))) {
+      if (!(model.get('minlength') || model.get('maxlength'))) {
         return;
       }
-      min = parseInt(model.get('field_options.minlength'), 10) || void 0;
-      max = parseInt(model.get('field_options.maxlength'), 10) || void 0;
+      min = parseInt(model.get('minlength'), 10) || void 0;
+      max = parseInt(model.get('maxlength'), 10) || void 0;
       count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
       if (min && count < min) {
         return 'short';
@@ -829,11 +829,11 @@ rivets.configure({
   FormRenderer.Validators.MinMaxValidator = {
     validate: function(model) {
       var max, min, value;
-      if (!(model.get('field_options.min') || model.get('field_options.max'))) {
+      if (!(model.get('min') || model.get('max'))) {
         return;
       }
-      min = model.get('field_options.min') && parseFloat(model.get('field_options.min'));
-      max = model.get('field_options.max') && parseFloat(model.get('field_options.max'));
+      min = model.get('min') && parseFloat(model.get('min'));
+      max = model.get('max') && parseFloat(model.get('max'));
       value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
       if (min && value < min) {
         return 'small';
@@ -849,7 +849,7 @@ rivets.configure({
   FormRenderer.Validators.NumberValidator = {
     validate: function(model) {
       var normalized;
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('field_options.units'));
+      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
       if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
         return 'number';
       }
@@ -862,7 +862,7 @@ rivets.configure({
   FormRenderer.Validators.PhoneValidator = {
     validate: function(model) {
       var digitsOnly, isUs, minDigits, _ref;
-      isUs = model.get('field_options.phone_format') === 'us';
+      isUs = model.get('phone_format') === 'us';
       minDigits = isUs ? 10 : 7;
       digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
       if (!(digitsOnly.length >= minDigits)) {
@@ -975,17 +975,17 @@ rivets.configure({
     },
     hasLengthValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.minlength') || this.get('field_options.maxlength'));
+      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('minlength') || this.get('maxlength'));
     },
     calculateLength: function() {
       return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
     },
     hasMinMaxValidations: function() {
       var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('field_options.min') || this.get('field_options.max'));
+      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('min') || this.get('max'));
     },
     getLengthValidationUnits: function() {
-      return this.get('field_options.min_max_length_units') || 'characters';
+      return this.get('min_max_length_units') || 'characters';
     },
     setExistingValue: function(x) {
       if (x) {
@@ -1017,13 +1017,13 @@ rivets.configure({
       })(this));
     },
     getOptions: function() {
-      return this.get('field_options.options') || [];
+      return this.get('options') || [];
     },
     getColumns: function() {
-      return this.get('field_options.columns') || [];
+      return this.get('columns') || [];
     },
     getConditions: function() {
-      return this.get('field_options.conditions') || [];
+      return this.get('conditions') || [];
     },
     isConditional: function() {
       return this.getConditions().length > 0;
@@ -1039,14 +1039,14 @@ rivets.configure({
       return prevValue !== this.isVisible;
     },
     conditionMethod: function() {
-      if (this.get('field_options.condition_method') === 'any') {
+      if (this.get('condition_method') === 'any') {
         return 'any';
       } else {
         return 'all';
       }
     },
     getSize: function() {
-      return this.get('field_options.size') || 'small';
+      return this.get('size') || 'small';
     },
     sizeToHeaderTag: function() {
       return {
@@ -1091,7 +1091,7 @@ rivets.configure({
     },
     defaultLatLng: function() {
       var lat, lng;
-      if ((lat = this.get('field_options.default_lat')) && (lng = this.get('field_options.default_lng'))) {
+      if ((lat = this.get('default_lat')) && (lng = this.get('default_lng'))) {
         return [lat, lng];
       }
     }
@@ -1106,7 +1106,7 @@ rivets.configure({
       }
     },
     hasValue: function() {
-      if (this.get('field_options.address_format') === 'country') {
+      if (this.get('address_format') === 'country') {
         return !!this.get('value.country');
       } else {
         return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
@@ -1234,7 +1234,7 @@ rivets.configure({
         checkedOption = _.find(this.getOptions(), (function(option) {
           return FormRenderer.toBoolean(option.checked);
         }));
-        if (!checkedOption && !this.get('field_options.include_blank_option')) {
+        if (!checkedOption && !this.get('include_blank_option')) {
           checkedOption = _.first(this.getOptions());
         }
         if (checkedOption) {
@@ -1250,7 +1250,7 @@ rivets.configure({
     field_type: 'table',
     initialize: function() {
       FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      if (this.get('field_options.column_totals')) {
+      if (this.get('column_totals')) {
         return this.listenTo(this, 'change:value.*', this.calculateColumnTotals);
       }
     },
@@ -1258,11 +1258,11 @@ rivets.configure({
       return this.numRows < this.maxRows();
     },
     minRows: function() {
-      return parseInt(this.get('field_options.minrows'), 10) || 0;
+      return parseInt(this.get('minrows'), 10) || 0;
     },
     maxRows: function() {
-      if (this.get('field_options.maxrows')) {
-        return parseInt(this.get('field_options.maxrows'), 10) || Infinity;
+      if (this.get('maxrows')) {
+        return parseInt(this.get('maxrows'), 10) || Infinity;
       } else {
         return Infinity;
       }
@@ -1305,11 +1305,11 @@ rivets.configure({
     },
     getPresetValue: function(columnLabel, row) {
       var _ref;
-      return (_ref = this.get("field_options.preset_values." + columnLabel)) != null ? _ref[row] : void 0;
+      return (_ref = this.get("preset_values." + columnLabel)) != null ? _ref[row] : void 0;
     },
     getPresetValueByIndices: function(col, row) {
       var _ref;
-      return (_ref = this.get("field_options.preset_values." + (this.getColumns()[col].label))) != null ? _ref[row] : void 0;
+      return (_ref = this.get("preset_values." + (this.getColumns()[col].label))) != null ? _ref[row] : void 0;
     },
     getValue: function() {
       var column, i, j, returnValue, _i, _j, _len, _ref, _ref1;
@@ -1400,14 +1400,14 @@ rivets.configure({
     },
     getAcceptedExtensions: function() {
       var x;
-      if ((x = FormRenderer.FILE_TYPES[this.get('field_options.file_types')])) {
+      if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
         return _.map(x, function(x) {
           return "." + x;
         });
       }
     },
     maxFiles: function() {
-      if (this.get('field_options.allow_multiple_files')) {
+      if (this.get('allow_multiple_files')) {
         return 10;
       } else {
         return 1;
@@ -1436,12 +1436,12 @@ rivets.configure({
     field_type: 'number',
     calculateSize: function() {
       var digits, digitsInt;
-      if ((digitsInt = parseInt(this.get('field_options.max'), 10))) {
+      if ((digitsInt = parseInt(this.get('max'), 10))) {
         digits = ("" + digitsInt).length;
       } else {
         digits = 6;
       }
-      if (!this.get('field_options.integer_only')) {
+      if (!this.get('integer_only')) {
         digits += 2;
       }
       if (digits > 6) {
@@ -2311,7 +2311,7 @@ rivets.configure({
   FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
     field_type: 'phone',
     phonePlaceholder: function() {
-      if (this.model.get('field_options.phone_format') === 'us') {
+      if (this.model.get('phone_format') === 'us') {
         return '(xxx) xxx-xxxx';
       }
     }
@@ -2398,7 +2398,7 @@ window.JST["fields/address"] = function(__obj) {
     (function() {
       var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     
-      format = this.model.get('field_options.address_format');
+      format = this.model.get('address_format');
     
       _print(_safe('\n\n'));
     
@@ -2555,7 +2555,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
+      _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
     
       _print(_safe('\n</div>\n'));
     
@@ -2616,7 +2616,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      if (this.model.get('field_options.include_other_option')) {
+      if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      '));
         _print(FormRenderer.t.other);
         _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
@@ -2738,7 +2738,7 @@ window.JST["fields/date"] = function(__obj) {
     
       _print(_safe('_day" />\n  </div>\n\n  '));
     
-      if (!this.model.get('field_options.disable_year')) {
+      if (!this.model.get('disable_year')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.getDomId());
         _print(_safe('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="'));
@@ -2799,7 +2799,7 @@ window.JST["fields/dropdown"] = function(__obj) {
     
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
-      if (this.model.get('field_options.include_blank_option')) {
+      if (this.model.get('include_blank_option')) {
         _print(_safe('\n    <option></option>\n  '));
       }
     
@@ -3138,9 +3138,9 @@ window.JST["fields/number"] = function(__obj) {
     
       _print(_safe('" />\n\n'));
     
-      if (this.model.get('field_options.units')) {
+      if (this.model.get('units')) {
         _print(_safe('\n  <span class=\'fr_units\'>\n    '));
-        _print(this.model.get('field_options.units'));
+        _print(this.model.get('units'));
         _print(_safe('\n  </span>\n'));
       }
     
@@ -3354,7 +3354,7 @@ window.JST["fields/price"] = function(__obj) {
     
       _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
-      if (!this.model.get('field_options.disable_cents')) {
+      if (!this.model.get('disable_cents')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.getDomId());
         _print(_safe('_cents">'));
@@ -3423,7 +3423,7 @@ window.JST["fields/radio"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      if (this.model.get('field_options.include_other_option')) {
+      if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             value="Other" />\n      '));
         _print(FormRenderer.t.other);
         _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
@@ -3482,7 +3482,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      formattedDescription = FormRenderer.formatHTML(this.model.get('field_options.description'));
+      formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
     
       _print(_safe('\n<'));
     
@@ -3613,7 +3613,7 @@ window.JST["fields/table"] = function(__obj) {
     
       _print(_safe('\n  </tbody>\n\n  '));
     
-      if (this.model.get('field_options.column_totals')) {
+      if (this.model.get('column_totals')) {
         _print(_safe('\n    <tfoot>\n      <tr>\n        '));
         _ref3 = this.model.getColumns();
         for (j = _l = 0, _len2 = _ref3.length; _l < _len2; j = ++_l) {
@@ -3751,7 +3751,7 @@ window.JST["fields/time"] = function(__obj) {
     
       _print(_safe('_minutes" />\n  </div>\n\n  '));
     
-      if (!this.model.get('field_options.disable_seconds')) {
+      if (!this.model.get('disable_seconds')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.getDomId());
         _print(_safe('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
@@ -3902,9 +3902,9 @@ window.JST["partials/description"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      if (this.model.get('field_options.description')) {
+      if (this.model.get('description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('field_options.description'))));
+        _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
         _print(_safe('\n  </div>\n'));
       }
     
@@ -4177,11 +4177,11 @@ window.JST["partials/length_validations"] = function(__obj) {
     (function() {
       var max, min, units;
     
-      min = this.model.get('field_options.minlength');
+      min = this.model.get('minlength');
     
       _print(_safe('\n'));
     
-      max = this.model.get('field_options.maxlength');
+      max = this.model.get('maxlength');
     
       _print(_safe('\n'));
     
@@ -4274,9 +4274,9 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     
       if (this.model.hasMinMaxValidations()) {
         _print(_safe('\n  '));
-        min = this.model.get('field_options.min');
+        min = this.model.get('min');
         _print(_safe('\n  '));
-        max = this.model.get('field_options.max');
+        max = this.model.get('max');
         _print(_safe('\n\n  <div class=\'fr_min_max\'>\n    '));
         if (min && max) {
           _print(_safe('\n      '));

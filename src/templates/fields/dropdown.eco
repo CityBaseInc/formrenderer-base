@@ -1,5 +1,5 @@
 <select id="<%= @getDomId() %>" data-rv-value='model.value'>
-  <% if @model.get('field_options.include_blank_option'): %>
+  <% if @model.get('include_blank_option'): %>
     <option></option>
   <% end %>
 

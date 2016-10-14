@@ -1,4 +1,4 @@
-<% format = @model.get('field_options.address_format') %>
+<% format = @model.get('address_format') %>
 
 <% unless format in ['city_state', 'city_state_zip', 'country']: %>
   <div class='fr_grid'>

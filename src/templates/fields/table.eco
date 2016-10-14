@@ -39,7 +39,7 @@
     <% end %>
   </tbody>
 
-  <% if @model.get('field_options.column_totals'): %>
+  <% if @model.get('column_totals'): %>
     <tfoot>
       <tr>
         <% for column, j in @model.getColumns(): %>

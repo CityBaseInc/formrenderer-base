@@ -60,7 +60,7 @@ EXPECTED_PRESENT_VALUES = {
     "seconds": "30"
   },
   "45": "http://www.google.com",
-  "46": [],
+  "46": [{ id: 123 }],
   "47": "foo@bar.com",
   "48": {
     "country": "GB",
@@ -118,6 +118,9 @@ describe '#getValue', ->
     $('.fr_response_field_phone input').val('510-123-4567').trigger('input')
     $('.fr_response_field_map_marker .fr_map_cover').click()
     $('.fr_response_field_confirm input').first().click().trigger('change')
-    expect(JSON.stringify(@fr.getValue())).to.equal(JSON.stringify(EXPECTED_PRESENT_VALUES))
 
-    # @todo file
+    # File
+    inlineFileUpload = $('input[type=file]').data('inline-file-upload')
+    inlineFileUpload.options.success(data: { file_id: 123 })
+
+    expect(JSON.stringify(@fr.getValue())).to.equal(JSON.stringify(EXPECTED_PRESENT_VALUES))

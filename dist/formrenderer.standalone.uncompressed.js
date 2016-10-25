@@ -1448,7 +1448,7 @@ rivets.configure({
       return this.get('value') || false;
     },
     setExistingValue: function(x) {
-      return this.set('value', x === 't');
+      return this.set('value', !!x);
     },
     toText: function() {
       if (this.get('value')) {

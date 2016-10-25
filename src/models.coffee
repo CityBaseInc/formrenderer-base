@@ -412,7 +412,7 @@ FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.ext
   getValue: ->
     @get('value') || false # Send `false` instead of null
   setExistingValue: (x) ->
-    @set('value', x == 't')
+    @set('value', !!x)
   toText: ->
     # These act as constants
     if @get('value')

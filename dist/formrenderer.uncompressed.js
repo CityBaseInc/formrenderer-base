@@ -6253,6 +6253,34 @@ rivets.binders.input = {
   }
 };
 
+rivets.binders.checkedarray = {
+  publishes: true,
+  routine: function(el, value) {
+    return el.checked = _.contains(value, el.value);
+  },
+  bind: function(el) {
+    if (el.type === 'radio') {
+      return $(el).bind('change.rivets', (function(_this) {
+        return function() {
+          return _this.model.set(_this.keypath, [el.value]);
+        };
+      })(this));
+    } else {
+      return $(el).bind('change.rivets', (function(_this) {
+        return function() {
+          var newVal, val;
+          val = _this.model.get(_this.keypath) || [];
+          newVal = el.checked ? val.concat(el.value) : _.without(val, el.value);
+          return _this.model.set(_this.keypath, newVal);
+        };
+      })(this));
+    }
+  },
+  unbind: function(el) {
+    return $(el).unbind('change.rivets');
+  }
+};
+
 rivets.configure({
   prefix: "rv",
   adapter: {
@@ -7355,47 +7383,23 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
-    initialize: function() {
-      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('change:value.other_checkbox', function(_, val) {
-        return this.set('showOther', val);
-      });
-    },
     setExistingValue: function(x) {
-      return this.set('value', _.tap({}, (function(_this) {
-        return function(h) {
-          var i, option, _i, _j, _len, _len1, _ref, _ref1, _results;
-          if (!_.isEmpty(x)) {
-            _ref = _this.getOptions();
-            for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-              option = _ref[i];
-              h["" + i] = x[option.label];
-            }
-            if (x.Other != null) {
-              h['other_checkbox'] = true;
-              return h['other'] = x.Other;
-            }
-          } else {
-            _ref1 = _this.getOptions();
-            _results = [];
-            for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-              option = _ref1[i];
-              _results.push(h["" + i] = FormRenderer.toBoolean(option.checked));
-            }
-            return _results;
-          }
+      var h, option, _i, _len, _ref;
+      if (_.isEmpty(x)) {
+        h = {
+          checked: []
         };
-      })(this)));
-    },
-    getValue: function() {
-      var k, returnValue, v, _ref;
-      returnValue = {};
-      _ref = this.get('value');
-      for (k in _ref) {
-        v = _ref[k];
-        returnValue[k] = v === true ? 'on' : v;
+        _ref = this.getOptions();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          option = _ref[_i];
+          if (FormRenderer.toBoolean(option.checked)) {
+            h.checked.push(option);
+          }
+        }
+        return this.set('value', h);
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       }
-      return returnValue;
     },
     toText: function() {
       var values;
@@ -7410,54 +7414,21 @@ rivets.configure({
               a.push(_this.getOptions()[idx].label);
             }
           }
-          if (_this.get('value.other_checkbox') === true) {
-            return a.push(_this.get('value.other'));
+          if (_this.get('value.other_checked') === true) {
+            return a.push(_this.get('value.other_text'));
           }
         };
       })(this));
       return values.join(' ');
     },
     hasValue: function() {
-      return this.hasAnyValueInHash();
+      var _ref;
+      return ((_ref = this.get('value.checked')) != null ? _ref.length : void 0) > 0 || this.get('value.other_checked');
     }
   });
 
-  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend({
-    field_type: 'radio',
-    initialize: function() {
-      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('change:value.selected', function(_, val) {
-        return this.set('showOther', val === 'Other');
-      });
-    },
-    setExistingValue: function(x) {
-      var defaultOption;
-      if (x != null ? x.selected : void 0) {
-        return this.set('value', x);
-      } else if ((defaultOption = _.find(this.getOptions(), (function(option) {
-        return FormRenderer.toBoolean(option.checked);
-      })))) {
-        return this.set('value.selected', defaultOption.label);
-      } else {
-        return this.set('value', {});
-      }
-    },
-    getValue: function() {
-      return _.tap({
-        merge: true
-      }, (function(_this) {
-        return function(h) {
-          h["" + (_this.get('id'))] = _this.get('value.selected');
-          return h["" + (_this.get('id')) + "_other"] = _this.get('value.other');
-        };
-      })(this));
-    },
-    toText: function() {
-      return (this.getValue() || {})["" + this.id];
-    },
-    hasValue: function() {
-      return !!this.get('value.selected');
-    }
+  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
+    field_type: 'radio'
   });
 
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
@@ -7511,17 +7482,17 @@ rivets.configure({
       this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
       return this.set('value', _.tap({}, (function(_this) {
         return function(h) {
-          var column, i, j, _i, _ref1, _results;
+          var column, i, _i, _ref1, _results;
           _results = [];
           for (i = _i = 0, _ref1 = _this.numRows - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
             _results.push((function() {
-              var _j, _len, _name, _ref2, _ref3, _results1;
+              var _j, _len, _ref2, _ref3, _results1;
               _ref2 = this.getColumns();
               _results1 = [];
-              for (j = _j = 0, _len = _ref2.length; _j < _len; j = ++_j) {
-                column = _ref2[j];
-                h[_name = "" + j] || (h[_name] = {});
-                _results1.push(h["" + j]["" + i] = this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
+              for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
+                column = _ref2[_j];
+                h[column] || (h[column] = []);
+                _results1.push(h[column].push(this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0)));
               }
               return _results1;
             }).call(_this));
@@ -8843,9 +8814,9 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
-        _print(i);
-        _print(_safe('\' />\n    '));
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(option.label);
+        _print(_safe('" />\n    '));
         _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
@@ -8853,9 +8824,9 @@ window.JST["fields/checkboxes"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      '));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      '));
         _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }
@@ -9650,7 +9621,7 @@ window.JST["fields/radio"] = function(__obj) {
       _ref = this.model.getOptions();
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           value="'));
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\' data-rv-checkedarray=\'model.value.checked\' value="'));
         _print(option.label);
         _print(_safe('" />\n    '));
         _print(option.translated_label || option.label);
@@ -9660,9 +9631,9 @@ window.JST["fields/radio"] = function(__obj) {
       _print(_safe('\n\n'));
     
       if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             value="Other" />\n      '));
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\' data-rv-checked=\'model.value.other_checked\' />\n      '));
         _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }

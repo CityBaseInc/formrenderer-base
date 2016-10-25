@@ -171,37 +171,19 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
 
 FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
-  initialize: ->
-    FormRenderer.Models.ResponseField::initialize.apply @, arguments
-
-    # Hide/show the other field
-    @on 'change:value.other_checkbox', (_, val) ->
-      @set 'showOther', val
 
   setExistingValue: (x) ->
-    @set 'value', _.tap {}, (h) =>
-      if !_.isEmpty(x)
-        for option, i in @getOptions()
-          h["#{i}"] = x[option.label]
+    if _.isEmpty(x)
+      h = { checked: [] }
 
-        if x.Other?
-          h['other_checkbox'] = true
-          h['other'] = x.Other
-      else
-        for option, i in @getOptions()
-          h["#{i}"] = FormRenderer.toBoolean(option.checked)
+      # Set default values
+      for option in @getOptions()
+        if FormRenderer.toBoolean(option.checked)
+          h.checked.push(option)
 
-  # transform true to 'on'
-  getValue: ->
-    returnValue = {}
-
-    for k, v of @get('value')
-      returnValue[k] = if v == true
-        'on'
-      else
-        v
-
-    returnValue
+      @set('value', h)
+    else
+      FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
 
   toText: ->
     values = _.tap [], (a) =>
@@ -211,41 +193,17 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
         if v == true && !_.isNaN(idx)
           a.push @getOptions()[idx].label
 
-      if @get('value.other_checkbox') == true
-        a.push @get('value.other')
+      if @get('value.other_checked') == true
+        a.push @get('value.other_text')
 
     values.join(' ')
 
   hasValue: ->
-    @hasAnyValueInHash()
+    @get('value.checked')?.length > 0 ||
+    @get('value.other_checked')
 
-FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend
+FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend
   field_type: 'radio'
-  initialize: ->
-    FormRenderer.Models.ResponseField::initialize.apply @, arguments
-
-    # Hide/show the other field
-    @on 'change:value.selected', (_, val) ->
-      @set 'showOther', (val == 'Other')
-
-  setExistingValue: (x) ->
-    if x?.selected
-      @set 'value', x
-    else if (defaultOption = _.find @getOptions(), ( (option) -> FormRenderer.toBoolean(option.checked) ))
-      @set 'value.selected', defaultOption.label
-    else
-      @set 'value', {}
-
-  getValue: ->
-    _.tap { merge: true }, (h) =>
-      h["#{@get('id')}"] = @get('value.selected')
-      h["#{@get('id')}_other"] = @get('value.other')
-
-  toText: ->
-    (@getValue() || {})["#{@id}"]
-
-  hasValue: ->
-    !!@get('value.selected')
 
 FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend
   field_type: 'dropdown'
@@ -291,9 +249,12 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
     @set 'value', _.tap {}, (h) =>
       # Copy preset value *or* existing value to model
       for i in [0..(@numRows - 1)]
-        for column, j in @getColumns()
-          h["#{j}"] ||= {}
-          h["#{j}"]["#{i}"] = @getPresetValue(column.label, i) || x?[column.label]?[i]
+        for column in @getColumns()
+          h[column] ||= []
+          h[column].push(
+            @getPresetValue(column.label, i) ||
+            x?[column.label]?[i]
+          )
 
   hasValue: ->
     _.some @get('value'), (colVals, colNumber) =>

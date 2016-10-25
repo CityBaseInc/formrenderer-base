@@ -232,25 +232,34 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
     else
       Infinity
 
+  # The server sends us data like this:
+  #   { 'column' => ['a', 'b'], 'column two' => ['c', 'd'] }
+  #
+  # Transform it to this:
+  #   [['a', 'b'], ['c', 'd']]
   setExistingValue: (x) ->
     # Set initial @numRows
     firstColumnLength = _.find(x, (-> true))?.length || 0
     @numRows = Math.max @minRows(), firstColumnLength, 1
 
-    @set 'value', _.tap {}, (h) =>
-      # Copy preset value *or* existing value to model
-      for i in [0..(@numRows - 1)]
-        for column in @getColumns()
-          h[column] ||= []
-          h[column].push(
+    @set 'value', _.tap [], (arr) =>
+      for column in @getColumns()
+        colArr = []
+
+        # Copy preset value *or* existing value to model
+        for i in [0..(@numRows - 1)]
+          colArr.push(
             @getPresetValue(column.label, i) ||
             x?[column.label]?[i]
           )
 
+        arr.push(colArr)
+
   hasValue: ->
-    _.some @get('value'), (colVals, colNumber) =>
-      _.some colVals, (v, k) =>
-        !@getPresetValueByIndices(colNumber, k) && !!v
+    true
+    # _.some @get('value'), (colVals, colNumber) =>
+    #   _.some colVals, (v, k) =>
+    #     !@getPresetValueByIndices(colNumber, k) && !!v
 
   getPresetValue: (columnLabel, row) ->
     @get("preset_values.#{columnLabel}")?[row]
@@ -258,16 +267,18 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
   getPresetValueByIndices: (col, row) ->
     @get("preset_values.#{@getColumns()[col].label}")?[row]
 
-  # transform value to { '0' => ['a', 'b'], '1' => ['c', 'd'] } groups
+  # We have data like this:
+  #   [['a', 'b'], ['c', 'd']]
+  #
+  # The server wants data like this:
+  #   { 'column' => ['a', 'b'], 'column two' => ['c', 'd'] }
   getValue: ->
-    returnValue = {}
-
-    for i in [0..(@numRows - 1)]
+    _.tap {}, (h) =>
       for column, j in @getColumns()
-        returnValue[j] ||= []
-        returnValue[j].push @get("value.#{j}.#{i}") || ''
+        h[column.label] = []
 
-    returnValue
+        for i in [0..(@numRows - 1)]
+          h[column.label].push @get("value.#{j}.#{i}") || ''
 
   toText: ->
     _.flatten(_.values(@getValue())).join(' ')

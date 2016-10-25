@@ -1213,35 +1213,25 @@ rivets.configure({
         return true;
       }))) != null ? _ref.length : void 0) || 0;
       this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
-      return this.set('value', _.tap({}, (function(_this) {
-        return function(h) {
-          var column, i, _i, _ref1, _results;
+      return this.set('value', _.tap([], (function(_this) {
+        return function(arr) {
+          var colArr, column, i, _i, _j, _len, _ref1, _ref2, _ref3, _results;
+          _ref1 = _this.getColumns();
           _results = [];
-          for (i = _i = 0, _ref1 = _this.numRows - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-            _results.push((function() {
-              var _j, _len, _ref2, _ref3, _results1;
-              _ref2 = this.getColumns();
-              _results1 = [];
-              for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
-                column = _ref2[_j];
-                h[column] || (h[column] = []);
-                _results1.push(h[column].push(this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0)));
-              }
-              return _results1;
-            }).call(_this));
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            column = _ref1[_i];
+            colArr = [];
+            for (i = _j = 0, _ref2 = _this.numRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
+              colArr.push(_this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
+            }
+            _results.push(arr.push(colArr));
           }
           return _results;
         };
       })(this)));
     },
     hasValue: function() {
-      return _.some(this.get('value'), (function(_this) {
-        return function(colVals, colNumber) {
-          return _.some(colVals, function(v, k) {
-            return !_this.getPresetValueByIndices(colNumber, k) && !!v;
-          });
-        };
-      })(this));
+      return true;
     },
     getPresetValue: function(columnLabel, row) {
       var _ref;
@@ -1252,17 +1242,26 @@ rivets.configure({
       return (_ref = this.get("preset_values." + (this.getColumns()[col].label))) != null ? _ref[row] : void 0;
     },
     getValue: function() {
-      var column, i, j, returnValue, _i, _j, _len, _ref, _ref1;
-      returnValue = {};
-      for (i = _i = 0, _ref = this.numRows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        _ref1 = this.getColumns();
-        for (j = _j = 0, _len = _ref1.length; _j < _len; j = ++_j) {
-          column = _ref1[j];
-          returnValue[j] || (returnValue[j] = []);
-          returnValue[j].push(this.get("value." + j + "." + i) || '');
-        }
-      }
-      return returnValue;
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          var column, i, j, _i, _len, _ref, _results;
+          _ref = _this.getColumns();
+          _results = [];
+          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
+            column = _ref[j];
+            h[column.label] = [];
+            _results.push((function() {
+              var _j, _ref1, _results1;
+              _results1 = [];
+              for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
+              }
+              return _results1;
+            }).call(_this));
+          }
+          return _results;
+        };
+      })(this));
     },
     toText: function() {
       return _.flatten(_.values(this.getValue())).join(' ');
@@ -3465,11 +3464,7 @@ window.JST["fields/table"] = function(__obj) {
             _print(i);
             _print(_safe('\'></span>\n          '));
           } else {
-            _print(_safe('\n            <td>\n              <textarea data-col=\''));
-            _print(j);
-            _print(_safe('\'\n                        data-row=\''));
-            _print(i);
-            _print(_safe('\'\n                        data-rv-input=\'model.value.'));
+            _print(_safe('\n            <td>\n              <textarea data-rv-input=\'model.value.'));
             _print(j);
             _print(_safe('.'));
             _print(i);

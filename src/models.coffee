@@ -182,7 +182,7 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
       FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
 
   toText: ->
-    arr = @get('value.checked').slice(0)
+    arr = @get('value.checked')?.slice(0) || []
 
     if @get('value.other_checked') == true
       arr.push @get('value.other_text')
@@ -323,6 +323,8 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   getAcceptedExtensions: ->
     if (x = FormRenderer.FILE_TYPES[@get('file_types')])
       _.map x, (x) -> ".#{x}"
+  getValue: ->
+    @getFiles()
   maxFiles: ->
     if @get('allow_multiple_files')
       10

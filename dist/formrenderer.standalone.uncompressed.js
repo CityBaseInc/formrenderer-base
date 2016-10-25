@@ -34,7 +34,7 @@ rivets.binders.checkedarray = {
         return function() {
           var newVal, val;
           val = _this.model.get(_this.keypath) || [];
-          newVal = el.checked ? val.concat(el.value) : _.without(val, el.value);
+          newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
           return _this.model.set(_this.keypath, newVal);
         };
       })(this));
@@ -1147,8 +1147,8 @@ rivets.configure({
       }
     },
     toText: function() {
-      var arr;
-      arr = this.get('value.checked').slice(0);
+      var arr, _ref;
+      arr = ((_ref = this.get('value.checked')) != null ? _ref.slice(0) : void 0) || [];
       if (this.get('value.other_checked') === true) {
         arr.push(this.get('value.other_text'));
       }
@@ -1339,6 +1339,9 @@ rivets.configure({
           return "." + x;
         });
       }
+    },
+    getValue: function() {
+      return this.getFiles();
     },
     maxFiles: function() {
       if (this.get('allow_multiple_files')) {

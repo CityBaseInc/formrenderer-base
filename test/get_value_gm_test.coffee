@@ -6,9 +6,81 @@
 # ...which will copy the stringified JSON to your clipboard. You should then manually verify
 # the output, and if you're satisfied, you can finally update the constant.
 
-EXPECTED_BLANK_VALUES = '{"37":{"0":false,"1":false},"44":{"am_pm":"AM"},"46":false,"48":{"country":"US"},"49":{"0":["",""],"1":["",""]},"52":false}'
+EXPECTED_BLANK_VALUES = {
+  "37": {
+    checked: []
+  },
+  "39": {
+    checked: []
+  },
+  "44": {
+    "am_pm": "AM"
+  },
+  "46": [],
+  "48": {
+    "country": "US"
+  },
+  "49": {
+    "column one": [
+      "",
+      ""
+    ],
+    "column two": [
+      "",
+      ""
+    ]
+  },
+  "52": false
+}
 
-EXPECTED_PRESENT_VALUES = '{"35":"foo","36":"bar","37":{"0":"on","1":false},"39":"Choice #2","40":"Choice #2","41":{"dollars":"12","cents":"99"},"42":"123","43":{"month":"12","day":"30","year":"2014"},"44":{"am_pm":"PM","hours":"6","minutes":"01","seconds":"30"},"45":"http://www.google.com","46":false,"47":"foo@bar.com","48":{"country":"GB","street":"123 main st","state":null},"49":{"0":["hey",""],"1":["","nay"]},"50":{"lat":"40.7700118","lng":"-73.9800453"},"51":"510-123-4567","52":true}'
+EXPECTED_PRESENT_VALUES = {
+  "35": "foo",
+  "36": "bar",
+  "37": {
+    checked: ["Choice #1 (yas)"]
+  },
+  "39": {
+    checked: ["Choice #2"]
+  },
+  "40": "Choice #2",
+  "41": {
+    "dollars": "12",
+    "cents": "99"
+  },
+  "42": "123",
+  "43": {
+    "month": "12",
+    "day": "30",
+    "year": "2014"
+  },
+  "44": {
+    "am_pm": "PM",
+    "hours": "6",
+    "minutes": "01",
+    "seconds": "30"
+  },
+  "45": "http://www.google.com",
+  "46": [],
+  "47": "foo@bar.com",
+  "48": {
+    "country": "GB",
+    "street": "123 main st",
+    "state": null
+  },
+  "49": {
+    "column one": [
+      "hey",
+      ""
+    ],
+    "column two": [
+      "",
+      "nay"
+    ]
+  },
+  "50": ["40.7700118", "-73.9800453"],
+  "51": "510-123-4567",
+  "52": true
+}
 
 describe '#getValue', ->
   before ->
@@ -19,7 +91,7 @@ describe '#getValue', ->
     expect(@fr).to.be.ok
 
   it 'serializes the blank values', ->
-    expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_BLANK_VALUES)
+    expect(JSON.stringify(@fr.getValue())).to.equal(JSON.stringify(EXPECTED_BLANK_VALUES))
 
   it 'serializes present values', ->
     $('.fr_response_field_text input').val('foo').trigger('input')
@@ -46,6 +118,6 @@ describe '#getValue', ->
     $('.fr_response_field_phone input').val('510-123-4567').trigger('input')
     $('.fr_response_field_map_marker .fr_map_cover').click()
     $('.fr_response_field_confirm input').first().click().trigger('change')
-    expect(JSON.stringify(@fr.getValue())).to.equal(EXPECTED_PRESENT_VALUES)
+    expect(JSON.stringify(@fr.getValue())).to.equal(JSON.stringify(EXPECTED_PRESENT_VALUES))
 
     # @todo file

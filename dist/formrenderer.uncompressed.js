@@ -7467,15 +7467,17 @@ rivets.configure({
       })(this)));
     },
     hasValue: function() {
-      return true;
+      return _.some(this.getValue(), (function(_this) {
+        return function(colVals, colLabel) {
+          return _.some(colVals, function(v, idx) {
+            return !_this.getPresetValue(colLabel, idx) && !!v;
+          });
+        };
+      })(this));
     },
     getPresetValue: function(columnLabel, row) {
-      var _ref;
-      return (_ref = this.get("preset_values." + columnLabel)) != null ? _ref[row] : void 0;
-    },
-    getPresetValueByIndices: function(col, row) {
-      var _ref;
-      return (_ref = this.get("preset_values." + (this.getColumns()[col].label))) != null ? _ref[row] : void 0;
+      var _ref, _ref1;
+      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
     },
     getValue: function() {
       return _.tap({}, (function(_this) {

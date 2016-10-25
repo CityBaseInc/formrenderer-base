@@ -255,17 +255,14 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
         arr.push(colArr)
 
+  # Ignore preset values when calculating hasValue
   hasValue: ->
-    true
-    # _.some @get('value'), (colVals, colNumber) =>
-    #   _.some colVals, (v, k) =>
-    #     !@getPresetValueByIndices(colNumber, k) && !!v
+    _.some @getValue(), (colVals, colLabel) =>
+      _.some colVals, (v, idx) =>
+        !@getPresetValue(colLabel, idx) && !!v
 
   getPresetValue: (columnLabel, row) ->
-    @get("preset_values.#{columnLabel}")?[row]
-
-  getPresetValueByIndices: (col, row) ->
-    @get("preset_values.#{@getColumns()[col].label}")?[row]
+    @get('preset_values')?[columnLabel]?[row]
 
   # We have data like this:
   #   [['a', 'b'], ['c', 'd']]

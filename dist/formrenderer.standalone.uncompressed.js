@@ -2205,9 +2205,10 @@ rivets.configure({
       }
       center = this.map.getCenter();
       this.marker.setLatLng(center);
-      return this.model.set({
+      this.model.set({
         value: [center.lat.toFixed(7), center.lng.toFixed(7)]
       });
+      return this.model.trigger('change:value.0 change:value.1');
     },
     enable: function() {
       if (!this.map) {
@@ -2981,11 +2982,11 @@ window.JST["fields/map_marker"] = function(__obj) {
     
       _print(FormRenderer.t.coordinates);
     
-      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value.0\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value.0\' class=\'fr_map_no_location\'>'));
+      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
     
       _print(FormRenderer.t.na);
     
-      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.0\' href=\'#\'>'));
+      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>'));
     
       _print(FormRenderer.t.clear);
     

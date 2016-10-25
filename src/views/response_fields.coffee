@@ -246,6 +246,9 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     @model.set
       value: [center.lat.toFixed(7), center.lng.toFixed(7)]
 
+    # Rivets doesn't bind to arrays properly
+    @model.trigger('change:value.0 change:value.1')
+
   enable: ->
     return unless @map
     @map.addLayer(@marker)

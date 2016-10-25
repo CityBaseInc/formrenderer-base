@@ -244,9 +244,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     center = @map.getCenter()
     @marker.setLatLng center
     @model.set
-      value:
-        lat: center.lat.toFixed(7)
-        lng: center.lng.toFixed(7)
+      value: [center.lat.toFixed(7), center.lng.toFixed(7)]
 
   enable: ->
     return unless @map
@@ -258,7 +256,7 @@ FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.ext
     e.preventDefault()
     @map.removeLayer(@marker)
     @$el.find('.fr_map_cover').show()
-    @model.set value: { lat: '', lng: '' }
+    @model.unset('value')
 
 FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'

@@ -143,12 +143,8 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
 
 FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend
   field_type: 'map_marker'
-  hasValue: ->
-    _.every ['lat', 'lng'], (key) =>
-      !!@get("value.#{key}")
   latLng: ->
-    if @hasValue()
-      [@get('value.lat'), @get('value.lng')]
+    @get('value')
   defaultLatLng: ->
     if (lat = @get('default_lat')) && (lng = @get('default_lng'))
       [lat, lng]
@@ -173,30 +169,25 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
   field_type: 'checkboxes'
 
   setExistingValue: (x) ->
-    if _.isEmpty(x)
+    if !x?
       h = { checked: [] }
 
       # Set default values
       for option in @getOptions()
         if FormRenderer.toBoolean(option.checked)
-          h.checked.push(option)
+          h.checked.push(option.label)
 
       @set('value', h)
     else
       FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
 
   toText: ->
-    values = _.tap [], (a) =>
-      for k, v of @get('value')
-        idx = parseInt(k)
+    arr = @get('value.checked').slice(0)
 
-        if v == true && !_.isNaN(idx)
-          a.push @getOptions()[idx].label
+    if @get('value.other_checked') == true
+      arr.push @get('value.other_text')
 
-      if @get('value.other_checked') == true
-        a.push @get('value.other_text')
-
-    values.join(' ')
+    arr.join(' ')
 
   hasValue: ->
     @get('value.checked')?.length > 0 ||
@@ -306,21 +297,16 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   field_type: 'file'
   addFile: (id, filename) ->
     files = @getFiles().slice(0)
-    files.push({ id, filename })
-    @set 'value.files', files
+    files.push(id: id, filename: filename)
+    @set 'value', files
   removeFile: (idx) ->
     files = @getFiles().slice(0)
     files.splice(idx, 1)
-    @set 'value.files', files
+    @set 'value', files
   getFiles: ->
-    @get('value.files') || []
+    @get('value') || []
   canAddFile: ->
     @getFiles().length < @maxFiles()
-  getValue: ->
-    if @hasValue()
-      _.compact(_.pluck(@getFiles(), 'id'))
-    else
-      false
   toText: ->
     _.compact(_.pluck(@getFiles(), 'filename')).join(' ')
   hasValue: ->

@@ -6610,19 +6610,8 @@ rivets.configure({
       return _.tap({}, (function(_this) {
         return function(h) {
           return _this.response_fields.each(function(rf) {
-            var gotValue;
-            if (!rf.input_field) {
-              return;
-            }
-            if (!rf.isVisible) {
-              return;
-            }
-            gotValue = rf.getValue();
-            if ((typeof gotValue === 'object') && gotValue.merge) {
-              delete gotValue.merge;
-              return _.extend(h, gotValue);
-            } else {
-              return h[rf.get('id')] = gotValue;
+            if (rf.input_field && rf.isVisible) {
+              return h[rf.get('id')] = rf.getValue();
             }
           });
         };
@@ -6660,11 +6649,12 @@ rivets.configure({
       return $.ajax({
         url: "" + this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
+        contentType: 'application/json',
         dataType: 'json',
-        data: _.extend(this.saveParams(), {
+        data: JSON.stringify(_.extend(this.saveParams(), {
           raw_responses: this.getValue(),
           submit: options.submit ? true : void 0
-        }),
+        })),
         headers: this.serverHeaders,
         complete: (function(_this) {
           return function() {
@@ -7341,17 +7331,8 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
     field_type: 'map_marker',
-    hasValue: function() {
-      return _.every(['lat', 'lng'], (function(_this) {
-        return function(key) {
-          return !!_this.get("value." + key);
-        };
-      })(this));
-    },
     latLng: function() {
-      if (this.hasValue()) {
-        return [this.get('value.lat'), this.get('value.lng')];
-      }
+      return this.get('value');
     },
     defaultLatLng: function() {
       var lat, lng;
@@ -7385,7 +7366,7 @@ rivets.configure({
     field_type: 'checkboxes',
     setExistingValue: function(x) {
       var h, option, _i, _len, _ref;
-      if (_.isEmpty(x)) {
+      if (x == null) {
         h = {
           checked: []
         };
@@ -7393,7 +7374,7 @@ rivets.configure({
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           option = _ref[_i];
           if (FormRenderer.toBoolean(option.checked)) {
-            h.checked.push(option);
+            h.checked.push(option.label);
           }
         }
         return this.set('value', h);
@@ -7402,24 +7383,12 @@ rivets.configure({
       }
     },
     toText: function() {
-      var values;
-      values = _.tap([], (function(_this) {
-        return function(a) {
-          var idx, k, v, _ref;
-          _ref = _this.get('value');
-          for (k in _ref) {
-            v = _ref[k];
-            idx = parseInt(k);
-            if (v === true && !_.isNaN(idx)) {
-              a.push(_this.getOptions()[idx].label);
-            }
-          }
-          if (_this.get('value.other_checked') === true) {
-            return a.push(_this.get('value.other_text'));
-          }
-        };
-      })(this));
-      return values.join(' ');
+      var arr;
+      arr = this.get('value.checked').slice(0);
+      if (this.get('value.other_checked') === true) {
+        arr.push(this.get('value.other_text'));
+      }
+      return arr.join(' ');
     },
     hasValue: function() {
       var _ref;
@@ -7576,26 +7545,19 @@ rivets.configure({
         id: id,
         filename: filename
       });
-      return this.set('value.files', files);
+      return this.set('value', files);
     },
     removeFile: function(idx) {
       var files;
       files = this.getFiles().slice(0);
       files.splice(idx, 1);
-      return this.set('value.files', files);
+      return this.set('value', files);
     },
     getFiles: function() {
-      return this.get('value.files') || [];
+      return this.get('value') || [];
     },
     canAddFile: function() {
       return this.getFiles().length < this.maxFiles();
-    },
-    getValue: function() {
-      if (this.hasValue()) {
-        return _.compact(_.pluck(this.getFiles(), 'id'));
-      } else {
-        return false;
-      }
     },
     toText: function() {
       return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
@@ -8479,10 +8441,7 @@ rivets.configure({
       center = this.map.getCenter();
       this.marker.setLatLng(center);
       return this.model.set({
-        value: {
-          lat: center.lat.toFixed(7),
-          lng: center.lng.toFixed(7)
-        }
+        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
       });
     },
     enable: function() {
@@ -8497,12 +8456,7 @@ rivets.configure({
       e.preventDefault();
       this.map.removeLayer(this.marker);
       this.$el.find('.fr_map_cover').show();
-      return this.model.set({
-        value: {
-          lat: '',
-          lng: ''
-        }
-      });
+      return this.model.unset('value');
     }
   });
 
@@ -8809,27 +8763,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, option, _i, _len, _ref;
-    
-      _ref = this.model.getOptions();
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
+      _print(_safe(JST["partials/options_field"](this)));
     
       _print(_safe('\n'));
     
@@ -9282,11 +9216,11 @@ window.JST["fields/map_marker"] = function(__obj) {
     
       _print(FormRenderer.t.coordinates);
     
-      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>'));
+      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value.0\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value.0\' class=\'fr_map_no_location\'>'));
     
       _print(FormRenderer.t.na);
     
-      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'#\'>'));
+      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.0\' href=\'#\'>'));
     
       _print(FormRenderer.t.clear);
     
@@ -9616,27 +9550,7 @@ window.JST["fields/radio"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, option, _i, _len, _ref;
-    
-      _ref = this.model.getOptions();
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\' data-rv-checkedarray=\'model.value.checked\' value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\' data-rv-checked=\'model.value.other_checked\' />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
+      _print(_safe(JST["partials/options_field"](this)));
     
       _print(_safe('\n'));
     
@@ -10547,6 +10461,81 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.field_type](this)));
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/options_field"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      var fieldType, option, _i, _len, _ref;
+    
+      fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
+    
+      _print(_safe('\n\n'));
+    
+      _ref = this.model.getOptions();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        option = _ref[_i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
+        _print(fieldType);
+        _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(option.label);
+        _print(_safe('" />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
+        _print(fieldType);
+        _print(_safe('\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\' />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     

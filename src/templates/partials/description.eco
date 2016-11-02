@@ -1,5 +1,5 @@
-<% if @model.get('field_options.description'): %>
+<% if @model.get('description'): %>
   <div class='fr_description'>
-    <%- FormRenderer.formatHTML(@model.get('field_options.description')) %>
+    <%- FormRenderer.formatHTML(@model.get('description')) %>
   </div>
 <% end %>

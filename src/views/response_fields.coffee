@@ -270,7 +270,7 @@ FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.exten
 FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend
   field_type: 'phone'
   phonePlaceholder: ->
-    if @model.get('field_options.phone_format') == 'us'
+    if @model.get('phone_format') == 'us'
       '(xxx) xxx-xxxx'
 
 FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend

@@ -3,8 +3,8 @@
        data-rv-input='model.value'
        class="size_<%= @model.calculateSize() %>" />
 
-<% if @model.get('field_options.units'): %>
+<% if @model.get('units'): %>
   <span class='fr_units'>
-    <%= @model.get('field_options.units') %>
+    <%= @model.get('units') %>
   </span>
 <% end %>

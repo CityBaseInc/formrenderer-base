@@ -1,6 +1,6 @@
 FormRenderer.Validators.DateValidator =
   validate: (model) ->
-    if model.get('field_options.disable_year')
+    if model.get('disable_year')
       year = 2000 # Just a dummy constant
     else
       year = parseInt(model.get('value.year'), 10) || 0

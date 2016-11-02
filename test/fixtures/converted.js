@@ -165,14 +165,12 @@ Fixtures.Validation = {
     },
     "checkboxes": {
       "attrs": {
-        "field_options": {
-          "options": [
-            {
-              "label": "bar (baz)",
-              "checked": false
-            }
-          ]
-        }
+        "options": [
+          {
+            "label": "bar (baz)",
+            "checked": false
+          }
+        ]
       },
       "tests": [
         {
@@ -194,16 +192,14 @@ Fixtures.Validation = {
     },
     "table": {
       "attrs": {
-        "field_options": {
-          "columns": [
-            {
-              "label": "one"
-            },
-            {
-              "label": "two"
-            }
-          ]
-        }
+        "columns": [
+          {
+            "label": "one"
+          },
+          {
+            "label": "two"
+          }
+        ]
       },
       "tests": [
         {

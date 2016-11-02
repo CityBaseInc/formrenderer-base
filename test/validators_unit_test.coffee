@@ -31,7 +31,7 @@ describe 'DateValidator', ->
 describe 'DateValidator for month/day only', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldDate
-    @model.set 'field_options.disable_year', true
+    @model.set 'disable_year', true
     @validator = FormRenderer.Validators.DateValidator
 
   it 'validates properly', ->
@@ -56,8 +56,7 @@ describe 'EmailValidator', ->
 describe 'NumberValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldNumber(
-      field_options:
-        units: 'Beezles'
+      units: 'Beezles'
     )
     @validator = FormRenderer.Validators.NumberValidator
 
@@ -99,7 +98,7 @@ describe 'MinMaxLengthValidator', ->
 
   describe 'characters', ->
     before ->
-      @model.set('field_options', minlength: '5', maxlength: '10')
+      @model.set(minlength: '5', maxlength: '10')
 
     it 'validates properly', ->
       for x in Fixtures.Validation.MIN_MAX_LENGTH_CHARACTERS.valid
@@ -110,7 +109,7 @@ describe 'MinMaxLengthValidator', ->
 
   describe 'words', ->
     before ->
-      @model.set('field_options', minlength: '2', maxlength: '3', min_max_length_units: 'words')
+      @model.set(minlength: '2', maxlength: '3', min_max_length_units: 'words')
 
     it 'validates properly', ->
       for x in Fixtures.Validation.MIN_MAX_LENGTH_WORDS.valid
@@ -122,7 +121,8 @@ describe 'MinMaxLengthValidator', ->
 describe 'MinMaxValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldNumber(
-      field_options: { min: '5', max: '10' }
+      min: '5',
+      max: '10'
     )
 
     @validator = FormRenderer.Validators.MinMaxValidator
@@ -137,7 +137,7 @@ describe 'MinMaxValidator', ->
 describe 'IntegerValidator', ->
   before ->
     @model = new FormRenderer.Models.ResponseFieldNumber(
-      field_options: { integer_only: true }
+      integer_only: true
     )
 
     @validator = FormRenderer.Validators.IntegerValidator
@@ -153,7 +153,7 @@ describe 'PhoneValidator', ->
   describe 'US format', ->
     before ->
       @model = new FormRenderer.Models.ResponseFieldPhone(
-        field_options: { phone_format: 'us' }
+        phone_format: 'us'
       )
 
       @validator = FormRenderer.Validators.PhoneValidator

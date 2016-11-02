@@ -20,8 +20,8 @@ describe 'Conditionals', ->
   it 'renders with existing values', ->
     $('body').html('<div data-formrenderer />')
     data = Fixtures.FormRendererOptions.CONDITIONAL()
-    data.response_fields[0].field_options.options[0].checked = false
-    data.response_fields[0].field_options.options[1].checked = true
+    data.response_fields[0].options[0].checked = false
+    data.response_fields[0].options[1].checked = true
     @fr = new FormRenderer data
 
     expect(

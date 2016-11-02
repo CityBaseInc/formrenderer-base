@@ -45,7 +45,7 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
   hasLengthValidations: ->
     (FormRenderer.Validators.MinMaxLengthValidator in @validators) &&
-    (@get('field_options.minlength') || @get('field_options.maxlength'))
+    (@get('minlength') || @get('maxlength'))
 
   calculateLength: ->
     @set(
@@ -55,10 +55,10 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
   hasMinMaxValidations: ->
     (FormRenderer.Validators.MinMaxValidator in @validators) &&
-    (@get('field_options.min') || @get('field_options.max'))
+    (@get('min') || @get('max'))
 
   getLengthValidationUnits: ->
-    @get('field_options.min_max_length_units') || 'characters'
+    @get('min_max_length_units') || 'characters'
 
   setExistingValue: (x) ->
     @set('value', x) if x
@@ -83,13 +83,13 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
       !!@get("value.#{key}")
 
   getOptions: ->
-    @get('field_options.options') || []
+    @get('options') || []
 
   getColumns: ->
-    @get('field_options.columns') || []
+    @get('columns') || []
 
   getConditions: ->
-    @get('field_options.conditions') || []
+    @get('conditions') || []
 
   isConditional: ->
     @getConditions().length > 0
@@ -113,13 +113,13 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
     prevValue != @isVisible
 
   conditionMethod: ->
-    if @get('field_options.condition_method') == 'any'
+    if @get('condition_method') == 'any'
       'any'
     else
       'all'
 
   getSize: ->
-    @get('field_options.size') || 'small'
+    @get('size') || 'small'
 
   sizeToHeaderTag: ->
     {
@@ -150,7 +150,7 @@ FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.e
     if @hasValue()
       [@get('value.lat'), @get('value.lng')]
   defaultLatLng: ->
-    if (lat = @get('field_options.default_lat')) && (lng = @get('field_options.default_lng'))
+    if (lat = @get('default_lat')) && (lng = @get('default_lng'))
       [lat, lng]
 
 FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend
@@ -160,7 +160,7 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
     @set('value.country', 'US') unless x?.country
 
   hasValue: ->
-    if @get('field_options.address_format') == 'country'
+    if @get('address_format') == 'country'
       !!@get('value.country')
     else
       # Don't accept "country" as a present value, since it's set by default
@@ -255,7 +255,7 @@ FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.ex
     else
       checkedOption = _.find @getOptions(), ( (option) -> FormRenderer.toBoolean(option.checked) )
 
-      if !checkedOption && !@get('field_options.include_blank_option')
+      if !checkedOption && !@get('include_blank_option')
         checkedOption = _.first @getOptions()
 
       if checkedOption
@@ -268,18 +268,18 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
   initialize: ->
     FormRenderer.Models.ResponseField::initialize.apply @, arguments
 
-    if @get('field_options.column_totals')
+    if @get('column_totals')
       @listenTo @, 'change:value.*', @calculateColumnTotals
 
   canAddRows: ->
     @numRows < @maxRows()
 
   minRows: ->
-    parseInt(@get('field_options.minrows'), 10) || 0
+    parseInt(@get('minrows'), 10) || 0
 
   maxRows: ->
-    if @get('field_options.maxrows')
-      parseInt(@get('field_options.maxrows'), 10) || Infinity
+    if @get('maxrows')
+      parseInt(@get('maxrows'), 10) || Infinity
     else
       Infinity
 
@@ -301,10 +301,10 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
         !@getPresetValueByIndices(colNumber, k) && !!v
 
   getPresetValue: (columnLabel, row) ->
-    @get("field_options.preset_values.#{columnLabel}")?[row]
+    @get("preset_values.#{columnLabel}")?[row]
 
   getPresetValueByIndices: (col, row) ->
-    @get("field_options.preset_values.#{@getColumns()[col].label}")?[row]
+    @get("preset_values.#{@getColumns()[col].label}")?[row]
 
   # transform value to { '0' => ['a', 'b'], '1' => ['c', 'd'] } groups
   getValue: ->
@@ -366,10 +366,10 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
     _.any @getFiles(), (h) ->
       !!h.id
   getAcceptedExtensions: ->
-    if (x = FormRenderer.FILE_TYPES[@get('field_options.file_types')])
+    if (x = FormRenderer.FILE_TYPES[@get('file_types')])
       _.map x, (x) -> ".#{x}"
   maxFiles: ->
-    if @get('field_options.allow_multiple_files')
+    if @get('allow_multiple_files')
       10
     else
       1
@@ -394,12 +394,12 @@ FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.exte
   ]
   field_type: 'number'
   calculateSize: ->
-    if (digitsInt = parseInt(@get('field_options.max'), 10))
+    if (digitsInt = parseInt(@get('max'), 10))
       digits = "#{digitsInt}".length
     else
       digits = 6
 
-    unless @get('field_options.integer_only')
+    unless @get('integer_only')
       digits += 2
 
     if digits > 6

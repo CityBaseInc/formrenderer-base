@@ -1,6 +1,6 @@
 <% if @model.hasMinMaxValidations(): %>
-  <% min = @model.get('field_options.min') %>
-  <% max = @model.get('field_options.max') %>
+  <% min = @model.get('min') %>
+  <% max = @model.get('max') %>
 
   <div class='fr_min_max'>
     <% if min && max: %>

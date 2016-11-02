@@ -184,9 +184,8 @@ describe 'number field classes', ->
           project_id: 'dummy_val'
           response_fields: [
             field_type: 'number'
-            field_options:
-              max: example[0]
-              integer_only: example[1]
+            max: example[0]
+            integer_only: example[1]
           ]
           response:
             id: 'xxx'
@@ -207,32 +206,28 @@ describe 'translated content', ->
       project_id: 'dummy_val'
       response_fields: [
         field_type: 'checkboxes'
-        field_options:
-          options: [
-            label: 'check1'
-            translated_label: 'check2'
-          ]
+        options: [
+          label: 'check1'
+          translated_label: 'check2'
+        ]
       ,
         field_type: 'dropdown'
-        field_options:
-          options: [
-            label: 'drop1'
-            translated_label: 'drop2'
-          ]
+        options: [
+          label: 'drop1'
+          translated_label: 'drop2'
+        ]
       ,
         field_type: 'radio'
-        field_options:
-          options: [
-            label: 'rad1'
-            translated_label: 'rad2'
-          ]
+        options: [
+          label: 'rad1'
+          translated_label: 'rad2'
+        ]
       ,
         field_type: 'table'
-        field_options:
-          columns: [
-            label: 'col1'
-            translated_label: 'col2'
-          ]
+        columns: [
+          label: 'col1'
+          translated_label: 'col2'
+        ]
       ]
       response:
         id: 'xxx'

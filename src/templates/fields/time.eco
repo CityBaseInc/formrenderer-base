@@ -19,7 +19,7 @@
            id="<%= @getDomId() %>_minutes" />
   </div>
 
-  <% unless @model.get('field_options.disable_seconds'): %>
+  <% unless @model.get('disable_seconds'): %>
     <div class='fr_spacer'>:</div>
 
     <div class='has_sub_label'>

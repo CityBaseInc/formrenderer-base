@@ -1,17 +1,1 @@
-<% for option, i in @model.getOptions(): %>
-  <label class='fr_option control'>
-    <input type='checkbox' data-rv-checked='model.value.<%= i %>' />
-    <%= option.translated_label || option.label %>
-  </label>
-<% end %>
-
-<% if @model.get('include_other_option'): %>
-  <div class='fr_option fr_other_option'>
-    <label class='control'>
-      <input type='checkbox' data-rv-checked='model.value.other_checkbox' />
-      <%= FormRenderer.t.other %>
-    </label>
-
-    <input type='text' data-rv-show='model.showOther' data-rv-input='model.value.other' placeholder='<%= FormRenderer.t.write_here %>' />
-  </div>
-<% end %>
+<%- JST["partials/options_field"](@) %>

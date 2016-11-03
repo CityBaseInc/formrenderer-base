@@ -32,8 +32,9 @@
       "tests": [
         {
           "in": {
-            "bar (baz)": true,
-            "Other": "who"
+            "checked": ["bar (baz)"],
+            "other_checked": true,
+            "other_text": "who"
           },
           "out": "bar (baz) who"
         }
@@ -42,7 +43,7 @@
     "radio": {
       "tests": [
         {
-          "in": "yo",
+          "in": { "checked": ["yo"] },
           "out": "yo"
         }
       ]

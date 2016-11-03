@@ -131,17 +131,6 @@ describe 'Conditionals', ->
       fillIn 'Guess a number...', '5'
       expect(_.size(@fr.getValue())).to.equal(5)
 
-# Since we're sharing fixtures, this function is desgined to "mimic" the
-# ResponseField#transformed_response_value method on the server.
-transformRawValue = (key, value) ->
-  switch key
-    when 'radio'
-      {
-        selected: value
-      }
-    else
-      value
-
 describe 'ConditionChecker', ->
   it 'handles an invalid condition', ->
     conditional =
@@ -159,7 +148,7 @@ describe 'ConditionChecker', ->
           model = new FormRenderer.Models["ResponseField#{_.str.classify(key)}"](
             field.attrs || {}
           )
-          model.setExistingValue transformRawValue(key, testValues.in)
+          model.setExistingValue testValues.in
           expect(model.toText()).to.eql(testValues.out)
 
   describe 'methods', ->

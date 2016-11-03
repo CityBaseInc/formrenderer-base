@@ -15,11 +15,11 @@ This documentation will be focused on the former, while the latter should be con
 Include the formrenderer JS and CSS:
 
 ```html
-<script src='//d3q1ytufopwvkq.cloudfront.net/0/formrenderer.js'></script>
-<link href='//d3q1ytufopwvkq.cloudfront.net/0/formrenderer.css' rel='stylesheet' />
+<script src='//d3q1ytufopwvkq.cloudfront.net/1/formrenderer.js'></script>
+<link href='//d3q1ytufopwvkq.cloudfront.net/1/formrenderer.css' rel='stylesheet' />
 ```
 
-> **Note:** This file will automatically update with each new release of formrenderer. If you're going to customize anything, you should consider replacing "/0/" with a specific version number. (You can find the current version number in a badge at the top of this file.)
+> **Note:** This file will automatically update with each new release of formrenderer. If you're going to customize anything, you should consider replacing "/1/" with a specific version number. (You can find the current version number in a badge at the top of this file.)
 
 These files contain all of the necessary dependencies **with the exception of jQuery**, which must be loaded before `formrenderer.js`.
 
@@ -107,7 +107,7 @@ All language strings have been placed in a `FormRenderer.t` object, and the defa
 If you simply need to add translations to your embedded form, include the following Javascript _after_ `formrenderer.js`:
 
 ```
-<script src="//d3q1ytufopwvkq.cloudfront.net/0/i18n/es.js"></script>
+<script src="//d3q1ytufopwvkq.cloudfront.net/1/i18n/es.js"></script>
 ```
 
 ## Developing

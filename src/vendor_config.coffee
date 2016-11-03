@@ -18,6 +18,31 @@ rivets.binders.input =
   unbind: (el) ->
     $(el).unbind("#{rivets.inputEvent}.rivets")
 
+rivets.binders.checkedarray =
+  publishes: true
+
+  routine: (el, value) ->
+    el.checked = _.contains(value, el.value)
+
+  bind: (el) ->
+    if el.type == 'radio'
+      $(el).bind 'change.rivets', =>
+        @model.set @keypath, [el.value]
+
+    else
+      $(el).bind 'change.rivets', =>
+        val = @model.get(@keypath) || []
+
+        newVal = if el.checked
+                   _.uniq(val.concat(el.value))
+                 else
+                   _.without(val, el.value)
+
+        @model.set @keypath, newVal
+
+  unbind: (el) ->
+    $(el).unbind('change.rivets')
+
 rivets.configure
   prefix: "rv"
   adapter:

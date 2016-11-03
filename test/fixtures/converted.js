@@ -175,8 +175,9 @@ Fixtures.Validation = {
       "tests": [
         {
           "in": {
-            "bar (baz)": true,
-            "Other": "who"
+            "checked": ["bar (baz)"],
+            "other_checked": true,
+            "other_text": "who"
           },
           "out": "bar (baz) who"
         }
@@ -185,7 +186,7 @@ Fixtures.Validation = {
     "radio": {
       "tests": [
         {
-          "in": "yo",
+          "in": { "checked": ["yo"] },
           "out": "yo"
         }
       ]

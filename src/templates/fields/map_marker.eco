@@ -8,12 +8,12 @@
   <div class='fr_map_toolbar'>
     <div class='fr_map_coord'>
       <strong><%= FormRenderer.t.coordinates %>:</strong>
-      <span data-rv-show='model.value.lat'>
-        <span data-rv-text='model.value.lat' />,
-        <span data-rv-text='model.value.lng' />
+      <span data-rv-show='model.value'>
+        <span data-rv-text='model.value.0' />,
+        <span data-rv-text='model.value.1' />
       </span>
-      <span data-rv-hide='model.value.lat' class='fr_map_no_location'><%= FormRenderer.t.na %></span>
+      <span data-rv-hide='model.value' class='fr_map_no_location'><%= FormRenderer.t.na %></span>
     </div>
-    <a class='fr_map_clear' data-fr-clear-map data-rv-show='model.value.lat' href='#'><%= FormRenderer.t.clear %></a>
+    <a class='fr_map_clear' data-fr-clear-map data-rv-show='model.value' href='#'><%= FormRenderer.t.clear %></a>
   </div>
 </div>

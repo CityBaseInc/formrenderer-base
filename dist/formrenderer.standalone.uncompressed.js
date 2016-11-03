@@ -17,6 +17,34 @@ rivets.binders.input = {
   }
 };
 
+rivets.binders.checkedarray = {
+  publishes: true,
+  routine: function(el, value) {
+    return el.checked = _.contains(value, el.value);
+  },
+  bind: function(el) {
+    if (el.type === 'radio') {
+      return $(el).bind('change.rivets', (function(_this) {
+        return function() {
+          return _this.model.set(_this.keypath, [el.value]);
+        };
+      })(this));
+    } else {
+      return $(el).bind('change.rivets', (function(_this) {
+        return function() {
+          var newVal, val;
+          val = _this.model.get(_this.keypath) || [];
+          newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
+          return _this.model.set(_this.keypath, newVal);
+        };
+      })(this));
+    }
+  },
+  unbind: function(el) {
+    return $(el).unbind('change.rivets');
+  }
+};
+
 rivets.configure({
   prefix: "rv",
   adapter: {
@@ -346,19 +374,8 @@ rivets.configure({
       return _.tap({}, (function(_this) {
         return function(h) {
           return _this.response_fields.each(function(rf) {
-            var gotValue;
-            if (!rf.input_field) {
-              return;
-            }
-            if (!rf.isVisible) {
-              return;
-            }
-            gotValue = rf.getValue();
-            if ((typeof gotValue === 'object') && gotValue.merge) {
-              delete gotValue.merge;
-              return _.extend(h, gotValue);
-            } else {
-              return h[rf.get('id')] = gotValue;
+            if (rf.input_field && rf.isVisible) {
+              return h[rf.get('id')] = rf.getValue();
             }
           });
         };
@@ -396,11 +413,12 @@ rivets.configure({
       return $.ajax({
         url: "" + this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
+        contentType: 'application/json',
         dataType: 'json',
-        data: _.extend(this.saveParams(), {
+        data: JSON.stringify(_.extend(this.saveParams(), {
           raw_responses: this.getValue(),
           submit: options.submit ? true : void 0
-        }),
+        })),
         headers: this.serverHeaders,
         complete: (function(_this) {
           return function() {
@@ -636,7 +654,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '0.19.0';
+  FormRenderer.VERSION = '1.0.0';
 
 }).call(this);
 
@@ -1077,17 +1095,8 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
     field_type: 'map_marker',
-    hasValue: function() {
-      return _.every(['lat', 'lng'], (function(_this) {
-        return function(key) {
-          return !!_this.get("value." + key);
-        };
-      })(this));
-    },
     latLng: function() {
-      if (this.hasValue()) {
-        return [this.get('value.lat'), this.get('value.lng')];
-      }
+      return this.get('value');
     },
     defaultLatLng: function() {
       var lat, lng;
@@ -1119,109 +1128,40 @@ rivets.configure({
 
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
-    initialize: function() {
-      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('change:value.other_checkbox', function(_, val) {
-        return this.set('showOther', val);
-      });
-    },
     setExistingValue: function(x) {
-      return this.set('value', _.tap({}, (function(_this) {
-        return function(h) {
-          var i, option, _i, _j, _len, _len1, _ref, _ref1, _results;
-          if (!_.isEmpty(x)) {
-            _ref = _this.getOptions();
-            for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-              option = _ref[i];
-              h["" + i] = x[option.label];
-            }
-            if (x.Other != null) {
-              h['other_checkbox'] = true;
-              return h['other'] = x.Other;
-            }
-          } else {
-            _ref1 = _this.getOptions();
-            _results = [];
-            for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-              option = _ref1[i];
-              _results.push(h["" + i] = FormRenderer.toBoolean(option.checked));
-            }
-            return _results;
-          }
+      var h, option, _i, _len, _ref;
+      if (x == null) {
+        h = {
+          checked: []
         };
-      })(this)));
-    },
-    getValue: function() {
-      var k, returnValue, v, _ref;
-      returnValue = {};
-      _ref = this.get('value');
-      for (k in _ref) {
-        v = _ref[k];
-        returnValue[k] = v === true ? 'on' : v;
+        _ref = this.getOptions();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          option = _ref[_i];
+          if (FormRenderer.toBoolean(option.checked)) {
+            h.checked.push(option.label);
+          }
+        }
+        return this.set('value', h);
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       }
-      return returnValue;
     },
     toText: function() {
-      var values;
-      values = _.tap([], (function(_this) {
-        return function(a) {
-          var idx, k, v, _ref;
-          _ref = _this.get('value');
-          for (k in _ref) {
-            v = _ref[k];
-            idx = parseInt(k);
-            if (v === true && !_.isNaN(idx)) {
-              a.push(_this.getOptions()[idx].label);
-            }
-          }
-          if (_this.get('value.other_checkbox') === true) {
-            return a.push(_this.get('value.other'));
-          }
-        };
-      })(this));
-      return values.join(' ');
+      var arr, _ref;
+      arr = ((_ref = this.get('value.checked')) != null ? _ref.slice(0) : void 0) || [];
+      if (this.get('value.other_checked') === true) {
+        arr.push(this.get('value.other_text'));
+      }
+      return arr.join(' ');
     },
     hasValue: function() {
-      return this.hasAnyValueInHash();
+      var _ref;
+      return ((_ref = this.get('value.checked')) != null ? _ref.length : void 0) > 0 || this.get('value.other_checked');
     }
   });
 
-  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseField.extend({
-    field_type: 'radio',
-    initialize: function() {
-      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('change:value.selected', function(_, val) {
-        return this.set('showOther', val === 'Other');
-      });
-    },
-    setExistingValue: function(x) {
-      var defaultOption;
-      if (x != null ? x.selected : void 0) {
-        return this.set('value', x);
-      } else if ((defaultOption = _.find(this.getOptions(), (function(option) {
-        return FormRenderer.toBoolean(option.checked);
-      })))) {
-        return this.set('value.selected', defaultOption.label);
-      } else {
-        return this.set('value', {});
-      }
-    },
-    getValue: function() {
-      return _.tap({
-        merge: true
-      }, (function(_this) {
-        return function(h) {
-          h["" + (_this.get('id'))] = _this.get('value.selected');
-          return h["" + (_this.get('id')) + "_other"] = _this.get('value.other');
-        };
-      })(this));
-    },
-    toText: function() {
-      return (this.getValue() || {})["" + this.id];
-    },
-    hasValue: function() {
-      return !!this.get('value.selected');
-    }
+  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
+    field_type: 'radio'
   });
 
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
@@ -1273,56 +1213,57 @@ rivets.configure({
         return true;
       }))) != null ? _ref.length : void 0) || 0;
       this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
-      return this.set('value', _.tap({}, (function(_this) {
-        return function(h) {
-          var column, i, j, _i, _ref1, _results;
+      return this.set('value', _.tap([], (function(_this) {
+        return function(arr) {
+          var colArr, column, i, _i, _j, _len, _ref1, _ref2, _ref3, _results;
+          _ref1 = _this.getColumns();
           _results = [];
-          for (i = _i = 0, _ref1 = _this.numRows - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-            _results.push((function() {
-              var _j, _len, _name, _ref2, _ref3, _results1;
-              _ref2 = this.getColumns();
-              _results1 = [];
-              for (j = _j = 0, _len = _ref2.length; _j < _len; j = ++_j) {
-                column = _ref2[j];
-                h[_name = "" + j] || (h[_name] = {});
-                _results1.push(h["" + j]["" + i] = this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
-              }
-              return _results1;
-            }).call(_this));
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            column = _ref1[_i];
+            colArr = [];
+            for (i = _j = 0, _ref2 = _this.numRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
+              colArr.push(_this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
+            }
+            _results.push(arr.push(colArr));
           }
           return _results;
         };
       })(this)));
     },
     hasValue: function() {
-      return _.some(this.get('value'), (function(_this) {
-        return function(colVals, colNumber) {
-          return _.some(colVals, function(v, k) {
-            return !_this.getPresetValueByIndices(colNumber, k) && !!v;
+      return _.some(this.getValue(), (function(_this) {
+        return function(colVals, colLabel) {
+          return _.some(colVals, function(v, idx) {
+            return !_this.getPresetValue(colLabel, idx) && !!v;
           });
         };
       })(this));
     },
     getPresetValue: function(columnLabel, row) {
-      var _ref;
-      return (_ref = this.get("preset_values." + columnLabel)) != null ? _ref[row] : void 0;
-    },
-    getPresetValueByIndices: function(col, row) {
-      var _ref;
-      return (_ref = this.get("preset_values." + (this.getColumns()[col].label))) != null ? _ref[row] : void 0;
+      var _ref, _ref1;
+      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
     },
     getValue: function() {
-      var column, i, j, returnValue, _i, _j, _len, _ref, _ref1;
-      returnValue = {};
-      for (i = _i = 0, _ref = this.numRows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        _ref1 = this.getColumns();
-        for (j = _j = 0, _len = _ref1.length; _j < _len; j = ++_j) {
-          column = _ref1[j];
-          returnValue[j] || (returnValue[j] = []);
-          returnValue[j].push(this.get("value." + j + "." + i) || '');
-        }
-      }
-      return returnValue;
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          var column, i, j, _i, _len, _ref, _results;
+          _ref = _this.getColumns();
+          _results = [];
+          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
+            column = _ref[j];
+            h[column.label] = [];
+            _results.push((function() {
+              var _j, _ref1, _results1;
+              _results1 = [];
+              for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
+              }
+              return _results1;
+            }).call(_this));
+          }
+          return _results;
+        };
+      })(this));
     },
     toText: function() {
       return _.flatten(_.values(this.getValue())).join(' ');
@@ -1369,26 +1310,19 @@ rivets.configure({
         id: id,
         filename: filename
       });
-      return this.set('value.files', files);
+      return this.set('value', files);
     },
     removeFile: function(idx) {
       var files;
       files = this.getFiles().slice(0);
       files.splice(idx, 1);
-      return this.set('value.files', files);
+      return this.set('value', files);
     },
     getFiles: function() {
-      return this.get('value.files') || [];
+      return this.get('value') || [];
     },
     canAddFile: function() {
       return this.getFiles().length < this.maxFiles();
-    },
-    getValue: function() {
-      if (this.hasValue()) {
-        return _.compact(_.pluck(this.getFiles(), 'id'));
-      } else {
-        return false;
-      }
     },
     toText: function() {
       return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
@@ -1405,6 +1339,9 @@ rivets.configure({
           return "." + x;
         });
       }
+    },
+    getValue: function() {
+      return this.getFiles();
     },
     maxFiles: function() {
       if (this.get('allow_multiple_files')) {
@@ -1511,7 +1448,7 @@ rivets.configure({
       return this.get('value') || false;
     },
     setExistingValue: function(x) {
-      return this.set('value', x === 't');
+      return this.set('value', !!x);
     },
     toText: function() {
       if (this.get('value')) {
@@ -2271,12 +2208,10 @@ rivets.configure({
       }
       center = this.map.getCenter();
       this.marker.setLatLng(center);
-      return this.model.set({
-        value: {
-          lat: center.lat.toFixed(7),
-          lng: center.lng.toFixed(7)
-        }
+      this.model.set({
+        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
       });
+      return this.model.trigger('change:value.0 change:value.1');
     },
     enable: function() {
       if (!this.map) {
@@ -2290,12 +2225,7 @@ rivets.configure({
       e.preventDefault();
       this.map.removeLayer(this.marker);
       this.$el.find('.fr_map_cover').show();
-      return this.model.set({
-        value: {
-          lat: '',
-          lng: ''
-        }
-      });
+      return this.model.unset('value');
     }
   });
 
@@ -2602,27 +2532,7 @@ window.JST["fields/checkboxes"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, option, _i, _len, _ref;
-    
-      _ref = this.model.getOptions();
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checked=\'model.value.'));
-        _print(i);
-        _print(_safe('\' />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checkbox\' />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
+      _print(_safe(JST["partials/options_field"](this)));
     
       _print(_safe('\n'));
     
@@ -3075,11 +2985,11 @@ window.JST["fields/map_marker"] = function(__obj) {
     
       _print(FormRenderer.t.coordinates);
     
-      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value.lat\'>\n        <span data-rv-text=\'model.value.lat\' />,\n        <span data-rv-text=\'model.value.lng\' />\n      </span>\n      <span data-rv-hide=\'model.value.lat\' class=\'fr_map_no_location\'>'));
+      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
     
       _print(FormRenderer.t.na);
     
-      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value.lat\' href=\'#\'>'));
+      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>'));
     
       _print(FormRenderer.t.clear);
     
@@ -3409,27 +3319,7 @@ window.JST["fields/radio"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, option, _i, _len, _ref;
-    
-      _ref = this.model.getOptions();
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        option = _ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-checked=\'model.value.selected\'\n           value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-checked=\'model.value.selected\'\n             value="Other" />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.showOther\' data-rv-input=\'model.value.other\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
+      _print(_safe(JST["partials/options_field"](this)));
     
       _print(_safe('\n'));
     
@@ -3580,11 +3470,7 @@ window.JST["fields/table"] = function(__obj) {
             _print(i);
             _print(_safe('\'></span>\n          '));
           } else {
-            _print(_safe('\n            <td>\n              <textarea data-col=\''));
-            _print(j);
-            _print(_safe('\'\n                        data-row=\''));
-            _print(i);
-            _print(_safe('\'\n                        data-rv-input=\'model.value.'));
+            _print(_safe('\n            <td>\n              <textarea data-rv-input=\'model.value.'));
             _print(j);
             _print(_safe('.'));
             _print(i);
@@ -4340,6 +4226,81 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.field_type](this)));
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/options_field"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      var fieldType, option, _i, _len, _ref;
+    
+      fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
+    
+      _print(_safe('\n\n'));
+    
+      _ref = this.model.getOptions();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        option = _ref[_i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
+        _print(fieldType);
+        _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(option.label);
+        _print(_safe('" />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
+        _print(fieldType);
+        _print(_safe('\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\' />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     

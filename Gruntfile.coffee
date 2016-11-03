@@ -146,13 +146,13 @@ module.exports = (grunt) ->
       autoupdate:
         files: [
           src: 'dist/formrenderer.css'
-          dest: '0/formrenderer.css'
+          dest: '1/formrenderer.css'
         ,
           src: 'dist/formrenderer.js'
-          dest: '0/formrenderer.js'
+          dest: '1/formrenderer.js'
         ,
           src: 'dist/i18n/es.js'
-          dest: '0/i18n/es.js'
+          dest: '1/i18n/es.js'
         ]
         options:
           headers:

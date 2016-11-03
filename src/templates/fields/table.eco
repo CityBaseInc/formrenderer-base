@@ -18,9 +18,7 @@
               <span data-rv-text='model.value.<%= j %>.<%= i %>'></span>
           <% else: %>
             <td>
-              <textarea data-col='<%= j %>'
-                        data-row='<%= i %>'
-                        data-rv-input='model.value.<%= j %>.<%= i %>'
+              <textarea data-rv-input='model.value.<%= j %>.<%= i %>'
                         rows='1'
                         aria-label="<%= column.translated_label || column.label %> #<%= i + 1 %>"
                         <% if j == 0 && i == 0: %>id='<%= @getDomId() %>'<% end %> />

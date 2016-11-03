@@ -219,16 +219,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   getValue: ->
     _.tap {}, (h) =>
       @response_fields.each (rf) ->
-        return unless rf.input_field
-        return unless rf.isVisible
-        gotValue = rf.getValue()
-
-        # hack for radio field...
-        if (typeof gotValue == 'object') && gotValue.merge
-          delete gotValue.merge
-          _.extend(h, gotValue)
-        else
-          h[rf.get('id')] = gotValue
+        if rf.input_field && rf.isVisible
+          h[rf.get('id')] = rf.getValue()
 
   loadParams: ->
     {
@@ -267,11 +259,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     $.ajax
       url: "#{@options.screendoorBase}/api/form_renderer/save"
       type: 'post'
+      contentType: 'application/json'
       dataType: 'json'
-      data: _.extend @saveParams(), {
-        raw_responses: @getValue(),
-        submit: if options.submit then true else undefined
-      }
+      data: JSON.stringify(
+        _.extend @saveParams(), {
+          raw_responses: @getValue(),
+          submit: if options.submit then true else undefined
+        }
+      )
       headers: @serverHeaders
       complete: =>
         @requests -= 1

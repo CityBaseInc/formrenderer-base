@@ -1,11 +1,71 @@
-FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
+FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
+  # Does nothing
+  sync: ->
+
+  getConditions: ->
+    @get('conditions') || []
+
+  isConditional: ->
+    @getConditions().length > 0
+
+  # Returns true if the new value is different than the old value
+  calculateVisibility: ->
+    prevValue = !!@isVisible
+
+    @isVisible = (
+      # If we're not in a form_renderer context, it's visible
+      if !@form_renderer
+        true
+      else
+        if @isConditional()
+          _[@conditionMethod()] @getConditions(), (c) =>
+            @form_renderer.isConditionalVisible(c)
+        else
+          true
+    )
+
+    prevValue != @isVisible
+
+  conditionMethod: ->
+    if @get('condition_method') == 'any'
+      'any'
+    else
+      'all'
+
+FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
+  initialize: (_attrs, @form_renderer) ->
+    @calculateVisibility()
+
+    # todo populate
+    @entries = [
+      new FormRenderer.Models.RepeatingGroupEntry({}, @form_renderer, @)
+    ]
+
+  addEntry: ->
+    @entries.push(
+      new FormRenderer.Models.RepeatingGroupEntry({}, @form_renderer, @)
+    )
+
+  removeEntry: (idx) ->
+    @entries.splice(idx, 1)
+
+FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
+  initialize: (_attrs, @form_renderer, @repeatingGroup) ->
+    @children = new Backbone.Collection
+
+    for rf in @repeatingGroup.get('children')
+      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer)
+
+      # todo
+      # model.setExistingValue ...
+
+      @children.add model
+
+FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true
   field_type: undefined
   validators: []
-  sync: ->
-  initialize: (_attrs, options = {}) ->
-    { @form_renderer } = options
-
+  initialize: (_attrs, @form_renderer) ->
     @errors = []
 
     @calculateVisibility()
@@ -87,36 +147,6 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
   getColumns: ->
     @get('columns') || []
-
-  getConditions: ->
-    @get('conditions') || []
-
-  isConditional: ->
-    @getConditions().length > 0
-
-  # Returns true if the new value is different than the old value
-  calculateVisibility: ->
-    prevValue = !!@isVisible
-
-    @isVisible = (
-      # If we're not in a form_renderer context, it's visible
-      if !@form_renderer
-        true
-      else
-        if @isConditional()
-          _[@conditionMethod()] @getConditions(), (c) =>
-            @form_renderer.isConditionalVisible(c)
-        else
-          true
-    )
-
-    prevValue != @isVisible
-
-  conditionMethod: ->
-    if @get('condition_method') == 'any'
-      'any'
-    else
-      'all'
 
   getSize: ->
     @get('size') || 'small'

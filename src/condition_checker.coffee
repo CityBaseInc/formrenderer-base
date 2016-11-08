@@ -1,7 +1,7 @@
 presenceMethods = ['present', 'blank']
 
 class FormRenderer.ConditionChecker
-  constructor: (@form_renderer, @condition) ->
+  constructor: (@fr, @condition) ->
     @value = @responseField()?.toText() || ''
 
   method_eq: ->
@@ -55,4 +55,4 @@ class FormRenderer.ConditionChecker
       @["method_#{@condition.method}"]()
 
   responseField: ->
-    @form_renderer.response_fields.get(@condition.response_field_id)
+    @fr.formComponents.get(@condition.response_field_id)

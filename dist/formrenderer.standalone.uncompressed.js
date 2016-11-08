@@ -199,19 +199,21 @@ rivets.configure({
     },
     initResponseFields: function() {
       var model, rf, _i, _len, _ref;
-      this.response_fields = new Backbone.Collection;
+      this.formComponents = new Backbone.Collection;
       _ref = this.options.response_fields;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, {
-          form_renderer: this
-        });
-        if (model.input_field) {
-          model.setExistingValue(this.options.response.responses[model.get('id')]);
+        if (rf.type === 'group') {
+          model = new FormRenderer.Models.RepeatingGroup(rf, this);
+        } else {
+          model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this);
+          if (model.input_field) {
+            model.setExistingValue(this.options.response.responses[model.get('id')]);
+          }
         }
-        this.response_fields.add(model);
+        this.formComponents.add(model);
       }
-      return this.listenTo(this.response_fields, 'change:value change:value.*', $.proxy(this._onChange, this));
+      return this.listenTo(this.formComponents, 'change:value change:value.*', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -222,13 +224,13 @@ rivets.configure({
           });
         };
       })(this);
-      this.numPages = this.response_fields.filter(function(rf) {
-        return rf.get('field_type') === 'page_break';
+      this.numPages = this.formComponents.where({
+        field_type: 'page_break'
       }).length + 1;
       this.state.set('activePage', 1);
       currentPageInLoop = 1;
       addPage();
-      this.response_fields.each((function(_this) {
+      this.formComponents.each((function(_this) {
         return function(rf) {
           if (rf.get('field_type') === 'page_break') {
             currentPageInLoop++;
@@ -264,12 +266,12 @@ rivets.configure({
       return _results;
     },
     initConditions: function() {
-      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
+      this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
         return function(rf) {
           return _this.runConditions(rf);
         };
       })(this));
-      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
+      return this.allConditions = _.flatten(this.formComponents.map(function(rf) {
         return _.map(rf.getConditions(), function(c) {
           return _.extend({}, c, {
             parent: rf
@@ -373,7 +375,7 @@ rivets.configure({
     getValue: function() {
       return _.tap({}, (function(_this) {
         return function(h) {
-          return _this.response_fields.each(function(rf) {
+          return _this.formComponents.each(function(rf) {
             if (rf.input_field && rf.isVisible) {
               return h[rf.get('id')] = rf.getValue();
             }
@@ -678,9 +680,9 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(form_renderer, condition) {
+    function ConditionChecker(fr, condition) {
       var _ref;
-      this.form_renderer = form_renderer;
+      this.fr = fr;
       this.condition = condition;
       this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
     }
@@ -751,7 +753,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.responseField = function() {
-      return this.form_renderer.response_fields.get(this.condition.response_field_id);
+      return this.fr.formComponents.get(this.condition.response_field_id);
     };
 
     return ConditionChecker;
@@ -935,16 +937,70 @@ rivets.configure({
   var i, _i, _len, _ref,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  FormRenderer.Models.ResponseField = Backbone.DeepModel.extend({
+  FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
+    sync: function() {},
+    getConditions: function() {
+      return this.get('conditions') || [];
+    },
+    isConditional: function() {
+      return this.getConditions().length > 0;
+    },
+    calculateVisibility: function() {
+      var prevValue;
+      prevValue = !!this.isVisible;
+      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
+        return function(c) {
+          return _this.form_renderer.isConditionalVisible(c);
+        };
+      })(this)) : true);
+      return prevValue !== this.isVisible;
+    },
+    conditionMethod: function() {
+      if (this.get('condition_method') === 'any') {
+        return 'any';
+      } else {
+        return 'all';
+      }
+    }
+  });
+
+  FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
+    initialize: function(_attrs, form_renderer) {
+      this.form_renderer = form_renderer;
+      this.calculateVisibility();
+      return this.entries = [new FormRenderer.Models.RepeatingGroupEntry({}, this.form_renderer, this)];
+    },
+    addEntry: function() {
+      return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.form_renderer, this));
+    },
+    removeEntry: function(idx) {
+      return this.entries.splice(idx, 1);
+    }
+  });
+
+  FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
+    initialize: function(_attrs, form_renderer, repeatingGroup) {
+      var model, rf, _i, _len, _ref, _results;
+      this.form_renderer = form_renderer;
+      this.repeatingGroup = repeatingGroup;
+      this.children = new Backbone.Collection;
+      _ref = this.repeatingGroup.get('children');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        rf = _ref[_i];
+        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.form_renderer);
+        _results.push(this.children.add(model));
+      }
+      return _results;
+    }
+  });
+
+  FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend({
     input_field: true,
     field_type: void 0,
     validators: [],
-    sync: function() {},
-    initialize: function(_attrs, options) {
-      if (options == null) {
-        options = {};
-      }
-      this.form_renderer = options.form_renderer;
+    initialize: function(_attrs, form_renderer) {
+      this.form_renderer = form_renderer;
       this.errors = [];
       this.calculateVisibility();
       if (this.hasLengthValidations()) {
@@ -1039,29 +1095,6 @@ rivets.configure({
     },
     getColumns: function() {
       return this.get('columns') || [];
-    },
-    getConditions: function() {
-      return this.get('conditions') || [];
-    },
-    isConditional: function() {
-      return this.getConditions().length > 0;
-    },
-    calculateVisibility: function() {
-      var prevValue;
-      prevValue = !!this.isVisible;
-      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(c) {
-          return _this.form_renderer.isConditionalVisible(c);
-        };
-      })(this)) : true);
-      return prevValue !== this.isVisible;
-    },
-    conditionMethod: function() {
-      if (this.get('condition_method') === 'any') {
-        return 'any';
-      } else {
-        return 'all';
-      }
     },
     getSize: function() {
       return this.get('size') || 'small';
@@ -1812,10 +1845,17 @@ rivets.configure({
       _ref = this.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.field_type))]({
-          model: rf,
-          form_renderer: this.form_renderer
-        });
+        if (rf.get('type') === 'group') {
+          view = new FormRenderer.Views.RepeatingGroup({
+            model: rf,
+            form_renderer: this.form_renderer
+          });
+        } else {
+          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.field_type))]({
+            model: rf,
+            form_renderer: this.form_renderer
+          });
+        }
         this.$el.append(view.render().el);
         view.reflectConditions();
         this.views.push(view);
@@ -1891,6 +1931,96 @@ rivets.configure({
     render: function() {
       this.$el.html(JST['partials/pagination'](this));
       this.form_renderer.trigger('viewRendered', this);
+      return this;
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
+    attributes: {
+      style: 'border: 1px solid gray; padding: 10px;'
+    },
+    className: 'fr_repeating_group',
+    events: {
+      'click .js-remove-entry': 'removeEntry',
+      'click .js-add-entry': 'addEntry'
+    },
+    initialize: function(options) {
+      this.form_renderer = options.form_renderer;
+      this.model = options.model;
+      if (this.model.id) {
+        return this.$el.attr('id', "fr_repeating_group_" + this.model.id);
+      }
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
+    },
+    addEntry: function() {
+      this.model.addEntry();
+      return this.render();
+    },
+    removeEntry: function(e) {
+      var idx;
+      idx = this.$el.find('.js-remove-entry').index(e.target);
+      this.model.removeEntry(idx);
+      return this.render();
+    },
+    render: function() {
+      var $entries, entry, idx, view, _i, _len, _ref, _ref1;
+      this.$el.html(JST['partials/repeating_group'](this));
+      $entries = this.$el.find('.repeating_group_entries');
+      if (this.model.entries.length > 0) {
+        _ref = this.model.entries;
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          entry = _ref[idx];
+          view = new FormRenderer.Views.RepeatingGroupEntry({
+            entry: entry,
+            form_renderer: this.form_renderer,
+            idx: idx
+          });
+          $entries.append(view.render().el);
+        }
+      } else {
+        $entries.text('None');
+      }
+      if ((_ref1 = this.form_renderer) != null) {
+        _ref1.trigger('viewRendered', this);
+      }
+      return this;
+    }
+  });
+
+  FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
+    attributes: {
+      style: 'border: 1px solid gray; padding: 10px; margin: 10px;'
+    },
+    className: 'fr_repeating_group_entry',
+    initialize: function(options) {
+      this.entry = options.entry;
+      this.form_renderer = options.form_renderer;
+      return this.idx = options.idx;
+    },
+    render: function() {
+      var $children;
+      this.$el.html(JST['partials/repeating_group_entry'](this));
+      $children = this.$el.find('.repeating_group_entry_fields');
+      this.entry.children.each((function(_this) {
+        return function(rf) {
+          var view;
+          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.get('field_type')))]({
+            model: rf,
+            form_renderer: _this.form_renderer
+          });
+          $children.append(view.render().el);
+          return view.reflectConditions();
+        };
+      })(this));
       return this;
     }
   });
@@ -4376,6 +4506,104 @@ window.JST["partials/pagination"] = function(__obj) {
       }
     
       _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/repeating_group"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'repeating_group_label\'>\n  '));
+    
+      _print(this.model.get('label'));
+    
+      _print(_safe('\n</div>\n\n<div class=\'repeating_group_entries\'>\n</div>\n\n<a href=\'#\' class=\'js-add-entry\'>Add another</a>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/repeating_group_entry"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'repeating_group_entry_idx\'>#'));
+    
+      _print(this.idx + 1);
+    
+      _print(_safe('</div>\n\n<div class=\'repeating_group_entry_fields\'>\n</div>\n\n<a href=\'#\' class=\'js-remove-entry\'>Remove</a>\n'));
     
     }).call(this);
     

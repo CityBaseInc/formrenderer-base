@@ -1,0 +1,8 @@
+<div class='repeating_group_label'>
+  <%= @model.get('label') %>
+</div>
+
+<div class='repeating_group_entries'>
+</div>
+
+<a href='#' class='js-add-entry'>Add another</a>

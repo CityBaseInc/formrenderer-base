@@ -101,29 +101,31 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   # Create a collection for our response fields
   initResponseFields: ->
-    @response_fields = new Backbone.Collection
+    @formComponents = new Backbone.Collection
 
     for rf in @options.response_fields
-      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](
-        rf,
-        form_renderer: @
-      )
-      model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
-      @response_fields.add model
+      if rf.type == 'group'
+        model = new FormRenderer.Models.RepeatingGroup(rf, @)
+        # set existing value
+      else
+        model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @)
+        model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
 
-    @listenTo @response_fields, 'change:value change:value.*', $.proxy(@_onChange, @)
+      @formComponents.add model
+
+    @listenTo @formComponents, 'change:value change:value.*', $.proxy(@_onChange, @)
 
   # Build pages, which contain the response fields views.
   initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
 
-    @numPages = @response_fields.filter((rf) -> rf.get('field_type') == 'page_break').length + 1
+    @numPages = @formComponents.where(field_type: 'page_break').length + 1
     @state.set 'activePage', 1
     currentPageInLoop = 1
     addPage()
 
-    @response_fields.each (rf) =>
+    @formComponents.each (rf) =>
       if rf.get('field_type') == 'page_break'
         currentPageInLoop++
         addPage()
@@ -143,11 +145,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       page.show()
 
   initConditions: ->
-    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
+    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
       @runConditions(rf)
 
     @allConditions = _.flatten(
-      @response_fields.map (rf) ->
+      @formComponents.map (rf) ->
         _.map rf.getConditions(), (c) ->
           _.extend {}, c, parent: rf
     )
@@ -218,7 +220,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   getValue: ->
     _.tap {}, (h) =>
-      @response_fields.each (rf) ->
+      @formComponents.each (rf) ->
         if rf.input_field && rf.isVisible
           h[rf.get('id')] = rf.getValue()
 

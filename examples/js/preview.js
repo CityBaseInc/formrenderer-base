@@ -69,3 +69,7 @@ if ($('#screendoor_project_id').val()) {
     console.log(this.getValue());
   };
 }
+
+$(document).on('click', '[href="#"]', function(e){
+  e.preventDefault()
+})

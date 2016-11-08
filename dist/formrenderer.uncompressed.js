@@ -6441,6 +6441,7 @@ rivets.configure({
         rf = _ref[_i];
         if (rf.type === 'group') {
           model = new FormRenderer.Models.RepeatingGroup(rf, this);
+          model.setEntries(this.options.response.responses[model.get('id')]);
         } else {
           model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this);
           if (model.input_field) {
@@ -6611,9 +6612,12 @@ rivets.configure({
     getValue: function() {
       return _.tap({}, (function(_this) {
         return function(h) {
-          return _this.formComponents.each(function(rf) {
-            if (rf.input_field && rf.isVisible) {
-              return h[rf.get('id')] = rf.getValue();
+          return _this.formComponents.each(function(component) {
+            if (!component.isVisible) {
+              return;
+            }
+            if ((component.get('type') === 'group') || component.input_field) {
+              return h[component.get('id')] = component.getValue();
             }
           });
         };
@@ -7204,13 +7208,25 @@ rivets.configure({
     initialize: function(_attrs, form_renderer) {
       this.form_renderer = form_renderer;
       this.calculateVisibility();
-      return this.entries = [new FormRenderer.Models.RepeatingGroupEntry({}, this.form_renderer, this)];
+      return this.entries = [];
+    },
+    setEntries: function(entryValues) {
+      return this.entries = _.map(entryValues, (function(_this) {
+        return function(entryValue) {
+          return new FormRenderer.Models.RepeatingGroupEntry({
+            value: entryValue
+          }, _this.form_renderer, _this);
+        };
+      })(this));
     },
     addEntry: function() {
       return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.form_renderer, this));
     },
     removeEntry: function(idx) {
       return this.entries.splice(idx, 1);
+    },
+    getValue: function() {
+      return _.invoke(this.entries, 'getValue');
     }
   });
 
@@ -7219,15 +7235,32 @@ rivets.configure({
       var model, rf, _i, _len, _ref, _results;
       this.form_renderer = form_renderer;
       this.repeatingGroup = repeatingGroup;
-      this.children = new Backbone.Collection;
+      this.formComponents = new Backbone.Collection;
       _ref = this.repeatingGroup.get('children');
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
         model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.form_renderer);
-        _results.push(this.children.add(model));
+        if (model.input_field) {
+          model.setExistingValue(this.get('value')[model.get('id')]);
+        }
+        _results.push(this.formComponents.add(model));
       }
       return _results;
+    },
+    getValue: function() {
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          return _this.formComponents.each(function(component) {
+            if (!component.isVisible) {
+              return;
+            }
+            if ((component.get('type') === 'group') || component.input_field) {
+              return h[component.get('id')] = component.getValue();
+            }
+          });
+        };
+      })(this));
     }
   });
 
@@ -8246,7 +8279,7 @@ rivets.configure({
       var $children;
       this.$el.html(JST['partials/repeating_group_entry'](this));
       $children = this.$el.find('.repeating_group_entry_fields');
-      this.entry.children.each((function(_this) {
+      this.entry.formComponents.each((function(_this) {
         return function(rf) {
           var view;
           view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.get('field_type')))]({

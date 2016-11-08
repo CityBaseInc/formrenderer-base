@@ -106,7 +106,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     for rf in @options.response_fields
       if rf.type == 'group'
         model = new FormRenderer.Models.RepeatingGroup(rf, @)
-        # set existing value
+        model.setEntries(@options.response.responses[model.get('id')])
       else
         model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @)
         model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
@@ -220,9 +220,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   getValue: ->
     _.tap {}, (h) =>
-      @formComponents.each (rf) ->
-        if rf.input_field && rf.isVisible
-          h[rf.get('id')] = rf.getValue()
+      @formComponents.each (component) ->
+        return unless component.isVisible
+
+        if (component.get('type') == 'group') || component.input_field
+          h[component.get('id')] = component.getValue()
 
   loadParams: ->
     {

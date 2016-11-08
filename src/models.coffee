@@ -35,11 +35,15 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
 FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
   initialize: (_attrs, @form_renderer) ->
     @calculateVisibility()
+    @entries = []
 
-    # todo populate
-    @entries = [
-      new FormRenderer.Models.RepeatingGroupEntry({}, @form_renderer, @)
-    ]
+  setEntries: (entryValues) ->
+    @entries = _.map entryValues, (entryValue) =>
+      new FormRenderer.Models.RepeatingGroupEntry(
+        { value: entryValue },
+        @form_renderer,
+        @
+      )
 
   addEntry: ->
     @entries.push(
@@ -49,17 +53,25 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
   removeEntry: (idx) ->
     @entries.splice(idx, 1)
 
+  getValue: ->
+    _.invoke @entries, 'getValue'
+
 FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
   initialize: (_attrs, @form_renderer, @repeatingGroup) ->
-    @children = new Backbone.Collection
+    @formComponents = new Backbone.Collection
 
     for rf in @repeatingGroup.get('children')
       model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer)
+      model.setExistingValue(@get('value')[model.get('id')]) if model.input_field
+      @formComponents.add model
 
-      # todo
-      # model.setExistingValue ...
+  getValue: ->
+    _.tap {}, (h) =>
+      @formComponents.each (component) ->
+        return unless component.isVisible
 
-      @children.add model
+        if (component.get('type') == 'group') || component.input_field
+          h[component.get('id')] = component.getValue()
 
 FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true

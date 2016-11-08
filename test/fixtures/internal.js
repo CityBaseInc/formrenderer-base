@@ -479,7 +479,19 @@ Fixtures.FormRendererOptions = {
       ],
       response: {
         id: 'xxx',
-        responses: {}
+        responses: {
+          35: "I like 'em",
+          36: [
+            {
+              37: "Handgun",
+              38: "123456"
+            },
+            {
+              37: "Rifle",
+              38: "ABCDEF"
+            }
+          ]
+        }
       }
     };
   },

@@ -62,7 +62,7 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
     @$el.html JST['partials/repeating_group_entry'](@)
     $children = @$el.find('.repeating_group_entry_fields')
 
-    @entry.children.each (rf) =>
+    @entry.formComponents.each (rf) =>
       view = new FormRenderer.Views["ResponseField#{_str.classify(rf.get('field_type'))}"](
         model: rf,
         form_renderer: @form_renderer

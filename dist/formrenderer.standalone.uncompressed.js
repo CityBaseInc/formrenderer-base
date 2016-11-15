@@ -143,7 +143,7 @@ rivets.configure({
           if (_this.options.validateImmediately) {
             _this.validate();
           }
-          _this.initConditions();
+          FormRenderer.initConditions(_this);
           _this.trigger('ready');
           return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
         };
@@ -265,40 +265,6 @@ rivets.configure({
         _results.push(page.show());
       }
       return _results;
-    },
-    initConditions: function() {
-      var allConditions, conditionsForResponseField, runConditions;
-      allConditions = _.flatten(this.formComponents.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
-      conditionsForResponseField = function(rf) {
-        return _.filter(allConditions, function(condition) {
-          return ("" + condition.response_field_id) === ("" + rf.id);
-        });
-      };
-      runConditions = (function(_this) {
-        return function(rf) {
-          var needsRender;
-          needsRender = false;
-          _.each(conditionsForResponseField(rf), function(c) {
-            if (c.parent.calculateVisibility()) {
-              return needsRender = true;
-            }
-          });
-          if (needsRender) {
-            return _this.reflectConditions();
-          }
-        };
-      })(this);
-      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return runConditions(rf);
-        };
-      })(this));
     },
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
@@ -655,6 +621,41 @@ rivets.configure({
       returnVal = returnVal.replace(new RegExp(units + '$', 'i'), '').trim();
     }
     return returnVal;
+  };
+
+  FormRenderer.initConditions = function(frOrEntry) {
+    var allConditions, conditionsForResponseField, runConditions;
+    allConditions = _.flatten(frOrEntry.formComponents.map(function(rf) {
+      return _.map(rf.getConditions(), function(c) {
+        return _.extend({}, c, {
+          parent: rf
+        });
+      });
+    }));
+    conditionsForResponseField = function(rf) {
+      return _.filter(allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    };
+    runConditions = (function(_this) {
+      return function(rf) {
+        var needsRender;
+        needsRender = false;
+        _.each(conditionsForResponseField(rf), function(c) {
+          if (c.parent.calculateVisibility()) {
+            return needsRender = true;
+          }
+        });
+        if (needsRender) {
+          return frOrEntry.reflectConditions();
+        }
+      };
+    })(this);
+    return frOrEntry.listenTo(frOrEntry.formComponents, 'change:value change:value.*', (function(_this) {
+      return function(rf) {
+        return runConditions(rf);
+      };
+    })(this));
   };
 
 }).call(this);
@@ -1023,41 +1024,7 @@ rivets.configure({
           return _this.repeatingGroup.trigger('entryChange');
         };
       })(this));
-      return this.initConditions();
-    },
-    initConditions: function() {
-      var allConditions, conditionsForResponseField, runConditions;
-      allConditions = _.flatten(this.formComponents.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
-      conditionsForResponseField = function(rf) {
-        return _.filter(allConditions, function(condition) {
-          return ("" + condition.response_field_id) === ("" + rf.id);
-        });
-      };
-      runConditions = (function(_this) {
-        return function(rf) {
-          var needsRender;
-          needsRender = false;
-          _.each(conditionsForResponseField(rf), function(c) {
-            if (c.parent.calculateVisibility()) {
-              return needsRender = true;
-            }
-          });
-          if (needsRender) {
-            return _this.reflectConditions();
-          }
-        };
-      })(this);
-      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return runConditions(rf);
-        };
-      })(this));
+      return FormRenderer.initConditions(this);
     },
     reflectConditions: function() {
       return this.trigger('reflectConditions');

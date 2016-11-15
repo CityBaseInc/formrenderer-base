@@ -51,7 +51,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins
       @validate() if @options.validateImmediately
-      @initConditions()
+      FormRenderer.initConditions(@)
       @trigger 'ready'
       @options.onReady?()
 
@@ -143,29 +143,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   initNoPagination: ->
     for pageNumber, page of @subviews.pages
       page.show()
-
-  initConditions: ->
-    allConditions = _.flatten(
-      @formComponents.map (rf) ->
-        _.map rf.getConditions(), (c) ->
-          _.extend {}, c, parent: rf
-    )
-
-    conditionsForResponseField = (rf) ->
-      _.filter allConditions, (condition) ->
-        "#{condition.response_field_id}" == "#{rf.id}"
-
-    runConditions = (rf) =>
-      needsRender = false
-
-      _.each conditionsForResponseField(rf), (c) ->
-        if c.parent.calculateVisibility()
-          needsRender = true
-
-      @reflectConditions() if needsRender
-
-    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
-      runConditions(rf)
 
   ## Pages / Validation
 
@@ -481,3 +458,26 @@ FormRenderer.normalizeNumber = (value, units) ->
     returnVal = returnVal.replace(new RegExp(units + '$', 'i'), '').trim()
 
   returnVal
+
+FormRenderer.initConditions = (frOrEntry) ->
+  allConditions = _.flatten(
+    frOrEntry.formComponents.map (rf) ->
+      _.map rf.getConditions(), (c) ->
+        _.extend {}, c, parent: rf
+  )
+
+  conditionsForResponseField = (rf) ->
+    _.filter allConditions, (condition) ->
+      "#{condition.response_field_id}" == "#{rf.id}"
+
+  runConditions = (rf) =>
+    needsRender = false
+
+    _.each conditionsForResponseField(rf), (c) ->
+      if c.parent.calculateVisibility()
+        needsRender = true
+
+    frOrEntry.reflectConditions() if needsRender
+
+  frOrEntry.listenTo frOrEntry.formComponents, 'change:value change:value.*', (rf) =>
+    runConditions(rf)

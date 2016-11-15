@@ -2035,40 +2035,6 @@ rivets.configure({
         };
       })(this));
     },
-    initConditions: function() {
-      var allConditions, conditionsForResponseField, runConditions;
-      allConditions = _.flatten(this.formComponents.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
-      conditionsForResponseField = function(rf) {
-        return _.filter(allConditions, function(condition) {
-          return ("" + condition.response_field_id) === ("" + rf.id);
-        });
-      };
-      runConditions = (function(_this) {
-        return function(rf) {
-          var needsRender;
-          needsRender = false;
-          _.each(conditionsForResponseField(rf), function(c) {
-            if (c.parent.calculateVisibility()) {
-              return needsRender = true;
-            }
-          });
-          if (needsRender) {
-            return _this.reflectConditions();
-          }
-        };
-      })(this);
-      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return runConditions(rf);
-        };
-      })(this));
-    },
     initFormComponents: function(fieldData, responseData) {
       var field, model, _i, _len;
       this.formComponents = new Backbone.Collection;
@@ -2086,6 +2052,37 @@ rivets.configure({
         this.formComponents.add(model);
       }
       return this.initConditions();
+    },
+    initConditions: function() {
+      this.allConditions = _.flatten(this.formComponents.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
+          });
+        });
+      }));
+      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
+        return function(rf) {
+          return _this.runConditions(rf);
+        };
+      })(this));
+    },
+    conditionsForResponseField: function(rf) {
+      return _.filter(this.allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    },
+    runConditions: function(rf) {
+      var needsRender;
+      needsRender = false;
+      _.each(this.conditionsForResponseField(rf), function(c) {
+        if (c.parent.calculateVisibility()) {
+          return needsRender = true;
+        }
+      });
+      if (needsRender) {
+        return this.reflectConditions();
+      }
     }
   };
 

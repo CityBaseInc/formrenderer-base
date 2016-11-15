@@ -1,3 +1,5 @@
+# Must implement:
+#  - reflectConditions()
 HasComponents =
   getValue: ->
     _.tap {}, (h) =>
@@ -43,6 +45,29 @@ HasComponents =
       @formComponents.add model
 
     @initConditions()
+
+  initConditions: ->
+    @allConditions = _.flatten(
+      @formComponents.map (rf) ->
+        _.map rf.getConditions(), (c) ->
+          _.extend {}, c, parent: rf
+    )
+
+    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
+      @runConditions(rf)
+
+  conditionsForResponseField: (rf) ->
+    _.filter @allConditions, (condition) ->
+      "#{condition.response_field_id}" == "#{rf.id}"
+
+  runConditions: (rf) ->
+    needsRender = false
+
+    _.each @conditionsForResponseField(rf), (c) ->
+      if c.parent.calculateVisibility()
+        needsRender = true
+
+    @reflectConditions() if needsRender
 
 _.extend FormRenderer.prototype, HasComponents
 _.extend FormRenderer.Models.RepeatingGroupEntry.prototype, HasComponents

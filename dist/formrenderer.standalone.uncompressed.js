@@ -996,7 +996,7 @@ rivets.configure({
 
   FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
     initialize: function(_attrs, form_renderer, repeatingGroup) {
-      var model, rf, _i, _len, _ref, _results;
+      var model, rf, _i, _len, _ref, _ref1, _results;
       this.form_renderer = form_renderer;
       this.repeatingGroup = repeatingGroup;
       this.formComponents = new Backbone.Collection;
@@ -1006,7 +1006,7 @@ rivets.configure({
         rf = _ref[_i];
         model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.form_renderer);
         if (model.input_field) {
-          model.setExistingValue(this.get('value')[model.get('id')]);
+          model.setExistingValue((_ref1 = this.get('value')) != null ? _ref1[model.get('id')] : void 0);
         }
         _results.push(this.formComponents.add(model));
       }

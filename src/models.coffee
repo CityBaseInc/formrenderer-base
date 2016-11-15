@@ -62,7 +62,10 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
 
     for rf in @repeatingGroup.get('children')
       model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer)
-      model.setExistingValue(@get('value')[model.get('id')]) if model.input_field
+
+      if model.input_field
+        model.setExistingValue @get('value')?[model.get('id')]
+
       @formComponents.add model
 
   getValue: ->

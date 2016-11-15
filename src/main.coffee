@@ -113,7 +113,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
       @formComponents.add model
 
-    @listenTo @formComponents, 'change:value change:value.*', $.proxy(@_onChange, @)
+    @listenTo @formComponents, 'change:value change:value.* entryChange', $.proxy(@_onChange, @)
 
   # Build pages, which contain the response fields views.
   initPages: ->

@@ -88,6 +88,9 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
 
       @formComponents.add model
 
+    @listenTo @formComponents, 'change:value change:value.*', =>
+      @repeatingGroup.trigger('entryChange')
+
     @initConditions()
 
   initConditions: ->

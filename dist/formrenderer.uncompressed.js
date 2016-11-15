@@ -6450,7 +6450,7 @@ rivets.configure({
         }
         this.formComponents.add(model);
       }
-      return this.listenTo(this.formComponents, 'change:value change:value.*', $.proxy(this._onChange, this));
+      return this.listenTo(this.formComponents, 'change:value change:value.* entryChange', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -7254,6 +7254,11 @@ rivets.configure({
         }
         this.formComponents.add(model);
       }
+      this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
+        return function() {
+          return _this.repeatingGroup.trigger('entryChange');
+        };
+      })(this));
       return this.initConditions();
     },
     initConditions: function() {

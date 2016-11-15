@@ -1,6 +1,15 @@
 FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
-  # Does nothing
+  # @param @form_renderer the form_renderer instance
+  # @param @parent either the form_renderer instance, or the RepeatingGroupEntry
+  # that this field belongs to.
+  initialize: (_, @form_renderer, @parent) ->
+    @afterInitialize()
+
+  afterInitialize: ->
+    # nada
+
   sync: ->
+    # nada
 
   getConditions: ->
     @get('conditions') || []
@@ -10,6 +19,9 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
 
   isConditional: ->
     @getConditions().length > 0
+
+  getConditionFieldById: (id) ->
+    @parent.formComponents.get(id)
 
   # Returns true if the new value is different than the old value
   calculateVisibility: ->
@@ -21,8 +33,13 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
         true
       else
         if @isConditional()
-          _[@conditionMethod()] @getConditions(), (c) =>
-            @form_renderer.isConditionalVisible(c)
+          _[@conditionMethod()] @getConditions(), (conditionHash) =>
+            conditionChecker = new FormRenderer.ConditionChecker(
+              @getConditionFieldById(conditionHash.response_field_id),
+              conditionHash
+            )
+
+            conditionChecker.isVisible()
         else
           true
     )
@@ -36,7 +53,7 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
       'all'
 
 FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
-  initialize: (_attrs, @form_renderer) ->
+  afterInitialize: ->
     @calculateVisibility()
     @entries = []
 
@@ -64,7 +81,7 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
     @formComponents = new Backbone.Collection
 
     for rf in @repeatingGroup.get('children')
-      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer)
+      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer, @)
 
       if model.input_field
         model.setExistingValue @get('value')?[model.get('id')]
@@ -83,7 +100,8 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true
   field_type: undefined
   validators: []
-  initialize: (_attrs, @form_renderer) ->
+
+  afterInitialize: ->
     @errors = []
 
     @calculateVisibility()

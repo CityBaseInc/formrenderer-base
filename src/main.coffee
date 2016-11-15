@@ -105,10 +105,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     for rf in @options.response_fields
       if rf.type == 'group'
-        model = new FormRenderer.Models.RepeatingGroup(rf, @)
+        model = new FormRenderer.Models.RepeatingGroup(rf, @, @)
         model.setEntries(@options.response.responses[model.get('id')])
       else
-        model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @)
+        model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @, @)
         model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
 
       @formComponents.add model
@@ -349,9 +349,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   conditionsForResponseField: (rf) ->
     _.filter @allConditions, (condition) ->
       "#{condition.response_field_id}" == "#{rf.id}"
-
-  isConditionalVisible: (condition) ->
-    (new FormRenderer.ConditionChecker(@, condition)).isVisible()
 
 ## Master list of field types
 

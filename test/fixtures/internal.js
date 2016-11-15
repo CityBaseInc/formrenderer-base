@@ -443,21 +443,32 @@ Fixtures.FormRendererOptions = {
           field_type: "identification",
         }, {
           id: 35,
-          label: "Why are you registering your firearm(s)?",
+          label: "Do you have firearms to register?",
           required: false,
           blind: false,
           admin_only: false,
-          field_type: "paragraph",
+          field_type: "dropdown",
+          options: [
+            { label: "Yes" },
+            { label: "No" }
+          ]
         },
         {
           id: 36,
           type: "group",
           label: "Firearm details",
+          conditions: [
+            {
+              response_field_id: 35,
+              method: 'eq',
+              value: 'Yes'
+            }
+          ],
           children: [
             {
               id: 37,
               label: "Type of firearm",
-              required: false,
+              required: true,
               blind: false,
               admin_only: false,
               field_type: "dropdown",
@@ -467,9 +478,24 @@ Fixtures.FormRendererOptions = {
               ]
             },
             {
+              id: 39,
+              label: "Rifle identifier",
+              required: true,
+              blind: false,
+              admin_only: false,
+              field_type: "number",
+              conditions: [
+                {
+                  response_field_id: 37,
+                  method: 'eq',
+                  value: 'Rifle'
+                }
+              ]
+            },
+            {
               id: 38,
               label: "Serial number",
-              required: false,
+              required: true,
               blind: false,
               admin_only: false,
               field_type: "text",
@@ -480,7 +506,6 @@ Fixtures.FormRendererOptions = {
       response: {
         id: 'xxx',
         responses: {
-          35: "I like 'em",
           36: [
             {
               37: "Handgun",

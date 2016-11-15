@@ -40,8 +40,14 @@ FormRenderer.Views.Page = Backbone.View.extend
       view.reflectConditions()
 
   validate: ->
-    for rf in _.filter(@models, ((rf) -> rf.input_field) )
-      rf.validate()
+    for rf in @models
+      if rf.input_field
+        rf.validate()
+
+      if rf.get('type') == 'group'
+        for entry in rf.entries
+          entry.formComponents.each (component) =>
+            component.validate()
 
   firstViewWithError: ->
     _.find @views, (view) ->

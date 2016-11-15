@@ -6440,10 +6440,10 @@ rivets.configure({
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
         if (rf.type === 'group') {
-          model = new FormRenderer.Models.RepeatingGroup(rf, this);
+          model = new FormRenderer.Models.RepeatingGroup(rf, this, this);
           model.setEntries(this.options.response.responses[model.get('id')]);
         } else {
-          model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this);
+          model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this, this);
           if (model.input_field) {
             model.setExistingValue(this.options.response.responses[model.get('id')]);
           }
@@ -6782,9 +6782,6 @@ rivets.configure({
       return _.filter(this.allConditions, function(condition) {
         return ("" + condition.response_field_id) === ("" + rf.id);
       });
-    },
-    isConditionalVisible: function(condition) {
-      return (new FormRenderer.ConditionChecker(this, condition)).isVisible();
     }
   });
 
@@ -6920,11 +6917,11 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(fr, condition) {
+    function ConditionChecker(responseField, condition) {
       var _ref;
-      this.fr = fr;
+      this.responseField = responseField;
       this.condition = condition;
-      this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
+      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6968,12 +6965,12 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.length = function() {
-      return FormRenderer.getLength(this.responseField().getLengthValidationUnits(), this.value);
+      return FormRenderer.getLength(this.responseField.getLengthValidationUnits(), this.value);
     };
 
     ConditionChecker.prototype.isValid = function() {
       var _ref;
-      return this.responseField() && _.all(['response_field_id', 'method'], ((function(_this) {
+      return this.responseField && _.all(['response_field_id', 'method'], ((function(_this) {
         return function(x) {
           return _this.condition[x];
         };
@@ -6990,10 +6987,6 @@ rivets.configure({
       } else {
         return this.method_present() && this["method_" + this.condition.method]();
       }
-    };
-
-    ConditionChecker.prototype.responseField = function() {
-      return this.fr.formComponents.get(this.condition.response_field_id);
     };
 
     return ConditionChecker;
@@ -7178,6 +7171,12 @@ rivets.configure({
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
+    initialize: function(_, form_renderer, parent) {
+      this.form_renderer = form_renderer;
+      this.parent = parent;
+      return this.afterInitialize();
+    },
+    afterInitialize: function() {},
     sync: function() {},
     getConditions: function() {
       return this.get('conditions') || [];
@@ -7188,12 +7187,17 @@ rivets.configure({
     isConditional: function() {
       return this.getConditions().length > 0;
     },
+    getConditionFieldById: function(id) {
+      return this.parent.formComponents.get(id);
+    },
     calculateVisibility: function() {
       var prevValue;
       prevValue = !!this.isVisible;
       this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(c) {
-          return _this.form_renderer.isConditionalVisible(c);
+        return function(conditionHash) {
+          var conditionChecker;
+          conditionChecker = new FormRenderer.ConditionChecker(_this.getConditionFieldById(conditionHash.response_field_id), conditionHash);
+          return conditionChecker.isVisible();
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
@@ -7208,8 +7212,7 @@ rivets.configure({
   });
 
   FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
-    initialize: function(_attrs, form_renderer) {
-      this.form_renderer = form_renderer;
+    afterInitialize: function() {
       this.calculateVisibility();
       return this.entries = [];
     },
@@ -7243,7 +7246,7 @@ rivets.configure({
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.form_renderer);
+        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.form_renderer, this);
         if (model.input_field) {
           model.setExistingValue((_ref1 = this.get('value')) != null ? _ref1[model.get('id')] : void 0);
         }
@@ -7271,8 +7274,7 @@ rivets.configure({
     input_field: true,
     field_type: void 0,
     validators: [],
-    initialize: function(_attrs, form_renderer) {
-      this.form_renderer = form_renderer;
+    afterInitialize: function() {
       this.errors = [];
       this.calculateVisibility();
       if (this.hasLengthValidations()) {
@@ -8164,14 +8166,32 @@ rivets.configure({
       return _results;
     },
     validate: function() {
-      var rf, _i, _len, _ref, _results;
-      _ref = _.filter(this.models, (function(rf) {
-        return rf.input_field;
-      }));
+      var entry, rf, _i, _len, _ref, _results;
+      _ref = this.models;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        _results.push(rf.validate());
+        if (rf.input_field) {
+          rf.validate();
+        }
+        if (rf.get('type') === 'group') {
+          _results.push((function() {
+            var _j, _len1, _ref1, _results1;
+            _ref1 = rf.entries;
+            _results1 = [];
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              entry = _ref1[_j];
+              _results1.push(entry.formComponents.each((function(_this) {
+                return function(component) {
+                  return component.validate();
+                };
+              })(this)));
+            }
+            return _results1;
+          }).call(this));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     },

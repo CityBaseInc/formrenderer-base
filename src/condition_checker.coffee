@@ -1,8 +1,8 @@
 presenceMethods = ['present', 'blank']
 
 class FormRenderer.ConditionChecker
-  constructor: (@fr, @condition) ->
-    @value = @responseField()?.toText() || ''
+  constructor: (@responseField, @condition) ->
+    @value = @responseField?.toText() || ''
 
   method_eq: ->
     @value.toLowerCase() == @condition.value.toLowerCase()
@@ -36,12 +36,12 @@ class FormRenderer.ConditionChecker
 
   length: ->
     FormRenderer.getLength(
-      @responseField().getLengthValidationUnits(),
+      @responseField.getLengthValidationUnits(),
       @value
     )
 
   isValid: ->
-    @responseField() &&
+    @responseField &&
     _.all(['response_field_id', 'method'], ( (x) => @condition[x] )) &&
     (@condition.method in presenceMethods || @condition['value'])
 
@@ -53,6 +53,3 @@ class FormRenderer.ConditionChecker
     else
       @method_present() &&
       @["method_#{@condition.method}"]()
-
-  responseField: ->
-    @fr.formComponents.get(@condition.response_field_id)

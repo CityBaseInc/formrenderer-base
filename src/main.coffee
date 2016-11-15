@@ -48,7 +48,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
       @initFormComponents(@options.response_fields, @options.response.responses)
-      @listenTo @formComponents, 'change:value change:value.* entryChange', $.proxy(@_onChange, @)
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins

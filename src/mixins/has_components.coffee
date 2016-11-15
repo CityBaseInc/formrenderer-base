@@ -19,6 +19,9 @@ HasComponents =
 
       @formComponents.add model
 
+    @listenTo @formComponents, 'change:value change:value.*', ->
+      @fr._onChange()
+
     @initConditions()
 
   initConditions: ->

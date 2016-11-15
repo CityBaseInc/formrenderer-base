@@ -6364,7 +6364,6 @@ rivets.configure({
           var _base, _j, _len1, _ref1;
           _this.$el.find('.fr_loading').remove();
           _this.initFormComponents(_this.options.response_fields, _this.options.response.responses);
-          _this.listenTo(_this.formComponents, 'change:value change:value.* entryChange', $.proxy(_this._onChange, _this));
           _this.initPages();
           if (_this.options.enablePages) {
             _this.initPagination();
@@ -7312,12 +7311,7 @@ rivets.configure({
     initialize: function(_attrs, fr, repeatingGroup) {
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
-      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function() {
-          return _this.repeatingGroup.trigger('entryChange');
-        };
-      })(this));
+      return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
     },
     reflectConditions: function() {
       return this.trigger('reflectConditions');
@@ -8287,6 +8281,9 @@ rivets.configure({
         }
         this.formComponents.add(model);
       }
+      this.listenTo(this.formComponents, 'change:value change:value.*', function() {
+        return this.fr._onChange();
+      });
       return this.initConditions();
     },
     initConditions: function() {

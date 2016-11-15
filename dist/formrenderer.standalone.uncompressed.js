@@ -761,53 +761,6 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.DateValidator = {
-    validate: function(model) {
-      var day, daysPerMonth, febDays, maxDays, month, year;
-      if (model.get('disable_year')) {
-        year = 2000;
-      } else {
-        year = parseInt(model.get('value.year'), 10) || 0;
-      }
-      day = parseInt(model.get('value.day'), 10) || 0;
-      month = parseInt(model.get('value.month'), 10) || 0;
-      febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
-      daysPerMonth = [31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-      maxDays = daysPerMonth[month - 1];
-      if (!((year > 0) && ((0 < month && month <= 12)) && ((0 < day && day <= maxDays)))) {
-        return 'date';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.EmailValidator = {
-    VALID_REGEX: /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i,
-    validate: function(model) {
-      if (!model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
-        return 'email';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.IdentificationValidator = {
-    validate: function(model) {
-      if (!model.get('value.email') || !model.get('value.name')) {
-        return 'identification';
-      } else if (!model.get('value.email').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
-        return 'email';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
   FormRenderer.Validators.IntegerValidator = {
     validate: function(model) {
       var normalized;
@@ -864,77 +817,6 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.NumberValidator = {
-    validate: function(model) {
-      var normalized;
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
-      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
-        return 'number';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.PhoneValidator = {
-    validate: function(model) {
-      var digitsOnly, isUs, minDigits, _ref;
-      isUs = model.get('phone_format') === 'us';
-      minDigits = isUs ? 10 : 7;
-      digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
-      if (!(digitsOnly.length >= minDigits)) {
-        if (isUs) {
-          return 'us_phone';
-        } else {
-          return 'phone';
-        }
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.PriceValidator = {
-    validate: function(model) {
-      var values;
-      values = [];
-      if (model.get('value.dollars')) {
-        values.push(model.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
-      }
-      if (model.get('value.cents')) {
-        values.push(model.get('value.cents'));
-      }
-      if (!_.every(values, function(x) {
-        return x.match(/^-?\d+$/);
-      })) {
-        return 'price';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.TimeValidator = {
-    validate: function(model) {
-      var hours, minutes, seconds;
-      hours = parseInt(model.get('value.hours'), 10) || 0;
-      minutes = parseInt(model.get('value.minutes'), 10) || 0;
-      seconds = parseInt(model.get('value.seconds'), 10) || 0;
-      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
-        return 'time';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  var i, _i, _len, _ref,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
   FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
     initialize: function(_, fr, parent) {
       this.fr = fr;
@@ -976,69 +858,10 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
-    group: true,
-    afterInitialize: function() {
-      this.calculateVisibility();
-      return this.entries = [];
-    },
-    setEntries: function(entryValues) {
-      return this.entries = _.map(entryValues, (function(_this) {
-        return function(entryValue) {
-          return new FormRenderer.Models.RepeatingGroupEntry({
-            value: entryValue
-          }, _this.fr, _this);
-        };
-      })(this));
-    },
-    addEntry: function() {
-      return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.fr, this));
-    },
-    removeEntry: function(idx) {
-      return this.entries.splice(idx, 1);
-    },
-    getValue: function() {
-      return _.invoke(this.entries, 'getValue');
-    }
-  });
+}).call(this);
 
-  FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
-    initialize: function(_attrs, fr, repeatingGroup) {
-      var model, rf, _i, _len, _ref, _ref1;
-      this.fr = fr;
-      this.repeatingGroup = repeatingGroup;
-      this.formComponents = new Backbone.Collection;
-      _ref = this.repeatingGroup.get('children');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.fr, this);
-        if (model.input_field) {
-          model.setExistingValue((_ref1 = this.get('value')) != null ? _ref1[model.get('id')] : void 0);
-        }
-        this.formComponents.add(model);
-      }
-      this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function() {
-          return _this.repeatingGroup.trigger('entryChange');
-        };
-      })(this));
-      return FormRenderer.initConditions(this);
-    },
-    reflectConditions: function() {
-      return this.trigger('reflectConditions');
-    },
-    getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          return _this.formComponents.each(function(c) {
-            if (c.shouldPersistValue()) {
-              return h[c.get('id')] = c.getValue();
-            }
-          });
-        };
-      })(this));
-    }
-  });
+(function() {
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend({
     input_field: true,
@@ -1149,34 +972,316 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
-    input_field: false,
+  FormRenderer.Views.ResponseField = Backbone.View.extend({
+    wrapper: 'label',
     field_type: void 0,
-    validate: function() {},
-    sync: function() {}
-  });
-
-  FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
-    field_type: 'identification',
-    validators: [FormRenderer.Validators.IdentificationValidator],
-    isRequired: function() {
-      return true;
+    className: 'fr_response_field',
+    events: {
+      'blur input, textarea, select': '_onBlur'
     },
-    hasValue: function() {
-      return this.hasValueHashKey(['email', 'name']);
+    initialize: function(options) {
+      this.form_renderer = options.form_renderer;
+      if (this.form_renderer) {
+        this.showLabels = this.form_renderer.options.showLabels;
+      } else {
+        this.showLabels = options.showLabels;
+      }
+      this.model = options.model;
+      this.listenTo(this.model, 'afterValidate', this.render);
+      this.listenTo(this.model, 'change', this._onInput);
+      this.listenTo(this.model, 'change:currentLength', this.auditLength);
+      this.$el.addClass("fr_response_field_" + this.field_type);
+      if (this.model.id) {
+        return this.$el.attr('id', "fr_response_field_" + this.model.id);
+      }
+    },
+    getDomId: function() {
+      return this.model.cid;
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
+    },
+    _onBlur: function(e) {
+      if (this.model.hasValue()) {
+        return setTimeout((function(_this) {
+          return function() {
+            var newActive;
+            newActive = document.activeElement;
+            if (!$.contains(_this.el, newActive)) {
+              if (_this._isPageButton(newActive)) {
+                return $(document).one('mouseup', function() {
+                  return _this.model.validate();
+                });
+              } else {
+                return _this.model.validate();
+              }
+            }
+          };
+        })(this), 1);
+      }
+    },
+    _isPageButton: function(el) {
+      return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
+    },
+    _onInput: function() {
+      if (this.model.errors.length > 0) {
+        return this.model.validate({
+          clearOnly: true
+        });
+      }
+    },
+    focus: function() {
+      return this.$el.find(':input:eq(0)').focus();
+    },
+    auditLength: function() {
+      var $lc, validation;
+      if (!this.model.hasLengthValidations()) {
+        return;
+      }
+      if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
+        return;
+      }
+      validation = FormRenderer.Validators.MinMaxLengthValidator.validate(this.model);
+      if (validation === 'short') {
+        return $lc.addClass('is_short').removeClass('is_long');
+      } else if (validation === 'long') {
+        return $lc.addClass('is_long').removeClass('is_short');
+      } else {
+        return $lc.removeClass('is_short is_long');
+      }
+    },
+    render: function() {
+      var _ref;
+      this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
+      this.$el.html(JST['partials/response_field'](this));
+      rivets.bind(this.$el, {
+        model: this.model
+      });
+      this.auditLength();
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
+      return this;
     }
   });
 
-  FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
-    field_type: 'map_marker',
-    latLng: function() {
-      return this.get('value');
-    },
-    defaultLatLng: function() {
-      var lat, lng;
-      if ((lat = this.get('default_lat')) && (lng = this.get('default_lng'))) {
-        return [lat, lng];
+}).call(this);
+
+(function() {
+  var i, _i, _j, _len, _len1, _ref, _ref1;
+
+  FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
+    input_field: false,
+    validate: function() {}
+  });
+
+  _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    i = _ref[_i];
+    FormRenderer.Models["ResponseField" + (_str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
+      field_type: i
+    });
+  }
+
+  FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
+    render: function() {
+      var _ref1;
+      this.$el.html(JST['partials/non_input_response_field'](this));
+      if ((_ref1 = this.form_renderer) != null) {
+        _ref1.trigger('viewRendered', this);
       }
+      return this;
+    }
+  });
+
+  _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
+  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+    i = _ref1[_j];
+    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
+      field_type: i
+    });
+  }
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
+    group: true,
+    afterInitialize: function() {
+      this.calculateVisibility();
+      return this.entries = [];
+    },
+    setEntries: function(entryValues) {
+      return this.entries = _.map(entryValues, (function(_this) {
+        return function(entryValue) {
+          return new FormRenderer.Models.RepeatingGroupEntry({
+            value: entryValue
+          }, _this.fr, _this);
+        };
+      })(this));
+    },
+    addEntry: function() {
+      return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.fr, this));
+    },
+    removeEntry: function(idx) {
+      return this.entries.splice(idx, 1);
+    },
+    getValue: function() {
+      return _.invoke(this.entries, 'getValue');
+    }
+  });
+
+  FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
+    initialize: function(_attrs, fr, repeatingGroup) {
+      var model, rf, _i, _len, _ref, _ref1;
+      this.fr = fr;
+      this.repeatingGroup = repeatingGroup;
+      this.formComponents = new Backbone.Collection;
+      _ref = this.repeatingGroup.get('children');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        rf = _ref[_i];
+        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.fr, this);
+        if (model.input_field) {
+          model.setExistingValue((_ref1 = this.get('value')) != null ? _ref1[model.get('id')] : void 0);
+        }
+        this.formComponents.add(model);
+      }
+      this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
+        return function() {
+          return _this.repeatingGroup.trigger('entryChange');
+        };
+      })(this));
+      return FormRenderer.initConditions(this);
+    },
+    reflectConditions: function() {
+      return this.trigger('reflectConditions');
+    },
+    getValue: function() {
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          return _this.formComponents.each(function(c) {
+            if (c.shouldPersistValue()) {
+              return h[c.get('id')] = c.getValue();
+            }
+          });
+        };
+      })(this));
+    }
+  });
+
+  FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
+    attributes: {
+      style: 'border: 1px solid gray; padding: 10px;'
+    },
+    className: 'fr_repeating_group',
+    events: {
+      'click .js-remove-entry': 'removeEntry',
+      'click .js-add-entry': 'addEntry'
+    },
+    initialize: function(options) {
+      this.form_renderer = options.form_renderer;
+      this.model = options.model;
+      if (this.model.id) {
+        return this.$el.attr('id', "fr_repeating_group_" + this.model.id);
+      }
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
+    },
+    addEntry: function() {
+      this.model.addEntry();
+      return this.render();
+    },
+    removeEntry: function(e) {
+      var idx;
+      idx = this.$el.find('.js-remove-entry').index(e.target);
+      this.model.removeEntry(idx);
+      return this.render();
+    },
+    render: function() {
+      var $entries, entry, idx, view, _i, _len, _ref, _ref1;
+      this.$el.html(JST['partials/repeating_group'](this));
+      $entries = this.$el.find('.repeating_group_entries');
+      if (this.model.entries.length > 0) {
+        _ref = this.model.entries;
+        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+          entry = _ref[idx];
+          view = new FormRenderer.Views.RepeatingGroupEntry({
+            entry: entry,
+            form_renderer: this.form_renderer,
+            idx: idx
+          });
+          $entries.append(view.render().el);
+        }
+      } else {
+        $entries.text('None');
+      }
+      if ((_ref1 = this.form_renderer) != null) {
+        _ref1.trigger('viewRendered', this);
+      }
+      return this;
+    }
+  });
+
+  FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
+    attributes: {
+      style: 'border: 1px solid gray; padding: 10px; margin: 10px;'
+    },
+    className: 'fr_repeating_group_entry',
+    initialize: function(options) {
+      this.entry = options.entry;
+      this.form_renderer = options.form_renderer;
+      this.idx = options.idx;
+      this.views = [];
+      return this.listenTo(this.entry, 'reflectConditions', this.reflectConditions);
+    },
+    render: function() {
+      var $children;
+      this.$el.html(JST['partials/repeating_group_entry'](this));
+      $children = this.$el.find('.repeating_group_entry_fields');
+      this.entry.formComponents.each((function(_this) {
+        return function(rf) {
+          var view;
+          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.get('field_type')))]({
+            model: rf,
+            form_renderer: _this.form_renderer
+          });
+          $children.append(view.render().el);
+          view.reflectConditions();
+          return _this.views.push(view);
+        };
+      })(this));
+      return this;
+    },
+    reflectConditions: function() {
+      var view, _i, _len, _ref, _results;
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        _results.push(view.reflectConditions());
+      }
+      return _results;
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'address',
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.listenTo(this.model, 'change:value.country', this.render);
     }
   });
 
@@ -1200,6 +1305,9 @@ rivets.configure({
     }
   });
 
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
     setExistingValue: function(x) {
@@ -1234,8 +1342,79 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
-    field_type: 'radio'
+  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'checkboxes'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
+    field_type: 'confirm',
+    getValue: function() {
+      return this.get('value') || false;
+    },
+    setExistingValue: function(x) {
+      return this.set('value', !!x);
+    },
+    toText: function() {
+      if (this.get('value')) {
+        return 'Yes';
+      } else {
+        return 'No';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'none',
+    field_type: 'confirm'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.DateValidator = {
+    validate: function(model) {
+      var day, daysPerMonth, febDays, maxDays, month, year;
+      if (model.get('disable_year')) {
+        year = 2000;
+      } else {
+        year = parseInt(model.get('value.year'), 10) || 0;
+      }
+      day = parseInt(model.get('value.day'), 10) || 0;
+      month = parseInt(model.get('value.month'), 10) || 0;
+      febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
+      daysPerMonth = [31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      maxDays = daysPerMonth[month - 1];
+      if (!((year > 0) && ((0 < month && month <= 12)) && ((0 < day && day <= maxDays)))) {
+        return 'date';
+      }
+    }
+  };
+
+  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
+    field_type: 'date',
+    validators: [FormRenderer.Validators.DateValidator],
+    hasValue: function() {
+      return this.hasValueHashKey(['month', 'day', 'year']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'date'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField.extend({
+    field_type: 'dropdown'
   });
 
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
@@ -1260,6 +1439,420 @@ rivets.configure({
     }
   });
 
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.EmailValidator = {
+    VALID_REGEX: /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i,
+    validate: function(model) {
+      if (!model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
+        return 'email';
+      }
+    }
+  };
+
+  FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField.extend({
+    field_type: 'email'
+  });
+
+  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.EmailValidator],
+    field_type: 'email'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'file',
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click [data-fr-remove-file]': 'doRemove'
+    }),
+    render: function() {
+      var uploadingFilename;
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.$input = this.$el.find('input');
+      this.$label = this.$el.find('.fr_add_file label');
+      this.$error = this.$el.find('.fr_add_file .fr_error');
+      uploadingFilename = void 0;
+      this.$label.on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+          return e.preventDefault();
+        }
+      });
+      if (this.form_renderer) {
+        this.$input.inlineFileUpload({
+          method: 'post',
+          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          ajaxOpts: {
+            headers: this.form_renderer.serverHeaders
+          },
+          additionalParams: {
+            project_id: this.form_renderer.options.project_id,
+            response_field_id: this.model.get('id'),
+            v: 0
+          },
+          start: (function(_this) {
+            return function(data) {
+              uploadingFilename = data.filename;
+              _this.$label.addClass('disabled');
+              _this.$label.text(FormRenderer.t.uploading);
+              return _this.form_renderer.requests += 1;
+            };
+          })(this),
+          progress: (function(_this) {
+            return function(data) {
+              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+            };
+          })(this),
+          complete: (function(_this) {
+            return function() {
+              return _this.form_renderer.requests -= 1;
+            };
+          })(this),
+          success: (function(_this) {
+            return function(data) {
+              _this.model.addFile(data.data.file_id, uploadingFilename);
+              return _this.render();
+            };
+          })(this),
+          error: (function(_this) {
+            return function(data) {
+              var errorText, _ref;
+              _this.render();
+              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
+              _this.$error.text(errorText || FormRenderer.t.error).show();
+              return setTimeout(function() {
+                return _this.$error.hide();
+              }, 2000);
+            };
+          })(this)
+        });
+      }
+      return this;
+    },
+    doRemove: function(e) {
+      var idx;
+      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
+      this.model.removeFile(idx);
+      return this.render();
+    }
+  });
+
+  FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
+    field_type: 'file',
+    addFile: function(id, filename) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.push({
+        id: id,
+        filename: filename
+      });
+      return this.set('value', files);
+    },
+    removeFile: function(idx) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.splice(idx, 1);
+      return this.set('value', files);
+    },
+    getFiles: function() {
+      return this.get('value') || [];
+    },
+    canAddFile: function() {
+      return this.getFiles().length < this.maxFiles();
+    },
+    toText: function() {
+      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
+    },
+    hasValue: function() {
+      return _.any(this.getFiles(), function(h) {
+        return !!h.id;
+      });
+    },
+    getAcceptedExtensions: function() {
+      var x;
+      if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
+        return _.map(x, function(x) {
+          return "." + x;
+        });
+      }
+    },
+    getValue: function() {
+      return this.getFiles();
+    },
+    maxFiles: function() {
+      if (this.get('allow_multiple_files')) {
+        return 10;
+      } else {
+        return 1;
+      }
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
+    field_type: 'identification'
+  });
+
+  FormRenderer.Validators.IdentificationValidator = {
+    validate: function(model) {
+      if (!model.get('value.email') || !model.get('value.name')) {
+        return 'identification';
+      } else if (!model.get('value.email').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
+        return 'email';
+      }
+    }
+  };
+
+  FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
+    field_type: 'identification',
+    validators: [FormRenderer.Validators.IdentificationValidator],
+    isRequired: function() {
+      return true;
+    },
+    hasValue: function() {
+      return this.hasValueHashKey(['email', 'name']);
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
+    field_type: 'map_marker',
+    latLng: function() {
+      return this.get('value');
+    },
+    defaultLatLng: function() {
+      var lat, lng;
+      if ((lat = this.get('default_lat')) && (lng = this.get('default_lng'))) {
+        return [lat, lng];
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
+    field_type: 'map_marker',
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click .fr_map_cover': 'enable',
+      'click [data-fr-clear-map]': 'disable'
+    }),
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('shown', function() {
+        var _ref;
+        this.refreshing = true;
+        if ((_ref = this.map) != null) {
+          _ref._onResize();
+        }
+        return setTimeout((function(_this) {
+          return function() {
+            return _this.refreshing = false;
+          };
+        })(this), 0);
+      });
+    },
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.$cover = this.$el.find('.fr_map_cover');
+      FormRenderer.loadLeaflet((function(_this) {
+        return function() {
+          _this.initMap();
+          if (_this.model.latLng()) {
+            return _this.enable();
+          }
+        };
+      })(this));
+      return this;
+    },
+    initMap: function() {
+      this.map = FormRenderer.initMap(this.$el.find('.fr_map_map')[0]);
+      this.$el.find('.fr_map_map').data('map', this.map);
+      this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
+      this.marker = L.marker([0, 0]);
+      return this.map.on('move', $.proxy(this._onMove, this));
+    },
+    _onMove: function() {
+      var center;
+      if (this.refreshing) {
+        return;
+      }
+      center = this.map.getCenter();
+      this.marker.setLatLng(center);
+      this.model.set({
+        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
+      });
+      return this.model.trigger('change:value.0 change:value.1');
+    },
+    enable: function() {
+      if (!this.map) {
+        return;
+      }
+      this.map.addLayer(this.marker);
+      this.$cover.hide();
+      return this._onMove();
+    },
+    disable: function(e) {
+      e.preventDefault();
+      this.map.removeLayer(this.marker);
+      this.$el.find('.fr_map_cover').show();
+      return this.model.unset('value');
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.NumberValidator = {
+    validate: function(model) {
+      var normalized;
+      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
+      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
+        return 'number';
+      }
+    }
+  };
+
+  FormRenderer.Views.ResponseFieldNumber = FormRenderer.Views.ResponseField.extend({
+    field_type: 'number'
+  });
+
+  FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
+    field_type: 'number',
+    calculateSize: function() {
+      var digits, digitsInt;
+      if ((digitsInt = parseInt(this.get('max'), 10))) {
+        digits = ("" + digitsInt).length;
+      } else {
+        digits = 6;
+      }
+      if (!this.get('integer_only')) {
+        digits += 2;
+      }
+      if (digits > 6) {
+        return 'seven_plus';
+      } else if (digits > 3) {
+        return 'four_six';
+      } else {
+        return 'one_three';
+      }
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldParagraph = FormRenderer.Views.ResponseField.extend({
+    field_type: 'paragraph'
+  });
+
+  FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
+    field_type: 'paragraph',
+    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.PhoneValidator = {
+    validate: function(model) {
+      var digitsOnly, isUs, minDigits, _ref;
+      isUs = model.get('phone_format') === 'us';
+      minDigits = isUs ? 10 : 7;
+      digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      if (!(digitsOnly.length >= minDigits)) {
+        if (isUs) {
+          return 'us_phone';
+        } else {
+          return 'phone';
+        }
+      }
+    }
+  };
+
+  FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
+    field_type: 'phone',
+    phonePlaceholder: function() {
+      if (this.model.get('phone_format') === 'us') {
+        return '(xxx) xxx-xxxx';
+      }
+    }
+  });
+
+  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
+    field_type: 'phone',
+    validators: [FormRenderer.Validators.PhoneValidator]
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.PriceValidator = {
+    validate: function(model) {
+      var values;
+      values = [];
+      if (model.get('value.dollars')) {
+        values.push(model.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
+      }
+      if (model.get('value.cents')) {
+        values.push(model.get('value.cents'));
+      }
+      if (!_.every(values, function(x) {
+        return x.match(/^-?\d+$/);
+      })) {
+        return 'price';
+      }
+    }
+  };
+
+  FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
+    validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
+    field_type: 'price',
+    hasValue: function() {
+      return this.hasValueHashKey(['dollars', 'cents']);
+    },
+    toText: function() {
+      var raw;
+      raw = this.getValue() || {};
+      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'price',
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'blur [data-rv-input="model.value.cents"]': 'formatCents'
+    }),
+    formatCents: function(e) {
+      var cents;
+      cents = $(e.target).val();
+      if (cents && cents.match(/^\d$/)) {
+        return this.model.set('value.cents', "0" + cents);
+      }
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
+    field_type: 'radio'
+  });
+
+  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'radio'
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.extend({
     field_type: 'table',
     initialize: function() {
@@ -1375,118 +1968,92 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
-    field_type: 'file',
-    addFile: function(id, filename) {
-      var files;
-      files = this.getFiles().slice(0);
-      files.push({
-        id: id,
-        filename: filename
-      });
-      return this.set('value', files);
-    },
-    removeFile: function(idx) {
-      var files;
-      files = this.getFiles().slice(0);
-      files.splice(idx, 1);
-      return this.set('value', files);
-    },
-    getFiles: function() {
-      return this.get('value') || [];
-    },
-    canAddFile: function() {
-      return this.getFiles().length < this.maxFiles();
-    },
-    toText: function() {
-      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
-    },
-    hasValue: function() {
-      return _.any(this.getFiles(), function(h) {
-        return !!h.id;
+  FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
+    field_type: 'table',
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click .js-add-row': 'addRow',
+      'click .js-remove-row': 'removeRow'
+    }),
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('shown', function() {
+        return this.initExpanding();
       });
     },
-    getAcceptedExtensions: function() {
-      var x;
-      if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
-        return _.map(x, function(x) {
-          return "." + x;
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.initExpanding();
+      return this;
+    },
+    initExpanding: function() {},
+    canRemoveRow: function(rowIdx) {
+      var min;
+      min = Math.max(1, this.model.minRows());
+      return rowIdx > (min - 1);
+    },
+    addRow: function(e) {
+      e.preventDefault();
+      this.model.numRows++;
+      return this.render();
+    },
+    removeRow: function(e) {
+      var col, idx, modelVal, newVal, vals;
+      e.preventDefault();
+      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
+      modelVal = this.model.get('value');
+      newVal = {};
+      for (col in modelVal) {
+        vals = modelVal[col];
+        newVal[col] = _.tap({}, function(h) {
+          var i, val, _results;
+          _results = [];
+          for (i in vals) {
+            val = vals[i];
+            i = parseInt(i, 10);
+            if (i < idx) {
+              _results.push(h[i] = val);
+            } else if (i > idx) {
+              _results.push(h[i - 1] = val);
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
         });
       }
-    },
-    getValue: function() {
-      return this.getFiles();
-    },
-    maxFiles: function() {
-      if (this.get('allow_multiple_files')) {
-        return 10;
-      } else {
-        return 1;
-      }
+      this.model.numRows--;
+      this.model.attributes.value = newVal;
+      this.model.trigger('change change:value', this.model);
+      return this.render();
     }
   });
 
-  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
-    field_type: 'date',
-    validators: [FormRenderer.Validators.DateValidator],
-    hasValue: function() {
-      return this.hasValueHashKey(['month', 'day', 'year']);
-    },
-    toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
-    }
-  });
+}).call(this);
 
-  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.EmailValidator],
-    field_type: 'email'
-  });
-
-  FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
-    field_type: 'number',
-    calculateSize: function() {
-      var digits, digitsInt;
-      if ((digitsInt = parseInt(this.get('max'), 10))) {
-        digits = ("" + digitsInt).length;
-      } else {
-        digits = 6;
-      }
-      if (!this.get('integer_only')) {
-        digits += 2;
-      }
-      if (digits > 6) {
-        return 'seven_plus';
-      } else if (digits > 3) {
-        return 'four_six';
-      } else {
-        return 'one_three';
-      }
-    }
-  });
-
-  FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
-    field_type: 'paragraph',
-    validators: [FormRenderer.Validators.MinMaxLengthValidator]
-  });
-
-  FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
-    field_type: 'price',
-    hasValue: function() {
-      return this.hasValueHashKey(['dollars', 'cents']);
-    },
-    toText: function() {
-      var raw;
-      raw = this.getValue() || {};
-      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
-    }
+(function() {
+  FormRenderer.Views.ResponseFieldText = FormRenderer.Views.ResponseField.extend({
+    field_type: 'text'
   });
 
   FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
     field_type: 'text',
     validators: [FormRenderer.Validators.MinMaxLengthValidator]
   });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Validators.TimeValidator = {
+    validate: function(model) {
+      var hours, minutes, seconds;
+      hours = parseInt(model.get('value.hours'), 10) || 0;
+      minutes = parseInt(model.get('value.minutes'), 10) || 0;
+      seconds = parseInt(model.get('value.seconds'), 10) || 0;
+      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
+        return 'time';
+      }
+    }
+  };
 
   FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
     validators: [FormRenderer.Validators.TimeValidator],
@@ -1507,39 +2074,21 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
+  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'time'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Views.ResponseFieldWebsite = FormRenderer.Views.ResponseField.extend({
     field_type: 'website'
   });
 
-  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
-    field_type: 'phone',
-    validators: [FormRenderer.Validators.PhoneValidator]
+  FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
+    field_type: 'website'
   });
-
-  FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
-    field_type: 'confirm',
-    getValue: function() {
-      return this.get('value') || false;
-    },
-    setExistingValue: function(x) {
-      return this.set('value', !!x);
-    },
-    toText: function() {
-      if (this.get('value')) {
-        return 'Yes';
-      } else {
-        return 'No';
-      }
-    }
-  });
-
-  _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
 
 }).call(this);
 
@@ -1993,502 +2542,6 @@ rivets.configure({
       return this;
     }
   });
-
-}).call(this);
-
-(function() {
-  FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
-    attributes: {
-      style: 'border: 1px solid gray; padding: 10px;'
-    },
-    className: 'fr_repeating_group',
-    events: {
-      'click .js-remove-entry': 'removeEntry',
-      'click .js-add-entry': 'addEntry'
-    },
-    initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      this.model = options.model;
-      if (this.model.id) {
-        return this.$el.attr('id', "fr_repeating_group_" + this.model.id);
-      }
-    },
-    reflectConditions: function() {
-      if (this.model.isVisible) {
-        return this.$el.show();
-      } else {
-        return this.$el.hide();
-      }
-    },
-    addEntry: function() {
-      this.model.addEntry();
-      return this.render();
-    },
-    removeEntry: function(e) {
-      var idx;
-      idx = this.$el.find('.js-remove-entry').index(e.target);
-      this.model.removeEntry(idx);
-      return this.render();
-    },
-    render: function() {
-      var $entries, entry, idx, view, _i, _len, _ref, _ref1;
-      this.$el.html(JST['partials/repeating_group'](this));
-      $entries = this.$el.find('.repeating_group_entries');
-      if (this.model.entries.length > 0) {
-        _ref = this.model.entries;
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          entry = _ref[idx];
-          view = new FormRenderer.Views.RepeatingGroupEntry({
-            entry: entry,
-            form_renderer: this.form_renderer,
-            idx: idx
-          });
-          $entries.append(view.render().el);
-        }
-      } else {
-        $entries.text('None');
-      }
-      if ((_ref1 = this.form_renderer) != null) {
-        _ref1.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
-    attributes: {
-      style: 'border: 1px solid gray; padding: 10px; margin: 10px;'
-    },
-    className: 'fr_repeating_group_entry',
-    initialize: function(options) {
-      this.entry = options.entry;
-      this.form_renderer = options.form_renderer;
-      this.idx = options.idx;
-      this.views = [];
-      return this.listenTo(this.entry, 'reflectConditions', this.reflectConditions);
-    },
-    render: function() {
-      var $children;
-      this.$el.html(JST['partials/repeating_group_entry'](this));
-      $children = this.$el.find('.repeating_group_entry_fields');
-      this.entry.formComponents.each((function(_this) {
-        return function(rf) {
-          var view;
-          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.get('field_type')))]({
-            model: rf,
-            form_renderer: _this.form_renderer
-          });
-          $children.append(view.render().el);
-          view.reflectConditions();
-          return _this.views.push(view);
-        };
-      })(this));
-      return this;
-    },
-    reflectConditions: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.reflectConditions());
-      }
-      return _results;
-    }
-  });
-
-}).call(this);
-
-(function() {
-  var i, _i, _j, _len, _len1, _ref, _ref1;
-
-  FormRenderer.Views.ResponseField = Backbone.View.extend({
-    wrapper: 'label',
-    field_type: void 0,
-    className: 'fr_response_field',
-    events: {
-      'blur input, textarea, select': '_onBlur'
-    },
-    initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      if (this.form_renderer) {
-        this.showLabels = this.form_renderer.options.showLabels;
-      } else {
-        this.showLabels = options.showLabels;
-      }
-      this.model = options.model;
-      this.listenTo(this.model, 'afterValidate', this.render);
-      this.listenTo(this.model, 'change', this._onInput);
-      this.listenTo(this.model, 'change:currentLength', this.auditLength);
-      this.$el.addClass("fr_response_field_" + this.field_type);
-      if (this.model.id) {
-        return this.$el.attr('id', "fr_response_field_" + this.model.id);
-      }
-    },
-    getDomId: function() {
-      return this.model.cid;
-    },
-    reflectConditions: function() {
-      if (this.model.isVisible) {
-        return this.$el.show();
-      } else {
-        return this.$el.hide();
-      }
-    },
-    _onBlur: function(e) {
-      if (this.model.hasValue()) {
-        return setTimeout((function(_this) {
-          return function() {
-            var newActive;
-            newActive = document.activeElement;
-            if (!$.contains(_this.el, newActive)) {
-              if (_this._isPageButton(newActive)) {
-                return $(document).one('mouseup', function() {
-                  return _this.model.validate();
-                });
-              } else {
-                return _this.model.validate();
-              }
-            }
-          };
-        })(this), 1);
-      }
-    },
-    _isPageButton: function(el) {
-      return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
-    },
-    _onInput: function() {
-      if (this.model.errors.length > 0) {
-        return this.model.validate({
-          clearOnly: true
-        });
-      }
-    },
-    focus: function() {
-      return this.$el.find(':input:eq(0)').focus();
-    },
-    auditLength: function() {
-      var $lc, validation;
-      if (!this.model.hasLengthValidations()) {
-        return;
-      }
-      if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
-        return;
-      }
-      validation = FormRenderer.Validators.MinMaxLengthValidator.validate(this.model);
-      if (validation === 'short') {
-        return $lc.addClass('is_short').removeClass('is_long');
-      } else if (validation === 'long') {
-        return $lc.addClass('is_long').removeClass('is_short');
-      } else {
-        return $lc.removeClass('is_short is_long');
-      }
-    },
-    render: function() {
-      var _ref;
-      this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
-      this.$el.html(JST['partials/response_field'](this));
-      rivets.bind(this.$el, {
-        model: this.model
-      });
-      this.auditLength();
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
-    render: function() {
-      var _ref;
-      this.$el.html(JST['partials/non_input_response_field'](this));
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'price',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'blur [data-rv-input="model.value.cents"]': 'formatCents'
-    }),
-    formatCents: function(e) {
-      var cents;
-      cents = $(e.target).val();
-      if (cents && cents.match(/^\d$/)) {
-        return this.model.set('value.cents', "0" + cents);
-      }
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
-    field_type: 'table',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click .js-add-row': 'addRow',
-      'click .js-remove-row': 'removeRow'
-    }),
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('shown', function() {
-        return this.initExpanding();
-      });
-    },
-    render: function() {
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.initExpanding();
-      return this;
-    },
-    initExpanding: function() {},
-    canRemoveRow: function(rowIdx) {
-      var min;
-      min = Math.max(1, this.model.minRows());
-      return rowIdx > (min - 1);
-    },
-    addRow: function(e) {
-      e.preventDefault();
-      this.model.numRows++;
-      return this.render();
-    },
-    removeRow: function(e) {
-      var col, idx, modelVal, newVal, vals;
-      e.preventDefault();
-      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
-      modelVal = this.model.get('value');
-      newVal = {};
-      for (col in modelVal) {
-        vals = modelVal[col];
-        newVal[col] = _.tap({}, function(h) {
-          var i, val, _results;
-          _results = [];
-          for (i in vals) {
-            val = vals[i];
-            i = parseInt(i, 10);
-            if (i < idx) {
-              _results.push(h[i] = val);
-            } else if (i > idx) {
-              _results.push(h[i - 1] = val);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        });
-      }
-      this.model.numRows--;
-      this.model.attributes.value = newVal;
-      this.model.trigger('change change:value', this.model);
-      return this.render();
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'file',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click [data-fr-remove-file]': 'doRemove'
-    }),
-    render: function() {
-      var uploadingFilename;
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$input = this.$el.find('input');
-      this.$label = this.$el.find('.fr_add_file label');
-      this.$error = this.$el.find('.fr_add_file .fr_error');
-      uploadingFilename = void 0;
-      this.$label.on('click', function(e) {
-        if ($(this).hasClass('disabled')) {
-          return e.preventDefault();
-        }
-      });
-      if (this.form_renderer) {
-        this.$input.inlineFileUpload({
-          method: 'post',
-          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
-          ajaxOpts: {
-            headers: this.form_renderer.serverHeaders
-          },
-          additionalParams: {
-            project_id: this.form_renderer.options.project_id,
-            response_field_id: this.model.get('id'),
-            v: 0
-          },
-          start: (function(_this) {
-            return function(data) {
-              uploadingFilename = data.filename;
-              _this.$label.addClass('disabled');
-              _this.$label.text(FormRenderer.t.uploading);
-              return _this.form_renderer.requests += 1;
-            };
-          })(this),
-          progress: (function(_this) {
-            return function(data) {
-              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
-            };
-          })(this),
-          complete: (function(_this) {
-            return function() {
-              return _this.form_renderer.requests -= 1;
-            };
-          })(this),
-          success: (function(_this) {
-            return function(data) {
-              _this.model.addFile(data.data.file_id, uploadingFilename);
-              return _this.render();
-            };
-          })(this),
-          error: (function(_this) {
-            return function(data) {
-              var errorText, _ref;
-              _this.render();
-              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$error.text(errorText || FormRenderer.t.error).show();
-              return setTimeout(function() {
-                return _this.$error.hide();
-              }, 2000);
-            };
-          })(this)
-        });
-      }
-      return this;
-    },
-    doRemove: function(e) {
-      var idx;
-      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
-      this.model.removeFile(idx);
-      return this.render();
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
-    field_type: 'map_marker',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click .fr_map_cover': 'enable',
-      'click [data-fr-clear-map]': 'disable'
-    }),
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('shown', function() {
-        var _ref;
-        this.refreshing = true;
-        if ((_ref = this.map) != null) {
-          _ref._onResize();
-        }
-        return setTimeout((function(_this) {
-          return function() {
-            return _this.refreshing = false;
-          };
-        })(this), 0);
-      });
-    },
-    render: function() {
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$cover = this.$el.find('.fr_map_cover');
-      FormRenderer.loadLeaflet((function(_this) {
-        return function() {
-          _this.initMap();
-          if (_this.model.latLng()) {
-            return _this.enable();
-          }
-        };
-      })(this));
-      return this;
-    },
-    initMap: function() {
-      this.map = FormRenderer.initMap(this.$el.find('.fr_map_map')[0]);
-      this.$el.find('.fr_map_map').data('map', this.map);
-      this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
-      this.marker = L.marker([0, 0]);
-      return this.map.on('move', $.proxy(this._onMove, this));
-    },
-    _onMove: function() {
-      var center;
-      if (this.refreshing) {
-        return;
-      }
-      center = this.map.getCenter();
-      this.marker.setLatLng(center);
-      this.model.set({
-        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
-      });
-      return this.model.trigger('change:value.0 change:value.1');
-    },
-    enable: function() {
-      if (!this.map) {
-        return;
-      }
-      this.map.addLayer(this.marker);
-      this.$cover.hide();
-      return this._onMove();
-    },
-    disable: function(e) {
-      e.preventDefault();
-      this.map.removeLayer(this.marker);
-      this.$el.find('.fr_map_cover').show();
-      return this.model.unset('value');
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'address',
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.listenTo(this.model, 'change:value.country', this.render);
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
-    field_type: 'phone',
-    phonePlaceholder: function() {
-      if (this.model.get('phone_format') === 'us') {
-        return '(xxx) xxx-xxxx';
-      }
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'checkboxes'
-  });
-
-  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'radio'
-  });
-
-  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'time'
-  });
-
-  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'date'
-  });
-
-  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'none',
-    field_type: 'confirm'
-  });
-
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time', 'confirm');
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    i = _ref[_i];
-    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
-      field_type: i
-    });
-  }
-
-  _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-    i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
 
 }).call(this);
 

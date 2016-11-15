@@ -18,3 +18,15 @@ FormRenderer.Validators.DateValidator =
 
     unless (year > 0) && (0 < month <= 12) && (0 < day <= maxDays)
       'date'
+
+FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
+  field_type: 'date'
+  validators: [FormRenderer.Validators.DateValidator]
+  hasValue: ->
+    @hasValueHashKey ['month', 'day', 'year']
+  toText: ->
+    _.values(_.pick(@getValue() || {}, 'month', 'day', 'year')).join('/')
+
+FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend
+  wrapper: 'fieldset'
+  field_type: 'date'

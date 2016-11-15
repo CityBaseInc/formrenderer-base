@@ -10,3 +10,13 @@ FormRenderer.Validators.PhoneValidator =
 
     unless digitsOnly.length >= minDigits
       if isUs then 'us_phone' else 'phone'
+
+FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend
+  field_type: 'phone'
+  phonePlaceholder: ->
+    if @model.get('phone_format') == 'us'
+      '(xxx) xxx-xxxx'
+
+FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend
+  field_type: 'phone'
+  validators: [FormRenderer.Validators.PhoneValidator]

@@ -210,7 +210,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @options.saveParams
     )
 
-  _onChange: ->
+  responsesChanged: ->
     @state.set('hasChanges', true)
 
     # Handle the edge case when the form is saved while there's an AJAX

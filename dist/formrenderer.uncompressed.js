@@ -6589,7 +6589,7 @@ rivets.configure({
         skip_validation: this.options.skipValidation
       }, this.options.saveParams);
     },
-    _onChange: function() {
+    responsesChanged: function() {
       this.state.set('hasChanges', true);
       if (this.isSaving) {
         return this.changedWhileSaving = true;
@@ -8281,24 +8281,20 @@ rivets.configure({
         }
         this.formComponents.add(model);
       }
-      this.listenTo(this.formComponents, 'change:value change:value.*', function() {
-        return this.fr._onChange();
+      this.initConditions();
+      return this.listenTo(this.formComponents, 'change:value change:value.*', function(rf) {
+        this.runConditions(rf);
+        return this.fr.responsesChanged();
       });
-      return this.initConditions();
     },
     initConditions: function() {
-      this.allConditions = _.flatten(this.formComponents.map(function(rf) {
+      return this.allConditions = _.flatten(this.formComponents.map(function(rf) {
         return _.map(rf.getConditions(), function(c) {
           return _.extend({}, c, {
             parent: rf
           });
         });
       }));
-      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return _this.runConditions(rf);
-        };
-      })(this));
     },
     conditionsForResponseField: function(rf) {
       return _.filter(this.allConditions, function(condition) {

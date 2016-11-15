@@ -19,10 +19,11 @@ HasComponents =
 
       @formComponents.add model
 
-    @listenTo @formComponents, 'change:value change:value.*', ->
-      @fr._onChange()
-
     @initConditions()
+
+    @listenTo @formComponents, 'change:value change:value.*', (rf) ->
+      @runConditions(rf)
+      @fr.responsesChanged()
 
   initConditions: ->
     @allConditions = _.flatten(
@@ -30,9 +31,6 @@ HasComponents =
         _.map rf.getConditions(), (c) ->
           _.extend {}, c, parent: rf
     )
-
-    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
-      @runConditions(rf)
 
   conditionsForResponseField: (rf) ->
     _.filter @allConditions, (condition) ->

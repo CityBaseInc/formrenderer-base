@@ -41,6 +41,7 @@ module.exports = (grunt) ->
         files:
           '<%= compiledFolder %>/scripts.js': [
             '<%= srcFolder %>/main.coffee'
+            '<%= srcFolder %>/helpers/*.coffee'
             '<%= srcFolder %>/version.coffee'
             '<%= srcFolder %>/data.coffee'
             '<%= srcFolder %>/condition_checker.coffee'

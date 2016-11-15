@@ -1,3 +1,13 @@
+FormRenderer.loadLeaflet = (cb) ->
+  if L?.GeoJSON?
+    cb()
+  else
+    requireOnce FormRenderer.MAPBOX_URL, cb
+
+FormRenderer.initMap = (el) ->
+  L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg'
+  L.mapbox.map(el, 'adamjacobbecker.ja7plkah')
+
 FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend
   field_type: 'map_marker'
   latLng: ->

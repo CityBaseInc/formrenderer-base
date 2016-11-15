@@ -74,7 +74,7 @@ rivets.configure({
 });
 
 (function() {
-  var FormRenderer, autoLink, sanitize, sanitizeConfig, simpleFormat;
+  var FormRenderer;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -547,28 +547,45 @@ rivets.configure({
     return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
   };
 
-  FormRenderer.loadLeaflet = function(cb) {
-    if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
-      return cb();
-    } else {
-      return requireOnce(FormRenderer.MAPBOX_URL, cb);
-    }
+  FormRenderer.initConditions = function(frOrEntry) {
+    var allConditions, conditionsForResponseField, runConditions;
+    allConditions = _.flatten(frOrEntry.formComponents.map(function(rf) {
+      return _.map(rf.getConditions(), function(c) {
+        return _.extend({}, c, {
+          parent: rf
+        });
+      });
+    }));
+    conditionsForResponseField = function(rf) {
+      return _.filter(allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    };
+    runConditions = (function(_this) {
+      return function(rf) {
+        var needsRender;
+        needsRender = false;
+        _.each(conditionsForResponseField(rf), function(c) {
+          if (c.parent.calculateVisibility()) {
+            return needsRender = true;
+          }
+        });
+        if (needsRender) {
+          return frOrEntry.reflectConditions();
+        }
+      };
+    })(this);
+    return frOrEntry.listenTo(frOrEntry.formComponents, 'change:value change:value.*', (function(_this) {
+      return function(rf) {
+        return runConditions(rf);
+      };
+    })(this));
   };
 
-  FormRenderer.initMap = function(el) {
-    L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
-    return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
-  };
+}).call(this);
 
-  FormRenderer.getLength = function(wordsOrChars, val) {
-    var trimmed;
-    trimmed = _str.trim(val);
-    if (wordsOrChars === 'words') {
-      return (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
-    } else {
-      return trimmed.length;
-    }
-  };
+(function() {
+  var autoLink, sanitize, sanitizeConfig, simpleFormat;
 
   autoLink = function(str) {
     var pattern;
@@ -607,10 +624,22 @@ rivets.configure({
     return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
   };
 
-  FormRenderer.toBoolean = function(str) {
-    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
+}).call(this);
+
+(function() {
+  FormRenderer.getLength = function(wordsOrChars, val) {
+    var trimmed;
+    trimmed = _str.trim(val);
+    if (wordsOrChars === 'words') {
+      return (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+    } else {
+      return trimmed.length;
+    }
   };
 
+}).call(this);
+
+(function() {
   FormRenderer.normalizeNumber = function(value, units) {
     var returnVal;
     returnVal = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '').trim();
@@ -620,39 +649,11 @@ rivets.configure({
     return returnVal;
   };
 
-  FormRenderer.initConditions = function(frOrEntry) {
-    var allConditions, conditionsForResponseField, runConditions;
-    allConditions = _.flatten(frOrEntry.formComponents.map(function(rf) {
-      return _.map(rf.getConditions(), function(c) {
-        return _.extend({}, c, {
-          parent: rf
-        });
-      });
-    }));
-    conditionsForResponseField = function(rf) {
-      return _.filter(allConditions, function(condition) {
-        return ("" + condition.response_field_id) === ("" + rf.id);
-      });
-    };
-    runConditions = (function(_this) {
-      return function(rf) {
-        var needsRender;
-        needsRender = false;
-        _.each(conditionsForResponseField(rf), function(c) {
-          if (c.parent.calculateVisibility()) {
-            return needsRender = true;
-          }
-        });
-        if (needsRender) {
-          return frOrEntry.reflectConditions();
-        }
-      };
-    })(this);
-    return frOrEntry.listenTo(frOrEntry.formComponents, 'change:value change:value.*', (function(_this) {
-      return function(rf) {
-        return runConditions(rf);
-      };
-    })(this));
+}).call(this);
+
+(function() {
+  FormRenderer.toBoolean = function(str) {
+    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
   };
 
 }).call(this);
@@ -1622,6 +1623,19 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  FormRenderer.loadLeaflet = function(cb) {
+    if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
+      return cb();
+    } else {
+      return requireOnce(FormRenderer.MAPBOX_URL, cb);
+    }
+  };
+
+  FormRenderer.initMap = function(el) {
+    L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
+    return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
+  };
+
   FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
     field_type: 'map_marker',
     latLng: function() {

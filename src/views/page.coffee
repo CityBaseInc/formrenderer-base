@@ -10,7 +10,7 @@ FormRenderer.Views.Page = Backbone.View.extend
     @hide()
 
     for rf in @models
-      if rf.get('type') == 'group'
+      if rf.group
         view = new FormRenderer.Views.RepeatingGroup(
           model: rf,
           form_renderer: @form_renderer
@@ -44,7 +44,7 @@ FormRenderer.Views.Page = Backbone.View.extend
       if rf.input_field
         rf.validate()
 
-      if rf.get('type') == 'group'
+      if rf.group
         for entry in rf.entries
           entry.formComponents.each (component) =>
             component.validate()

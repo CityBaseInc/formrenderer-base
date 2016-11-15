@@ -211,11 +211,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   getValue: ->
     _.tap {}, (h) =>
-      @formComponents.each (component) ->
-        return unless component.isVisible
-
-        if (component.get('type') == 'group') || component.input_field
-          h[component.get('id')] = component.getValue()
+      @formComponents.each (c) ->
+        h[c.get('id')] = c.getValue() if c.shouldPersistValue()
 
   loadParams: ->
     {

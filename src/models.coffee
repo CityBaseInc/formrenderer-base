@@ -1,8 +1,8 @@
 FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
-  # @param @form_renderer the form_renderer instance
-  # @param @parent either the form_renderer instance, or the RepeatingGroupEntry
+  # @param @fr the fr instance
+  # @param @parent either the fr instance, or the RepeatingGroupEntry
   # that this field belongs to.
-  initialize: (_, @form_renderer, @parent) ->
+  initialize: (_, @fr, @parent) ->
     @afterInitialize()
 
   afterInitialize: ->
@@ -10,6 +10,10 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
 
   sync: ->
     # nada
+
+  shouldPersistValue: ->
+    @isVisible &&
+    (@group || @input_field)
 
   getConditions: ->
     @get('conditions') || []
@@ -20,22 +24,19 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
   isConditional: ->
     @getConditions().length > 0
 
-  getConditionFieldById: (id) ->
-    @parent.formComponents.get(id)
-
-  # Returns true if the new value is different than the old value
+  # @return [Boolean] true if the new value is different than the old value
   calculateVisibility: ->
     prevValue = !!@isVisible
 
     @isVisible = (
       # If we're not in a form_renderer context, it's visible
-      if !@form_renderer
+      if !@fr
         true
       else
         if @isConditional()
           _[@conditionMethod()] @getConditions(), (conditionHash) =>
             conditionChecker = new FormRenderer.ConditionChecker(
-              @getConditionFieldById(conditionHash.response_field_id),
+              @parent.formComponents.get(conditionHash.response_field_id),
               conditionHash
             )
 
@@ -53,6 +54,8 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
       'all'
 
 FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
+  group: true
+
   afterInitialize: ->
     @calculateVisibility()
     @entries = []
@@ -61,13 +64,13 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
     @entries = _.map entryValues, (entryValue) =>
       new FormRenderer.Models.RepeatingGroupEntry(
         { value: entryValue },
-        @form_renderer,
+        @fr,
         @
       )
 
   addEntry: ->
     @entries.push(
-      new FormRenderer.Models.RepeatingGroupEntry({}, @form_renderer, @)
+      new FormRenderer.Models.RepeatingGroupEntry({}, @fr, @)
     )
 
   removeEntry: (idx) ->
@@ -77,15 +80,12 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
     _.invoke @entries, 'getValue'
 
 FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
-  initialize: (_attrs, @form_renderer, @repeatingGroup) ->
+  initialize: (_attrs, @fr, @repeatingGroup) ->
     @formComponents = new Backbone.Collection
 
     for rf in @repeatingGroup.get('children')
-      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @form_renderer, @)
-
-      if model.input_field
-        model.setExistingValue @get('value')?[model.get('id')]
-
+      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @fr, @)
+      model.setExistingValue(@get('value')?[model.get('id')]) if model.input_field
       @formComponents.add model
 
     @listenTo @formComponents, 'change:value change:value.*', =>
@@ -98,11 +98,8 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
 
   getValue: ->
     _.tap {}, (h) =>
-      @formComponents.each (component) ->
-        return unless component.isVisible
-
-        if (component.get('type') == 'group') || component.input_field
-          h[component.get('id')] = component.getValue()
+      @formComponents.each (c) ->
+        h[c.get('id')] = c.getValue() if c.shouldPersistValue()
 
 FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true
@@ -139,7 +136,7 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
     else
       @set 'error', @getError()
 
-    @form_renderer.trigger('afterValidate afterValidate:one', @)
+    @fr.trigger('afterValidate afterValidate:one', @)
 
   getError: ->
     @errors.join(' ') if @errors.length > 0

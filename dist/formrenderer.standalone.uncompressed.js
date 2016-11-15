@@ -946,6 +946,9 @@ rivets.configure({
     getConditions: function() {
       return this.get('conditions') || [];
     },
+    isRequired: function() {
+      return this.get('required');
+    },
     isConditional: function() {
       return this.getConditions().length > 0;
     },
@@ -1071,9 +1074,6 @@ rivets.configure({
         this.set('error', this.getError());
       }
       return this.form_renderer.trigger('afterValidate afterValidate:one', this);
-    },
-    isRequired: function() {
-      return this.get('required');
     },
     getError: function() {
       if (this.errors.length > 0) {

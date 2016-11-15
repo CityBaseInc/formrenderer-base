@@ -5,6 +5,9 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
   getConditions: ->
     @get('conditions') || []
 
+  isRequired: ->
+    @get('required')
+
   isConditional: ->
     @getConditions().length > 0
 
@@ -111,9 +114,6 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
       @set 'error', @getError()
 
     @form_renderer.trigger('afterValidate afterValidate:one', @)
-
-  isRequired: ->
-    @get('required')
 
   getError: ->
     @errors.join(' ') if @errors.length > 0

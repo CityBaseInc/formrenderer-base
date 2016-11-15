@@ -88,6 +88,34 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
 
       @formComponents.add model
 
+    @initConditions()
+
+  initConditions: ->
+    allConditions = _.flatten(
+      @formComponents.map (rf) ->
+        _.map rf.getConditions(), (c) ->
+          _.extend {}, c, parent: rf
+    )
+
+    conditionsForResponseField = (rf) ->
+      _.filter allConditions, (condition) ->
+        "#{condition.response_field_id}" == "#{rf.id}"
+
+    runConditions = (rf) =>
+      needsRender = false
+
+      _.each conditionsForResponseField(rf), (c) ->
+        if c.parent.calculateVisibility()
+          needsRender = true
+
+      @reflectConditions() if needsRender
+
+    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
+      runConditions(rf)
+
+  reflectConditions: ->
+    @trigger 'reflectConditions'
+
   getValue: ->
     _.tap {}, (h) =>
       @formComponents.each (component) ->

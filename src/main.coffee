@@ -145,14 +145,27 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       page.show()
 
   initConditions: ->
-    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
-      @runConditions(rf)
-
-    @allConditions = _.flatten(
+    allConditions = _.flatten(
       @formComponents.map (rf) ->
         _.map rf.getConditions(), (c) ->
           _.extend {}, c, parent: rf
     )
+
+    conditionsForResponseField = (rf) ->
+      _.filter allConditions, (condition) ->
+        "#{condition.response_field_id}" == "#{rf.id}"
+
+    runConditions = (rf) =>
+      needsRender = false
+
+      _.each conditionsForResponseField(rf), (c) ->
+        if c.parent.calculateVisibility()
+          needsRender = true
+
+      @reflectConditions() if needsRender
+
+    @listenTo @formComponents, 'change:value change:value.*', (rf) =>
+      runConditions(rf)
 
   ## Pages / Validation
 
@@ -171,6 +184,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @subviews.pages[pageNumber] &&
     !!_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.isVisible))
 
+  # @todo
   isPageValid: (pageNumber) ->
     !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
 
@@ -336,19 +350,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   reflectConditions: ->
     page.reflectConditions() for _, page of @subviews.pages
     @subviews.pagination?.render()
-
-  runConditions: (rf) ->
-    needsRender = false
-
-    _.each @conditionsForResponseField(rf), (c) ->
-      if c.parent.calculateVisibility()
-        needsRender = true
-
-    @reflectConditions() if needsRender
-
-  conditionsForResponseField: (rf) ->
-    _.filter @allConditions, (condition) ->
-      "#{condition.response_field_id}" == "#{rf.id}"
 
 ## Master list of field types
 

@@ -57,6 +57,9 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
     @entry = options.entry
     @form_renderer = options.form_renderer
     @idx = options.idx
+    @views = []
+
+    @listenTo @entry, 'reflectConditions', @reflectConditions
 
   render: ->
     @$el.html JST['partials/repeating_group_entry'](@)
@@ -70,5 +73,10 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
 
       $children.append view.render().el
       view.reflectConditions()
+      @views.push view
 
     @
+
+  reflectConditions: ->
+    for view in @views
+      view.reflectConditions()

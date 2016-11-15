@@ -6329,6 +6329,7 @@ rivets.configure({
     },
     constructor: function(options) {
       var p, _i, _len, _ref;
+      this.fr = this;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
       this.state = new Backbone.Model({
@@ -6362,7 +6363,8 @@ rivets.configure({
         return function() {
           var _base, _j, _len1, _ref1;
           _this.$el.find('.fr_loading').remove();
-          _this.initResponseFields();
+          _this.initFormComponents(_this.options.response_fields, _this.options.response.responses);
+          _this.listenTo(_this.formComponents, 'change:value change:value.* entryChange', $.proxy(_this._onChange, _this));
           _this.initPages();
           if (_this.options.enablePages) {
             _this.initPagination();
@@ -6379,7 +6381,6 @@ rivets.configure({
           if (_this.options.validateImmediately) {
             _this.validate();
           }
-          FormRenderer.initConditions(_this);
           _this.trigger('ready');
           return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
         };
@@ -6432,25 +6433,6 @@ rivets.configure({
           };
         })(this)
       });
-    },
-    initResponseFields: function() {
-      var model, rf, _i, _len, _ref;
-      this.formComponents = new Backbone.Collection;
-      _ref = this.options.response_fields;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        if (rf.type === 'group') {
-          model = new FormRenderer.Models.RepeatingGroup(rf, this, this);
-          model.setEntries(this.options.response.responses[model.get('id')]);
-        } else {
-          model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this, this);
-          if (model.input_field) {
-            model.setExistingValue(this.options.response.responses[model.get('id')]);
-          }
-        }
-        this.formComponents.add(model);
-      }
-      return this.listenTo(this.formComponents, 'change:value change:value.* entryChange', $.proxy(this._onChange, this));
     },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
@@ -6594,17 +6576,6 @@ rivets.configure({
       } else {
         return this.activatePage(this.nextPage());
       }
-    },
-    getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          return _this.formComponents.each(function(c) {
-            if (c.shouldPersistValue()) {
-              return h[c.get('id')] = c.getValue();
-            }
-          });
-        };
-      })(this));
     },
     loadParams: function() {
       return {
@@ -6781,41 +6752,6 @@ rivets.configure({
 
   FormRenderer.removePlugin = function(x) {
     return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
-  };
-
-  FormRenderer.initConditions = function(frOrEntry) {
-    var allConditions, conditionsForResponseField, runConditions;
-    allConditions = _.flatten(frOrEntry.formComponents.map(function(rf) {
-      return _.map(rf.getConditions(), function(c) {
-        return _.extend({}, c, {
-          parent: rf
-        });
-      });
-    }));
-    conditionsForResponseField = function(rf) {
-      return _.filter(allConditions, function(condition) {
-        return ("" + condition.response_field_id) === ("" + rf.id);
-      });
-    };
-    runConditions = (function(_this) {
-      return function(rf) {
-        var needsRender;
-        needsRender = false;
-        _.each(conditionsForResponseField(rf), function(c) {
-          if (c.parent.calculateVisibility()) {
-            return needsRender = true;
-          }
-        });
-        if (needsRender) {
-          return frOrEntry.reflectConditions();
-        }
-      };
-    })(this);
-    return frOrEntry.listenTo(frOrEntry.formComponents, 'change:value change:value.*', (function(_this) {
-      return function(rf) {
-        return runConditions(rf);
-      };
-    })(this));
   };
 
 }).call(this);
@@ -7374,39 +7310,17 @@ rivets.configure({
 
   FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
     initialize: function(_attrs, fr, repeatingGroup) {
-      var model, rf, _i, _len, _ref, _ref1;
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      this.formComponents = new Backbone.Collection;
-      _ref = this.repeatingGroup.get('children');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, this.fr, this);
-        if (model.input_field) {
-          model.setExistingValue((_ref1 = this.get('value')) != null ? _ref1[model.get('id')] : void 0);
-        }
-        this.formComponents.add(model);
-      }
-      this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
+      this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
+      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
         return function() {
           return _this.repeatingGroup.trigger('entryChange');
         };
       })(this));
-      return FormRenderer.initConditions(this);
     },
     reflectConditions: function() {
       return this.trigger('reflectConditions');
-    },
-    getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          return _this.formComponents.each(function(c) {
-            if (c.shouldPersistValue()) {
-              return h[c.get('id')] = c.getValue();
-            }
-          });
-        };
-      })(this));
     }
   });
 
@@ -8339,6 +8253,81 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
     field_type: 'website'
   });
+
+}).call(this);
+
+(function() {
+  var HasComponents;
+
+  HasComponents = {
+    getValue: function() {
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          return _this.formComponents.each(function(c) {
+            if (c.shouldPersistValue()) {
+              return h[c.get('id')] = c.getValue();
+            }
+          });
+        };
+      })(this));
+    },
+    initConditions: function() {
+      var allConditions, conditionsForResponseField, runConditions;
+      allConditions = _.flatten(this.formComponents.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
+          });
+        });
+      }));
+      conditionsForResponseField = function(rf) {
+        return _.filter(allConditions, function(condition) {
+          return ("" + condition.response_field_id) === ("" + rf.id);
+        });
+      };
+      runConditions = (function(_this) {
+        return function(rf) {
+          var needsRender;
+          needsRender = false;
+          _.each(conditionsForResponseField(rf), function(c) {
+            if (c.parent.calculateVisibility()) {
+              return needsRender = true;
+            }
+          });
+          if (needsRender) {
+            return _this.reflectConditions();
+          }
+        };
+      })(this);
+      return this.listenTo(this.formComponents, 'change:value change:value.*', (function(_this) {
+        return function(rf) {
+          return runConditions(rf);
+        };
+      })(this));
+    },
+    initFormComponents: function(fieldData, responseData) {
+      var field, model, _i, _len;
+      this.formComponents = new Backbone.Collection;
+      for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
+        field = fieldData[_i];
+        if (field.type === 'group') {
+          model = new FormRenderer.Models.RepeatingGroup(field, this.fr, this);
+          model.setEntries(responseData[model.get('id')]);
+        } else {
+          model = new FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))](field, this.fr, this);
+          if (model.input_field) {
+            model.setExistingValue(responseData[model.get('id')]);
+          }
+        }
+        this.formComponents.add(model);
+      }
+      return this.initConditions();
+    }
+  };
+
+  _.extend(FormRenderer.prototype, HasComponents);
+
+  _.extend(FormRenderer.Models.RepeatingGroupEntry.prototype, HasComponents);
 
 }).call(this);
 

@@ -51,6 +51,7 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/form_components/non_input.coffee'
             '<%= srcFolder %>/form_components/repeating_group.coffee'
             '<%= srcFolder %>/fields/*.coffee'
+            '<%= srcFolder %>/mixins/*.coffee'
             '<%= srcFolder %>/plugins/base.coffee'
             '<%= srcFolder %>/plugins/default/*.coffee'
             '<%= srcFolder %>/views/*.coffee'

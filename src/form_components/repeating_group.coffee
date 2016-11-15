@@ -26,25 +26,13 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
 
 FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
   initialize: (_attrs, @fr, @repeatingGroup) ->
-    @formComponents = new Backbone.Collection
-
-    for rf in @repeatingGroup.get('children')
-      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @fr, @)
-      model.setExistingValue(@get('value')?[model.get('id')]) if model.input_field
-      @formComponents.add model
+    @initFormComponents @repeatingGroup.get('children'), @get('value') || {}
 
     @listenTo @formComponents, 'change:value change:value.*', =>
       @repeatingGroup.trigger('entryChange')
 
-    FormRenderer.initConditions(@)
-
   reflectConditions: ->
     @trigger 'reflectConditions'
-
-  getValue: ->
-    _.tap {}, (h) =>
-      @formComponents.each (c) ->
-        h[c.get('id')] = c.getValue() if c.shouldPersistValue()
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   attributes:

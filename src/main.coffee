@@ -22,6 +22,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   ## Initialization logic
 
   constructor: (options) ->
+    @fr = @
     @options = $.extend {}, @defaults, options
     @requests = 0
     @state = new Backbone.Model
@@ -46,12 +47,12 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
-      @initResponseFields()
+      @initFormComponents(@options.response_fields, @options.response.responses)
+      @listenTo @formComponents, 'change:value change:value.* entryChange', $.proxy(@_onChange, @)
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins
       @validate() if @options.validateImmediately
-      FormRenderer.initConditions(@)
       @trigger 'ready'
       @options.onReady?()
 
@@ -98,22 +99,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""
           )
           @trigger 'errorSaving', xhr
-
-  # Create a collection for our response fields
-  initResponseFields: ->
-    @formComponents = new Backbone.Collection
-
-    for rf in @options.response_fields
-      if rf.type == 'group'
-        model = new FormRenderer.Models.RepeatingGroup(rf, @, @)
-        model.setEntries(@options.response.responses[model.get('id')])
-      else
-        model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](rf, @, @)
-        model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
-
-      @formComponents.add model
-
-    @listenTo @formComponents, 'change:value change:value.* entryChange', $.proxy(@_onChange, @)
 
   # Build pages, which contain the response fields views.
   initPages: ->
@@ -208,11 +193,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @activatePage(@nextPage())
 
   ## Saving
-
-  getValue: ->
-    _.tap {}, (h) =>
-      @formComponents.each (c) ->
-        h[c.get('id')] = c.getValue() if c.shouldPersistValue()
 
   loadParams: ->
     {
@@ -382,28 +362,3 @@ FormRenderer.addPlugin = (x) ->
 
 FormRenderer.removePlugin = (x) ->
   @::defaults.plugins = _.without(@::defaults.plugins, x)
-
-## Overrideable utilities
-
-FormRenderer.initConditions = (frOrEntry) ->
-  allConditions = _.flatten(
-    frOrEntry.formComponents.map (rf) ->
-      _.map rf.getConditions(), (c) ->
-        _.extend {}, c, parent: rf
-  )
-
-  conditionsForResponseField = (rf) ->
-    _.filter allConditions, (condition) ->
-      "#{condition.response_field_id}" == "#{rf.id}"
-
-  runConditions = (rf) =>
-    needsRender = false
-
-    _.each conditionsForResponseField(rf), (c) ->
-      if c.parent.calculateVisibility()
-        needsRender = true
-
-    frOrEntry.reflectConditions() if needsRender
-
-  frOrEntry.listenTo frOrEntry.formComponents, 'change:value change:value.*', (rf) =>
-    runConditions(rf)

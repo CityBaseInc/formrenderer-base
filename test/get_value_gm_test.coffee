@@ -30,7 +30,8 @@ EXPECTED_BLANK_VALUES = {
       ""
     ]
   },
-  "52": false
+  "52": false,
+  "53": [{}]
 }
 
 EXPECTED_PRESENT_VALUES = {
@@ -79,7 +80,12 @@ EXPECTED_PRESENT_VALUES = {
   },
   "50": ["40.7700118", "-73.9800453"],
   "51": "510-123-4567",
-  "52": true
+  "52": true,
+  "53": [
+    {
+      "54": "Large Round Son"
+    }
+  ]
 }
 
 describe '#getValue', ->
@@ -118,6 +124,8 @@ describe '#getValue', ->
     $('.fr_response_field_phone input').val('510-123-4567').trigger('input')
     $('.fr_response_field_map_marker .fr_map_cover').click()
     $('.fr_response_field_confirm input').first().click().trigger('change')
+    $('.fr_repeating_group').first().find('[type=text]').val('Large Round Son').
+      trigger('input')
 
     # File
     inlineFileUpload = $('input[type=file]').data('inline-file-upload')

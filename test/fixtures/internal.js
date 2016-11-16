@@ -197,6 +197,23 @@ Fixtures.KITCHEN_SINK_FORM = [
     blind: false,
     admin_only: false,
     field_type: "confirm",
+  }, {
+    id: 53,
+    label: "Please list your dependents",
+    required: false,
+    blind: false,
+    admin_only: false,
+    type: "group",
+    children: [
+      {
+        id: 54,
+        label: "Name",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "text"
+      }
+    ]
   }
 ];
 

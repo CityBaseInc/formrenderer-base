@@ -1,6 +1,7 @@
 FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend
   input_field: false
   validate: ->
+  setExistingValue: ->
 
 for i in FormRenderer.NON_INPUT_FIELD_TYPES
   FormRenderer.Models["ResponseField#{_str.classify(i)}"] = FormRenderer.Models.NonInputResponseField.extend

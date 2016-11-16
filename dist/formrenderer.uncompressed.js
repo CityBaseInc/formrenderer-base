@@ -7246,7 +7246,8 @@ rivets.configure({
 
   FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
     input_field: false,
-    validate: function() {}
+    validate: function() {},
+    setExistingValue: function() {}
   });
 
   _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
@@ -7285,7 +7286,13 @@ rivets.configure({
       this.calculateVisibility();
       return this.entries = [];
     },
-    setEntries: function(entryValues) {
+    setExistingValue: function(entryValues) {
+      if (!this.isRequired() && entryValues && entryValues.length === 0) {
+        this.set('skipped', true);
+      }
+      if (this.isRequired() && !entryValues || entryValues.length === 0) {
+        entryValues = [{}];
+      }
       return this.entries = _.map(entryValues, (function(_this) {
         return function(entryValue) {
           return new FormRenderer.Models.RepeatingGroupEntry({
@@ -7298,10 +7305,27 @@ rivets.configure({
       return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.fr, this));
     },
     removeEntry: function(idx) {
-      return this.entries.splice(idx, 1);
+      this.entries.splice(idx, 1);
+      if (this.entries.length === 0) {
+        return this.set('skipped', true);
+      }
     },
     getValue: function() {
-      return _.invoke(this.entries, 'getValue');
+      if (this.get('skipped')) {
+        return [];
+      } else {
+        return _.invoke(this.entries, 'getValue');
+      }
+    },
+    maxEntries: function() {
+      if (this.get('maxentries')) {
+        return parseInt(this.get('maxentries'), 10) || Infinity;
+      } else {
+        return Infinity;
+      }
+    },
+    canAdd: function() {
+      return this.entries.length < this.maxEntries();
     }
   });
 
@@ -7313,6 +7337,9 @@ rivets.configure({
     },
     reflectConditions: function() {
       return this.view.reflectConditions();
+    },
+    canRemove: function() {
+      return this.repeatingGroup.entries.length > 1 || !this.repeatingGroup.isRequired();
     }
   });
 
@@ -7323,13 +7350,20 @@ rivets.configure({
     className: 'fr_repeating_group',
     events: {
       'click .js-remove-entry': 'removeEntry',
-      'click .js-add-entry': 'addEntry'
+      'click .js-add-entry': 'addEntry',
+      'click .js-skip': 'toggleSkip'
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
       this.model = options.model;
       if (this.model.id) {
         return this.$el.attr('id', "fr_repeating_group_" + this.model.id);
+      }
+    },
+    toggleSkip: function() {
+      this.model.set('skipped', !this.model.get('skipped'));
+      if (!this.model.get('skipped') && this.model.entries.length === 0) {
+        return this.addEntry();
       }
     },
     reflectConditions: function() {
@@ -7352,21 +7386,20 @@ rivets.configure({
     render: function() {
       var $entries, entry, idx, view, _i, _len, _ref, _ref1;
       this.$el.html(JST['partials/repeating_group'](this));
+      rivets.bind(this.$el, {
+        model: this.model
+      });
       $entries = this.$el.find('.repeating_group_entries');
-      if (this.model.entries.length > 0) {
-        _ref = this.model.entries;
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          entry = _ref[idx];
-          view = new FormRenderer.Views.RepeatingGroupEntry({
-            entry: entry,
-            form_renderer: this.form_renderer,
-            idx: idx
-          });
-          entry.view = view;
-          $entries.append(view.render().el);
-        }
-      } else {
-        $entries.text('None');
+      _ref = this.model.entries;
+      for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+        entry = _ref[idx];
+        view = new FormRenderer.Views.RepeatingGroupEntry({
+          entry: entry,
+          form_renderer: this.form_renderer,
+          idx: idx
+        });
+        entry.view = view;
+        $entries.append(view.render().el);
       }
       if ((_ref1 = this.form_renderer) != null) {
         _ref1.trigger('viewRendered', this);
@@ -8264,19 +8297,13 @@ rivets.configure({
       })(this));
     },
     initFormComponents: function(fieldData, responseData) {
-      var field, model, _i, _len;
+      var field, klass, model, _i, _len;
       this.formComponents = new Backbone.Collection;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
-        if (field.type === 'group') {
-          model = new FormRenderer.Models.RepeatingGroup(field, this.fr, this);
-          model.setEntries(responseData[model.get('id')]);
-        } else {
-          model = new FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))](field, this.fr, this);
-          if (model.input_field) {
-            model.setExistingValue(responseData[model.get('id')]);
-          }
-        }
+        klass = field.type === 'group' ? FormRenderer.Models.RepeatingGroup : FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
+        model = new klass(field, this.fr, this);
+        model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
       }
       this.initConditions();
@@ -10934,7 +10961,29 @@ window.JST["partials/repeating_group"] = function(__obj) {
     
       _print(this.model.get('label'));
     
-      _print(_safe('\n</div>\n\n<div class=\'repeating_group_entries\'>\n</div>\n\n<a href=\'#\' class=\'js-add-entry\'>Add another</a>\n'));
+      _print(_safe('\n  '));
+    
+      _print(_safe(JST["partials/required"](this)));
+    
+      _print(_safe('\n</div>\n\n<div data-rv-hide=\'model.skipped\'>\n  <div class=\'repeating_group_entries\'>\n  </div>\n\n  '));
+    
+      if (!this.model.isRequired()) {
+        _print(_safe('\n    <a href=\'#\' class=\'js-skip\'>Skip this question</a>\n  '));
+      }
+    
+      _print(_safe('\n\n  '));
+    
+      if (this.model.canAdd()) {
+        _print(_safe('\n    <a href=\'#\' class=\'js-add-entry\'>Add another</a>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n\n'));
+    
+      if (!this.model.isRequired()) {
+        _print(_safe('\n  <div data-rv-show=\'model.skipped\'>\n    This field is skipped\n    <a href=\'#\' class=\'js-skip\'>Answer this question</a>\n  </div>\n'));
+      }
+    
+      _print(_safe('\n'));
     
     }).call(this);
     
@@ -10983,7 +11032,13 @@ window.JST["partials/repeating_group_entry"] = function(__obj) {
     
       _print(this.idx + 1);
     
-      _print(_safe('</div>\n\n<div class=\'repeating_group_entry_fields\'>\n</div>\n\n<a href=\'#\' class=\'js-remove-entry\'>Remove</a>\n'));
+      _print(_safe('</div>\n\n<div class=\'repeating_group_entry_fields\'>\n</div>\n\n'));
+    
+      if (this.entry.canRemove()) {
+        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry\'>Remove</a>\n'));
+      }
+    
+      _print(_safe('\n'));
     
     }).call(this);
     

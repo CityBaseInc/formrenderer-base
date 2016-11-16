@@ -3,4 +3,6 @@
 <div class='repeating_group_entry_fields'>
 </div>
 
-<a href='#' class='js-remove-entry'>Remove</a>
+<% if @entry.canRemove(): %>
+  <a href='#' class='js-remove-entry'>Remove</a>
+<% end %>

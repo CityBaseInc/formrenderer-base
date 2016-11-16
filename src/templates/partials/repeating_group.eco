@@ -1,8 +1,24 @@
 <div class='repeating_group_label'>
   <%= @model.get('label') %>
+  <%- JST["partials/required"](@) %>
 </div>
 
-<div class='repeating_group_entries'>
+<div data-rv-hide='model.skipped'>
+  <div class='repeating_group_entries'>
+  </div>
+
+  <% unless @model.isRequired(): %>
+    <a href='#' class='js-skip'>Skip this question</a>
+  <% end %>
+
+  <% if @model.canAdd(): %>
+    <a href='#' class='js-add-entry'>Add another</a>
+  <% end %>
 </div>
 
-<a href='#' class='js-add-entry'>Add another</a>
+<% unless @model.isRequired(): %>
+  <div data-rv-show='model.skipped'>
+    This field is skipped
+    <a href='#' class='js-skip'>Answer this question</a>
+  </div>
+<% end %>

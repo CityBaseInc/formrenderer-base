@@ -5,7 +5,13 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
     @calculateVisibility()
     @entries = []
 
-  setEntries: (entryValues) ->
+  setExistingValue: (entryValues) ->
+    if !@isRequired() && entryValues && entryValues.length == 0
+      @set('skipped', true)
+
+    if @isRequired() && !entryValues || entryValues.length == 0
+      entryValues = [{}]
+
     @entries = _.map entryValues, (entryValue) =>
       new FormRenderer.Models.RepeatingGroupEntry(
         { value: entryValue },
@@ -21,8 +27,23 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
   removeEntry: (idx) ->
     @entries.splice(idx, 1)
 
+    if @entries.length == 0
+      @set('skipped', true)
+
   getValue: ->
-    _.invoke @entries, 'getValue'
+    if @get('skipped')
+      []
+    else
+      _.invoke @entries, 'getValue'
+
+  maxEntries: ->
+    if @get('maxentries')
+      parseInt(@get('maxentries'), 10) || Infinity
+    else
+      Infinity
+
+  canAdd: ->
+    @entries.length < @maxEntries()
 
 FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
   initialize: (_attrs, @fr, @repeatingGroup) ->
@@ -30,6 +51,9 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
 
   reflectConditions: ->
     @view.reflectConditions()
+
+  canRemove: ->
+    @repeatingGroup.entries.length > 1 || !@repeatingGroup.isRequired()
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   attributes:
@@ -40,11 +64,19 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   events:
     'click .js-remove-entry': 'removeEntry'
     'click .js-add-entry': 'addEntry'
+    'click .js-skip': 'toggleSkip'
 
   initialize: (options) ->
     @form_renderer = options.form_renderer
     @model = options.model
     @$el.attr('id', "fr_repeating_group_#{@model.id}") if @model.id
+
+  toggleSkip: ->
+    @model.set('skipped', !@model.get('skipped'))
+
+    # When clicking "answer this question", add an entry if there are none
+    if !@model.get('skipped') && @model.entries.length == 0
+      @addEntry()
 
   reflectConditions: ->
     if @model.isVisible
@@ -63,20 +95,18 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
 
   render: ->
     @$el.html JST['partials/repeating_group'](@)
+    rivets.bind @$el, { @model }
     $entries = @$el.find('.repeating_group_entries')
 
-    if @model.entries.length > 0
-      for entry, idx in @model.entries
-        view = new FormRenderer.Views.RepeatingGroupEntry(
-          entry: entry,
-          form_renderer: @form_renderer,
-          idx: idx
-        )
+    for entry, idx in @model.entries
+      view = new FormRenderer.Views.RepeatingGroupEntry(
+        entry: entry,
+        form_renderer: @form_renderer,
+        idx: idx
+      )
 
-        entry.view = view
-        $entries.append view.render().el
-    else
-      $entries.text('None')
+      entry.view = view
+      $entries.append view.render().el
 
     @form_renderer?.trigger 'viewRendered', @
     @

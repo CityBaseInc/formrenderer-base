@@ -10,13 +10,13 @@ HasComponents =
     @formComponents = new Backbone.Collection
 
     for field in fieldData
-      if field.type == 'group'
-        model = new FormRenderer.Models.RepeatingGroup(field, @fr, @)
-        model.setEntries(responseData[model.get('id')])
-      else
-        model = new FormRenderer.Models["ResponseField#{_str.classify(field.field_type)}"](field, @fr, @)
-        model.setExistingValue(responseData[model.get('id')]) if model.input_field
+      klass = if field.type == 'group'
+                FormRenderer.Models.RepeatingGroup
+              else
+                FormRenderer.Models["ResponseField#{_str.classify(field.field_type)}"]
 
+      model = new klass(field, @fr, @)
+      model.setExistingValue(responseData[model.get('id')])
       @formComponents.add model
 
     @initConditions()

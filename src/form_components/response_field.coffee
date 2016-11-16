@@ -1,3 +1,6 @@
+_isPageButton = (el) ->
+  el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'))
+
 FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true
   field_type: undefined
@@ -136,14 +139,11 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
         newActive = document.activeElement
 
         unless $.contains(@el, newActive)
-          if @_isPageButton(newActive)
+          if _isPageButton(newActive)
             $(document).one 'mouseup', => @model.validate()
           else
             @model.validate()
       , 1
-
-  _isPageButton: (el) ->
-    el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'))
 
   # Run validations on change if there are errors
   _onInput: ->

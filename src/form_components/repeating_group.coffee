@@ -29,7 +29,7 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
     @initFormComponents @repeatingGroup.get('children'), @get('value') || {}
 
   reflectConditions: ->
-    @trigger 'reflectConditions'
+    @view.reflectConditions()
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   attributes:
@@ -73,6 +73,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
           idx: idx
         )
 
+        entry.view = view
         $entries.append view.render().el
     else
       $entries.text('None')
@@ -91,8 +92,6 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
     @form_renderer = options.form_renderer
     @idx = options.idx
     @views = []
-
-    @listenTo @entry, 'reflectConditions', @reflectConditions
 
   render: ->
     @$el.html JST['partials/repeating_group_entry'](@)

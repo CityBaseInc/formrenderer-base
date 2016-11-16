@@ -7314,7 +7314,7 @@ rivets.configure({
       return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
     },
     reflectConditions: function() {
-      return this.trigger('reflectConditions');
+      return this.view.reflectConditions();
     }
   });
 
@@ -7364,6 +7364,7 @@ rivets.configure({
             form_renderer: this.form_renderer,
             idx: idx
           });
+          entry.view = view;
           $entries.append(view.render().el);
         }
       } else {
@@ -7385,8 +7386,7 @@ rivets.configure({
       this.entry = options.entry;
       this.form_renderer = options.form_renderer;
       this.idx = options.idx;
-      this.views = [];
-      return this.listenTo(this.entry, 'reflectConditions', this.reflectConditions);
+      return this.views = [];
     },
     render: function() {
       var $children;

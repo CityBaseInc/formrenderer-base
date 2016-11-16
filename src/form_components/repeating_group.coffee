@@ -6,10 +6,18 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
     @entries = []
 
   setExistingValue: (entryValues) ->
-    if !@isRequired() && entryValues && entryValues.length == 0
+    # If the field is required, ensure that there is at least one value present
+    if @isRequired() && (!entryValues || entryValues.length == 0)
+      entryValues = [{}]
+
+    # If the field is optional, and entryValues is an empty array, then
+    # we presume that the field is skipped.
+    if !@isRequired() && _.isArray(entryValues) && _.isEmpty(entryValues)
       @set('skipped', true)
 
-    if @isRequired() && !entryValues || entryValues.length == 0
+    # If the field is optional and entryValues is not defined, then add an empty
+    # value.
+    if !@isRequired() && !entryValues
       entryValues = [{}]
 
     @entries = _.map entryValues, (entryValue) =>

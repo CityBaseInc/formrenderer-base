@@ -38,8 +38,11 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
     if @entries.length == 0
       @set('skipped', true)
 
+  isSkipped: ->
+    !!@get('skipped')
+
   getValue: ->
-    if @get('skipped')
+    if @isSkipped()
       []
     else
       _.invoke @entries, 'getValue'
@@ -80,10 +83,10 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @$el.attr('id', "fr_repeating_group_#{@model.id}") if @model.id
 
   toggleSkip: ->
-    @model.set('skipped', !@model.get('skipped'))
+    @model.set('skipped', !@model.isSkipped())
 
     # When clicking "answer this question", add an entry if there are none
-    if !@model.get('skipped') && @model.entries.length == 0
+    if !@model.isSkipped() && @model.entries.length == 0
       @addEntry()
 
   reflectConditions: ->

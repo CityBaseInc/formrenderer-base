@@ -237,3 +237,21 @@ describe 'translated content', ->
     expect($("option:contains('drop2')").length).to.eql 1
     expect($("label:contains('rad2')").length).to.eql 1
     expect($("th:contains('col2')").length).to.eql 1
+
+describe 'repeating sections', ->
+  describe 'without an existing value', ->
+    it 'adds the first value'
+
+  describe 'when skipped', ->
+    it 'sets the initial skipped state'
+
+  it 'can add entries up to the max'
+  it 'can remove entries'
+  it 'can be conditional'
+  it 'can contain conditions inside of entries'
+
+  describe 'when required', ->
+    it 'cannot remove the last entry'
+
+  describe 'when optional', ->
+    it 'can remove the last entry'

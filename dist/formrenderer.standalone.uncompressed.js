@@ -795,7 +795,12 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var _isPageButton,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  _isPageButton = function(el) {
+    return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
+  };
 
   FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend({
     input_field: true,
@@ -926,7 +931,7 @@ rivets.configure({
       this.listenTo(this.model, 'change:currentLength', this.auditLength);
       this.$el.addClass("fr_response_field_" + this.field_type);
       if (this.model.id) {
-        return this.$el.attr('id', "fr_response_field_" + this.model.id);
+        return this.$el.addClass("fr_response_field_" + this.model.id);
       }
     },
     getDomId: function() {
@@ -946,7 +951,7 @@ rivets.configure({
             var newActive;
             newActive = document.activeElement;
             if (!$.contains(_this.el, newActive)) {
-              if (_this._isPageButton(newActive)) {
+              if (_isPageButton(newActive)) {
                 return $(document).one('mouseup', function() {
                   return _this.model.validate();
                 });
@@ -957,9 +962,6 @@ rivets.configure({
           };
         })(this), 1);
       }
-    },
-    _isPageButton: function(el) {
-      return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
     },
     _onInput: function() {
       if (this.model.errors.length > 0) {
@@ -1051,10 +1053,13 @@ rivets.configure({
       return this.entries = [];
     },
     setExistingValue: function(entryValues) {
-      if (!this.isRequired() && entryValues && entryValues.length === 0) {
+      if (this.isRequired() && (!entryValues || entryValues.length === 0)) {
+        entryValues = [{}];
+      }
+      if (!this.isRequired() && _.isArray(entryValues) && _.isEmpty(entryValues)) {
         this.set('skipped', true);
       }
-      if (this.isRequired() && !entryValues || entryValues.length === 0) {
+      if (!this.isRequired() && !entryValues) {
         entryValues = [{}];
       }
       return this.entries = _.map(entryValues, (function(_this) {
@@ -1074,8 +1079,11 @@ rivets.configure({
         return this.set('skipped', true);
       }
     },
+    isSkipped: function() {
+      return !!this.get('skipped');
+    },
     getValue: function() {
-      if (this.get('skipped')) {
+      if (this.isSkipped()) {
         return [];
       } else {
         return _.invoke(this.entries, 'getValue');
@@ -1125,8 +1133,8 @@ rivets.configure({
       }
     },
     toggleSkip: function() {
-      this.model.set('skipped', !this.model.get('skipped'));
-      if (!this.model.get('skipped') && this.model.entries.length === 0) {
+      this.model.set('skipped', !this.model.isSkipped());
+      if (!this.model.isSkipped() && this.model.entries.length === 0) {
         return this.addEntry();
       }
     },
@@ -2538,14 +2546,16 @@ rivets.configure({
       for (_ in _ref) {
         view = _ref[_];
         if (view.model.group) {
-          _ref1 = view.model.entries;
-          for (_ in _ref1) {
-            entry = _ref1[_];
-            _ref2 = entry.view.views;
-            for (_ in _ref2) {
-              fieldView = _ref2[_];
-              if (fieldView.model.errors.length > 0) {
-                return fieldView;
+          if (!view.model.isSkipped()) {
+            _ref1 = view.model.entries;
+            for (_ in _ref1) {
+              entry = _ref1[_];
+              _ref2 = entry.view.views;
+              for (_ in _ref2) {
+                fieldView = _ref2[_];
+                if (fieldView.model.errors.length > 0) {
+                  return fieldView;
+                }
               }
             }
           }

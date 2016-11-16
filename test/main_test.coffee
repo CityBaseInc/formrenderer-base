@@ -11,7 +11,7 @@ describe '#formatCents', ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
 
   it 'formats single-digit cents properly', ->
-    price = @fr.response_fields.find (rf) -> rf.field_type == 'price'
+    price = @fr.formComponents.find (rf) -> rf.field_type == 'price'
     $cents = $('.fr_response_field_price input[data-rv-input="model.value.cents"]')
     $cents.val('3').trigger('blur')
     expect($cents.val()).to.equal('03')
@@ -23,7 +23,7 @@ describe 'adding and removing rows', ->
 
   it 'functions properly', ->
     $('button:contains("Next page")').click()
-    table = @fr.response_fields.find (rf) -> rf.field_type == 'table'
+    table = @fr.formComponents.find (rf) -> rf.field_type == 'table'
     $('[data-rv-input="model.value.0.0"]').val('hi').trigger('input')
     expect(_.size(table.get('value')[0])).to.eql 2
     expect($('[data-rv-input="model.value.0.2"]').length).to.eql 0
@@ -44,7 +44,7 @@ describe 'state', ->
 
     describe 'after change event is fired', ->
       before ->
-        @fr.response_fields.trigger('change:value')
+        @fr.formComponents.trigger('change:value')
 
       it 'has changes', ->
         expect(@fr.state.get('hasChanges')).to.equal(true)

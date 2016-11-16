@@ -138,7 +138,11 @@ describe 'ConditionChecker', ->
       value: 'asdf'
       response_field_id: '99999'
 
-    checker = new FormRenderer.ConditionChecker(@fr, conditional)
+    checker = new FormRenderer.ConditionChecker(
+      @fr.formComponents.get(conditional.response_field_id),
+      conditional
+    )
+
     expect(checker.isVisible()).to.eql(true)
 
   describe 'values', ->
@@ -162,7 +166,10 @@ describe 'ConditionChecker', ->
           value: deets.value
           response_field_id: '35'
 
-        checker = new FormRenderer.ConditionChecker(@fr, conditional)
+        checker = new FormRenderer.ConditionChecker(
+          @fr.formComponents.get(conditional.response_field_id),
+          conditional
+        )
 
         for x in deets.true
           checker.value = x

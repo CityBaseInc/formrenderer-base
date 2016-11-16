@@ -32,7 +32,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
       expect($('.fr_add_file label').hasClass('disabled')).to.eql true
       @ifu.options.success(data: { file_id: 123 })
       expect($('.fr_add_file label').hasClass('disabled')).to.eql false
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' }
         ]
@@ -62,7 +62,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
       @ifu.options.start(filename: 'filename two')
       @ifu.options.success(data: { file_id: 456 })
       expect($('.fr_add_file label').length).to.eql 1
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' },
           { id: 456, filename: 'filename two' }
@@ -71,7 +71,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
 
       # And removes them...
       $('[data-fr-remove-file]').last().click()
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' }
         ]

@@ -239,19 +239,55 @@ describe 'translated content', ->
     expect($("th:contains('col2')").length).to.eql 1
 
 describe 'repeating sections', ->
+  beforeEach ->
+    @frData =
+      project_id: 'dummy_val'
+      response:
+        id: 'xxx'
+        responses: {}
+      response_fields: [
+        id: 1
+        type: 'group'
+        label: 'Your dependents'
+        children: [
+          {
+            id: 2
+            field_type: 'text',
+            label: 'Name'
+          }
+        ]
+      ]
+
   describe 'without an existing value', ->
-    it 'adds the first value'
+    it 'adds the first value', ->
+      @fr = new FormRenderer(@frData)
+      expect(@fr.formComponents.get(1).entries.length).to.equal(1)
+      expect(@fr.formComponents.get(1).isSkipped()).to.equal(false)
 
   describe 'when skipped', ->
-    it 'sets the initial skipped state'
+    it 'sets the initial skipped state', ->
+      @frData.response.responses['1'] = []
+      @fr = new FormRenderer(@frData)
+      expect(@fr.formComponents.get(1).entries.length).to.equal(0)
+      expect(@fr.formComponents.get(1).isSkipped()).to.equal(true)
 
-  it 'can add entries up to the max'
-  it 'can remove entries'
-  it 'can be conditional'
-  it 'can contain conditions inside of entries'
-
-  describe 'when required', ->
-    it 'cannot remove the last entry'
+  it 'can add entries up to the max', ->
+    @frData.response_fields[0].maxentries = 2
+    @fr = new FormRenderer(@frData)
+    expect($('.fr_response_field_2').length).to.equal(1)
+    $('.js-add-entry').click()
+    expect($('.fr_response_field_2').length).to.equal(2)
+    expect($('.js-add-entry').length).to.equal(0)
 
   describe 'when optional', ->
-    it 'can remove the last entry'
+    it 'can remove entries', ->
+      @fr = new FormRenderer(@frData)
+      expect($('.fr_response_field_2').length).to.equal(1)
+      $('.js-remove-entry').click()
+      expect($('.fr_response_field_2').length).to.equal(0)
+
+  describe 'when required', ->
+    it 'cannot remove the last entry', ->
+      @frData.response_fields[0].required = true
+      @fr = new FormRenderer(@frData)
+      expect($('.js-remove-entry').length).to.equal(0)

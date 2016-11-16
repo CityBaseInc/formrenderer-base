@@ -108,14 +108,41 @@ describe 'validations', ->
       fillIn 'Name', 'asdf'
       expect(@fr.validate()).to.equal(true)
 
+    it 'navigates to the first error inside of a repeating section', ->
+      @fr.validate()
+      $('a:contains("validation errors")').click()
+      expect($(document.activeElement).attr('id')).
+        to.equal(labelToInput('Name').attr('id'))
+
     it 'is valid if the repeating sections are blank', ->
       expect(@fr.validate()).to.equal(false)
       $('.js-skip').first().click()
       expect(@fr.validate()).to.equal(true)
 
   describe 'a form with required repeating sections', ->
-    it 'is invalid if the repeating sections are blank'
-    it 'navigates to the first error inside of a repeating section'
+    beforeEach ->
+      @fr = new FormRenderer
+        project_id: 'dummy_val'
+        response:
+          id: 'xxx'
+          responses: {}
+        response_fields: [
+          id: 1
+          type: 'group'
+          label: 'Your dependents'
+          required: true
+          children: [
+            {
+              id: 2
+              field_type: 'text',
+              label: 'Name'
+            }
+          ]
+        ]
+
+    it 'it always has at least one entry', ->
+      expect(@fr.validate()).to.equal(true)
+
 
   describe 'table field w/ preset values', ->
     beforeEach ->

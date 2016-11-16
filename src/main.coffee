@@ -142,12 +142,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     return @areAllPagesValid()
 
   isPageVisible: (pageNumber) ->
-    @subviews.pages[pageNumber] &&
-    !!_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.isVisible))
+    @subviews.pages[pageNumber]?.isVisible()
 
-  # @todo
   isPageValid: (pageNumber) ->
-    !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
+    @subviews.pages[pageNumber]?.isValid()
 
   focusFirstError: ->
     page = @invalidPages()[0]

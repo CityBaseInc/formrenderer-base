@@ -264,14 +264,12 @@ rivets.configure({
       return this.areAllPagesValid();
     },
     isPageVisible: function(pageNumber) {
-      return this.subviews.pages[pageNumber] && !!_.find(this.subviews.pages[pageNumber].models, (function(rf) {
-        return rf.isVisible;
-      }));
+      var _ref;
+      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isVisible() : void 0;
     },
     isPageValid: function(pageNumber) {
-      return !_.find(this.subviews.pages[pageNumber].models, (function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }));
+      var _ref;
+      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isValid() : void 0;
     },
     focusFirstError: function() {
       var page, view;
@@ -2508,9 +2506,37 @@ rivets.configure({
       return _results;
     },
     firstViewWithError: function() {
-      return _.find(this.views, function(view) {
-        return view.model.errors.length > 0;
-      });
+      var entry, fieldView, view, _, _ref, _ref1, _ref2;
+      _ref = this.views;
+      for (_ in _ref) {
+        view = _ref[_];
+        if (view.model.group) {
+          _ref1 = view.model.entries;
+          for (_ in _ref1) {
+            entry = _ref1[_];
+            _ref2 = entry.view.views;
+            for (_ in _ref2) {
+              fieldView = _ref2[_];
+              if (fieldView.model.errors.length > 0) {
+                return fieldView;
+              }
+            }
+          }
+        } else {
+          if (view.model.errors.length > 0) {
+            return view;
+          }
+        }
+      }
+      return void 0;
+    },
+    isVisible: function() {
+      return !!_.find(this.models, (function(rf) {
+        return rf.isVisible;
+      }));
+    },
+    isValid: function() {
+      return !this.firstViewWithError();
     }
   });
 

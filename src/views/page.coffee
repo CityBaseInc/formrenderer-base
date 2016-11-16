@@ -50,5 +50,18 @@ FormRenderer.Views.Page = Backbone.View.extend
             component.validate()
 
   firstViewWithError: ->
-    _.find @views, (view) ->
-      view.model.errors.length > 0
+    for _, view of @views
+      if view.model.group
+        for _, entry of view.model.entries
+          for _, fieldView of entry.view.views
+            return fieldView if fieldView.model.errors.length > 0
+      else
+        return view if view.model.errors.length > 0
+
+    return undefined
+
+  isVisible: ->
+    !!_.find(@models, ((rf) -> rf.isVisible))
+
+  isValid: ->
+    !@firstViewWithError()

@@ -116,6 +116,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @listenTo @model, 'afterValidate', @render
     @listenTo @model, 'change', @_onInput
     @listenTo @model, 'change:currentLength', @auditLength
+    @listenTo @model, 'change:error', @toggleErrorModifier
     @$el.addClass "fr_response_field_#{@field_type}"
 
     if @model.id
@@ -166,8 +167,10 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     else
       $lc.removeClass('is_short is_long')
 
-  render: ->
+  toggleErrorModifier: ->
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
+
+  render: ->
     @$el.html JST['partials/response_field'](@)
     rivets.bind @$el, { model: @model }
     @auditLength()

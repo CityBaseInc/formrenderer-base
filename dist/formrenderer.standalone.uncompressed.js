@@ -929,6 +929,7 @@ rivets.configure({
       this.listenTo(this.model, 'afterValidate', this.render);
       this.listenTo(this.model, 'change', this._onInput);
       this.listenTo(this.model, 'change:currentLength', this.auditLength);
+      this.listenTo(this.model, 'change:error', this.toggleErrorModifier);
       this.$el.addClass("fr_response_field_" + this.field_type);
       if (this.model.id) {
         return this.$el.addClass("fr_response_field_" + this.model.id);
@@ -990,9 +991,11 @@ rivets.configure({
         return $lc.removeClass('is_short is_long');
       }
     },
+    toggleErrorModifier: function() {
+      return this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
+    },
     render: function() {
       var _ref;
-      this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
       this.$el.html(JST['partials/response_field'](this));
       rivets.bind(this.$el, {
         model: this.model

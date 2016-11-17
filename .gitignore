@@ -3,4 +3,3 @@ node_modules
 .sass-cache
 credentials.json
 !credentials.json.example
-dist

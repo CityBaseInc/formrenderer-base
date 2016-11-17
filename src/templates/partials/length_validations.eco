@@ -2,7 +2,7 @@
 <% max = @model.get('maxlength') %>
 <% units = @model.getLengthValidationUnits() %>
 
-<% if @model.hasLengthValidations(): %>
+<% if @model.hasLengthValidation(): %>
   <div class='fr_min_max'>
     <span class='fr_min_max_guide'>
       <% if min && max: %>

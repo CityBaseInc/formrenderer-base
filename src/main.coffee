@@ -342,6 +342,9 @@ FormRenderer.BUTTON_CLASS = 'fr_button'
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
 FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
 
+# Keep in-sync with Screendoor
+FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i
+
 FormRenderer.ADD_ROW_ICON = '+'
 FormRenderer.REMOVE_ROW_ICON = '-'
 
@@ -349,7 +352,6 @@ FormRenderer.REMOVE_ROW_ICON = '-'
 
 FormRenderer.Views = {}
 FormRenderer.Models = {}
-FormRenderer.Validators = {}
 FormRenderer.Plugins = {}
 
 ## Plugin utilities

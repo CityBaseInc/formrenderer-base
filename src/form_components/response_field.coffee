@@ -12,39 +12,11 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
 
     @calculateVisibility()
 
-    if @hasLengthValidations()
+    if @hasLengthValidation()
       @listenTo @, 'change:value', @calculateLength
-
-  validate: (opts = {}) ->
-    errorWas = @get('error')
-    @errors = []
-
-    return unless @isVisible
-
-    # Presence is a special-case, since it will stop us from running any other validators
-    if !@hasValue()
-      @errors.push(FormRenderer.t.errors.blank) if @isRequired()
-    else
-      # If value is present, run all the other validators
-      for validator in @validators
-        errorKey = validator.validate(@)
-        @errors.push(FormRenderer.t.errors[errorKey]) if errorKey
-
-    errorIs = @getError()
-
-    if opts.clearOnly && errorWas != errorIs
-      @set 'error', null
-    else
-      @set 'error', @getError()
-
-    @fr.trigger('afterValidate afterValidate:one', @)
 
   getError: ->
     @errors.join(' ') if @errors.length > 0
-
-  hasLengthValidations: ->
-    (FormRenderer.Validators.MinMaxLengthValidator in @validators) &&
-    (@get('minlength') || @get('maxlength'))
 
   calculateLength: ->
     @set(
@@ -52,16 +24,12 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
       FormRenderer.getLength @getLengthValidationUnits(), @get('value')
     )
 
-  hasMinMaxValidations: ->
-    (FormRenderer.Validators.MinMaxValidator in @validators) &&
-    (@get('min') || @get('max'))
-
   getLengthValidationUnits: ->
     @get('min_max_length_units') || 'characters'
 
   setExistingValue: (x) ->
     @set('value', x) if x
-    @calculateLength() if @hasLengthValidations()
+    @calculateLength() if @hasLengthValidation()
 
   getValue: ->
     @get('value')
@@ -154,14 +122,14 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @$el.find(':input:eq(0)').focus()
 
   auditLength: ->
-    return unless @model.hasLengthValidations()
+    return unless @model.hasLengthValidation()
     return unless ($lc = @$el.find('.fr_length_counter'))[0]
 
-    validation = FormRenderer.Validators.MinMaxLengthValidator.validate(@model)
+    validationRes = @model.validateLength()
 
-    if validation == 'short'
+    if validationRes == 'short'
       $lc.addClass('is_short').removeClass('is_long')
-    else if validation == 'long'
+    else if validationRes == 'long'
       $lc.addClass('is_long').removeClass('is_short')
     else
       $lc.removeClass('is_short is_long')

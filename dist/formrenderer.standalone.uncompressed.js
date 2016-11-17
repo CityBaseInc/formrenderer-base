@@ -495,6 +495,8 @@ rivets.configure({
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
+  FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i;
+
   FormRenderer.ADD_ROW_ICON = '+';
 
   FormRenderer.REMOVE_ROW_ICON = '-';
@@ -502,8 +504,6 @@ rivets.configure({
   FormRenderer.Views = {};
 
   FormRenderer.Models = {};
-
-  FormRenderer.Validators = {};
 
   FormRenderer.Plugins = {};
 
@@ -720,62 +720,6 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.IntegerValidator = {
-    validate: function(model) {
-      var normalized;
-      if (!model.get('integer_only')) {
-        return;
-      }
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
-      if (!normalized.match(/^-?\d+$/)) {
-        return 'integer';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.MinMaxLengthValidator = {
-    validate: function(model) {
-      var count, max, min;
-      if (!(model.get('minlength') || model.get('maxlength'))) {
-        return;
-      }
-      min = parseInt(model.get('minlength'), 10) || void 0;
-      max = parseInt(model.get('maxlength'), 10) || void 0;
-      count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
-      if (min && count < min) {
-        return 'short';
-      } else if (max && count > max) {
-        return 'long';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.MinMaxValidator = {
-    validate: function(model) {
-      var max, min, value;
-      if (!(model.get('min') || model.get('max'))) {
-        return;
-      }
-      min = model.get('min') && parseFloat(model.get('min'));
-      max = model.get('max') && parseFloat(model.get('max'));
-      value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
-      if (min && value < min) {
-        return 'small';
-      } else if (max && value > max) {
-        return 'large';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
   FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
     initialize: function(_, fr, parent) {
       this.fr = fr;
@@ -820,8 +764,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var _isPageButton,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var _isPageButton;
 
   _isPageButton = function(el) {
     return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
@@ -835,57 +778,17 @@ rivets.configure({
     afterInitialize: function() {
       this.errors = [];
       this.calculateVisibility();
-      if (this.hasLengthValidations()) {
+      if (this.hasLengthValidation()) {
         return this.listenTo(this, 'change:value', this.calculateLength);
       }
-    },
-    validate: function(opts) {
-      var errorIs, errorKey, errorWas, validator, _i, _len, _ref;
-      if (opts == null) {
-        opts = {};
-      }
-      errorWas = this.get('error');
-      this.errors = [];
-      if (!this.isVisible) {
-        return;
-      }
-      if (!this.hasValue()) {
-        if (this.isRequired()) {
-          this.errors.push(FormRenderer.t.errors.blank);
-        }
-      } else {
-        _ref = this.validators;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          validator = _ref[_i];
-          errorKey = validator.validate(this);
-          if (errorKey) {
-            this.errors.push(FormRenderer.t.errors[errorKey]);
-          }
-        }
-      }
-      errorIs = this.getError();
-      if (opts.clearOnly && errorWas !== errorIs) {
-        this.set('error', null);
-      } else {
-        this.set('error', this.getError());
-      }
-      return this.fr.trigger('afterValidate afterValidate:one', this);
     },
     getError: function() {
       if (this.errors.length > 0) {
         return this.errors.join(' ');
       }
     },
-    hasLengthValidations: function() {
-      var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('minlength') || this.get('maxlength'));
-    },
     calculateLength: function() {
       return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
-    },
-    hasMinMaxValidations: function() {
-      var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('min') || this.get('max'));
     },
     getLengthValidationUnits: function() {
       return this.get('min_max_length_units') || 'characters';
@@ -894,7 +797,7 @@ rivets.configure({
       if (x) {
         this.set('value', x);
       }
-      if (this.hasLengthValidations()) {
+      if (this.hasLengthValidation()) {
         return this.calculateLength();
       }
     },
@@ -999,17 +902,17 @@ rivets.configure({
       return this.$el.find(':input:eq(0)').focus();
     },
     auditLength: function() {
-      var $lc, validation;
-      if (!this.model.hasLengthValidations()) {
+      var $lc, validationRes;
+      if (!this.model.hasLengthValidation()) {
         return;
       }
       if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
         return;
       }
-      validation = FormRenderer.Validators.MinMaxLengthValidator.validate(this.model);
-      if (validation === 'short') {
+      validationRes = this.model.validateLength();
+      if (validationRes === 'short') {
         return $lc.addClass('is_short').removeClass('is_long');
-      } else if (validation === 'long') {
+      } else if (validationRes === 'long') {
         return $lc.addClass('is_long').removeClass('is_short');
       } else {
         return $lc.removeClass('is_short is_long');
@@ -1338,34 +1241,30 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.DateValidator = {
-    validate: function(model) {
+  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'date',
+    hasValue: function() {
+      return this.hasValueHashKey(['month', 'day', 'year']);
+    },
+    toText: function() {
+      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
+    },
+    validateType: function() {
       var day, daysPerMonth, febDays, maxDays, month, year;
-      if (model.get('disable_year')) {
+      if (this.get('disable_year')) {
         year = 2000;
       } else {
-        year = parseInt(model.get('value.year'), 10) || 0;
+        year = parseInt(this.get('value.year'), 10) || 0;
       }
-      day = parseInt(model.get('value.day'), 10) || 0;
-      month = parseInt(model.get('value.month'), 10) || 0;
+      day = parseInt(this.get('value.day'), 10) || 0;
+      month = parseInt(this.get('value.month'), 10) || 0;
       febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
       daysPerMonth = [31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
       maxDays = daysPerMonth[month - 1];
       if (!((year > 0) && ((0 < month && month <= 12)) && ((0 < day && day <= maxDays)))) {
         return 'date';
       }
-    }
-  };
-
-  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'date',
-    validators: [FormRenderer.Validators.DateValidator],
-    hasValue: function() {
-      return this.hasValueHashKey(['month', 'day', 'year']);
-    },
-    toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
     }
   });
 
@@ -1397,18 +1296,13 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.EmailValidator = {
-    VALID_REGEX: /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i,
-    validate: function(model) {
-      if (!model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
+  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
+    field_type: 'email',
+    validateType: function() {
+      if (!this.get('value').match(FormRenderer.EMAIL_REGEX)) {
         return 'email';
       }
     }
-  };
-
-  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.EmailValidator],
-    field_type: 'email'
   });
 
 }).call(this);
@@ -1544,24 +1438,20 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.IdentificationValidator = {
-    validate: function(model) {
-      if (!model.get('value.email') || !model.get('value.name')) {
-        return 'identification';
-      } else if (!model.get('value.email').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
-        return 'email';
-      }
-    }
-  };
-
   FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
     field_type: 'identification',
-    validators: [FormRenderer.Validators.IdentificationValidator],
     isRequired: function() {
       return true;
     },
     hasValue: function() {
       return this.hasValueHashKey(['email', 'name']);
+    },
+    validateType: function() {
+      if (!this.get('value.email') || !this.get('value.name')) {
+        return 'identification';
+      } else if (!this.get('value.email').match(FormRenderer.EMAIL_REGEX)) {
+        return 'email';
+      }
     }
   });
 
@@ -1665,18 +1555,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.NumberValidator = {
-    validate: function(model) {
-      var normalized;
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
-      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
-        return 'number';
-      }
-    }
-  };
-
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
     field_type: 'number',
     calculateSize: function() {
       var digits, digitsInt;
@@ -1695,6 +1574,13 @@ rivets.configure({
       } else {
         return 'one_three';
       }
+    },
+    validateType: function() {
+      var normalized;
+      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
+      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
+        return 'number';
+      }
     }
   });
 
@@ -1702,19 +1588,19 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
-    field_type: 'paragraph',
-    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+    field_type: 'paragraph'
   });
 
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.PhoneValidator = {
-    validate: function(model) {
+  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
+    field_type: 'phone',
+    validateType: function() {
       var digitsOnly, isUs, minDigits, _ref;
-      isUs = model.get('phone_format') === 'us';
+      isUs = this.get('phone_format') === 'us';
       minDigits = isUs ? 10 : 7;
-      digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      digitsOnly = ((_ref = this.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
       if (!(digitsOnly.length >= minDigits)) {
         if (isUs) {
           return 'us_phone';
@@ -1723,11 +1609,6 @@ rivets.configure({
         }
       }
     }
-  };
-
-  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
-    field_type: 'phone',
-    validators: [FormRenderer.Validators.PhoneValidator]
   });
 
   FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
@@ -1741,27 +1622,8 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.PriceValidator = {
-    validate: function(model) {
-      var values;
-      values = [];
-      if (model.get('value.dollars')) {
-        values.push(model.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
-      }
-      if (model.get('value.cents')) {
-        values.push(model.get('value.cents'));
-      }
-      if (!_.every(values, function(x) {
-        return x.match(/^-?\d+$/);
-      })) {
-        return 'price';
-      }
-    }
-  };
-
   FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
     wrapper: 'fieldset',
-    validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
     field_type: 'price',
     hasValue: function() {
       return this.hasValueHashKey(['dollars', 'cents']);
@@ -1770,6 +1632,21 @@ rivets.configure({
       var raw;
       raw = this.getValue() || {};
       return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
+    },
+    validateType: function() {
+      var values;
+      values = [];
+      if (this.get('value.dollars')) {
+        values.push(this.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
+      }
+      if (this.get('value.cents')) {
+        values.push(this.get('value.cents'));
+      }
+      if (!_.every(values, function(x) {
+        return x.match(/^-?\d+$/);
+      })) {
+        return 'price';
+      }
     }
   });
 
@@ -1975,27 +1852,13 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
-    field_type: 'text',
-    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+    field_type: 'text'
   });
 
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.TimeValidator = {
-    validate: function(model) {
-      var hours, minutes, seconds;
-      hours = parseInt(model.get('value.hours'), 10) || 0;
-      minutes = parseInt(model.get('value.minutes'), 10) || 0;
-      seconds = parseInt(model.get('value.seconds'), 10) || 0;
-      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
-        return 'time';
-      }
-    }
-  };
-
   FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.TimeValidator],
     field_type: 'time',
     wrapper: 'fieldset',
     hasValue: function() {
@@ -2011,6 +1874,15 @@ rivets.configure({
       var raw;
       raw = this.getValue() || {};
       return "" + (raw.hours || '00') + ":" + (raw.minutes || '00') + ":" + (raw.seconds || '00') + " " + raw.am_pm;
+    },
+    validateType: function() {
+      var hours, minutes, seconds;
+      hours = parseInt(this.get('value.hours'), 10) || 0;
+      minutes = parseInt(this.get('value.minutes'), 10) || 0;
+      seconds = parseInt(this.get('value.seconds'), 10) || 0;
+      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
+        return 'time';
+      }
     }
   });
 
@@ -2020,6 +1892,99 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
     field_type: 'website'
   });
+
+}).call(this);
+
+(function() {
+  var FieldValidation;
+
+  FieldValidation = {
+    validateType: function() {},
+    validationFns: ['validateType', 'validateInteger', 'validateLength', 'validateMinMax'],
+    validate: function(opts) {
+      var errorIs, errorKey, errorWas, validationFn, _i, _len, _ref;
+      if (opts == null) {
+        opts = {};
+      }
+      errorWas = this.get('error');
+      this.errors = [];
+      if (!this.isVisible) {
+        return;
+      }
+      if (!this.hasValue()) {
+        if (this.isRequired()) {
+          this.errors.push(FormRenderer.t.errors.blank);
+        }
+      } else {
+        _ref = this.validationFns;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          validationFn = _ref[_i];
+          errorKey = this[validationFn]();
+          if (errorKey) {
+            this.errors.push(FormRenderer.t.errors[errorKey]);
+          }
+        }
+      }
+      errorIs = this.getError();
+      if (opts.clearOnly && errorWas !== errorIs) {
+        this.set('error', null);
+      } else {
+        this.set('error', this.getError());
+      }
+      return this.fr.trigger('afterValidate afterValidate:one', this);
+    },
+    hasIntegerValidation: function() {
+      return this.field_type === 'number' && this.get('integer_only');
+    },
+    validateInteger: function() {
+      var normalized;
+      if (!this.hasIntegerValidation()) {
+        return;
+      }
+      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
+      if (!normalized.match(/^-?\d+$/)) {
+        return 'integer';
+      }
+    },
+    hasLengthValidation: function() {
+      var _ref;
+      return ((_ref = this.field_type) === 'text' || _ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
+    },
+    validateLength: function() {
+      var count, max, min;
+      if (!this.hasLengthValidation()) {
+        return;
+      }
+      min = parseInt(this.get('minlength'), 10) || void 0;
+      max = parseInt(this.get('maxlength'), 10) || void 0;
+      count = FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value'));
+      if (min && count < min) {
+        return 'short';
+      } else if (max && count > max) {
+        return 'long';
+      }
+    },
+    hasMinMaxValidation: function() {
+      var _ref;
+      return ((_ref = this.field_type) === 'number' || _ref === 'price') && (this.get('min') || this.get('max'));
+    },
+    validateMinMax: function() {
+      var max, min, value;
+      if (!this.hasMinMaxValidation()) {
+        return;
+      }
+      min = this.get('min') && parseFloat(this.get('min'));
+      max = this.get('max') && parseFloat(this.get('max'));
+      value = this.field_type === 'price' ? parseFloat("" + (this.get('value.dollars') || 0) + "." + (this.get('value.cents') || 0)) : parseFloat(this.get('value').replace(/,/g, ''));
+      if (min && value < min) {
+        return 'small';
+      } else if (max && value > max) {
+        return 'large';
+      }
+    }
+  };
+
+  _.extend(FormRenderer.Models.ResponseField.prototype, FieldValidation);
 
 }).call(this);
 
@@ -4346,7 +4311,7 @@ window.JST["partials/length_validations"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      if (this.model.hasLengthValidations()) {
+      if (this.model.hasLengthValidation()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
         if (min && max) {
           _print(_safe('\n        '));
@@ -4429,7 +4394,7 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     (function() {
       var max, min;
     
-      if (this.model.hasMinMaxValidations()) {
+      if (this.model.hasMinMaxValidation()) {
         _print(_safe('\n  '));
         min = this.model.get('min');
         _print(_safe('\n  '));

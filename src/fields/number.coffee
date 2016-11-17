@@ -1,19 +1,4 @@
-FormRenderer.Validators.NumberValidator =
-  validate: (model) ->
-    normalized = FormRenderer.normalizeNumber(
-      model.get('value'),
-      model.get('units')
-    )
-
-    unless normalized.match(/^-?\d*(\.\d+)?$/)
-      'number'
-
 FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend
-  validators: [
-    FormRenderer.Validators.NumberValidator
-    FormRenderer.Validators.MinMaxValidator
-    FormRenderer.Validators.IntegerValidator
-  ]
   field_type: 'number'
   calculateSize: ->
     if (digitsInt = parseInt(@get('max'), 10))
@@ -30,3 +15,9 @@ FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.exte
       'four_six'
     else
       'one_three'
+
+  validateType: ->
+    normalized = FormRenderer.normalizeNumber(@get('value'), @get('units'))
+
+    unless normalized.match(/^-?\d*(\.\d+)?$/)
+      'number'

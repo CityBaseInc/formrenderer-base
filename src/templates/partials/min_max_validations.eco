@@ -1,4 +1,4 @@
-<% if @model.hasMinMaxValidations(): %>
+<% if @model.hasMinMaxValidation(): %>
   <% min = @model.get('min') %>
   <% max = @model.get('max') %>
 

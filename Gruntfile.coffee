@@ -45,7 +45,6 @@ module.exports = (grunt) ->
             '<%= srcFolder %>/version.coffee'
             '<%= srcFolder %>/data.coffee'
             '<%= srcFolder %>/condition_checker.coffee'
-            '<%= srcFolder %>/validators/*.coffee'
             '<%= srcFolder %>/form_components/base.coffee'
             '<%= srcFolder %>/form_components/response_field.coffee'
             '<%= srcFolder %>/form_components/non_input.coffee'

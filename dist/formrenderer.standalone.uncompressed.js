@@ -764,7 +764,8 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var _isPageButton;
+  var _isPageButton,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   _isPageButton = function(el) {
     return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
@@ -775,6 +776,9 @@ rivets.configure({
     wrapper: 'label',
     field_type: void 0,
     validators: [],
+    ignoreKeysWhenCheckingPresence: function() {
+      return [];
+    },
     afterInitialize: function() {
       this.errors = [];
       this.calculateVisibility();
@@ -808,19 +812,15 @@ rivets.configure({
       return this.getValue();
     },
     hasValue: function() {
-      return !!this.get('value');
-    },
-    hasAnyValueInHash: function() {
-      return _.some(this.get('value'), function(v, k) {
-        return !!v;
-      });
-    },
-    hasValueHashKey: function(keys) {
-      return _.some(keys, (function(_this) {
-        return function(key) {
-          return !!_this.get("value." + key);
-        };
-      })(this));
+      if (this.valueType === 'hash') {
+        return _.some(this.get('value') || {}, (function(_this) {
+          return function(v, k) {
+            return !(__indexOf.call(_this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
+          };
+        })(this));
+      } else {
+        return !!this.get('value');
+      }
     },
     getOptions: function() {
       return this.get('options') || [];
@@ -1154,17 +1154,18 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend({
     wrapper: 'fieldset',
     field_type: 'address',
+    valueType: 'hash',
+    ignoreKeysWhenCheckingPresence: function() {
+      if (this.get('address_format') === 'country') {
+        return [];
+      } else {
+        return ['country'];
+      }
+    },
     setExistingValue: function(x) {
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       if (!(x != null ? x.country : void 0)) {
         return this.set('value.country', 'US');
-      }
-    },
-    hasValue: function() {
-      if (this.get('address_format') === 'country') {
-        return !!this.get('value.country');
-      } else {
-        return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
       }
     },
     toText: function() {
@@ -1244,9 +1245,7 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
     wrapper: 'fieldset',
     field_type: 'date',
-    hasValue: function() {
-      return this.hasValueHashKey(['month', 'day', 'year']);
-    },
+    valueType: 'hash',
     toText: function() {
       return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
     },
@@ -1440,11 +1439,9 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
     field_type: 'identification',
+    valueType: 'hash',
     isRequired: function() {
       return true;
-    },
-    hasValue: function() {
-      return this.hasValueHashKey(['email', 'name']);
     },
     validateType: function() {
       if (!this.get('value.email') || !this.get('value.name')) {
@@ -1625,9 +1622,7 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
     wrapper: 'fieldset',
     field_type: 'price',
-    hasValue: function() {
-      return this.hasValueHashKey(['dollars', 'cents']);
-    },
+    valueType: 'hash',
     toText: function() {
       var raw;
       raw = this.getValue() || {};
@@ -1861,8 +1856,9 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
     field_type: 'time',
     wrapper: 'fieldset',
-    hasValue: function() {
-      return this.hasValueHashKey(['hours', 'minutes', 'seconds']);
+    valueType: 'hash',
+    ignoreKeysWhenCheckingPresence: function() {
+      return ['am_pm'];
     },
     setExistingValue: function(x) {
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);

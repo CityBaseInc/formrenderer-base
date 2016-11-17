@@ -7,6 +7,9 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   field_type: undefined
   validators: []
 
+  ignoreKeysWhenCheckingPresence: ->
+    []
+
   afterInitialize: ->
     @errors = []
 
@@ -39,15 +42,11 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
     @getValue()
 
   hasValue: ->
-    !!@get('value')
-
-  hasAnyValueInHash: ->
-    _.some @get('value'), (v, k) ->
-      !!v
-
-  hasValueHashKey: (keys) ->
-    _.some keys, (key) =>
-      !!@get("value.#{key}")
+    if @valueType == 'hash'
+      _.some (@get('value') || {}), (v, k) =>
+        !(k in @ignoreKeysWhenCheckingPresence()) && !!v
+    else
+      !!@get('value')
 
   getOptions: ->
     @get('options') || []

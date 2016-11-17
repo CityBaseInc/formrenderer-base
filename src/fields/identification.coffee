@@ -1,8 +1,7 @@
 FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend
   field_type: 'identification'
+  valueType: 'hash'
   isRequired: -> true
-  hasValue: ->
-    @hasValueHashKey ['email', 'name']
   validateType: ->
     if !@get('value.email') || !@get('value.name')
       'identification'

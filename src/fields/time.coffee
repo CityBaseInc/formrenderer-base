@@ -1,8 +1,9 @@
 FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   field_type: 'time'
   wrapper: 'fieldset'
-  hasValue: ->
-    @hasValueHashKey ['hours', 'minutes', 'seconds']
+  valueType: 'hash'
+  ignoreKeysWhenCheckingPresence: ->
+    ['am_pm']
   setExistingValue: (x) ->
     FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     @set('value.am_pm', 'AM') unless x?.am_pm

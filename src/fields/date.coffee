@@ -1,8 +1,7 @@
 FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   wrapper: 'fieldset'
   field_type: 'date'
-  hasValue: ->
-    @hasValueHashKey ['month', 'day', 'year']
+  valueType: 'hash'
   toText: ->
     _.values(_.pick(@getValue() || {}, 'month', 'day', 'year')).join('/')
   validateType: ->

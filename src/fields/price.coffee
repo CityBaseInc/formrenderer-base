@@ -1,8 +1,8 @@
 FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend
   wrapper: 'fieldset'
   field_type: 'price'
-  hasValue: ->
-    @hasValueHashKey ['dollars', 'cents']
+  valueType: 'hash'
+
   toText: ->
     raw = @getValue() || {}
     "#{raw.dollars|| '0'}.#{raw.cents || '00'}"

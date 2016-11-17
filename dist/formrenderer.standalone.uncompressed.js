@@ -518,6 +518,31 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  FormRenderer.formComponentViewClass = function(field) {
+    var foundKlass;
+    if (field.group) {
+      return FormRenderer.Views.RepeatingGroup;
+    } else if ((foundKlass = FormRenderer.Views["ResponseField" + (_str.classify(field.field_type))])) {
+      return foundKlass;
+    } else if (field.input_field) {
+      return FormRenderer.Views.ResponseField;
+    } else {
+      return FormRenderer.Views.NonInputResponseField;
+    }
+  };
+
+  FormRenderer.buildFormComponentView = function(field, fr) {
+    var klass;
+    klass = FormRenderer.formComponentViewClass(field);
+    return new klass({
+      model: field,
+      form_renderer: fr
+    });
+  };
+
+}).call(this);
+
+(function() {
   var autoLink, sanitize, sanitizeConfig, simpleFormat;
 
   autoLink = function(str) {
@@ -804,6 +829,7 @@ rivets.configure({
 
   FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend({
     input_field: true,
+    wrapper: 'label',
     field_type: void 0,
     validators: [],
     afterInitialize: function() {
@@ -912,7 +938,6 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseField = Backbone.View.extend({
-    wrapper: 'label',
     className: 'fr_response_field',
     events: {
       'blur input, textarea, select': '_onBlur'
@@ -1200,10 +1225,7 @@ rivets.configure({
       this.entry.formComponents.each((function(_this) {
         return function(rf) {
           var view;
-          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.get('field_type')))]({
-            model: rf,
-            form_renderer: _this.form_renderer
-          });
+          view = FormRenderer.buildFormComponentView(rf, _this.form_renderer);
           $children.append(view.render().el);
           view.reflectConditions();
           return _this.views.push(view);
@@ -1227,6 +1249,7 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
     field_type: 'address',
     setExistingValue: function(x) {
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
@@ -1247,7 +1270,6 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.listenTo(this.model, 'change:value.country', this.render);
@@ -1259,6 +1281,7 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
+    wrapper: 'fieldset',
     setExistingValue: function(x) {
       var h, option, _i, _len, _ref;
       if (x == null) {
@@ -1291,15 +1314,12 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset'
-  });
-
 }).call(this);
 
 (function() {
   FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
     field_type: 'confirm',
+    wrapper: 'none',
     getValue: function() {
       return this.get('value') || false;
     },
@@ -1313,10 +1333,6 @@ rivets.configure({
         return 'No';
       }
     }
-  });
-
-  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'none'
   });
 
 }).call(this);
@@ -1342,6 +1358,7 @@ rivets.configure({
   };
 
   FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
     field_type: 'date',
     validators: [FormRenderer.Validators.DateValidator],
     hasValue: function() {
@@ -1352,15 +1369,9 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset'
-  });
-
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField;
-
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
     field_type: 'dropdown',
     setExistingValue: function(x) {
@@ -1400,13 +1411,62 @@ rivets.configure({
     field_type: 'email'
   });
 
-  FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField;
-
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
+  FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
     wrapper: 'fieldset',
+    field_type: 'file',
+    addFile: function(id, filename) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.push({
+        id: id,
+        filename: filename
+      });
+      return this.set('value', files);
+    },
+    removeFile: function(idx) {
+      var files;
+      files = this.getFiles().slice(0);
+      files.splice(idx, 1);
+      return this.set('value', files);
+    },
+    getFiles: function() {
+      return this.get('value') || [];
+    },
+    canAddFile: function() {
+      return this.getFiles().length < this.maxFiles();
+    },
+    toText: function() {
+      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
+    },
+    hasValue: function() {
+      return _.any(this.getFiles(), function(h) {
+        return !!h.id;
+      });
+    },
+    getAcceptedExtensions: function() {
+      var x;
+      if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
+        return _.map(x, function(x) {
+          return "." + x;
+        });
+      }
+    },
+    getValue: function() {
+      return this.getFiles();
+    },
+    maxFiles: function() {
+      if (this.get('allow_multiple_files')) {
+        return 10;
+      } else {
+        return 1;
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'click [data-fr-remove-file]': 'doRemove'
     }),
@@ -1481,57 +1541,6 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
-    field_type: 'file',
-    addFile: function(id, filename) {
-      var files;
-      files = this.getFiles().slice(0);
-      files.push({
-        id: id,
-        filename: filename
-      });
-      return this.set('value', files);
-    },
-    removeFile: function(idx) {
-      var files;
-      files = this.getFiles().slice(0);
-      files.splice(idx, 1);
-      return this.set('value', files);
-    },
-    getFiles: function() {
-      return this.get('value') || [];
-    },
-    canAddFile: function() {
-      return this.getFiles().length < this.maxFiles();
-    },
-    toText: function() {
-      return _.compact(_.pluck(this.getFiles(), 'filename')).join(' ');
-    },
-    hasValue: function() {
-      return _.any(this.getFiles(), function(h) {
-        return !!h.id;
-      });
-    },
-    getAcceptedExtensions: function() {
-      var x;
-      if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
-        return _.map(x, function(x) {
-          return "." + x;
-        });
-      }
-    },
-    getValue: function() {
-      return this.getFiles();
-    },
-    maxFiles: function() {
-      if (this.get('allow_multiple_files')) {
-        return 10;
-      } else {
-        return 1;
-      }
-    }
-  });
-
 }).call(this);
 
 (function() {
@@ -1555,8 +1564,6 @@ rivets.configure({
       return this.hasValueHashKey(['email', 'name']);
     }
   });
-
-  FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField;
 
 }).call(this);
 
@@ -1668,8 +1675,6 @@ rivets.configure({
     }
   };
 
-  FormRenderer.Views.ResponseFieldNumber = FormRenderer.Views.ResponseField;
-
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
     validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
     field_type: 'number',
@@ -1701,8 +1706,6 @@ rivets.configure({
     validators: [FormRenderer.Validators.MinMaxLengthValidator]
   });
 
-  FormRenderer.Views.ResponseFieldParagraph = FormRenderer.Views.ResponseField;
-
 }).call(this);
 
 (function() {
@@ -1722,17 +1725,17 @@ rivets.configure({
     }
   };
 
+  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
+    field_type: 'phone',
+    validators: [FormRenderer.Validators.PhoneValidator]
+  });
+
   FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
     phonePlaceholder: function() {
       if (this.model.get('phone_format') === 'us') {
         return '(xxx) xxx-xxxx';
       }
     }
-  });
-
-  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
-    field_type: 'phone',
-    validators: [FormRenderer.Validators.PhoneValidator]
   });
 
 }).call(this);
@@ -1757,6 +1760,7 @@ rivets.configure({
   };
 
   FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
     validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
     field_type: 'price',
     hasValue: function() {
@@ -1770,7 +1774,6 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
     events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
       'blur [data-rv-input="model.value.cents"]': 'formatCents'
     }),
@@ -1787,10 +1790,7 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
-    field_type: 'radio'
-  });
-
-  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
+    field_type: 'radio',
     wrapper: 'fieldset'
   });
 
@@ -1974,8 +1974,6 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ResponseFieldText = FormRenderer.Views.ResponseField;
-
   FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
     field_type: 'text',
     validators: [FormRenderer.Validators.MinMaxLengthValidator]
@@ -1999,6 +1997,7 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
     validators: [FormRenderer.Validators.TimeValidator],
     field_type: 'time',
+    wrapper: 'fieldset',
     hasValue: function() {
       return this.hasValueHashKey(['hours', 'minutes', 'seconds']);
     },
@@ -2015,15 +2014,9 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset'
-  });
-
 }).call(this);
 
 (function() {
-  FormRenderer.Views.ResponseFieldWebsite = FormRenderer.Views.ResponseField;
-
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
     field_type: 'website'
   });
@@ -2438,17 +2431,7 @@ rivets.configure({
       _ref = this.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        if (rf.group) {
-          view = new FormRenderer.Views.RepeatingGroup({
-            model: rf,
-            form_renderer: this.form_renderer
-          });
-        } else {
-          view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.field_type))]({
-            model: rf,
-            form_renderer: this.form_renderer
-          });
-        }
+        view = FormRenderer.buildFormComponentView(rf, this.form_renderer);
         this.$el.append(view.render().el);
         view.reflectConditions();
         this.views.push(view);
@@ -4883,7 +4866,7 @@ window.JST["partials/response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      if (this.wrapper === 'fieldset') {
+      if (this.model.wrapper === 'fieldset') {
         _print(_safe('\n  <fieldset class=\'fr_fieldset\'>\n    <legend>'));
         _print(this.model.get('label'));
         _print(_safe('</legend>\n    '));
@@ -4891,7 +4874,7 @@ window.JST["partials/response_field"] = function(__obj) {
         _print(_safe('\n    <div class=\'fr_field_wrapper\'>\n      '));
         _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n    </div>\n  </fieldset>\n'));
-      } else if (this.wrapper === 'label') {
+      } else if (this.model.wrapper === 'label') {
         _print(_safe('\n  '));
         _print(_safe(JST["partials/label"](this)));
         _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));

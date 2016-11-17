@@ -10,17 +10,7 @@ FormRenderer.Views.Page = Backbone.View.extend
     @hide()
 
     for rf in @models
-      if rf.group
-        view = new FormRenderer.Views.RepeatingGroup(
-          model: rf,
-          form_renderer: @form_renderer
-        )
-      else
-        view = new FormRenderer.Views["ResponseField#{_str.classify(rf.field_type)}"](
-          model: rf,
-          form_renderer: @form_renderer
-        )
-
+      view = FormRenderer.buildFormComponentView(rf, @form_renderer)
       @$el.append view.render().el
       view.reflectConditions()
       @views.push view

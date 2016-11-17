@@ -11,5 +11,3 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
   isRequired: -> true
   hasValue: ->
     @hasValueHashKey ['email', 'name']
-
-FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField

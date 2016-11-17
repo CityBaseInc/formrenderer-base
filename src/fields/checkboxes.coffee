@@ -1,5 +1,6 @@
 FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend
   field_type: 'checkboxes'
+  wrapper: 'fieldset'
 
   setExistingValue: (x) ->
     if !x?
@@ -25,6 +26,3 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
   hasValue: ->
     @get('value.checked')?.length > 0 ||
     @get('value.other_checked')
-
-FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend
-  wrapper: 'fieldset'

@@ -1,5 +1,35 @@
-FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
+FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
   wrapper: 'fieldset'
+  field_type: 'file'
+  addFile: (id, filename) ->
+    files = @getFiles().slice(0)
+    files.push(id: id, filename: filename)
+    @set 'value', files
+  removeFile: (idx) ->
+    files = @getFiles().slice(0)
+    files.splice(idx, 1)
+    @set 'value', files
+  getFiles: ->
+    @get('value') || []
+  canAddFile: ->
+    @getFiles().length < @maxFiles()
+  toText: ->
+    _.compact(_.pluck(@getFiles(), 'filename')).join(' ')
+  hasValue: ->
+    _.any @getFiles(), (h) ->
+      !!h.id
+  getAcceptedExtensions: ->
+    if (x = FormRenderer.FILE_TYPES[@get('file_types')])
+      _.map x, (x) -> ".#{x}"
+  getValue: ->
+    @getFiles()
+  maxFiles: ->
+    if @get('allow_multiple_files')
+      10
+    else
+      1
+
+FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'click [data-fr-remove-file]': 'doRemove'
   render: ->
@@ -55,32 +85,3 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @model.removeFile(idx)
     @render()
 
-FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
-  field_type: 'file'
-  addFile: (id, filename) ->
-    files = @getFiles().slice(0)
-    files.push(id: id, filename: filename)
-    @set 'value', files
-  removeFile: (idx) ->
-    files = @getFiles().slice(0)
-    files.splice(idx, 1)
-    @set 'value', files
-  getFiles: ->
-    @get('value') || []
-  canAddFile: ->
-    @getFiles().length < @maxFiles()
-  toText: ->
-    _.compact(_.pluck(@getFiles(), 'filename')).join(' ')
-  hasValue: ->
-    _.any @getFiles(), (h) ->
-      !!h.id
-  getAcceptedExtensions: ->
-    if (x = FormRenderer.FILE_TYPES[@get('file_types')])
-      _.map x, (x) -> ".#{x}"
-  getValue: ->
-    @getFiles()
-  maxFiles: ->
-    if @get('allow_multiple_files')
-      10
-    else
-      1

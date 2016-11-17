@@ -8,8 +8,6 @@ FormRenderer.Validators.NumberValidator =
     unless normalized.match(/^-?\d*(\.\d+)?$/)
       'number'
 
-FormRenderer.Views.ResponseFieldNumber = FormRenderer.Views.ResponseField
-
 FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend
   validators: [
     FormRenderer.Validators.NumberValidator

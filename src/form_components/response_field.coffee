@@ -3,6 +3,7 @@ _isPageButton = (el) ->
 
 FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   input_field: true
+  wrapper: 'label'
   field_type: undefined
   validators: []
 
@@ -98,7 +99,6 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
 
 
 FormRenderer.Views.ResponseField = Backbone.View.extend
-  wrapper: 'label'
   className: 'fr_response_field'
   events:
     'blur input, textarea, select': '_onBlur'

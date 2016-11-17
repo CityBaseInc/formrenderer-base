@@ -1,5 +1,3 @@
-FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField
-
 FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend
   field_type: 'dropdown'
   setExistingValue: (x) ->

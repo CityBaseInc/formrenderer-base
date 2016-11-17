@@ -9,5 +9,3 @@ FormRenderer.Validators.EmailValidator =
 FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.EmailValidator]
   field_type: 'email'
-
-FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField

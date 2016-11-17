@@ -1,5 +1,6 @@
 FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend
   field_type: 'confirm'
+  wrapper: 'none'
   getValue: ->
     @get('value') || false # Send `false` instead of null
   setExistingValue: (x) ->
@@ -10,6 +11,3 @@ FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.ext
       'Yes'
     else
       'No'
-
-FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend
-  wrapper: 'none'

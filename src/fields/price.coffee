@@ -13,6 +13,7 @@ FormRenderer.Validators.PriceValidator =
       'price'
 
 FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend
+  wrapper: 'fieldset'
   validators: [
     FormRenderer.Validators.PriceValidator
     FormRenderer.Validators.MinMaxValidator
@@ -25,7 +26,6 @@ FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.exten
     "#{raw.dollars|| '0'}.#{raw.cents || '00'}"
 
 FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
-  wrapper: 'fieldset'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'blur [data-rv-input="model.value.cents"]': 'formatCents'
 

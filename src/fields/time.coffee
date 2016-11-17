@@ -10,6 +10,7 @@ FormRenderer.Validators.TimeValidator =
 FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.TimeValidator]
   field_type: 'time'
+  wrapper: 'fieldset'
   hasValue: ->
     @hasValueHashKey ['hours', 'minutes', 'seconds']
   setExistingValue: (x) ->
@@ -18,6 +19,3 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
   toText: ->
     raw = @getValue() || {}
     "#{raw.hours || '00'}:#{raw.minutes || '00'}:#{raw.seconds || '00'} #{raw.am_pm}"
-
-FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend
-  wrapper: 'fieldset'

@@ -20,12 +20,10 @@ FormRenderer.Validators.DateValidator =
       'date'
 
 FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
+  wrapper: 'fieldset'
   field_type: 'date'
   validators: [FormRenderer.Validators.DateValidator]
   hasValue: ->
     @hasValueHashKey ['month', 'day', 'year']
   toText: ->
     _.values(_.pick(@getValue() || {}, 'month', 'day', 'year')).join('/')
-
-FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend
-  wrapper: 'fieldset'

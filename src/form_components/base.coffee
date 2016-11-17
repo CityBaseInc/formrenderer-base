@@ -23,6 +23,9 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
   isConditional: ->
     @getConditions().length > 0
 
+  parentGroupIsHidden: ->
+    @parent.repeatingGroup? && !@parent.repeatingGroup.isVisible
+
   # @return [Boolean] true if the new value is different than the old value
   calculateVisibility: ->
     prevValue = !!@isVisible

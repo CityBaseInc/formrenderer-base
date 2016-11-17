@@ -6968,6 +6968,9 @@ rivets.configure({
     isConditional: function() {
       return this.getConditions().length > 0;
     },
+    parentGroupIsHidden: function() {
+      return (this.parent.repeatingGroup != null) && !this.parent.repeatingGroup.isVisible;
+    },
     calculateVisibility: function() {
       var prevValue;
       prevValue = !!this.isVisible;
@@ -8134,7 +8137,7 @@ rivets.configure({
       }
       errorWas = this.get('error');
       this.errors = [];
-      if (!this.isVisible) {
+      if (!(this.isVisible && !this.parentGroupIsHidden())) {
         return;
       }
       if (!this.hasValue()) {

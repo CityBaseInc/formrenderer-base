@@ -12,7 +12,7 @@ FieldValidation =
     errorWas = @get('error')
     @errors = []
 
-    return unless @isVisible
+    return unless @isVisible && !@parentGroupIsHidden()
 
     # Presence is a special-case, since it will stop us from running any other validators
     if !@hasValue()

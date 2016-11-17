@@ -7283,7 +7283,7 @@ rivets.configure({
       this.form_renderer = options.form_renderer;
       this.model = options.model;
       if (this.model.id) {
-        return this.$el.attr('id', "fr_repeating_group_" + this.model.id);
+        return this.$el.addClass("fr_response_field_" + this.model.id);
       }
     },
     toggleSkip: function() {

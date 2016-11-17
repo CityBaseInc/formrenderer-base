@@ -82,7 +82,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   initialize: (options) ->
     @form_renderer = options.form_renderer
     @model = options.model
-    @$el.attr('id', "fr_repeating_group_#{@model.id}") if @model.id
+    @$el.addClass("fr_response_field_#{@model.id}") if @model.id
 
   toggleSkip: ->
     @model.set('skipped', !@model.isSkipped())

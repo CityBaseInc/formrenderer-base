@@ -7271,9 +7271,6 @@ rivets.configure({
   });
 
   FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
-    attributes: {
-      style: 'border: 1px solid gray; padding: 10px;'
-    },
     className: 'fr_repeating_group',
     events: {
       'click .js-remove-entry': 'removeEntry',
@@ -7339,9 +7336,6 @@ rivets.configure({
   });
 
   FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
-    attributes: {
-      style: 'border: 1px solid gray; padding: 10px; margin: 10px;'
-    },
     className: 'fr_repeating_group_entry',
     initialize: function(options) {
       this.entry = options.entry;

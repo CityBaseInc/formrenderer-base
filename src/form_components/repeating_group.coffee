@@ -72,9 +72,6 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
     @repeatingGroup.entries.length > 1 || !@repeatingGroup.isRequired()
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
-  attributes:
-    style: 'border: 1px solid gray; padding: 10px;'
-
   className: 'fr_repeating_group'
 
   events:
@@ -131,9 +128,6 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @
 
 FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
-  attributes:
-    style: 'border: 1px solid gray; padding: 10px; margin: 10px;'
-
   className: 'fr_repeating_group_entry'
 
   initialize: (options) ->

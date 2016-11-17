@@ -103,6 +103,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   addEntry: ->
     @model.addEntry()
     @render()
+    _.last(@views).focus()
 
   removeEntry: (e) ->
     idx = @$el.find('.js-remove-entry').index(e.target)
@@ -113,6 +114,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @$el.html JST['partials/repeating_group'](@)
     rivets.bind @$el, { @model }
     $entries = @$el.find('.repeating_group_entries')
+    @views = []
 
     for entry, idx in @model.entries
       view = new FormRenderer.Views.RepeatingGroupEntry(
@@ -123,6 +125,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
 
       entry.view = view
       $entries.append view.render().el
+      @views.push view
 
     @form_renderer?.trigger 'viewRendered', @
     @
@@ -154,3 +157,6 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
   reflectConditions: ->
     for view in @views
       view.reflectConditions()
+
+  focus: ->
+    @views[0].focus()

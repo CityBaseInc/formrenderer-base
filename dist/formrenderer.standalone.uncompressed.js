@@ -1066,7 +1066,8 @@ rivets.configure({
     },
     addEntry: function() {
       this.model.addEntry();
-      return this.render();
+      this.render();
+      return _.last(this.views).focus();
     },
     removeEntry: function(e) {
       var idx;
@@ -1081,6 +1082,7 @@ rivets.configure({
         model: this.model
       });
       $entries = this.$el.find('.repeating_group_entries');
+      this.views = [];
       _ref = this.model.entries;
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
         entry = _ref[idx];
@@ -1091,6 +1093,7 @@ rivets.configure({
         });
         entry.view = view;
         $entries.append(view.render().el);
+        this.views.push(view);
       }
       if ((_ref1 = this.form_renderer) != null) {
         _ref1.trigger('viewRendered', this);
@@ -1134,6 +1137,9 @@ rivets.configure({
         _results.push(view.reflectConditions());
       }
       return _results;
+    },
+    focus: function() {
+      return this.views[0].focus();
     }
   });
 

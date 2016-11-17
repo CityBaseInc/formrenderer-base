@@ -14,7 +14,9 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
     @set('value.country', 'US') unless x?.country
 
   toText: ->
-    _.values(_.pick(@getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ')
+    _.values(
+      _.pick(@getValue(), 'street', 'city', 'state', 'zipcode', 'country')
+    ).join(' ')
 
 FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
   initialize: ->

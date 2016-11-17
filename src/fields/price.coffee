@@ -4,8 +4,7 @@ FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.exten
   valueType: 'hash'
 
   toText: ->
-    raw = @getValue() || {}
-    "#{raw.dollars|| '0'}.#{raw.cents || '00'}"
+    "#{@getValue().dollars|| '0'}.#{@getValue().cents || '00'}"
 
   validateType: ->
     values = []

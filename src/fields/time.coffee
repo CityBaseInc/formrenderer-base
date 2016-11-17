@@ -8,8 +8,7 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
     FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     @set('value.am_pm', 'AM') unless x?.am_pm
   toText: ->
-    raw = @getValue() || {}
-    "#{raw.hours || '00'}:#{raw.minutes || '00'}:#{raw.seconds || '00'} #{raw.am_pm}"
+    "#{@getValue().hours || '00'}:#{@getValue().minutes || '00'}:#{@getValue().seconds || '00'} #{@getValue().am_pm}"
 
   validateType: ->
     hours = parseInt(@get('value.hours'), 10) || 0

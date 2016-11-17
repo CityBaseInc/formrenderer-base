@@ -35,7 +35,11 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
     @calculateLength() if @hasLengthValidation()
 
   getValue: ->
-    @get('value')
+    @get('value') || @defaultValue()
+
+  defaultValue: ->
+    if @valueType == 'hash'
+      {}
 
   # used for conditionals
   toText: ->

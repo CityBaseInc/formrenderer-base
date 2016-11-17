@@ -13,6 +13,8 @@ EXPECTED_BLANK_VALUES = {
   "39": {
     checked: []
   },
+  "41": {},
+  "43": {},
   "44": {
     "am_pm": "AM"
   },

@@ -7042,7 +7042,12 @@ rivets.configure({
       }
     },
     getValue: function() {
-      return this.get('value');
+      return this.get('value') || this.defaultValue();
+    },
+    defaultValue: function() {
+      if (this.valueType === 'hash') {
+        return {};
+      }
     },
     toText: function() {
       return this.getValue();
@@ -7405,7 +7410,7 @@ rivets.configure({
       }
     },
     toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
+      return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
     }
   });
 
@@ -7483,7 +7488,7 @@ rivets.configure({
     field_type: 'date',
     valueType: 'hash',
     toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
+      return _.values(_.pick(this.getValue(), 'month', 'day', 'year')).join('/');
     },
     validateType: function() {
       var day, daysPerMonth, febDays, maxDays, month, year;
@@ -7860,9 +7865,7 @@ rivets.configure({
     field_type: 'price',
     valueType: 'hash',
     toText: function() {
-      var raw;
-      raw = this.getValue() || {};
-      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
+      return "" + (this.getValue().dollars || '0') + "." + (this.getValue().cents || '00');
     },
     validateType: function() {
       var values;
@@ -8103,9 +8106,7 @@ rivets.configure({
       }
     },
     toText: function() {
-      var raw;
-      raw = this.getValue() || {};
-      return "" + (raw.hours || '00') + ":" + (raw.minutes || '00') + ":" + (raw.seconds || '00') + " " + raw.am_pm;
+      return "" + (this.getValue().hours || '00') + ":" + (this.getValue().minutes || '00') + ":" + (this.getValue().seconds || '00') + " " + (this.getValue().am_pm);
     },
     validateType: function() {
       var hours, minutes, seconds;

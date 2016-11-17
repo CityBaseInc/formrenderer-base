@@ -3,7 +3,7 @@ FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
   field_type: 'date'
   valueType: 'hash'
   toText: ->
-    _.values(_.pick(@getValue() || {}, 'month', 'day', 'year')).join('/')
+    _.values(_.pick(@getValue(), 'month', 'day', 'year')).join('/')
   validateType: ->
     if @get('disable_year')
       year = 2000 # Just a dummy constant

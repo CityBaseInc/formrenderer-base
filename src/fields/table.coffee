@@ -92,21 +92,6 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
     'click .js-add-row': 'addRow'
     'click .js-remove-row': 'removeRow'
 
-  initialize: ->
-    FormRenderer.Views.ResponseField::initialize.apply @, arguments
-
-    @on 'shown', ->
-      @initExpanding()
-
-  render: ->
-    FormRenderer.Views.ResponseField::render.apply @, arguments
-    @initExpanding()
-    @
-
-  initExpanding: ->
-    # Temporarily remove -- this is a major performance hit.
-    # @$el.find('textarea').expanding()
-
   canRemoveRow: (rowIdx) ->
     min = Math.max(1, @model.minRows())
     rowIdx > (min - 1)

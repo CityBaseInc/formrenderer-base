@@ -1792,18 +1792,6 @@ rivets.configure({
       'click .js-add-row': 'addRow',
       'click .js-remove-row': 'removeRow'
     }),
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('shown', function() {
-        return this.initExpanding();
-      });
-    },
-    render: function() {
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.initExpanding();
-      return this;
-    },
-    initExpanding: function() {},
     canRemoveRow: function(rowIdx) {
       var min;
       min = Math.max(1, this.model.minRows());

@@ -171,10 +171,10 @@ rivets.configure({
         headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
-            var _base, _base1, _ref;
-            _this.options.response.id = data.response_id;
+            var _base, _base1, _ref, _ref1;
+            _this.options.response.id = (_ref = data.response) != null ? _ref.id : void 0;
             (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
+            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref1 = data.response) != null ? _ref1.responses : void 0) || {});
             if (_this.options.afterSubmit == null) {
               _this.options.afterSubmit = {
                 method: 'page',

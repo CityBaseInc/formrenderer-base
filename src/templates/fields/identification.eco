@@ -1,15 +1,15 @@
 <div class='fr_grid'>
   <div class='fr_half'>
-    <label for='<%= @getDomId() %>-name'><%= FormRenderer.t.name %> <abbr class='fr_required' title='required'>*</abbr></label>
+    <label for='<%= @domId() %>-name'><%= FormRenderer.t.name %> <abbr class='fr_required' title='required'>*</abbr></label>
     <input type='text'
-           id='<%= @getDomId() %>-name'
+           id='<%= @domId() %>-name'
            data-rv-input='model.value.name' />
   </div>
 
   <div class='fr_half'>
-    <label for='<%= @getDomId() %>-email'><%= FormRenderer.t.email %> <abbr class='fr_required' title='required'>*</abbr></label>
+    <label for='<%= @domId() %>-email'><%= FormRenderer.t.email %> <abbr class='fr_required' title='required'>*</abbr></label>
     <input type="text"
-           id='<%= @getDomId() %>-email'
+           id='<%= @domId() %>-email'
            data-rv-input='model.value.email' />
   </div>
 </div>

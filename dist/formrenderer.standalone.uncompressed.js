@@ -860,7 +860,7 @@ rivets.configure({
         return this.$el.addClass("fr_response_field_" + this.model.id);
       }
     },
-    getDomId: function() {
+    domId: function() {
       return this.model.cid;
     },
     reflectConditions: function() {
@@ -2540,11 +2540,11 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_street\'>'));
         _print(FormRenderer.t.address);
         _print(_safe('</label>\n      <input type="text"\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
     
@@ -2552,13 +2552,13 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_city\'>'));
         _print(FormRenderer.t.city);
         _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\'\n             id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_state\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
@@ -2576,7 +2576,7 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('\n      </label>\n\n      '));
         if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
           _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
-          _print(this.getDomId());
+          _print(this.domId());
           _print(_safe('_state\'>\n          <option></option>\n          '));
           _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -2590,7 +2590,7 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        </select>\n      '));
         } else {
           _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' id=\''));
-          _print(this.getDomId());
+          _print(this.domId());
           _print(_safe('_state\' />\n      '));
         }
         _print(_safe('\n    </div>\n  </div>\n'));
@@ -2600,7 +2600,7 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'country') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_zipcode\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
@@ -2612,7 +2612,7 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        '));
         }
         _print(_safe('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\'\n             id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_zipcode\' />\n    </div>\n  '));
       }
     
@@ -2620,11 +2620,11 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_country\'>'));
         _print(FormRenderer.t.country);
         _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_country\'>\n        '));
         _ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
@@ -2838,27 +2838,27 @@ window.JST["fields/date"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_day" />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_year')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_year" />\n    </div>\n  '));
       }
     
@@ -2911,7 +2911,7 @@ window.JST["fields/dropdown"] = function(__obj) {
     
       _print(_safe('<select id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
@@ -2978,7 +2978,7 @@ window.JST["fields/email"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text" inputmode="email"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
     
@@ -3045,13 +3045,13 @@ window.JST["fields/file"] = function(__obj) {
     
       if (this.model.canAddFile()) {
         _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('\' class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n      '));
         _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
         _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('\'\n           '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n            accept=\''));
@@ -3116,7 +3116,7 @@ window.JST["fields/identification"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-name\'>'));
     
@@ -3124,11 +3124,11 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-email\'>'));
     
@@ -3136,7 +3136,7 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
     
@@ -3246,7 +3246,7 @@ window.JST["fields/number"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
     
@@ -3352,7 +3352,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     (function() {
       _print(_safe('<textarea\n   id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n   class="size_'));
     
@@ -3405,7 +3405,7 @@ window.JST["fields/phone"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
     
@@ -3458,7 +3458,7 @@ window.JST["fields/price"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_dollars">'));
     
@@ -3466,17 +3466,17 @@ window.JST["fields/price"] = function(__obj) {
     
       _print(_safe('</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_cents')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_cents">'));
         _print(FormRenderer.t.cents);
         _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_cents" />\n    </div>\n  '));
       }
     
@@ -3687,7 +3687,7 @@ window.JST["fields/table"] = function(__obj) {
             _print(_safe('"\n                        '));
             if (j === 0 && i === 0) {
               _print(_safe('id=\''));
-              _print(this.getDomId());
+              _print(this.domId());
               _print(_safe('\''));
             }
             _print(_safe(' />\n          '));
@@ -3774,7 +3774,7 @@ window.JST["fields/text"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       class="size_'));
     
@@ -3827,27 +3827,27 @@ window.JST["fields/time"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_minutes" />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_seconds')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_seconds" />\n    </div>\n  '));
       }
     
@@ -3898,7 +3898,7 @@ window.JST["fields/website"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text" inputmode="url"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
     
@@ -4096,7 +4096,7 @@ window.JST["partials/label"] = function(__obj) {
         _print(_safe('aria-hidden="true"'));
       } else {
         _print(_safe('for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('"'));
       }
     

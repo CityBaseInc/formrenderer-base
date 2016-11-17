@@ -1,5 +1,5 @@
 <input type="text"
-       id="<%= @getDomId() %>"
+       id="<%= @domId() %>"
        data-rv-input='model.value'
        class="size_<%= @calculateSize() %>" />
 

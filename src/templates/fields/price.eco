@@ -2,9 +2,9 @@
   <div class='fr_spacer'>$</div>
 
   <div class='has_sub_label'>
-    <label class="fr_sub_label" for="<%= @getDomId() %>_dollars"><%= FormRenderer.t.dollars %></label>
+    <label class="fr_sub_label" for="<%= @domId() %>_dollars"><%= FormRenderer.t.dollars %></label>
     <input type="text"
-           id="<%= @getDomId() %>_dollars"
+           id="<%= @domId() %>_dollars"
            data-rv-input='model.value.dollars'
            size='6' />
   </div>
@@ -12,12 +12,12 @@
   <% unless @model.get('disable_cents'): %>
     <div class='fr_spacer'>.</div>
     <div class='has_sub_label'>
-      <label class="fr_sub_label" for="<%= @getDomId() %>_cents"><%= FormRenderer.t.cents %></label>
+      <label class="fr_sub_label" for="<%= @domId() %>_cents"><%= FormRenderer.t.cents %></label>
       <input type="text"
              data-rv-input='model.value.cents'
              maxlength='2'
              size='2'
-             id="<%= @getDomId() %>_cents" />
+             id="<%= @domId() %>_cents" />
     </div>
   <% end %>
 </div>

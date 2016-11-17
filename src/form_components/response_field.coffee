@@ -94,7 +94,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     if @model.id
       @$el.addClass("fr_response_field_#{@model.id}")
 
-  getDomId: ->
+  domId: ->
     @model.cid
 
   reflectConditions: ->

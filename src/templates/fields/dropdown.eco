@@ -1,4 +1,4 @@
-<select id="<%= @getDomId() %>" data-rv-value='model.value'>
+<select id="<%= @domId() %>" data-rv-value='model.value'>
   <% if @model.get('include_blank_option'): %>
     <option></option>
   <% end %>

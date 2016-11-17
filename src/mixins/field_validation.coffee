@@ -8,7 +8,7 @@ FieldValidation =
     'validateMinMax'
   ]
 
-  validate: (opts = {}) ->
+  validateComponent: (opts = {}) ->
     errorWas = @get('error')
     @errors = []
 

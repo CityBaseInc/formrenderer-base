@@ -3,13 +3,12 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
   # @param @parent either the fr instance, or the RepeatingGroupEntry
   # that this field belongs to.
   initialize: (_, @fr, @parent) ->
-    @afterInitialize()
-
-  afterInitialize: ->
-    # nada
-
   sync: ->
-    # nada
+
+  # Not named `validate` beacuse that conflicts with Backbone
+  validateComponent: ->
+
+  setExistingValue: ->
 
   shouldPersistValue: ->
     @isVisible &&

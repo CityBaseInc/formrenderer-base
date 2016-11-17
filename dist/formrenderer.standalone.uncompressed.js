@@ -716,10 +716,10 @@ rivets.configure({
     initialize: function(_, fr, parent) {
       this.fr = fr;
       this.parent = parent;
-      return this.afterInitialize();
     },
-    afterInitialize: function() {},
     sync: function() {},
+    validateComponent: function() {},
+    setExistingValue: function() {},
     shouldPersistValue: function() {
       return this.isVisible && (this.group || this.input_field);
     },
@@ -771,7 +771,8 @@ rivets.configure({
     ignoreKeysWhenCheckingPresence: function() {
       return [];
     },
-    afterInitialize: function() {
+    initialize: function() {
+      FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
       this.errors = [];
       this.calculateVisibility();
       if (this.hasLengthValidation()) {
@@ -878,10 +879,10 @@ rivets.configure({
             if (!$.contains(_this.el, newActive)) {
               if (_isPageButton(newActive)) {
                 return $(document).one('mouseup', function() {
-                  return _this.model.validate();
+                  return _this.model.validateComponent();
                 });
               } else {
-                return _this.model.validate();
+                return _this.model.validateComponent();
               }
             }
           };
@@ -890,7 +891,7 @@ rivets.configure({
     },
     _onInput: function() {
       if (this.model.errors.length > 0) {
-        return this.model.validate({
+        return this.model.validateComponent({
           clearOnly: true
         });
       }
@@ -944,8 +945,7 @@ rivets.configure({
 (function() {
   FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
     input_field: false,
-    validate: function() {},
-    setExistingValue: function() {}
+    validateComponent: function() {}
   });
 
 }).call(this);
@@ -953,9 +953,20 @@ rivets.configure({
 (function() {
   FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
     group: true,
-    afterInitialize: function() {
+    initialize: function() {
+      FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
       this.calculateVisibility();
       return this.entries = [];
+    },
+    validateComponent: function() {
+      var entry, _i, _len, _ref, _results;
+      _ref = this.entries;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        entry = _ref[_i];
+        _results.push(entry.formComponents.invoke('validateComponent'));
+      }
+      return _results;
     },
     setExistingValue: function(entryValues) {
       if (this.isRequired() && (!entryValues || entryValues.length === 0)) {
@@ -1880,7 +1891,7 @@ rivets.configure({
   FieldValidation = {
     validateType: function() {},
     validationFns: ['validateType', 'validateInteger', 'validateLength', 'validateMinMax'],
-    validate: function(opts) {
+    validateComponent: function(opts) {
       var errorIs, errorKey, errorWas, validationFn, _i, _len, _ref;
       if (opts == null) {
         opts = {};
@@ -2415,32 +2426,12 @@ rivets.configure({
       return _results;
     },
     validate: function() {
-      var entry, rf, _i, _len, _ref, _results;
+      var component, _i, _len, _ref, _results;
       _ref = this.models;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        if (rf.input_field) {
-          rf.validate();
-        }
-        if (rf.group) {
-          _results.push((function() {
-            var _j, _len1, _ref1, _results1;
-            _ref1 = rf.entries;
-            _results1 = [];
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              entry = _ref1[_j];
-              _results1.push(entry.formComponents.each((function(_this) {
-                return function(component) {
-                  return component.validate();
-                };
-              })(this)));
-            }
-            return _results1;
-          }).call(this));
-        } else {
-          _results.push(void 0);
-        }
+        component = _ref[_i];
+        _results.push(component.validateComponent());
       }
       return _results;
     },

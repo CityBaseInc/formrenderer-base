@@ -13,7 +13,6 @@ FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.exten
     unless digitsOnly.length >= minDigits
       if isUs then 'us_phone' else 'phone'
 
-
 FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend
   phonePlaceholder: ->
     if @model.get('phone_format') == 'us'

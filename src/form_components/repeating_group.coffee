@@ -1,9 +1,14 @@
 FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
   group: true
 
-  afterInitialize: ->
+  initialize: ->
+    FormRenderer.Models.BaseFormComponent::initialize.apply @, arguments
     @calculateVisibility()
     @entries = []
+
+  validateComponent: ->
+    for entry in @entries
+      entry.formComponents.invoke('validateComponent')
 
   setExistingValue: (entryValues) ->
     # If the field is required, ensure that there is at least one value present

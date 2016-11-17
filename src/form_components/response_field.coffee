@@ -10,7 +10,9 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   ignoreKeysWhenCheckingPresence: ->
     []
 
-  afterInitialize: ->
+  initialize: ->
+    FormRenderer.Models.BaseFormComponent::initialize.apply @, arguments
+
     @errors = []
 
     @calculateVisibility()
@@ -111,15 +113,15 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
 
         unless $.contains(@el, newActive)
           if _isPageButton(newActive)
-            $(document).one 'mouseup', => @model.validate()
+            $(document).one 'mouseup', => @model.validateComponent()
           else
-            @model.validate()
+            @model.validateComponent()
       , 1
 
   # Run validations on change if there are errors
   _onInput: ->
     if @model.errors.length > 0
-      @model.validate(clearOnly: true)
+      @model.validateComponent(clearOnly: true)
 
   focus: ->
     @$el.find(':input:eq(0)').focus()

@@ -9,7 +9,7 @@ before ->
   @setValue = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    @model.validate()
+    @model.validateComponent()
 
   @assertValid = (value) ->
     @setValue(value)

@@ -26,7 +26,6 @@ FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.exten
 
 FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'price'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'blur [data-rv-input="model.value.cents"]': 'formatCents'
 

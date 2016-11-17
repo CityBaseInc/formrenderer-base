@@ -3,17 +3,17 @@
     <legend><%= @model.get('label') %></legend>
     <%- JST["partials/label"](@) %>
     <div class='fr_field_wrapper'>
-      <%- JST["fields/#{@field_type}"](@) %>
+      <%- JST["fields/#{@model.field_type}"](@) %>
     </div>
   </fieldset>
 <% else if @wrapper == 'label': %>
   <%- JST["partials/label"](@) %>
   <div class='fr_field_wrapper'>
-    <%- JST["fields/#{@field_type}"](@) %>
+    <%- JST["fields/#{@model.field_type}"](@) %>
   </div>
 <% else: %>
   <div class='fr_field_wrapper'>
-    <%- JST["fields/#{@field_type}"](@) %>
+    <%- JST["fields/#{@model.field_type}"](@) %>
   </div>
 <% end %>
 

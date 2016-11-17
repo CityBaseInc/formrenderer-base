@@ -29,4 +29,3 @@ FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
 
 FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'date'

@@ -99,7 +99,6 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
 
 FormRenderer.Views.ResponseField = Backbone.View.extend
   wrapper: 'label'
-  field_type: undefined
   className: 'fr_response_field'
   events:
     'blur input, textarea, select': '_onBlur'
@@ -117,7 +116,7 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @listenTo @model, 'change', @_onInput
     @listenTo @model, 'change:currentLength', @auditLength
     @listenTo @model, 'change:error', @toggleErrorModifier
-    @$el.addClass "fr_response_field_#{@field_type}"
+    @$el.addClass "fr_response_field_#{@model.field_type}"
 
     if @model.id
       @$el.addClass("fr_response_field_#{@model.id}")

@@ -1,1 +1,1 @@
-<%- JST["fields/#{@field_type}"](@) %>
+<%- JST["fields/#{@model.field_type}"](@) %>

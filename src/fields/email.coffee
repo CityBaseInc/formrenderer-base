@@ -6,9 +6,8 @@ FormRenderer.Validators.EmailValidator =
     unless model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)
       'email'
 
-FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField.extend
-  field_type: 'email'
-
 FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
   validators: [FormRenderer.Validators.EmailValidator]
   field_type: 'email'
+
+FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField

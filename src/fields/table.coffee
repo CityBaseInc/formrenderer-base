@@ -88,7 +88,6 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
       ''
 
 FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
-  field_type: 'table'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'click .js-add-row': 'addRow'
     'click .js-remove-row': 'removeRow'

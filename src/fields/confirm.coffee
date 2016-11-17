@@ -13,4 +13,3 @@ FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.ext
 
 FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend
   wrapper: 'none'
-  field_type: 'confirm'

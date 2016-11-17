@@ -3,4 +3,3 @@ FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckb
 
 FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'radio'

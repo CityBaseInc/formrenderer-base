@@ -1,5 +1,4 @@
-FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField.extend
-  field_type: 'dropdown'
+FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField
 
 FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend
   field_type: 'dropdown'

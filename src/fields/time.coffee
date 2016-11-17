@@ -21,4 +21,3 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
 
 FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'time'

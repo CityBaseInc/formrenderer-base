@@ -28,4 +28,3 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
 
 FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'checkboxes'

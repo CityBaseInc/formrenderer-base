@@ -1,6 +1,5 @@
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   wrapper: 'fieldset'
-  field_type: 'file'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'click [data-fr-remove-file]': 'doRemove'
   render: ->

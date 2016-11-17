@@ -1,10 +1,3 @@
-FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
-  wrapper: 'fieldset'
-  field_type: 'address'
-  initialize: ->
-    FormRenderer.Views.ResponseField::initialize.apply @, arguments
-    @listenTo @model, 'change:value.country', @render
-
 FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend
   field_type: 'address'
   setExistingValue: (x) ->
@@ -20,3 +13,9 @@ FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.ext
 
   toText: ->
     _.values(_.pick(@getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ')
+
+FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend
+  wrapper: 'fieldset'
+  initialize: ->
+    FormRenderer.Views.ResponseField::initialize.apply @, arguments
+    @listenTo @model, 'change:value.country', @render

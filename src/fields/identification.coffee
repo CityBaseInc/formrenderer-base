@@ -1,6 +1,3 @@
-FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend
-  field_type: 'identification'
-
 FormRenderer.Validators.IdentificationValidator =
   validate: (model) ->
     if !model.get('value.email') || !model.get('value.name')
@@ -14,3 +11,5 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
   isRequired: -> true
   hasValue: ->
     @hasValueHashKey ['email', 'name']
+
+FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField

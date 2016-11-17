@@ -17,7 +17,6 @@ FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.e
       [lat, lng]
 
 FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend
-  field_type: 'map_marker'
   events: _.extend {}, FormRenderer.Views.ResponseField::events,
     'click .fr_map_cover': 'enable'
     'click [data-fr-clear-map]': 'disable'

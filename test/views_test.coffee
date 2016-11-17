@@ -1,6 +1,30 @@
+ALL_FIELD_TYPES = [
+  'identification'
+  'address'
+  'checkboxes'
+  'date'
+  'dropdown'
+  'email'
+  'file'
+  'number'
+  'paragraph'
+  'phone'
+  'price'
+  'radio'
+  'table'
+  'text'
+  'time'
+  'website'
+  'map_marker'
+  'confirm'
+  'block_of_text'
+  'page_break'
+  'section_break'
+]
+
 describe 'response field views', ->
   it 'can be rendered without a form_renderer instance', ->
-    for field_type in FormRenderer.FIELD_TYPES
+    for field_type in ALL_FIELD_TYPES
       model = new FormRenderer.Models["ResponseField#{_.str.classify(field_type)}"]
       viewKlass = FormRenderer.formComponentViewClass(model)
       view = new viewKlass(model: model)

@@ -140,8 +140,14 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
   toggleErrorModifier: ->
     @$el[if @model.getError() then 'addClass' else 'removeClass']('error')
 
+  partialName: ->
+    if @model.input_field
+      'response_field'
+    else
+      'non_input_response_field'
+
   render: ->
-    @$el.html JST['partials/response_field'](@)
+    @$el.html JST["partials/#{@partialName()}"](@)
     rivets.bind @$el, { model: @model }
     @auditLength()
     @form_renderer?.trigger 'viewRendered', @

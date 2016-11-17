@@ -84,4 +84,3 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     idx = @$el.find('[data-fr-remove-file]').index(e.target)
     @model.removeFile(idx)
     @render()
-

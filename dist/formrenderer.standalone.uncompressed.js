@@ -483,12 +483,6 @@ rivets.configure({
     }
   });
 
-  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'phone', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker', 'confirm'];
-
-  FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
-
-  FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
-
   FormRenderer.BUTTON_CLASS = 'fr_button';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
@@ -524,10 +518,8 @@ rivets.configure({
       return FormRenderer.Views.RepeatingGroup;
     } else if ((foundKlass = FormRenderer.Views["ResponseField" + (_str.classify(field.field_type))])) {
       return foundKlass;
-    } else if (field.input_field) {
-      return FormRenderer.Views.ResponseField;
     } else {
-      return FormRenderer.Views.NonInputResponseField;
+      return FormRenderer.Views.ResponseField;
     }
   };
 
@@ -926,9 +918,16 @@ rivets.configure({
     toggleErrorModifier: function() {
       return this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
     },
+    partialName: function() {
+      if (this.model.input_field) {
+        return 'response_field';
+      } else {
+        return 'non_input_response_field';
+      }
+    },
     render: function() {
       var _ref;
-      this.$el.html(JST['partials/response_field'](this));
+      this.$el.html(JST["partials/" + (this.partialName())](this));
       rivets.bind(this.$el, {
         model: this.model
       });
@@ -943,40 +942,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var i, _i, _j, _len, _len1, _ref, _ref1;
-
   FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
     input_field: false,
     validate: function() {},
     setExistingValue: function() {}
   });
-
-  _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
-
-  FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
-    render: function() {
-      var _ref1;
-      this.$el.html(JST['partials/non_input_response_field'](this));
-      if ((_ref1 = this.form_renderer) != null) {
-        _ref1.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-    i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
 
 }).call(this);
 
@@ -1188,6 +1158,13 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  FormRenderer.Models.ResponseFieldBlockOfText = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'block_of_text'
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
     wrapper: 'fieldset',
@@ -1282,9 +1259,9 @@ rivets.configure({
       if (x != null) {
         return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       } else {
-        checkedOption = _.find(this.getOptions(), (function(option) {
+        checkedOption = _.find(this.getOptions(), function(option) {
           return FormRenderer.toBoolean(option.checked);
-        }));
+        });
         if (!checkedOption && !this.get('include_blank_option')) {
           checkedOption = _.first(this.getOptions());
         }
@@ -1559,14 +1536,24 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
     field_type: 'number',
+    validateType: function() {
+      var normalized;
+      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
+      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
+        return 'number';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldNumber = FormRenderer.Views.ResponseField.extend({
     calculateSize: function() {
       var digits, digitsInt;
-      if ((digitsInt = parseInt(this.get('max'), 10))) {
+      if ((digitsInt = parseInt(this.model.get('max'), 10))) {
         digits = ("" + digitsInt).length;
       } else {
         digits = 6;
       }
-      if (!this.get('integer_only')) {
+      if (!this.model.get('integer_only')) {
         digits += 2;
       }
       if (digits > 6) {
@@ -1576,14 +1563,14 @@ rivets.configure({
       } else {
         return 'one_three';
       }
-    },
-    validateType: function() {
-      var normalized;
-      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
-      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
-        return 'number';
-      }
     }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldPageBreak = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'page_break'
   });
 
 }).call(this);
@@ -1667,6 +1654,13 @@ rivets.configure({
   FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
     field_type: 'radio',
     wrapper: 'fieldset'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldSectionBreak = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'section_break'
   });
 
 }).call(this);
@@ -3265,7 +3259,7 @@ window.JST["fields/number"] = function(__obj) {
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
     
-      _print(this.model.calculateSize());
+      _print(this.calculateSize());
     
       _print(_safe('" />\n\n'));
     

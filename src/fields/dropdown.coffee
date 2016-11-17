@@ -4,7 +4,8 @@ FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.ex
     if x?
       FormRenderer.Models.ResponseField::setExistingValue.apply @, arguments
     else
-      checkedOption = _.find @getOptions(), ( (option) -> FormRenderer.toBoolean(option.checked) )
+      checkedOption = _.find @getOptions(), (option) ->
+        FormRenderer.toBoolean(option.checked)
 
       if !checkedOption && !@get('include_blank_option')
         checkedOption = _.first @getOptions()

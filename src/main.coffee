@@ -302,40 +302,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     page.reflectConditions() for _, page of @subviews.pages
     @subviews.pagination?.render()
 
-## Master list of field types
-
-FormRenderer.INPUT_FIELD_TYPES = [
-  'identification'
-  'address'
-  'checkboxes'
-  'date'
-  'dropdown'
-  'email'
-  'file'
-  'number'
-  'paragraph'
-  'phone'
-  'price'
-  'radio'
-  'table'
-  'text'
-  'time'
-  'website'
-  'map_marker'
-  'confirm'
-]
-
-FormRenderer.NON_INPUT_FIELD_TYPES = [
-  'block_of_text'
-  'page_break'
-  'section_break'
-]
-
-FormRenderer.FIELD_TYPES = _.union(
-  FormRenderer.INPUT_FIELD_TYPES,
-  FormRenderer.NON_INPUT_FIELD_TYPES
-)
-
 ## Class-level configs
 
 FormRenderer.BUTTON_CLASS = 'fr_button'

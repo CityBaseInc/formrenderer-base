@@ -214,6 +214,23 @@
     opacity: 0.65;
     cursor: default; }
 
+.fr_group_entry_idx {
+  color: #888; }
+
+.fr_group_entry {
+  margin: 10px 0; }
+
+.fr_group_entry_fields {
+  margin: 3px 0;
+  border: 1px solid #eee;
+  padding: 20px; }
+  .fr_group_entry_fields .fr_response_field:last-child {
+    margin-bottom: 0; }
+
+.fr_group_skipped {
+  margin-top: 10px;
+  color: #888; }
+
 .fr_bottom {
   display: table;
   width: 100%;

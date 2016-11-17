@@ -53,7 +53,7 @@
   <% if @model.canAddRows(): %>
     <a class='js-add-row' href='#'>
       <%- FormRenderer.ADD_ROW_ICON %>
-      <%= FormRenderer.t.add_another_row %>
+      <%= FormRenderer.t.add_another %>
     </a>
   <% end %>
 </div>

@@ -72,7 +72,7 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
     @repeatingGroup.entries.length > 1 || !@repeatingGroup.isRequired()
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
-  className: 'fr_repeating_group'
+  className: 'fr_response_field fr_response_field_group'
 
   events:
     'click .js-remove-entry': 'removeEntry'
@@ -90,6 +90,8 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     # When clicking "answer this question", add an entry if there are none
     if !@model.isSkipped() && @model.entries.length == 0
       @addEntry()
+
+    @render()
 
   reflectConditions: ->
     if @model.isVisible
@@ -110,7 +112,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   render: ->
     @$el.html JST['partials/repeating_group'](@)
     rivets.bind @$el, { @model }
-    $entries = @$el.find('.repeating_group_entries')
+    $entries = @$el.find('.fr_group_entries')
     @views = []
 
     for entry, idx in @model.entries
@@ -128,7 +130,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @
 
 FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
-  className: 'fr_repeating_group_entry'
+  className: 'fr_group_entry'
 
   initialize: (options) ->
     @entry = options.entry
@@ -138,7 +140,7 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
 
   render: ->
     @$el.html JST['partials/repeating_group_entry'](@)
-    $children = @$el.find('.repeating_group_entry_fields')
+    $children = @$el.find('.fr_group_entry_fields')
 
     @entry.formComponents.each (rf) =>
       view = FormRenderer.buildFormComponentView(rf, @form_renderer)

@@ -1,24 +1,20 @@
-<div class='repeating_group_label'>
-  <%= @model.get('label') %>
-  <%- JST["partials/required"](@) %>
-</div>
+<fieldset class='fr_fieldset'>
+  <legend><%= @model.get('label') %></legend>
+  <%- JST["partials/label"](@) %>
 
-<div data-rv-hide='model.skipped'>
-  <div class='repeating_group_entries'>
-  </div>
+  <% if @model.isSkipped(): %>
+    <a href='#' class='js-skip fr_group_answer'><%= FormRenderer.t.answer %></a>
+    <div class='fr_group_skipped'><%= FormRenderer.t.skipped %></div>
+  <% else: %>
+    <% unless @model.isRequired(): %>
+      <a href='#' class='js-skip fr_group_skip'><%= FormRenderer.t.skip %></a>
+    <% end %>
 
-  <% unless @model.isRequired(): %>
-    <a href='#' class='js-skip'>Skip this question</a>
+    <div class='fr_group_entries'>
+    </div>
+
+    <% if @model.canAdd(): %>
+      <a href='#' class='js-add-entry fr_group_add'><%= FormRenderer.t.add_another %></a>
+    <% end %>
   <% end %>
-
-  <% if @model.canAdd(): %>
-    <a href='#' class='js-add-entry'>Add another</a>
-  <% end %>
-</div>
-
-<% unless @model.isRequired(): %>
-  <div data-rv-show='model.skipped'>
-    This field is skipped
-    <a href='#' class='js-skip'>Answer this question</a>
-  </div>
-<% end %>
+</fieldset>

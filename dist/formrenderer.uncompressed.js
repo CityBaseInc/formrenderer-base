@@ -6731,6 +6731,8 @@ rivets.configure({
 
   FormRenderer.REMOVE_ROW_ICON = '-';
 
+  FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
+
   FormRenderer.Views = {};
 
   FormRenderer.Models = {};
@@ -7271,7 +7273,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
-    className: 'fr_repeating_group',
+    className: 'fr_response_field fr_response_field_group',
     events: {
       'click .js-remove-entry': 'removeEntry',
       'click .js-add-entry': 'addEntry',
@@ -7287,8 +7289,9 @@ rivets.configure({
     toggleSkip: function() {
       this.model.set('skipped', !this.model.isSkipped());
       if (!this.model.isSkipped() && this.model.entries.length === 0) {
-        return this.addEntry();
+        this.addEntry();
       }
+      return this.render();
     },
     reflectConditions: function() {
       if (this.model.isVisible) {
@@ -7314,7 +7317,7 @@ rivets.configure({
       rivets.bind(this.$el, {
         model: this.model
       });
-      $entries = this.$el.find('.repeating_group_entries');
+      $entries = this.$el.find('.fr_group_entries');
       this.views = [];
       _ref = this.model.entries;
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
@@ -7336,7 +7339,7 @@ rivets.configure({
   });
 
   FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
-    className: 'fr_repeating_group_entry',
+    className: 'fr_group_entry',
     initialize: function(options) {
       this.entry = options.entry;
       this.form_renderer = options.form_renderer;
@@ -7346,7 +7349,7 @@ rivets.configure({
     render: function() {
       var $children;
       this.$el.html(JST['partials/repeating_group_entry'](this));
-      $children = this.$el.find('.repeating_group_entry_fields');
+      $children = this.$el.find('.fr_group_entry_fields');
       this.entry.formComponents.each((function(_this) {
         return function(rf) {
           var view;
@@ -8745,7 +8748,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another":"Add another","answer":"Answer this question","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","skip":"Skip this question","skipped":"This question is skipped.","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -9962,7 +9965,7 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
         _print(_safe(FormRenderer.ADD_ROW_ICON));
         _print(_safe('\n      '));
-        _print(FormRenderer.t.add_another_row);
+        _print(FormRenderer.t.add_another);
         _print(_safe('\n    </a>\n  '));
       }
     
@@ -10331,7 +10334,7 @@ window.JST["partials/label"] = function(__obj) {
     (function() {
       _print(_safe('<label '));
     
-      if (this.usesFieldset) {
+      if (this.model.group || this.model.wrapper === 'fieldset') {
         _print(_safe('aria-hidden="true"'));
       } else {
         _print(_safe('for="'));
@@ -10865,33 +10868,39 @@ window.JST["partials/repeating_group"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'repeating_group_label\'>\n  '));
+      _print(_safe('<fieldset class=\'fr_fieldset\'>\n  <legend>'));
     
       _print(this.model.get('label'));
     
-      _print(_safe('\n  '));
+      _print(_safe('</legend>\n  '));
     
-      _print(_safe(JST["partials/required"](this)));
-    
-      _print(_safe('\n</div>\n\n<div data-rv-hide=\'model.skipped\'>\n  <div class=\'repeating_group_entries\'>\n  </div>\n\n  '));
-    
-      if (!this.model.isRequired()) {
-        _print(_safe('\n    <a href=\'#\' class=\'js-skip\'>Skip this question</a>\n  '));
-      }
+      _print(_safe(JST["partials/label"](this)));
     
       _print(_safe('\n\n  '));
     
-      if (this.model.canAdd()) {
-        _print(_safe('\n    <a href=\'#\' class=\'js-add-entry\'>Add another</a>\n  '));
+      if (this.model.isSkipped()) {
+        _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
+        _print(FormRenderer.t.answer);
+        _print(_safe('</a>\n    <div class=\'fr_group_skipped\'>'));
+        _print(FormRenderer.t.skipped);
+        _print(_safe('</div>\n  '));
+      } else {
+        _print(_safe('\n    '));
+        if (!this.model.isRequired()) {
+          _print(_safe('\n      <a href=\'#\' class=\'js-skip fr_group_skip\'>'));
+          _print(FormRenderer.t.skip);
+          _print(_safe('</a>\n    '));
+        }
+        _print(_safe('\n\n    <div class=\'fr_group_entries\'>\n    </div>\n\n    '));
+        if (this.model.canAdd()) {
+          _print(_safe('\n      <a href=\'#\' class=\'js-add-entry fr_group_add\'>'));
+          _print(FormRenderer.t.add_another);
+          _print(_safe('</a>\n    '));
+        }
+        _print(_safe('\n  '));
       }
     
-      _print(_safe('\n</div>\n\n'));
-    
-      if (!this.model.isRequired()) {
-        _print(_safe('\n  <div data-rv-show=\'model.skipped\'>\n    This field is skipped\n    <a href=\'#\' class=\'js-skip\'>Answer this question</a>\n  </div>\n'));
-      }
-    
-      _print(_safe('\n'));
+      _print(_safe('\n</fieldset>\n'));
     
     }).call(this);
     
@@ -10936,14 +10945,16 @@ window.JST["partials/repeating_group_entry"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'repeating_group_entry_idx\'>#'));
+      _print(_safe('<div class=\'fr_group_entry_idx\'>#'));
     
       _print(this.idx + 1);
     
-      _print(_safe('</div>\n\n<div class=\'repeating_group_entry_fields\'>\n</div>\n\n'));
+      _print(_safe('</div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
     
       if (this.entry.canRemove()) {
-        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry\'>Remove</a>\n'));
+        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry fr_group_entry_remove\'>'));
+        _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
+        _print(_safe('</a>\n'));
       }
     
       _print(_safe('\n'));

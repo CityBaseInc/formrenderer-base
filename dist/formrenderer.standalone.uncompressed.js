@@ -1076,13 +1076,9 @@ rivets.configure({
       return this.render();
     },
     render: function() {
-      var $entries, entry, idx, view, _i, _len, _ref, _ref1;
-      this.$el.html(JST['partials/repeating_group'](this));
-      rivets.bind(this.$el, {
-        model: this.model
-      });
-      $entries = this.$el.find('.fr_group_entries');
+      var $els, entry, idx, view, _i, _len, _ref, _ref1;
       this.views = [];
+      $els = $();
       _ref = this.model.entries;
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
         entry = _ref[idx];
@@ -1092,9 +1088,14 @@ rivets.configure({
           idx: idx
         });
         entry.view = view;
-        $entries.append(view.render().el);
+        $els = $els.add(view.render().el);
         this.views.push(view);
       }
+      this.$el.html(JST['partials/repeating_group'](this));
+      rivets.bind(this.$el, {
+        model: this.model
+      });
+      this.$el.find('.fr_group_entries').append($els);
       if ((_ref1 = this.form_renderer) != null) {
         _ref1.trigger('viewRendered', this);
       }

@@ -10,11 +10,10 @@ FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.exten
     values = []
 
     if @get('value.dollars')
-      values.push(
-        @get('value.dollars').replace(/,/g, '').replace(/^\$/, '')
-      )
+      values.push("#{@get('value.dollars')}".replace(/,/g, '').replace(/^\$/, ''))
+
     if @get('value.cents')
-      values.push(@get('value.cents'))
+      values.push("#{@get('value.cents')}")
 
     unless _.every(values, (x) -> x.match(/^-?\d+$/))
       'price'

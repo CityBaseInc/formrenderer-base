@@ -7869,10 +7869,10 @@ rivets.configure({
       var values;
       values = [];
       if (this.get('value.dollars')) {
-        values.push(this.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
+        values.push(("" + (this.get('value.dollars'))).replace(/,/g, '').replace(/^\$/, ''));
       }
       if (this.get('value.cents')) {
-        values.push(this.get('value.cents'));
+        values.push("" + (this.get('value.cents')));
       }
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);

@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     version: grunt.file.read("src/version.coffee").match(/\'([0-9\.]+)\'\s/)[1]
     pkg: '<json:package.json>'
     srcFolder: 'src'
-    compiledFolder: 'compiled' # Temporary holding area.
+    compiledFolder: 'tmp/compiled' # Temporary holding area.
     distFolder: 'dist'
     vendorFolder: 'vendor'
     testFolder: 'test'
@@ -102,7 +102,7 @@ module.exports = (grunt) ->
         options:
           sourcemap: 'none'
         files:
-          '<%= distFolder %>/formrenderer.uncompressed.css': '<%= distFolder %>/styles/main.scss'
+          '<%= distFolder %>/formrenderer.uncompressed.css': 'style/main.scss'
 
     cssmin:
       dist:
@@ -123,11 +123,13 @@ module.exports = (grunt) ->
       build:
         files: [
           '<%= srcFolder %>/**/*.{coffee,eco}',
-          '<%= distFolder %>/styles/**/*.scss',
+          'style/**/*.scss',
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]
-        tasks: 'default'
+        tasks: ['default', 'test']
+        options:
+          atBegin: true
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
         tasks: 'test'
@@ -189,7 +191,7 @@ module.exports = (grunt) ->
     )
 
     grunt.file.write(
-      'compiled/file_types.js',
+      "#{grunt.config.get('compiledFolder')}/file_types.js",
       "FormRenderer.FILE_TYPES = #{grunt.file.read('fixtures/file_types.json')};"
     )
 

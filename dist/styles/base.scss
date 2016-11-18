@@ -337,6 +337,13 @@
 
 .fr_group_entry {
   margin: $fr_rhythm / 2 0;
+  @include cf;
+  + .fr_group_entry .fr_group_entry_fields {
+    width: 80%;
+    @media screen and (min-width: 600px) {
+      width: 90%;
+    }
+  }
 }
 
 .fr_group_entry_fields {
@@ -347,6 +354,12 @@
   .fr_response_field:last-child {
     margin-bottom: 0;
   }
+}
+
+.fr_group_entry_remove {
+  float: right;
+  position: relative;
+  top: $fr_sub_label_line_height * 2;
 }
 
 .fr_group_skipped {

@@ -245,6 +245,9 @@
 .fr_group_entry_remove {
   float: right; }
 
+.fr_group_skip {
+  font-size: 90%; }
+
 .fr_group_skipped {
   margin-top: 10px;
   color: #888; }

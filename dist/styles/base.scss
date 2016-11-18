@@ -365,6 +365,10 @@
   float: right;
 }
 
+.fr_group_skip {
+  font-size: $fr_font_small;
+}
+
 .fr_group_skipped {
   margin-top: $fr_rhythm / 2;
   color: $fr_muted_color;

@@ -132,7 +132,9 @@ module.exports = (grunt) ->
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]
-        tasks: 'default'
+        tasks: ['default', 'test']
+        options:
+          atBegin: true
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
         tasks: 'test'

@@ -212,6 +212,160 @@ Fixtures.KITCHEN_SINK_FORM = [
         blind: false,
         admin_only: false,
         field_type: "text"
+      }, {
+        id: 55,
+        label: "Paragraph",
+        size: "large",
+        description: "How would you complete this project?",
+        minlength: "10",
+        required: false,
+        blind: false,
+        admin_only: true,
+        field_type: "paragraph",
+      }, {
+        id: 56,
+        label: "Checkboxes",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1 (yas)"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "checkboxes",
+      }, {
+        id: 57,
+        label: "New page",
+        description: "hey hey hey.",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "section_break",
+      }, {
+        id: 58,
+        label: "",
+        description: "Howdyhowdyhowdy",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "block_of_text",
+      }, {
+        id: 59,
+        label: "Radio",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "radio",
+      }, {
+        id: 60,
+        label: "Dropdown",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        include_blank_option: true,
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "dropdown",
+      }, {
+        id: 61,
+        label: "Price",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "price",
+      }, {
+        id: 62,
+        label: "Number",
+        units: "things",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "number",
+      }, {
+        id: 63,
+        label: "Date",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "date",
+      }, {
+        id: 64,
+        label: "Time",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "time",
+      }, {
+        id: 65,
+        label: "Website",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "website",
+      }, {
+        id: 66,
+        label: "File",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "file",
+      }, {
+        id: 67,
+        label: "Email",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "email",
+      }, {
+        id: 68,
+        label: "Address",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "address",
+      }, {
+        id: 69,
+        label: "MapMarker",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "map_marker",
+      }, {
+        id: 70,
+        label: "Phone (US)",
+        phone_format: "us",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "phone",
+      }, {
+        id: 71,
+        label: "I accept the terms of Service.",
+        required: true,
+        blind: false,
+        admin_only: false,
+        field_type: "confirm",
       }
     ]
   }

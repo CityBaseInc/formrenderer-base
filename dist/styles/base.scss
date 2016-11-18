@@ -144,6 +144,10 @@
   font-size: $fr_font_small;
   .fr_map_coord {
     float: left;
+    width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   a {
     float: right;

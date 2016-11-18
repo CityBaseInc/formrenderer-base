@@ -107,7 +107,11 @@
   .fr_map_toolbar:after {
     clear: both; }
   .fr_map_toolbar .fr_map_coord {
-    float: left; }
+    float: left;
+    width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
   .fr_map_toolbar a {
     float: right; }
 

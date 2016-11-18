@@ -69,7 +69,7 @@ FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
     @view.reflectConditions()
 
   canRemove: ->
-    @repeatingGroup.entries.length > 1 || !@repeatingGroup.isRequired()
+    @repeatingGroup.entries.length > 1
 
 FormRenderer.Views.RepeatingGroup = Backbone.View.extend
   className: 'fr_response_field fr_response_field_group'

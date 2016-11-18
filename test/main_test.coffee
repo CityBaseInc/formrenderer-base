@@ -279,13 +279,6 @@ describe 'repeating sections', ->
     expect($('.fr_response_field_2').length).to.equal(2)
     expect($('.js-add-entry').length).to.equal(0)
 
-  describe 'when optional', ->
-    it 'can remove entries', ->
-      @fr = new FormRenderer(@frData)
-      expect($('.fr_response_field_2').length).to.equal(1)
-      $('.js-remove-entry').click()
-      expect($('.fr_response_field_2').length).to.equal(0)
-
   describe 'when required', ->
     it 'cannot remove the last entry', ->
       @frData.response_fields[0].required = true

@@ -7271,7 +7271,7 @@ rivets.configure({
       return this.view.reflectConditions();
     },
     canRemove: function() {
-      return this.repeatingGroup.entries.length > 1 || !this.repeatingGroup.isRequired();
+      return this.repeatingGroup.entries.length > 1;
     }
   });
 

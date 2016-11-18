@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     version: grunt.file.read("src/version.coffee").match(/\'([0-9\.]+)\'\s/)[1]
     pkg: '<json:package.json>'
     srcFolder: 'src'
-    compiledFolder: 'compiled' # Temporary holding area.
+    compiledFolder: 'tmp/compiled'
     distFolder: 'dist'
     vendorFolder: 'vendor'
     testFolder: 'test'
@@ -194,7 +194,7 @@ module.exports = (grunt) ->
     )
 
     grunt.file.write(
-      'compiled/file_types.js',
+      "#{grunt.config.get('compiledFolder')}/file_types.js",
       "FormRenderer.FILE_TYPES = #{grunt.file.read('fixtures/file_types.json')};"
     )
 

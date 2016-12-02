@@ -7286,8 +7286,32 @@ rivets.configure({
       this.form_renderer = options.form_renderer;
       this.model = options.model;
       if (this.model.id) {
-        return this.$el.addClass("fr_response_field_" + this.model.id);
+        this.$el.addClass("fr_response_field_" + this.model.id);
       }
+      this.on('shown', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('shown'));
+          }
+          return _results;
+        };
+      })(this));
+      return this.on('hidden', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('hidden'));
+          }
+          return _results;
+        };
+      })(this));
     },
     toggleSkip: function() {
       this.model.set('skipped', !this.model.isSkipped());
@@ -7351,8 +7375,11 @@ rivets.configure({
       return this.views = [];
     },
     render: function() {
-      var $children;
+      var $children, _ref;
       this.$el.html(JST['partials/repeating_group_entry'](this));
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
       $children = this.$el.find('.fr_group_entry_fields');
       this.entry.formComponents.each((function(_this) {
         return function(rf) {

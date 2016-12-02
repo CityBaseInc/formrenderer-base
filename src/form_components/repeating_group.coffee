@@ -84,6 +84,10 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @model = options.model
     @$el.addClass("fr_response_field_#{@model.id}") if @model.id
 
+    # Forward `shown` and `hidden` events to subviews
+    @on 'shown', => view.trigger('shown') for view in @views
+    @on 'hidden', => view.trigger('hidden') for view in @views
+
   toggleSkip: ->
     @model.set('skipped', !@model.isSkipped())
 
@@ -141,6 +145,7 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
 
   render: ->
     @$el.html JST['partials/repeating_group_entry'](@)
+    @form_renderer?.trigger 'viewRendered', @
     $children = @$el.find('.fr_group_entry_fields')
 
     @entry.formComponents.each (rf) =>

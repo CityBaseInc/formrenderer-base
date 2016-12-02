@@ -11,26 +11,21 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
       entry.formComponents.invoke('validateComponent')
 
   setExistingValue: (entryValues) ->
-    # If the field is required, ensure that there is at least one value present
-    if @isRequired() && (!entryValues || entryValues.length == 0)
-      entryValues = [{}]
+    if @isRequired()
+      # If the field is required, ensure that there is at least one value present
+      if !entryValues || entryValues.length == 0
+        entryValues = [{}]
 
-    # If the field is optional, and entryValues is an empty array, then
-    # we presume that the field is skipped.
-    if !@isRequired() && _.isArray(entryValues) && _.isEmpty(entryValues)
-      @set('skipped', true)
+    else # Field is optional...
+      # If entryValues is not set, then add an empty value.
+      if !entryValues
+        entryValues = [{}]
+      # If entryValues is an empty array, the field is skipped.
+      else if _.isArray(entryValues) && _.isEmpty(entryValues)
+        @set('skipped', true)
 
-    # If the field is optional and entryValues is not defined, then add an empty
-    # value.
-    if !@isRequired() && !entryValues
-      entryValues = [{}]
-
-    @entries = _.map entryValues, (entryValue) =>
-      new FormRenderer.Models.RepeatingGroupEntry(
-        { value: entryValue },
-        @fr,
-        @
-      )
+    @entries = _.map entryValues, (value) =>
+      new FormRenderer.Models.RepeatingGroupEntry({ value }, @fr, @)
 
   addEntry: ->
     @entries.push(

@@ -988,19 +988,21 @@ rivets.configure({
       return _results;
     },
     setExistingValue: function(entryValues) {
-      if (this.isRequired() && (!entryValues || entryValues.length === 0)) {
-        entryValues = [{}];
-      }
-      if (!this.isRequired() && _.isArray(entryValues) && _.isEmpty(entryValues)) {
-        this.set('skipped', true);
-      }
-      if (!this.isRequired() && !entryValues) {
-        entryValues = [{}];
+      if (this.isRequired()) {
+        if (!entryValues || entryValues.length === 0) {
+          entryValues = [{}];
+        }
+      } else {
+        if (!entryValues) {
+          entryValues = [{}];
+        } else if (_.isArray(entryValues) && _.isEmpty(entryValues)) {
+          this.set('skipped', true);
+        }
       }
       return this.entries = _.map(entryValues, (function(_this) {
-        return function(entryValue) {
+        return function(value) {
           return new FormRenderer.Models.RepeatingGroupEntry({
-            value: entryValue
+            value: value
           }, _this.fr, _this);
         };
       })(this));

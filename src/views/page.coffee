@@ -32,17 +32,20 @@ FormRenderer.Views.Page = Backbone.View.extend
   validate: ->
     component.validateComponent() for component in @models
 
-  firstViewWithError: ->
-    for _, view of @views
-      if view.model.group
-        if !view.model.isSkipped()
-          for _, entry of view.model.entries
-            for _, fieldView of entry.view.views
-              return fieldView if fieldView.model.errors.length > 0
-      else
-        return view if view.model.errors.length > 0
+  fieldViews: ->
+    _.tap [], (arr) =>
+      for view in @views
+        if view.model.group
+          if !view.model.isSkipped()
+            for entry in view.model.entries
+              for fieldView in entry.view.views
+                arr.push(fieldView)
+        else
+          arr.push(view)
 
-    return undefined
+  firstViewWithError: ->
+    _.find @fieldViews(), (view) ->
+      view.model.errors.length > 0
 
   isVisible: ->
     !!_.find(@models, ((rf) -> rf.isVisible))

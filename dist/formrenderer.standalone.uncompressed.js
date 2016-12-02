@@ -2506,32 +2506,50 @@ rivets.configure({
       }
       return _results;
     },
-    firstViewWithError: function() {
-      var entry, fieldView, view, _, _ref, _ref1, _ref2;
-      _ref = this.views;
-      for (_ in _ref) {
-        view = _ref[_];
-        if (view.model.group) {
-          if (!view.model.isSkipped()) {
-            _ref1 = view.model.entries;
-            for (_ in _ref1) {
-              entry = _ref1[_];
-              _ref2 = entry.view.views;
-              for (_ in _ref2) {
-                fieldView = _ref2[_];
-                if (fieldView.model.errors.length > 0) {
-                  return fieldView;
-                }
+    fieldViews: function() {
+      return _.tap([], (function(_this) {
+        return function(arr) {
+          var entry, fieldView, view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            if (view.model.group) {
+              if (!view.model.isSkipped()) {
+                _results.push((function() {
+                  var _j, _len1, _ref1, _results1;
+                  _ref1 = view.model.entries;
+                  _results1 = [];
+                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                    entry = _ref1[_j];
+                    _results1.push((function() {
+                      var _k, _len2, _ref2, _results2;
+                      _ref2 = entry.view.views;
+                      _results2 = [];
+                      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                        fieldView = _ref2[_k];
+                        _results2.push(arr.push(fieldView));
+                      }
+                      return _results2;
+                    })());
+                  }
+                  return _results1;
+                })());
+              } else {
+                _results.push(void 0);
               }
+            } else {
+              _results.push(arr.push(view));
             }
           }
-        } else {
-          if (view.model.errors.length > 0) {
-            return view;
-          }
-        }
-      }
-      return void 0;
+          return _results;
+        };
+      })(this));
+    },
+    firstViewWithError: function() {
+      return _.find(this.fieldViews(), function(view) {
+        return view.model.errors.length > 0;
+      });
     },
     isVisible: function() {
       return !!_.find(this.models, (function(rf) {

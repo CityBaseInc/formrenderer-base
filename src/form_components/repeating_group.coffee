@@ -143,6 +143,10 @@ FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
     @idx = options.idx
     @views = []
 
+    # Forward `shown` and `hidden` events to subviews
+    @on 'shown', => view.trigger('shown') for view in @views
+    @on 'hidden', => view.trigger('hidden') for view in @views
+
   render: ->
     @$el.html JST['partials/repeating_group_entry'](@)
     @form_renderer?.trigger 'viewRendered', @

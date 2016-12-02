@@ -1133,7 +1133,31 @@ rivets.configure({
       this.entry = options.entry;
       this.form_renderer = options.form_renderer;
       this.idx = options.idx;
-      return this.views = [];
+      this.views = [];
+      this.on('shown', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('shown'));
+          }
+          return _results;
+        };
+      })(this));
+      return this.on('hidden', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('hidden'));
+          }
+          return _results;
+        };
+      })(this));
     },
     render: function() {
       var $children, _ref;

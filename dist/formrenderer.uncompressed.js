@@ -6971,6 +6971,7 @@ rivets.configure({
     initialize: function(_, fr, parent) {
       this.fr = fr;
       this.parent = parent;
+      return this.calculateVisibility();
     },
     sync: function() {},
     validateComponent: function() {},
@@ -6990,17 +6991,29 @@ rivets.configure({
     parentGroupIsHidden: function() {
       return (this.parent.repeatingGroup != null) && !this.parent.repeatingGroup.isVisible;
     },
-    calculateVisibility: function() {
+    calculateVisibilityIsChanged: function() {
       var prevValue;
       prevValue = !!this.isVisible;
-      this.isVisible = (!this.fr ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
+      this.calculateVisibility();
+      return prevValue !== this.isVisible;
+    },
+    calculateVisibility: function() {
+      return this.isVisible = this._calculateIsVisible();
+    },
+    _calculateIsVisible: function() {
+      if (!this.fr) {
+        return true;
+      }
+      if (!this.isConditional()) {
+        return true;
+      }
+      return _[this.conditionMethod()](this.getConditions(), (function(_this) {
         return function(conditionHash) {
           var conditionChecker;
           conditionChecker = new FormRenderer.ConditionChecker(_this.parent.formComponents.get(conditionHash.response_field_id), conditionHash);
           return conditionChecker.isVisible();
         };
-      })(this)) : true);
-      return prevValue !== this.isVisible;
+      })(this));
     },
     conditionMethod: function() {
       if (this.get('condition_method') === 'any') {
@@ -7032,7 +7045,6 @@ rivets.configure({
     initialize: function() {
       FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
       this.errors = [];
-      this.calculateVisibility();
       if (this.hasLengthValidation()) {
         return this.listenTo(this, 'change:value', this.calculateLength);
       }
@@ -7102,31 +7114,12 @@ rivets.configure({
       'blur input, textarea, select': '_onBlur'
     },
     initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      if (this.form_renderer) {
-        this.showLabels = this.form_renderer.options.showLabels;
-      } else {
-        this.showLabels = options.showLabels;
-      }
-      this.model = options.model;
+      this._sharedInitialize(options);
       this.listenTo(this.model, 'afterValidate', this.render);
       this.listenTo(this.model, 'change', this._onInput);
       this.listenTo(this.model, 'change:currentLength', this.auditLength);
       this.listenTo(this.model, 'change:error', this.toggleErrorModifier);
-      this.$el.addClass("fr_response_field_" + this.model.field_type);
-      if (this.model.id) {
-        return this.$el.addClass("fr_response_field_" + this.model.id);
-      }
-    },
-    domId: function() {
-      return this.model.cid;
-    },
-    reflectConditions: function() {
-      if (this.model.isVisible) {
-        return this.$el.show();
-      } else {
-        return this.$el.hide();
-      }
+      return this.$el.addClass("fr_response_field_" + this.model.field_type);
     },
     _onBlur: function(e) {
       if (this.model.hasValue()) {
@@ -7213,7 +7206,6 @@ rivets.configure({
     group: true,
     initialize: function() {
       FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
-      this.calculateVisibility();
       return this.entries = [];
     },
     validateComponent: function() {
@@ -7299,11 +7291,7 @@ rivets.configure({
       'click .js-skip': 'toggleSkip'
     },
     initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      this.model = options.model;
-      if (this.model.id) {
-        this.$el.addClass("fr_response_field_" + this.model.id);
-      }
+      this._sharedInitialize(options);
       this.on('shown', (function(_this) {
         return function() {
           var view, _i, _len, _ref, _results;
@@ -7335,13 +7323,6 @@ rivets.configure({
         this.addEntry();
       }
       return this.render();
-    },
-    reflectConditions: function() {
-      if (this.model.isVisible) {
-        return this.$el.show();
-      } else {
-        return this.$el.hide();
-      }
     },
     addEntry: function() {
       this.model.addEntry();
@@ -8299,6 +8280,35 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  var FieldView;
+
+  FieldView = {
+    _sharedInitialize: function(options) {
+      this.form_renderer = options.form_renderer, this.model = options.model;
+      if (this.model.id) {
+        this.$el.addClass("fr_response_field_" + this.model.id);
+      }
+      return this.showLabels = this.form_renderer ? this.form_renderer.options.showLabels : this.showLabels = options.showLabels;
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
+    },
+    domId: function() {
+      return this.model.cid;
+    }
+  };
+
+  _.extend(FormRenderer.Views.RepeatingGroup.prototype, FieldView);
+
+  _.extend(FormRenderer.Views.ResponseField.prototype, FieldView);
+
+}).call(this);
+
+(function() {
   var HasComponents;
 
   HasComponents = {
@@ -8346,7 +8356,7 @@ rivets.configure({
       var needsRender;
       needsRender = false;
       _.each(this.conditionsForResponseField(rf), function(c) {
-        if (c.parent.calculateVisibility()) {
+        if (c.parent.calculateVisibilityIsChanged()) {
           return needsRender = true;
         }
       });
@@ -8800,9 +8810,9 @@ rivets.configure({
       });
     },
     isVisible: function() {
-      return !!_.find(this.models, (function(rf) {
+      return _.any(this.models, function(rf) {
         return rf.isVisible;
-      }));
+      });
     },
     isValid: function() {
       return !this.firstViewWithError();

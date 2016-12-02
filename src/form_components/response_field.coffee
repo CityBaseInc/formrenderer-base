@@ -15,8 +15,6 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
 
     @errors = []
 
-    @calculateVisibility()
-
     if @hasLengthValidation()
       @listenTo @, 'change:value', @calculateLength
 
@@ -77,31 +75,13 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     'blur input, textarea, select': '_onBlur'
 
   initialize: (options) ->
-    @form_renderer = options.form_renderer
+    @_sharedInitialize(options)
 
-    if @form_renderer
-      @showLabels = @form_renderer.options.showLabels
-    else
-      @showLabels = options.showLabels
-
-    @model = options.model
     @listenTo @model, 'afterValidate', @render
     @listenTo @model, 'change', @_onInput
     @listenTo @model, 'change:currentLength', @auditLength
     @listenTo @model, 'change:error', @toggleErrorModifier
     @$el.addClass "fr_response_field_#{@model.field_type}"
-
-    if @model.id
-      @$el.addClass("fr_response_field_#{@model.id}")
-
-  domId: ->
-    @model.cid
-
-  reflectConditions: ->
-    if @model.isVisible
-      @$el.show()
-    else
-      @$el.hide()
 
   _onBlur: (e) ->
     # Only run if the value is present

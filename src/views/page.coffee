@@ -48,7 +48,7 @@ FormRenderer.Views.Page = Backbone.View.extend
       view.model.errors.length > 0
 
   isVisible: ->
-    !!_.find(@models, ((rf) -> rf.isVisible))
+    _.any @models, (rf) -> rf.isVisible
 
   isValid: ->
     !@firstViewWithError()

@@ -3,6 +3,8 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
   # @param @parent either the fr instance, or the RepeatingGroupEntry
   # that this field belongs to.
   initialize: (_, @fr, @parent) ->
+    @calculateVisibility()
+
   sync: ->
 
   # Not named `validate` beacuse that conflicts with Backbone
@@ -27,27 +29,28 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
     @parent.repeatingGroup? && !@parent.repeatingGroup.isVisible
 
   # @return [Boolean] true if the new value is different than the old value
-  calculateVisibility: ->
+  calculateVisibilityIsChanged: ->
     prevValue = !!@isVisible
-
-    @isVisible = (
-      # If we're not in a form_renderer context, it's visible
-      if !@fr
-        true
-      else
-        if @isConditional()
-          _[@conditionMethod()] @getConditions(), (conditionHash) =>
-            conditionChecker = new FormRenderer.ConditionChecker(
-              @parent.formComponents.get(conditionHash.response_field_id),
-              conditionHash
-            )
-
-            conditionChecker.isVisible()
-        else
-          true
-    )
-
+    @calculateVisibility()
     prevValue != @isVisible
+
+  calculateVisibility: ->
+    @isVisible = @_calculateIsVisible()
+
+  _calculateIsVisible: ->
+    # If we're not in a form_renderer context, it's visible
+    return true unless @fr
+
+    # If no conditions, it's visible
+    return true unless @isConditional()
+
+    _[@conditionMethod()] @getConditions(), (conditionHash) =>
+      conditionChecker = new FormRenderer.ConditionChecker(
+        @parent.formComponents.get(conditionHash.response_field_id),
+        conditionHash
+      )
+
+      conditionChecker.isVisible()
 
   conditionMethod: ->
     if @get('condition_method') == 'any'

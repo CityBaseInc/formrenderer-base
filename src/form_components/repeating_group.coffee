@@ -3,7 +3,6 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
 
   initialize: ->
     FormRenderer.Models.BaseFormComponent::initialize.apply @, arguments
-    @calculateVisibility()
     @entries = []
 
   validateComponent: ->
@@ -75,9 +74,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     'click .js-skip': 'toggleSkip'
 
   initialize: (options) ->
-    @form_renderer = options.form_renderer
-    @model = options.model
-    @$el.addClass("fr_response_field_#{@model.id}") if @model.id
+    @_sharedInitialize(options)
 
     # Forward `shown` and `hidden` events to subviews
     @on 'shown', => view.trigger('shown') for view in @views
@@ -91,12 +88,6 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
       @addEntry()
 
     @render()
-
-  reflectConditions: ->
-    if @model.isVisible
-      @$el.show()
-    else
-      @$el.hide()
 
   addEntry: ->
     @model.addEntry()

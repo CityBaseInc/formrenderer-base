@@ -35,7 +35,7 @@ HasComponents =
     needsRender = false
 
     _.each @conditionsForResponseField(rf), (c) ->
-      if c.parent.calculateVisibility()
+      if c.parent.calculateVisibilityIsChanged()
         needsRender = true
 
     @reflectConditions() if needsRender

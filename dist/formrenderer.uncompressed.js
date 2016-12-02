@@ -7997,7 +7997,7 @@ rivets.configure({
       }
     },
     canAddRows: function() {
-      return this.numRows < this.maxRows();
+      return this.numRows() < this.maxRows();
     },
     minRows: function() {
       return parseInt(this.get('minrows'), 10) || 0;
@@ -8010,27 +8010,32 @@ rivets.configure({
       }
     },
     setExistingValue: function(x) {
-      var firstColumnLength, _ref;
-      firstColumnLength = ((_ref = _.find(x, (function() {
-        return true;
-      }))) != null ? _ref.length : void 0) || 0;
-      this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
+      var existingNumRows, _ref;
+      existingNumRows = Math.max(this.minRows(), ((_ref = _.values(x)[0]) != null ? _ref.length : void 0) || 0, 1);
       return this.set('value', _.tap([], (function(_this) {
         return function(arr) {
-          var colArr, column, i, _i, _j, _len, _ref1, _ref2, _ref3, _results;
+          var colArr, column, _i, _j, _len, _ref1, _ref2, _results, _results1;
           _ref1 = _this.getColumns();
           _results = [];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             column = _ref1[_i];
-            colArr = [];
-            for (i = _j = 0, _ref2 = _this.numRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
-              colArr.push(_this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
-            }
+            colArr = _.map((function() {
+              _results1 = [];
+              for (var _j = 0, _ref2 = existingNumRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; 0 <= _ref2 ? _j++ : _j--){ _results1.push(_j); }
+              return _results1;
+            }).apply(this), function(i) {
+              var _ref3;
+              return _this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0);
+            });
             _results.push(arr.push(colArr));
           }
           return _results;
         };
       })(this)));
+    },
+    numRows: function() {
+      var _ref;
+      return Math.max(this.minRows(), ((_ref = this.get('value')) != null ? _ref[0].length : void 0) || 0, 1);
     },
     hasValue: function() {
       return _.some(this.getValue(), (function(_this) {
@@ -8057,7 +8062,7 @@ rivets.configure({
             _results.push((function() {
               var _j, _ref1, _results1;
               _results1 = [];
-              for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+              for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
                 _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
               }
               return _results1;
@@ -8077,7 +8082,7 @@ rivets.configure({
       for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
         column = _ref[j];
         columnVals = [];
-        for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
           columnVals.push(parseFloat((this.get("value." + j + "." + i) || '').replace(/\$?,?/g, '')));
         }
         columnSum = _.reduce(columnVals, function(memo, num) {
@@ -8114,28 +8119,32 @@ rivets.configure({
       return rowIdx > (min - 1);
     },
     addRow: function(e) {
+      var col, newVal, vals, _ref;
       e.preventDefault();
-      this.model.numRows++;
+      newVal = {};
+      _ref = this.model.get('value');
+      for (col in _ref) {
+        vals = _ref[col];
+        newVal[col] = vals.concat('');
+      }
+      this.model.set('value', newVal);
       return this.render();
     },
     removeRow: function(e) {
-      var col, idx, modelVal, newVal, vals;
+      var col, idx, newVal, vals, _ref;
       e.preventDefault();
       idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
-      modelVal = this.model.get('value');
       newVal = {};
-      for (col in modelVal) {
-        vals = modelVal[col];
-        newVal[col] = _.tap({}, function(h) {
+      _ref = this.model.get('value');
+      for (col in _ref) {
+        vals = _ref[col];
+        newVal[col] = _.tap([], function(arr) {
           var i, val, _results;
           _results = [];
           for (i in vals) {
             val = vals[i];
-            i = parseInt(i, 10);
-            if (i < idx) {
-              _results.push(h[i] = val);
-            } else if (i > idx) {
-              _results.push(h[i - 1] = val);
+            if (parseInt(i, 10) !== idx) {
+              _results.push(arr.push(val));
             } else {
               _results.push(void 0);
             }
@@ -8143,9 +8152,7 @@ rivets.configure({
           return _results;
         });
       }
-      this.model.numRows--;
-      this.model.attributes.value = newVal;
-      this.model.trigger('change change:value', this.model);
+      this.model.set('value', newVal);
       return this.render();
     }
   });
@@ -9989,7 +9996,7 @@ window.JST["fields/table"] = function(__obj) {
     
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
-      for (i = _j = 0, _ref1 = this.model.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+      for (i = _j = 0, _ref1 = this.model.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
         _print(_safe('">\n        '));

@@ -7,7 +7,7 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
       @listenTo @, 'change:value.*', @calculateColumnTotals
 
   canAddRows: ->
-    @numRows < @maxRows()
+    @numRows() < @maxRows()
 
   minRows: ->
     parseInt(@get('minrows'), 10) || 0
@@ -24,22 +24,19 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
   # Transform it to this:
   #   [['a', 'b'], ['c', 'd']]
   setExistingValue: (x) ->
-    # Set initial @numRows
-    firstColumnLength = _.find(x, (-> true))?.length || 0
-    @numRows = Math.max @minRows(), firstColumnLength, 1
+    existingNumRows = Math.max @minRows(), (_.values(x)[0]?.length || 0), 1
 
     @set 'value', _.tap [], (arr) =>
       for column in @getColumns()
-        colArr = []
-
         # Copy preset value *or* existing value to model
-        for i in [0..(@numRows - 1)]
-          colArr.push(
-            @getPresetValue(column.label, i) ||
-            x?[column.label]?[i]
-          )
+        colArr = _.map [0..(existingNumRows - 1)], (i) =>
+          @getPresetValue(column.label, i) ||
+          x?[column.label]?[i]
 
         arr.push(colArr)
+
+  numRows: ->
+    Math.max @minRows(), (@get('value')?[0].length || 0), 1
 
   # Ignore preset values when calculating hasValue
   hasValue: ->
@@ -60,7 +57,7 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
       for column, j in @getColumns()
         h[column.label] = []
 
-        for i in [0..(@numRows - 1)]
+        for i in [0..(@numRows() - 1)]
           h[column.label].push @get("value.#{j}.#{i}") || ''
 
   toText: ->
@@ -70,7 +67,7 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
     for column, j in @getColumns()
       columnVals = []
 
-      for i in [0..(@numRows - 1)]
+      for i in [0..(@numRows() - 1)]
         columnVals.push parseFloat((@get("value.#{j}.#{i}") || '').replace(/\$?,?/g, ''))
 
       columnSum = _.reduce columnVals, (memo, num) ->
@@ -98,29 +95,25 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
 
   addRow: (e) ->
     e.preventDefault()
-    @model.numRows++
+    newVal = {}
+
+    for col, vals of @model.get('value')
+      newVal[col] = vals.concat('')
+
+    @model.set('value', newVal)
     @render()
 
   # Loop through rows, decreasing index for rows above the current row
   removeRow: (e) ->
     e.preventDefault()
     idx = $(e.currentTarget).closest('[data-row-index]').data('row-index')
-    modelVal = @model.get('value')
     newVal = {}
 
-    for col, vals of modelVal
-      newVal[col] = _.tap {}, (h) ->
+    for col, vals of @model.get('value')
+      newVal[col] = _.tap [], (arr) ->
         for i, val of vals
-          i = parseInt(i, 10)
-
-          if i < idx
-            h[i] = val
-          else if i > idx
-            h[i - 1] = val
-
           # if i == idx, this is the row being removed
+          arr.push(val) unless parseInt(i, 10) == idx
 
-    @model.numRows--
-    @model.attributes.value = newVal # setting this directly.. ugh
-    @model.trigger('change change:value', @model)
+    @model.set 'value', newVal
     @render()

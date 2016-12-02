@@ -10,7 +10,7 @@
   </thead>
 
   <tbody>
-    <% for i in [0..(@model.numRows - 1)]: %>
+    <% for i in [0..(@model.numRows() - 1)]: %>
       <tr data-row-index="<%= i %>">
         <% for column, j in @model.getColumns(): %>
           <% if @model.getPresetValue(column.label, i): %>

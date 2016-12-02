@@ -13,3 +13,13 @@ FormRenderer.buildFormComponentView = (field, fr) ->
     model: field,
     form_renderer: fr
   )
+
+FormRenderer.formComponentModelClass = (field) ->
+  if field.type == 'group'
+    FormRenderer.Models.RepeatingGroup
+  else
+    FormRenderer.Models["ResponseField#{_str.classify(field.field_type)}"]
+
+FormRenderer.buildFormComponentModel = (field, fr, parent) ->
+  klass = FormRenderer.formComponentModelClass(field)
+  new klass(field, fr, parent)

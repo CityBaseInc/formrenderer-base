@@ -6773,6 +6773,20 @@ rivets.configure({
     });
   };
 
+  FormRenderer.formComponentModelClass = function(field) {
+    if (field.type === 'group') {
+      return FormRenderer.Models.RepeatingGroup;
+    } else {
+      return FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
+    }
+  };
+
+  FormRenderer.buildFormComponentModel = function(field, fr, parent) {
+    var klass;
+    klass = FormRenderer.formComponentModelClass(field);
+    return new klass(field, fr, parent);
+  };
+
 }).call(this);
 
 (function() {
@@ -8291,12 +8305,11 @@ rivets.configure({
       })(this));
     },
     initFormComponents: function(fieldData, responseData) {
-      var field, klass, model, _i, _len;
+      var field, model, _i, _len;
       this.formComponents = new Backbone.Collection;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
-        klass = field.type === 'group' ? FormRenderer.Models.RepeatingGroup : FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
-        model = new klass(field, this.fr, this);
+        model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
       }

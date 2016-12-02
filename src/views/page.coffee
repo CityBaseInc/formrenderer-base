@@ -26,8 +26,7 @@ FormRenderer.Views.Page = Backbone.View.extend
     view.trigger('shown') for view in @views
 
   reflectConditions: ->
-    for view in @views
-      view.reflectConditions()
+    view.reflectConditions() for view in @views
 
   validate: ->
     component.validateComponent() for component in @models

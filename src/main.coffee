@@ -296,8 +296,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     else
       @save cb: cb
 
-  ## Conditionals - will break into separate classes
-
   reflectConditions: ->
     page.reflectConditions() for _, page of @subviews.pages
     @subviews.pagination?.render()

@@ -169,6 +169,9 @@
   display: inline;
   width: auto; }
 
+.hidden_option {
+  display: none; }
+
 .fr_table_col_remove {
   width: 25px;
   padding: 0;

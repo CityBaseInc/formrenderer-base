@@ -248,6 +248,11 @@
   }
 }
 
+// Include a "hidden option" class that can be placed on empty placeholder options to keep them out of the dropdown
+.hidden_option {
+  display: none;
+}
+
 // Style for the "remove" column of the table input
 .fr_table_col_remove {
   width: 25px;

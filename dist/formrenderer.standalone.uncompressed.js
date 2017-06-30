@@ -2710,7 +2710,7 @@ window.JST["fields/dropdown"] = function(__obj) {
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
       if (this.model.get('include_blank_option')) {
-        _print(_safe('\n    <option selected>\n      '));
+        _print(_safe('\n    <option selected value="">\n      '));
         _print(FormRenderer.t.choose_an_option);
         _print(_safe('\n    </option>\n  '));
       }

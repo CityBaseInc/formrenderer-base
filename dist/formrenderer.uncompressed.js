@@ -1364,18 +1364,23 @@ var slice = [].slice;
 })(window.jQuery, window);
 
 /*!
- * JavaScript Cookie v2.1.1
+ * JavaScript Cookie v2.1.4
  * https://github.com/js-cookie/js-cookie
  *
  * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
  * Released under the MIT license
  */
 ;(function (factory) {
+	var registeredInModuleLoader = false;
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
-	} else if (typeof exports === 'object') {
+		registeredInModuleLoader = true;
+	}
+	if (typeof exports === 'object') {
 		module.exports = factory();
-	} else {
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
 		var OldCookies = window.Cookies;
 		var api = window.Cookies = factory();
 		api.noConflict = function () {
@@ -1416,6 +1421,9 @@ var slice = [].slice;
 					attributes.expires = expires;
 				}
 
+				// We're using "expires" because "max-age" is not supported by IE
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
 				try {
 					result = JSON.stringify(value);
 					if (/^[\{\[]/.test(result)) {
@@ -1434,13 +1442,19 @@ var slice = [].slice;
 				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
 				key = key.replace(/[\(\)]/g, escape);
 
-				return (document.cookie = [
-					key, '=', value,
-					attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
-					attributes.path    && '; path=' + attributes.path,
-					attributes.domain  && '; domain=' + attributes.domain,
-					attributes.secure ? '; secure' : ''
-				].join(''));
+				var stringifiedAttributes = '';
+
+				for (var attributeName in attributes) {
+					if (!attributes[attributeName]) {
+						continue;
+					}
+					stringifiedAttributes += '; ' + attributeName;
+					if (attributes[attributeName] === true) {
+						continue;
+					}
+					stringifiedAttributes += '=' + attributes[attributeName];
+				}
+				return (document.cookie = key + '=' + value + stringifiedAttributes);
 			}
 
 			// Read
@@ -1458,7 +1472,6 @@ var slice = [].slice;
 
 			for (; i < cookies.length; i++) {
 				var parts = cookies[i].split('=');
-				var name = parts[0].replace(rdecode, decodeURIComponent);
 				var cookie = parts.slice(1).join('=');
 
 				if (cookie.charAt(0) === '"') {
@@ -1466,6 +1479,7 @@ var slice = [].slice;
 				}
 
 				try {
+					var name = parts[0].replace(rdecode, decodeURIComponent);
 					cookie = converter.read ?
 						converter.read(cookie, name) : converter(cookie, name) ||
 						cookie.replace(rdecode, decodeURIComponent);
@@ -1492,7 +1506,7 @@ var slice = [].slice;
 
 		api.set = api;
 		api.get = function (key) {
-			return api(key);
+			return api.call(api, key);
 		};
 		api.getJSON = function () {
 			return api.apply({
@@ -4497,8 +4511,8 @@ var slice = [].slice;
             return _this.disable();
           }
           if (_this.opts.cb) {
-            if (_this.opts.cb(e.originalEvent.data.url) !== false) {
-              e.preventDefault();
+            if (_this.opts.cb(e.data.url) !== false) {
+              return e.preventDefault();
             }
           }
           if (confirm(_this.opts.message + "\n\n" + _this.footerText)) {
@@ -6230,10 +6244,8 @@ var ISOCountryNames = {
   "ZM": "Zambia",
   "ZW": "Zimbabwe",
 };
-
 var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
-;eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('(9(h){\'1X 1W\';5 j={r:\'r\',Q:\'1V\',t:\'t\',8:\'1T\',q:\'1P\',C:\'C\'};5 k={1O:1N,1M:1K,1J:18,1I:1c,1H:18,1G:1c};9 Y(a,b){5 c,G,i,O;m(W V===\'R\'&&W L===\'9\'){c=\'1A://\'+(1z.1x.I(/^1w/i)?\'/\':\'\')+L(\'1u\').1s(\'.\');m(b&&b.J(0)!==\'/\'&&!b.I(/^\\w+:\\/\\//)){b=c+L(\'8\').1r+b}G=L(\'1q\').Y(b||c)}F{c=V.1p.19;G=V.1o(\'a\');G.19=b||c}O=(b||c).I(/\\/\\/(.*?)(?::(.*?))?@/)||[];y(i K j){a[i]=G[j[i]]||\'\'}a.r=a.r.p(/:$/,\'\');a.q=a.q.p(/^\\?/,\'\');a.C=v(a.C.p(/^#/,\'\'));a.M=v(O[1]||\'\');a.N=v(O[2]||\'\');a.t=(k[a.r]===a.t||a.t===0)?\'\':a.t;m(!a.r&&!/^([a-z]+:)?\\/\\/\\/?/.1D(b)){5 d=1a o(c.I(/(.*\\/)/)[0]);5 e=d.8.P(\'/\');5 f=a.8.P(\'/\');5 g=[\'r\',\'M\',\'N\',\'Q\',\'t\'];5 s=g.H;e.1f();y(i=0;i<s;i++){a[g[i]]=d[g[i]]}1g(f[0]==\'..\'){e.1f();f.1k()}a.8=(b.J(0)!=\'/\'?e.17(\'/\'):\'\')+\'/\'+f.17(\'/\')}F{a.8=a.8.p(/^\\/?/,\'/\')}a.1i((a.8.J(0)==\'/\'?a.8.1j(1):a.8).P(\'/\'));a.q=1a 15(a.q)}9 x(s){l 1l(s).p(/\'/g,\'%1m\')}9 v(s){s=s.p(/\\+/g,\' \');s=s.p(/%([1n][0-A-f])%([T][0-A-f])%([T][0-A-f])/13,9(a,b,c,d){5 e=B(b,16)-1t;5 f=B(c,16)-10;m(e===0&&f<1v){l a}5 g=B(d,16)-10;5 n=(e<<12)+(f<<6)+g;m(n>1y){l a}l U.X(n)});s=s.p(/%([1B][0-A-f])%([T][0-A-f])/13,9(a,b,c){5 d=B(b,16)-1C;m(d<2){l a}5 e=B(c,16)-10;l U.X((d<<6)+e)});l s.p(/%([0-7][0-A-f])/13,9(a,b){l U.X(B(b,16))})}9 15(a){5 b=/([^=&]+)(=([^&]*))?/g;5 c;1g((c=b.1E(a))){5 d=1F(c[1].p(/\\+/g,\' \'));5 e=c[3]?v(c[3]):\'\';m(!(4[d]===R||4[d]===1b)){m(!(4[d]D 1h)){4[d]=[4[d]]}4[d].1L(e)}F{4[d]=e}}}15.u.Z=9(){5 s=\'\';5 e=x;5 i,E;y(i K 4){m(4[i]D 11||4[i]===1b){1Q}m(4[i]D 1h){5 a=4[i].H;m(a){y(E=0;E<a;E++){s+=s?\'&\':\'\';s+=e(i)+\'=\'+e(4[i][E])}}F{s+=(s?\'&\':\'\')+e(i)+\'=\'}}F{s+=s?\'&\':\'\';s+=e(i)+\'=\'+e(4[i])}}l s};9 o(a){Y(4,a)}o.u.1R=9(){y(5 a K 4.q){m(!(4.q[a]D 11)){1S 4.q[a]}}l 4};o.u.1e=9(){5 a=0;5 b;y(b K 4){m(!(4[b]D 11)){a++}}l a};o.u.1U=9(){l 4.1e()===0};o.u.1i=9(a){5 b=\'\';5 i=0;5 s;m(a&&a.H&&a+\'\'!==a){m(4.1d()){b=\'/\'}y(s=a.H;i<s;i++){a[i]=!i&&a[i].I(/^\\w:$/)?a[i]:x(a[i])}4.8=b+a.17(\'/\')}a=(4.8.J(0)===\'/\'?4.8.1j(1):4.8).P(\'/\');y(i=0,s=a.H;i<s;i++){a[i]=v(a[i])}l a};o.u.x=x;o.u.v=v;o.u.1d=9(){l 4.r||4.8.J(0)===\'/\'};o.u.Z=9(){l((4.r&&(4.r+\'://\'))+(4.M&&(x(4.M)+(4.N&&(\':\'+x(4.N)))+\'@\'))+(4.Q&&4.Q)+(4.t&&(\':\'+4.t))+(4.8&&4.8)+(4.q.Z()&&(\'?\'+4.q))+(4.C&&(\'#\'+x(4.C))))};h[h.14?\'14\':\'o\']=o}(W S!==\'R\'&&S.14?S:1Y));',62,123,'||||this|var|||path|function||||||||||||return|if||Url|replace|query|protocol||port|prototype|decode||encode|for||9a|parseInt|hash|instanceof|ii|else|link|length|match|charAt|in|require|user|pass|auth|split|host|undefined|module|89ab|String|document|typeof|fromCharCode|parse|toString|0x80|Function||gi|exports|QueryString||join|80|href|new|null|443|isAbsolute|queryLength|pop|while|Array|paths|slice|shift|encodeURIComponent|27|ef|createElement|location|url|sep|realpathSync|0xE0|fs|32|win|platform|0xFFFF|process|file|cd|0xC0|test|exec|decodeURIComponent|wss|ws|https|http|70|push|gopher|21|ftp|search|continue|clearQuery|delete|pathname|isEmptyQuery|hostname|strict|use|window'.split('|'),0,{}));
-
+!function(t){"use strict";function r(t){var r={path:!0,query:!0,hash:!0};return t?(/^[a-z]+:/.test(t)&&(r.protocol=!0,r.host=!0,/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i.test(t)&&(r.port=!0),/\/\/(.*?)(?::(.*?))?@/.test(t)&&(r.user=!0,r.pass=!0)),r):r}function e(t,e,o){var u,f,l,y=h?"file://"+(process.platform.match(/^win/i)?"/":"")+p("fs").realpathSync("."):document.location.href;e||(e=y),h?u=p("url").parse(e):(u=document.createElement("a"),u.href=e);var d=r(e);l=e.match(/\/\/(.*?)(?::(.*?))?@/)||[];for(f in a)t[f]=d[f]?u[a[f]]||"":"";if(t.protocol=t.protocol.replace(/:$/,""),t.query=t.query.replace(/^\?/,""),t.hash=s(t.hash.replace(/^#/,"")),t.user=s(l[1]||""),t.pass=s(l[2]||""),t.port=c[t.protocol]==t.port||0==t.port?"":t.port,!d.protocol&&/[^\/#?]/.test(e.charAt(0))&&(t.path=e.split("?")[0].split("#")[0]),!d.protocol&&o){var g=new n(y.match(/(.*\/)/)[0]),m=g.path.split("/"),v=t.path.split("/"),q=["protocol","user","pass","host","port"],w=q.length;for(m.pop(),f=0;w>f;f++)t[q[f]]=g[q[f]];for(;".."===v[0];)m.pop(),v.shift();t.path=("/"!==e.charAt(0)?m.join("/"):"")+"/"+v.join("/")}t.path=t.path.replace(/^\/{2,}/,"/"),t.paths(("/"===t.path.charAt(0)?t.path.slice(1):t.path).split("/")),t.query=new i(t.query)}function o(t){return encodeURIComponent(t).replace(/'/g,"%27")}function s(t){return t=t.replace(/\+/g," "),t=t.replace(/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e,o){var s=parseInt(r,16)-224,i=parseInt(e,16)-128;if(0===s&&32>i)return t;var n=parseInt(o,16)-128,h=(s<<12)+(i<<6)+n;return h>65535?t:String.fromCharCode(h)}),t=t.replace(/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e){var o=parseInt(r,16)-192;if(2>o)return t;var s=parseInt(e,16)-128;return String.fromCharCode((o<<6)+s)}),t.replace(/%([0-7][0-9a-f])/gi,function(t,r){return String.fromCharCode(parseInt(r,16))})}function i(t){for(var r,e=/([^=&]+)(=([^&]*))?/g;r=e.exec(t);){var o=decodeURIComponent(r[1].replace(/\+/g," ")),i=r[3]?s(r[3]):"";void 0!==this[o]&&null!==this[o]?(this[o]instanceof Array||(this[o]=[this[o]]),this[o].push(i)):this[o]=i}}function n(t,r){e(this,t,!r)}var h="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,p=h?t.require:null,a={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},c={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};i.prototype.toString=function(){var t,r,e="",s=o;for(t in this)if(!(this[t]instanceof Function||null===this[t]))if(this[t]instanceof Array){var i=this[t].length;if(i)for(r=0;i>r;r++)e+=e?"&":"",e+=s(t)+"="+s(this[t][r]);else e+=(e?"&":"")+s(t)+"="}else e+=e?"&":"",e+=s(t)+"="+s(this[t]);return e},n.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},n.prototype.queryLength=function(){var t,r=0;for(t in this)this[t]instanceof Function||r++;return r},n.prototype.isEmptyQuery=function(){return 0===this.queryLength()},n.prototype.paths=function(t){var r,e="",i=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(e="/"),r=t.length;r>i;i++)t[i]=!i&&t[i].match(/^\w:$/)?t[i]:o(t[i]);this.path=e+t.join("/")}for(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/"),i=0,r=t.length;r>i;i++)t[i]=s(t[i]);return t},n.prototype.encode=o,n.prototype.decode=s,n.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},n.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&o(this.user)+(this.pass&&":"+o(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+o(this.hash))},t[t.exports?"exports":"Url"]=n}("undefined"!=typeof module&&module.exports?module:window);
 var $, _str;
 
 $ = jQuery;
@@ -8536,7 +8548,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","choose_an_option":"Choose an option","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -8562,7 +8574,7 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+      var format, i, j, len, len1, ref, ref1, ref2, x;
     
       format = this.model.get('address_format');
     
@@ -8604,13 +8616,13 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        '));
         }
         _print(_safe('\n      </label>\n\n      '));
-        if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
+        if ((ref = this.model.get('value.country')) === 'US' || ref === 'CA') {
           _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
           _print(this.getDomId());
           _print(_safe('_state\'>\n          <option></option>\n          '));
-          _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            x = _ref1[_i];
+          ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
+          for (i = 0, len = ref1.length; i < len; i++) {
+            x = ref1[i];
             _print(_safe('\n            <option value=\''));
             _print(x);
             _print(_safe('\'>'));
@@ -8656,9 +8668,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
         _print(this.getDomId());
         _print(_safe('_country\'>\n        '));
-        _ref2 = FormRenderer.ORDERED_COUNTRIES;
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          x = _ref2[_j];
+        ref2 = FormRenderer.ORDERED_COUNTRIES;
+        for (j = 0, len1 = ref2.length; j < len1; j++) {
+          x = ref2[j];
           _print(_safe('\n          <option value=\''));
           _print(x);
           _print(_safe('\'>'));
@@ -8937,7 +8949,7 @@ window.JST["fields/dropdown"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var option, _i, _len, _ref;
+      var i, len, option, ref;
     
       _print(_safe('<select id="'));
     
@@ -8946,14 +8958,16 @@ window.JST["fields/dropdown"] = function(__obj) {
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
       if (this.model.get('include_blank_option')) {
-        _print(_safe('\n    <option></option>\n  '));
+        _print(_safe('\n    <option selected value="">\n      '));
+        _print(FormRenderer.t.choose_an_option);
+        _print(_safe('\n    </option>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n    <option value="'));
         _print(option.label);
         _print(_safe('">\n      '));
@@ -9055,13 +9069,13 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var attachment, exts, _i, _len, _ref;
+      var attachment, exts, i, len, ref;
     
       _print(_safe('<div class=\'fr_files\'>\n  '));
     
-      _ref = this.model.getFiles();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        attachment = _ref[_i];
+      ref = this.model.getFiles();
+      for (i = 0, len = ref.length; i < len; i++) {
+        attachment = ref[i];
         _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
         _print(attachment.filename);
         _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
@@ -9677,13 +9691,13 @@ window.JST["fields/table"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var column, i, j, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+      var column, i, j, k, l, len, len1, len2, m, n, ref, ref1, ref2, ref3;
     
       _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
     
-      _ref = this.model.getColumns();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        column = _ref[_i];
+      ref = this.model.getColumns();
+      for (k = 0, len = ref.length; k < len; k++) {
+        column = ref[k];
         _print(_safe('\n        <th>'));
         _print(column.translated_label || column.label);
         _print(_safe('</th>\n      '));
@@ -9691,13 +9705,13 @@ window.JST["fields/table"] = function(__obj) {
     
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
-      for (i = _j = 0, _ref1 = this.model.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+      for (i = l = 0, ref1 = this.model.numRows - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
         _print(_safe('">\n        '));
-        _ref2 = this.model.getColumns();
-        for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
-          column = _ref2[j];
+        ref2 = this.model.getColumns();
+        for (j = m = 0, len1 = ref2.length; m < len1; j = ++m) {
+          column = ref2[j];
           _print(_safe('\n          '));
           if (this.model.getPresetValue(column.label, i)) {
             _print(_safe('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.'));
@@ -9737,9 +9751,9 @@ window.JST["fields/table"] = function(__obj) {
     
       if (this.model.get('column_totals')) {
         _print(_safe('\n    <tfoot>\n      <tr>\n        '));
-        _ref3 = this.model.getColumns();
-        for (j = _l = 0, _len2 = _ref3.length; _l < _len2; j = ++_l) {
-          column = _ref3[j];
+        ref3 = this.model.getColumns();
+        for (j = n = 0, len2 = ref3.length; n < len2; j = ++n) {
+          column = ref3[j];
           _print(_safe('\n          <td data-rv-text=\'model.columnTotals.'));
           _print(j);
           _print(_safe('\'></td>\n        '));
@@ -10508,15 +10522,15 @@ window.JST["partials/options_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var fieldType, option, _i, _len, _ref;
+      var fieldType, i, len, option, ref;
     
       fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
     
       _print(_safe('\n\n'));
     
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
         _print(fieldType);
         _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
@@ -10583,13 +10597,13 @@ window.JST["partials/pagination"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, idx, _i, _len, _ref;
+      var i, idx, j, len, ref;
     
       if (this.form_renderer.visiblePages().length > 1) {
         _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
-        _ref = this.form_renderer.visiblePages();
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          i = _ref[idx];
+        ref = this.form_renderer.visiblePages();
+        for (idx = j = 0, len = ref.length; j < len; idx = ++j) {
+          i = ref[idx];
           _print(_safe('\n      <li class=\''));
           if (!this.form_renderer.isPageValid(i)) {
             _print(_safe('has_errors'));
@@ -10835,11 +10849,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+      var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
     
       _print(_safe('<div class=\'fr_bottom\'>\n  '));
     
-      if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
+      if (indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
           _print(_safe('\n        '));

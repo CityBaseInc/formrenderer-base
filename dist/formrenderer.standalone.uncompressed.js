@@ -2300,7 +2300,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","choose_an_option":"Choose an option","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -2326,7 +2326,7 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+      var format, i, j, len, len1, ref, ref1, ref2, x;
     
       format = this.model.get('address_format');
     
@@ -2368,13 +2368,13 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        '));
         }
         _print(_safe('\n      </label>\n\n      '));
-        if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
+        if ((ref = this.model.get('value.country')) === 'US' || ref === 'CA') {
           _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
           _print(this.getDomId());
           _print(_safe('_state\'>\n          <option></option>\n          '));
-          _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            x = _ref1[_i];
+          ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
+          for (i = 0, len = ref1.length; i < len; i++) {
+            x = ref1[i];
             _print(_safe('\n            <option value=\''));
             _print(x);
             _print(_safe('\'>'));
@@ -2420,9 +2420,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
         _print(this.getDomId());
         _print(_safe('_country\'>\n        '));
-        _ref2 = FormRenderer.ORDERED_COUNTRIES;
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          x = _ref2[_j];
+        ref2 = FormRenderer.ORDERED_COUNTRIES;
+        for (j = 0, len1 = ref2.length; j < len1; j++) {
+          x = ref2[j];
           _print(_safe('\n          <option value=\''));
           _print(x);
           _print(_safe('\'>'));
@@ -2701,7 +2701,7 @@ window.JST["fields/dropdown"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var option, _i, _len, _ref;
+      var i, len, option, ref;
     
       _print(_safe('<select id="'));
     
@@ -2710,14 +2710,16 @@ window.JST["fields/dropdown"] = function(__obj) {
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
       if (this.model.get('include_blank_option')) {
-        _print(_safe('\n    <option></option>\n  '));
+        _print(_safe('\n    <option selected value="">\n      '));
+        _print(FormRenderer.t.choose_an_option);
+        _print(_safe('\n    </option>\n  '));
       }
     
       _print(_safe('\n\n  '));
     
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n    <option value="'));
         _print(option.label);
         _print(_safe('">\n      '));
@@ -2819,13 +2821,13 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var attachment, exts, _i, _len, _ref;
+      var attachment, exts, i, len, ref;
     
       _print(_safe('<div class=\'fr_files\'>\n  '));
     
-      _ref = this.model.getFiles();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        attachment = _ref[_i];
+      ref = this.model.getFiles();
+      for (i = 0, len = ref.length; i < len; i++) {
+        attachment = ref[i];
         _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
         _print(attachment.filename);
         _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
@@ -3441,13 +3443,13 @@ window.JST["fields/table"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var column, i, j, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+      var column, i, j, k, l, len, len1, len2, m, n, ref, ref1, ref2, ref3;
     
       _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
     
-      _ref = this.model.getColumns();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        column = _ref[_i];
+      ref = this.model.getColumns();
+      for (k = 0, len = ref.length; k < len; k++) {
+        column = ref[k];
         _print(_safe('\n        <th>'));
         _print(column.translated_label || column.label);
         _print(_safe('</th>\n      '));
@@ -3455,13 +3457,13 @@ window.JST["fields/table"] = function(__obj) {
     
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
-      for (i = _j = 0, _ref1 = this.model.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+      for (i = l = 0, ref1 = this.model.numRows - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
         _print(_safe('">\n        '));
-        _ref2 = this.model.getColumns();
-        for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
-          column = _ref2[j];
+        ref2 = this.model.getColumns();
+        for (j = m = 0, len1 = ref2.length; m < len1; j = ++m) {
+          column = ref2[j];
           _print(_safe('\n          '));
           if (this.model.getPresetValue(column.label, i)) {
             _print(_safe('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.'));
@@ -3501,9 +3503,9 @@ window.JST["fields/table"] = function(__obj) {
     
       if (this.model.get('column_totals')) {
         _print(_safe('\n    <tfoot>\n      <tr>\n        '));
-        _ref3 = this.model.getColumns();
-        for (j = _l = 0, _len2 = _ref3.length; _l < _len2; j = ++_l) {
-          column = _ref3[j];
+        ref3 = this.model.getColumns();
+        for (j = n = 0, len2 = ref3.length; n < len2; j = ++n) {
+          column = ref3[j];
           _print(_safe('\n          <td data-rv-text=\'model.columnTotals.'));
           _print(j);
           _print(_safe('\'></td>\n        '));
@@ -4272,15 +4274,15 @@ window.JST["partials/options_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var fieldType, option, _i, _len, _ref;
+      var fieldType, i, len, option, ref;
     
       fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
     
       _print(_safe('\n\n'));
     
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
         _print(fieldType);
         _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
@@ -4347,13 +4349,13 @@ window.JST["partials/pagination"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, idx, _i, _len, _ref;
+      var i, idx, j, len, ref;
     
       if (this.form_renderer.visiblePages().length > 1) {
         _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
-        _ref = this.form_renderer.visiblePages();
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          i = _ref[idx];
+        ref = this.form_renderer.visiblePages();
+        for (idx = j = 0, len = ref.length; j < len; idx = ++j) {
+          i = ref[idx];
           _print(_safe('\n      <li class=\''));
           if (!this.form_renderer.isPageValid(i)) {
             _print(_safe('has_errors'));
@@ -4599,11 +4601,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+      var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
     
       _print(_safe('<div class=\'fr_bottom\'>\n  '));
     
-      if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
+      if (indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
           _print(_safe('\n        '));

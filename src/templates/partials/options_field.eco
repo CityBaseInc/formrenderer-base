@@ -10,7 +10,7 @@
 <% if @model.get('include_other_option'): %>
   <div class='fr_option fr_other_option'>
     <label class='control'>
-      <input type='<%= fieldType %>' data-rv-checked='model.value.other_checked' />
+      <input type='<%= fieldType %>' data-rv-checkedarray="model.value.checked" data-rv-checked='model.value.other_checked' />
       <%= FormRenderer.t.other %>
     </label>
 

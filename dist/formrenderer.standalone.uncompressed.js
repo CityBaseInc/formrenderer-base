@@ -4297,7 +4297,7 @@ window.JST["partials/options_field"] = function(__obj) {
       if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
         _print(fieldType);
-        _print(_safe('\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(_safe('\' data-rv-checkedarray="model.value.checked" data-rv-checked=\'model.value.other_checked\' />\n      '));
         _print(FormRenderer.t.other);
         _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
         _print(FormRenderer.t.write_here);

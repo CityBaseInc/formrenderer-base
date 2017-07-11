@@ -119,6 +119,27 @@ Fixtures.KITCHEN_SINK_FORM = [
     field_type: "radio",
     cid: null
   }, {
+    id: 3900,
+    form_id: 5,
+    label: "Radio",
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
+    required: false,
+    include_other_option: true,
+    blind: false,
+    admin_only: false,
+    created_at: "2014-08-22T20:50:37.235Z",
+    updated_at: "2014-08-22T20:50:37.235Z",
+    field_type: "radio",
+    cid: null
+  }, {
     id: 40,
     form_id: 5,
     label: "Dropdown",

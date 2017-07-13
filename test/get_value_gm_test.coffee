@@ -31,6 +31,9 @@ EXPECTED_BLANK_VALUES = {
     ]
   },
   "52": false
+  "3900": {
+    "checked":[]
+  }
 }
 
 EXPECTED_PRESENT_VALUES = {

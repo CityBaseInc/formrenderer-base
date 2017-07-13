@@ -121,7 +121,7 @@ Fixtures.KITCHEN_SINK_FORM = [
   }, {
     id: 3900,
     form_id: 5,
-    label: "Radio",
+    label: "Radio with other",
     options: [
       {
         checked: "false",

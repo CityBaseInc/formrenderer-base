@@ -64,7 +64,7 @@ describe 'validations', ->
       $date.val('as').trigger('input')
       expect(@errorCount()).to.equal(14)
       $date.trigger('blur')
-      expectErrorCount.call(@, 14, done)
+      expectErrorCount.call(@, 15, done)
 
     it 'navigates to the first error when the user clicks "fix errors"', ->
       expect(activePageNumber()).to.equal(2)

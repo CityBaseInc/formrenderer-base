@@ -18,6 +18,12 @@ rivets.binders.input =
   unbind: (el) ->
     $(el).unbind("#{rivets.inputEvent}.rivets")
 
+rivets.formatters.eq = (value, checkAgainst) ->
+  if value.constructor == Array
+    value[0] == checkAgainst
+  else
+    value == checkAgainst
+
 rivets.binders.checkedarray =
   publishes: true
 

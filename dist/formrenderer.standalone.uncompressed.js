@@ -1,4 +1,5 @@
-(function(window){var $, _str;
+(function(window){var $, _str,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = jQuery;
 
@@ -19,7 +20,7 @@ rivets.binders.input = {
 
 rivets.formatters.eq = function(value, checkAgainst) {
   if (value.constructor === Array) {
-    return value[0] === checkAgainst;
+    return __indexOf.call(value, checkAgainst) >= 0;
   } else {
     return value === checkAgainst;
   }

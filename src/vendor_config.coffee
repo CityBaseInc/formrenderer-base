@@ -20,7 +20,7 @@ rivets.binders.input =
 
 rivets.formatters.eq = (value, checkAgainst) ->
   if value.constructor == Array
-    value[0] == checkAgainst
+    checkAgainst in value
   else
     value == checkAgainst
 

@@ -1,6 +1,8 @@
 <select id="<%= @domId() %>" data-rv-value='model.value'>
   <% if @model.get('include_blank_option'): %>
-    <option></option>
+    <option selected value="">
+      <%= FormRenderer.t.choose_an_option %>
+    </option>
   <% end %>
 
   <% for option in @model.getOptions(): %>

@@ -618,14 +618,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.toBoolean = function(str) {
-    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.VERSION = '1.0.0';
+  FormRenderer.VERSION = '1.1.0';
 
 }).call(this);
 
@@ -2614,7 +2607,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another":"Add another","answer":"Answer this question","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","skip":"Skip this question","skipped":"This question is skipped.","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","choose_an_option":"Choose an option","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -2640,12 +2633,12 @@ window.JST["fields/address"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var format, x, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-    
+      var format, i, j, len, len1, ref, ref1, ref2, x;
+
       format = this.model.get('address_format');
-    
+
       _print(_safe('\n\n'));
-    
+
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -2655,9 +2648,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
-    
+
       _print(_safe('\n\n'));
-    
+
       if (format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -2682,13 +2675,13 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        '));
         }
         _print(_safe('\n      </label>\n\n      '));
-        if ((_ref = this.model.get('value.country')) === 'US' || _ref === 'CA') {
+        if ((ref = this.model.get('value.country')) === 'US' || ref === 'CA') {
           _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
           _print(this.domId());
           _print(_safe('_state\'>\n          <option></option>\n          '));
-          _ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            x = _ref1[_i];
+          ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
+          for (i = 0, len = ref1.length; i < len; i++) {
+            x = ref1[i];
             _print(_safe('\n            <option value=\''));
             _print(x);
             _print(_safe('\'>'));
@@ -2703,9 +2696,9 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n    </div>\n  </div>\n'));
       }
-    
+
       _print(_safe('\n\n<div class=\'fr_grid\'>\n  '));
-    
+
       if (format !== 'city_state' && format !== 'country') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -2723,9 +2716,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_zipcode\' />\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n\n  '));
-    
+
       if (format !== 'city_state' && format !== 'city_state_zip') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -2734,9 +2727,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
         _print(this.domId());
         _print(_safe('_country\'>\n        '));
-        _ref2 = FormRenderer.ORDERED_COUNTRIES;
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          x = _ref2[_j];
+        ref2 = FormRenderer.ORDERED_COUNTRIES;
+        for (j = 0, len1 = ref2.length; j < len1; j++) {
+          x = ref2[j];
           _print(_safe('\n          <option value=\''));
           _print(x);
           _print(_safe('\'>'));
@@ -2745,11 +2738,11 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n      </select>\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -2792,19 +2785,19 @@ window.JST["fields/block_of_text"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/labels"](this)));
-    
+
       _print(_safe('\n\n<div class=\'fr_text size_'));
-    
+
       _print(this.model.getSize());
-    
+
       _print(_safe('\'>\n  '));
-    
+
       _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -2847,11 +2840,11 @@ window.JST["fields/checkboxes"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/options_field"](this)));
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -2894,15 +2887,15 @@ window.JST["fields/confirm"] = function(__obj) {
     };
     (function() {
       _print(_safe('<label class=\'fr_option control\'>\n  <input type=\'checkbox\' data-rv-checked=\'model.value\' />\n  '));
-    
+
       _print(this.model.get('label'));
-    
+
       _print(_safe(JST["partials/required"](this)));
-    
+
       _print(_safe('\n</label>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -2945,23 +2938,23 @@ window.JST["fields/date"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_day" />\n  </div>\n\n  '));
-    
+
       if (!this.model.get('disable_year')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -2969,11 +2962,11 @@ window.JST["fields/date"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_year" />\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3015,34 +3008,36 @@ window.JST["fields/dropdown"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var option, _i, _len, _ref;
-    
+      var i, len, option, ref;
+
       _print(_safe('<select id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
-    
+
       if (this.model.get('include_blank_option')) {
-        _print(_safe('\n    <option></option>\n  '));
+        _print(_safe('\n    <option selected value="">\n      '));
+        _print(FormRenderer.t.choose_an_option);
+        _print(_safe('\n    </option>\n  '));
       }
-    
+
       _print(_safe('\n\n  '));
-    
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n    <option value="'));
         _print(option.label);
         _print(_safe('">\n      '));
         _print(option.translated_label || option.label);
         _print(_safe('\n    </option>\n  '));
       }
-    
+
       _print(_safe('\n</select>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3085,13 +3080,13 @@ window.JST["fields/email"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text" inputmode="email"\n       id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3133,13 +3128,13 @@ window.JST["fields/file"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var attachment, exts, _i, _len, _ref;
-    
+      var attachment, exts, i, len, ref;
+
       _print(_safe('<div class=\'fr_files\'>\n  '));
-    
-      _ref = this.model.getFiles();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        attachment = _ref[_i];
+
+      ref = this.model.getFiles();
+      for (i = 0, len = ref.length; i < len; i++) {
+        attachment = ref[i];
         _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
         _print(attachment.filename);
         _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
@@ -3148,9 +3143,9 @@ window.JST["fields/file"] = function(__obj) {
         _print(FormRenderer.t.remove);
         _print(_safe('</button>\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n</div>\n\n'));
-    
+
       if (this.model.canAddFile()) {
         _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
         _print(this.domId());
@@ -3176,11 +3171,11 @@ window.JST["fields/file"] = function(__obj) {
         }
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3223,33 +3218,33 @@ window.JST["fields/identification"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('-name\'>'));
-    
+
       _print(FormRenderer.t.name);
-    
+
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('-email\'>'));
-    
+
       _print(FormRenderer.t.email);
-    
+
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3292,25 +3287,25 @@ window.JST["fields/map_marker"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    '));
-    
+
       _print(FormRenderer.t.click_to_set);
-    
+
       _print(_safe('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>'));
-    
+
       _print(FormRenderer.t.coordinates);
-    
+
       _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
-    
+
       _print(FormRenderer.t.na);
-    
+
       _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>'));
-    
+
       _print(FormRenderer.t.clear);
-    
+
       _print(_safe('</a>\n  </div>\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3353,25 +3348,25 @@ window.JST["fields/number"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
-    
+
       _print(this.calculateSize());
-    
+
       _print(_safe('" />\n\n'));
-    
+
       if (this.model.get('units')) {
         _print(_safe('\n  <span class=\'fr_units\'>\n    '));
         _print(this.model.get('units'));
         _print(_safe('\n  </span>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3414,9 +3409,9 @@ window.JST["fields/page_break"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3459,17 +3454,17 @@ window.JST["fields/paragraph"] = function(__obj) {
     };
     (function() {
       _print(_safe('<textarea\n   id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n   class="size_'));
-    
+
       _print(this.model.getSize());
-    
+
       _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3512,17 +3507,17 @@ window.JST["fields/phone"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
-    
+
       _print(this.phonePlaceholder());
-    
+
       _print(_safe('" />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3565,19 +3560,19 @@ window.JST["fields/price"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_dollars">'));
-    
+
       _print(FormRenderer.t.dollars);
-    
+
       _print(_safe('</label>\n    <input type="text"\n           id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
-    
+
       if (!this.model.get('disable_cents')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -3587,11 +3582,11 @@ window.JST["fields/price"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_cents" />\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3634,11 +3629,11 @@ window.JST["fields/radio"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/options_field"](this)));
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3681,27 +3676,27 @@ window.JST["fields/section_break"] = function(__obj) {
     };
     (function() {
       var formattedDescription;
-    
+
       _print(_safe(JST["partials/labels"](this)));
-    
+
       _print(_safe('\n\n'));
-    
+
       formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
-    
+
       _print(_safe('\n<'));
-    
+
       _print(this.model.sizeToHeaderTag());
-    
+
       _print(_safe('>'));
-    
+
       _print(this.model.get('label'));
-    
+
       _print(_safe('</'));
-    
+
       _print(this.model.sizeToHeaderTag());
-    
+
       _print(_safe('>\n'));
-    
+
       if (formattedDescription) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
@@ -3709,11 +3704,11 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe(formattedDescription));
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n\n<hr />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3755,27 +3750,27 @@ window.JST["fields/table"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var column, i, j, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
-    
+      var column, i, j, k, l, len, len1, len2, m, n, ref, ref1, ref2, ref3;
+
       _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
-    
-      _ref = this.model.getColumns();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        column = _ref[_i];
+
+      ref = this.model.getColumns();
+      for (k = 0, len = ref.length; k < len; k++) {
+        column = ref[k];
         _print(_safe('\n        <th>'));
         _print(column.translated_label || column.label);
         _print(_safe('</th>\n      '));
       }
-    
+
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
-    
-      for (i = _j = 0, _ref1 = this.model.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+
+      for (i = l = 0, ref1 = this.model.numRows - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
         _print(_safe('">\n        '));
-        _ref2 = this.model.getColumns();
-        for (j = _k = 0, _len1 = _ref2.length; _k < _len1; j = ++_k) {
-          column = _ref2[j];
+        ref2 = this.model.getColumns();
+        for (j = m = 0, len1 = ref2.length; m < len1; j = ++m) {
+          column = ref2[j];
           _print(_safe('\n          '));
           if (this.model.getPresetValue(column.label, i)) {
             _print(_safe('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.'));
@@ -3810,23 +3805,23 @@ window.JST["fields/table"] = function(__obj) {
         }
         _print(_safe('\n        </td>\n      </tr>\n    '));
       }
-    
+
       _print(_safe('\n  </tbody>\n\n  '));
-    
+
       if (this.model.get('column_totals')) {
         _print(_safe('\n    <tfoot>\n      <tr>\n        '));
-        _ref3 = this.model.getColumns();
-        for (j = _l = 0, _len2 = _ref3.length; _l < _len2; j = ++_l) {
-          column = _ref3[j];
+        ref3 = this.model.getColumns();
+        for (j = n = 0, len2 = ref3.length; n < len2; j = ++n) {
+          column = ref3[j];
           _print(_safe('\n          <td data-rv-text=\'model.columnTotals.'));
           _print(j);
           _print(_safe('\'></td>\n        '));
         }
         _print(_safe('\n        <td class="fr_table_col_remove"></td>\n      </tr>\n    </tfoot>\n  '));
       }
-    
+
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
-    
+
       if (this.model.canAddRows()) {
         _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
         _print(_safe(FormRenderer.ADD_ROW_ICON));
@@ -3834,11 +3829,11 @@ window.JST["fields/table"] = function(__obj) {
         _print(FormRenderer.t.add_another);
         _print(_safe('\n    </a>\n  '));
       }
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3881,17 +3876,17 @@ window.JST["fields/text"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n       class="size_'));
-    
+
       _print(this.model.getSize());
-    
+
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -3934,23 +3929,23 @@ window.JST["fields/time"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('_minutes" />\n  </div>\n\n  '));
-    
+
       if (!this.model.get('disable_seconds')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -3958,11 +3953,11 @@ window.JST["fields/time"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_seconds" />\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\' aria-label=\'AM/PM\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4005,13 +4000,13 @@ window.JST["fields/website"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text" inputmode="url"\n       id="'));
-    
+
       _print(this.domId());
-    
+
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4054,13 +4049,13 @@ window.JST["main"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_loading\'>\n  '));
-    
+
       _print(FormRenderer.t.loading_form);
-    
+
       _print(_safe('\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4107,11 +4102,11 @@ window.JST["partials/description"] = function(__obj) {
         _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4154,9 +4149,9 @@ window.JST["partials/error"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_error\' data-rv-show=\'model.error\' data-rv-text=\'model.error\'></div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4199,7 +4194,7 @@ window.JST["partials/label"] = function(__obj) {
     };
     (function() {
       _print(_safe('<label '));
-    
+
       if (this.model.group || this.model.wrapper === 'fieldset') {
         _print(_safe('aria-hidden="true"'));
       } else {
@@ -4207,21 +4202,21 @@ window.JST["partials/label"] = function(__obj) {
         _print(this.domId());
         _print(_safe('"'));
       }
-    
+
       _print(_safe('>\n  '));
-    
+
       _print(this.model.get('label'));
-    
+
       _print(_safe(JST["partials/required"](this)));
-    
+
       _print(_safe('\n  '));
-    
+
       _print(_safe(JST["partials/labels"](this)));
-    
+
       _print(_safe('\n</label>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4284,11 +4279,11 @@ window.JST["partials/labels"] = function(__obj) {
         }
         _print(_safe('\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4331,9 +4326,9 @@ window.JST["partials/length_counter"] = function(__obj) {
     };
     (function() {
       _print(_safe('<span class=\'fr_length_counter\' data-rv-text=\'model.currentLength\'></span>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4376,19 +4371,19 @@ window.JST["partials/length_validations"] = function(__obj) {
     };
     (function() {
       var max, min, units;
-    
+
       min = this.model.get('minlength');
-    
+
       _print(_safe('\n'));
-    
+
       max = this.model.get('maxlength');
-    
+
       _print(_safe('\n'));
-    
+
       units = this.model.getLengthValidationUnits();
-    
+
       _print(_safe('\n\n'));
-    
+
       if (this.model.hasLengthValidation()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
         if (min && max) {
@@ -4424,11 +4419,11 @@ window.JST["partials/length_validations"] = function(__obj) {
         _print(_safe(JST["partials/length_counter"](this)));
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4471,7 +4466,7 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     };
     (function() {
       var max, min;
-    
+
       if (this.model.hasMinMaxValidation()) {
         _print(_safe('\n  '));
         min = this.model.get('min');
@@ -4493,11 +4488,11 @@ window.JST["partials/min_max_validations"] = function(__obj) {
         }
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4540,11 +4535,11 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.model.field_type](this)));
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4586,15 +4581,15 @@ window.JST["partials/options_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var fieldType, option, _i, _len, _ref;
-    
+      var fieldType, i, len, option, ref;
+
       fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
-    
+
       _print(_safe('\n\n'));
-    
-      _ref = this.model.getOptions();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
+
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
         _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
         _print(fieldType);
         _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
@@ -4603,9 +4598,9 @@ window.JST["partials/options_field"] = function(__obj) {
         _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
-    
+
       _print(_safe('\n\n'));
-    
+
       if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
         _print(fieldType);
@@ -4615,11 +4610,11 @@ window.JST["partials/options_field"] = function(__obj) {
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4661,13 +4656,13 @@ window.JST["partials/pagination"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var i, idx, _i, _len, _ref;
-    
+      var i, idx, j, len, ref;
+
       if (this.form_renderer.visiblePages().length > 1) {
         _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
-        _ref = this.form_renderer.visiblePages();
-        for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          i = _ref[idx];
+        ref = this.form_renderer.visiblePages();
+        for (idx = j = 0, len = ref.length; j < len; idx = ++j) {
+          i = ref[idx];
           _print(_safe('\n      <li class=\''));
           if (!this.form_renderer.isPageValid(i)) {
             _print(_safe('has_errors'));
@@ -4688,11 +4683,11 @@ window.JST["partials/pagination"] = function(__obj) {
         }
         _print(_safe('\n  </ul>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4735,15 +4730,15 @@ window.JST["partials/repeating_group"] = function(__obj) {
     };
     (function() {
       _print(_safe('<fieldset class=\'fr_fieldset\'>\n  <legend>'));
-    
+
       _print(this.model.get('label'));
-    
+
       _print(_safe('</legend>\n  '));
-    
+
       _print(_safe(JST["partials/label"](this)));
-    
+
       _print(_safe('\n\n  '));
-    
+
       if (this.model.isSkipped()) {
         _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
         _print(FormRenderer.t.answer);
@@ -4765,11 +4760,11 @@ window.JST["partials/repeating_group"] = function(__obj) {
         }
         _print(_safe('\n  '));
       }
-    
+
       _print(_safe('\n</fieldset>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4812,21 +4807,21 @@ window.JST["partials/repeating_group_entry"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_group_entry_idx\'>#'));
-    
+
       _print(this.idx + 1);
-    
+
       _print(_safe('</div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
-    
+
       if (this.entry.canRemove()) {
         _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry fr_group_entry_remove\'>'));
         _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
         _print(_safe('</a>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4871,11 +4866,11 @@ window.JST["partials/required"] = function(__obj) {
       if (this.model.get('required')) {
         _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4936,27 +4931,27 @@ window.JST["partials/response_field"] = function(__obj) {
         _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n\n'));
-    
+
       _print(_safe(JST["partials/length_validations"](this)));
-    
+
       _print(_safe('\n'));
-    
+
       _print(_safe(JST["partials/min_max_validations"](this)));
-    
+
       _print(_safe('\n'));
-    
+
       _print(_safe(JST["partials/error"](this)));
-    
+
       _print(_safe('\n'));
-    
+
       _print(_safe(JST["partials/description"](this)));
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -4999,13 +4994,13 @@ window.JST["plugins/bookmark_draft"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_bookmark\'>\n  <a href=\'#\' class=\'js-fr-bookmark\'>'));
-    
+
       _print(FormRenderer.t.finish_later);
-    
+
       _print(_safe('</a>\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -5047,11 +5042,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-    
+      var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
       _print(_safe('<div class=\'fr_bottom\'>\n  '));
-    
-      if (__indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
+
+      if (indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
           _print(_safe('\n        '));
@@ -5068,9 +5063,9 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         }
         _print(_safe('\n    </div>\n  '));
       }
-    
+
       _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
-    
+
       if (!this.form_renderer.isFirstPage()) {
         _print(_safe('\n      <button data-fr-previous-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
@@ -5078,9 +5073,9 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         _print(FormRenderer.t.back_to_page.replace(':num', this.form_renderer.previousPage()));
         _print(_safe('\n      </button>\n    '));
       }
-    
+
       _print(_safe('\n\n    '));
-    
+
       if (this.form_renderer.state.get('submitting')) {
         _print(_safe('\n      <button disabled class=\''));
         _print(FormRenderer.BUTTON_CLASS);
@@ -5098,11 +5093,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         }
         _print(_safe('\n      </button>\n    '));
       }
-    
+
       _print(_safe('\n  </div>\n</div>\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -5149,11 +5144,11 @@ window.JST["plugins/error_bar"] = function(__obj) {
         _print(_safe(FormRenderer.t.error_bar.errors));
         _print(_safe('\n  </div>\n'));
       }
-    
+
       _print(_safe('\n'));
-    
+
     }).call(this);
-    
+
     return __out.join('');
   }).call((function() {
     var obj = {

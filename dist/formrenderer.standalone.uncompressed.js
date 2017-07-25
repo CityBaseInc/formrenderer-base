@@ -1,4 +1,5 @@
-(function(window){var $, _str;
+(function(window){var $, _str,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = jQuery;
 
@@ -14,6 +15,14 @@ rivets.binders.input = {
   },
   unbind: function(el) {
     return $(el).unbind("" + rivets.inputEvent + ".rivets");
+  }
+};
+
+rivets.formatters.eq = function(value, checkAgainst) {
+  if (value.constructor === Array) {
+    return __indexOf.call(value, checkAgainst) >= 0;
+  } else {
+    return value === checkAgainst;
   }
 };
 
@@ -4297,9 +4306,13 @@ window.JST["partials/options_field"] = function(__obj) {
       if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
         _print(fieldType);
-        _print(_safe('\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(_safe('\' data-rv-checkedarray="model.value.checked" value="'));
         _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked\' data-rv-input=\'model.value.other_text\' placeholder=\''));
+        _print(_safe('" />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.checked | eq '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\' data-rv-input=\'model.value.other_text\' placeholder=\''));
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }

@@ -13,6 +13,12 @@ EXPECTED_BLANK_VALUES = {
   "39": {
     checked: []
   },
+  "3900": {
+    checked: []
+  },
+  "3901": {
+    checked: []
+  },
   "44": {
     "am_pm": "AM"
   },
@@ -79,7 +85,18 @@ EXPECTED_PRESENT_VALUES = {
   },
   "50": ["40.7700118", "-73.9800453"],
   "51": "510-123-4567",
-  "52": true
+  "52": true,
+  "3900": {
+    "checked": ["Other"],
+    "other_text": "some alternative answer"
+  },
+  "3901": {
+    "checked": [
+      "Choice #2",
+      "Other"
+    ],
+    "other_text": "some alternative answer"
+  }
 }
 
 describe '#getValue', ->
@@ -97,7 +114,10 @@ describe '#getValue', ->
     $('.fr_response_field_text input').val('foo').trigger('input')
     $('.fr_response_field_paragraph textarea').val('bar').trigger('input')
     $('.fr_response_field_checkboxes input').first().click().trigger('change')
-    $('.fr_response_field_radio input').last().click().trigger('change')
+    $($('.fr_response_field_radio')[0]).find('input[type=radio]').last().click().trigger('change')
+    $($('.fr_response_field_radio')[1]).find('input[type=radio]').last().click().trigger('change')
+    $($('.fr_response_field_checkboxes')[1]).find('input[type=checkbox]').slice(-2).click().trigger('change')
+    $('.fr_other_option input[type=text]').val("some alternative answer").trigger('input')
     $('.fr_response_field_dropdown select').val('Choice #2').trigger('change')
     $('.fr_response_field_price input').first().val('12').trigger('input')
     $('.fr_response_field_price input').last().val('99').trigger('input')

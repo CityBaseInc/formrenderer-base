@@ -6875,14 +6875,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-<<<<<<< HEAD
-  FormRenderer.toBoolean = function(str) {
-    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
-  };
-
-}).call(this);
-
-  FormRenderer.VERSION = '1.1.0';
+  FormRenderer.VERSION = '1.1.1';
 
 }).call(this);
 

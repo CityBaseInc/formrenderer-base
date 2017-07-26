@@ -19,6 +19,8 @@ EXPECTED_BLANK_VALUES = {
   "3901": {
     checked: []
   },
+  "41": {},
+  "43": {},
   "44": {
     "am_pm": "AM"
   },
@@ -87,6 +89,11 @@ EXPECTED_PRESENT_VALUES = {
   "50": ["40.7700118", "-73.9800453"],
   "51": "510-123-4567",
   "52": true,
+  "53": [
+    {
+      "54":"Large Round Son"
+    }
+  ],
   "3900": {
     "checked": ["Other"],
     "other_text": "some alternative answer"

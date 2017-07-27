@@ -71,7 +71,7 @@ feature.formdata = window.FormData !== undefined;
 var hasProp = !!$.fn.prop;
 
 // attr2 uses prop when it can but checks the return type for
-// an expected string.  this accounts for the case where a form
+// an expected string.  this accounts for the case where a form 
 // contains inputs with names like "action" or "method"; in those
 // cases "prop" returns the element
 $.fn.attr2 = function() {
@@ -445,7 +445,7 @@ $.fn.ajaxSubmit = function(options) {
 
         var CLIENT_TIMEOUT_ABORT = 1;
         var SERVER_ABORT = 2;
-
+                
         function getDoc(frame) {
             /* it looks like contentWindow or contentDocument do not
              * carry the protocol property in ie8, when running under ssl
@@ -453,9 +453,9 @@ $.fn.ajaxSubmit = function(options) {
              * the protocol is know but not on the other two objects. strange?
              * "Same origin policy" http://en.wikipedia.org/wiki/Same_origin_policy
              */
-
+            
             var doc = null;
-
+            
             // IE8 cascading access check
             try {
                 if (frame.contentWindow) {
@@ -595,7 +595,7 @@ $.fn.ajaxSubmit = function(options) {
             if (xhr.aborted || callbackProcessed) {
                 return;
             }
-
+            
             doc = getDoc(io);
             if(!doc) {
                 log('cannot access response document');
@@ -4554,17 +4554,17 @@ var slice = [].slice;
 
 /**
  * Copyright (c) 2010 by Gabriel Birke
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -4592,7 +4592,7 @@ function Sanitize(){
   this.config.remove_element_contents = {};
   this.config.remove_all_contents = false;
   if(options.remove_contents) {
-
+    
     if(options.remove_contents instanceof Array) {
       for(i=0;i<options.remove_contents.length;i++) {
         this.config.remove_element_contents[options.remove_contents[i]] = true;
@@ -4616,7 +4616,7 @@ Sanitize.prototype.clean_node = function(container) {
   this.current_element = fragment;
   this.whitelist_nodes = [];
 
-
+  
 
   /**
    * Utility function to check if an element exists in an array
@@ -4624,12 +4624,12 @@ Sanitize.prototype.clean_node = function(container) {
   function _array_index(needle, haystack) {
     var i;
     for(i=0; i < haystack.length; i++) {
-      if(haystack[i] == needle)
+      if(haystack[i] == needle) 
         return i;
     }
     return -1;
   }
-
+  
   function _merge_arrays_uniq() {
     var result = [];
     var uniq_hash = {};
@@ -4646,7 +4646,7 @@ Sanitize.prototype.clean_node = function(container) {
     }
     return result;
   }
-
+  
   /**
    * Clean function that checks the different node types and cleans them up accordingly
    * @param elem DOM Node to clean
@@ -4679,22 +4679,22 @@ Sanitize.prototype.clean_node = function(container) {
         if (console && console.log) console.log("unknown node type", elem.nodeType);
         break;
     }
-
+ 
   }
-
+  
   function _clean_element(elem) {
     var i, j, clone, parent_element, name, allowed_attributes, attr, attr_name, attr_node, protocols, del, attr_ok;
     var transform = _transform_element.call(this, elem);
-
+    
     elem = transform.node;
     name = elem.nodeName.toLowerCase();
-
+    
     // check if element itself is allowed
     parent_element = this.current_element;
     if(this.allowed_elements[name] || transform.whitelist) {
         this.current_element = this.dom.createElement(elem.nodeName);
         parent_element.appendChild(this.current_element);
-
+        
       // clean attributes
       var attrs = this.config.attributes;
       allowed_attributes = _merge_arrays_uniq(attrs[name], attrs[Sanitize.ALL], transform.attr_whitelist);
@@ -4721,7 +4721,7 @@ Sanitize.prototype.clean_node = function(container) {
             }
         }
       }
-
+      
       // Add attributes
       if(this.config.add_attributes[name]) {
         for(attr_name in this.config.add_attributes[name]) {
@@ -4748,14 +4748,14 @@ Sanitize.prototype.clean_node = function(container) {
         _clean.call(this, elem.childNodes[i]);
       }
     }
-
+    
     // some versions of IE don't support normalize.
     if(this.current_element.normalize) {
       this.current_element.normalize();
     }
     this.current_element = parent_element;
   } // END clean_element function
-
+  
   function _transform_element(node) {
     var output = {
       attr_whitelist:[],
@@ -4772,7 +4772,7 @@ Sanitize.prototype.clean_node = function(container) {
         whitelist_nodes: this.whitelist_nodes,
         dom: this.dom
       });
-      if (transform == null)
+      if (transform == null) 
         continue;
       else if(typeof transform == 'object') {
         if(transform.whitelist_nodes && transform.whitelist_nodes instanceof Array) {
@@ -4794,19 +4794,19 @@ Sanitize.prototype.clean_node = function(container) {
     }
     return output;
   }
-
-
-
+  
+  
+  
   for(i=0;i<container.childNodes.length;i++) {
     _clean.call(this, container.childNodes[i]);
   }
-
+  
   if(fragment.normalize) {
     fragment.normalize();
   }
-
+  
   return fragment;
-
+  
 };
 
 if ( typeof define === "function" ) {
@@ -4983,7 +4983,7 @@ Sanitize.Config.RELAXED = {
         factory(_, Backbone);
     }
 }(function(_, Backbone) {
-
+    
     /**
      * Takes a nested object and returns a shallow object keyed with the path names
      * e.g. { "level1.level2": "value" }
@@ -5035,7 +5035,7 @@ Sanitize.Config.RELAXED = {
             if (result == null && i < n - 1) {
                 result = {};
             }
-
+            
             if (typeof result === 'undefined') {
                 if (return_exists)
                 {
@@ -5125,7 +5125,7 @@ Sanitize.Config.RELAXED = {
         set: function(key, val, options) {
             var attr, attrs, unset, changes, silent, changing, prev, current;
             if (key == null) return this;
-
+            
             // Handle both `"key", value` and `{key: value}` -style arguments.
             if (typeof key === 'object') {
               attrs = key;
@@ -5135,7 +5135,7 @@ Sanitize.Config.RELAXED = {
             }
 
             options || (options = {});
-
+            
             // Run validation.
             if (!this._validate(attrs, options)) return false;
 
@@ -5239,7 +5239,7 @@ Sanitize.Config.RELAXED = {
           //</custom code>
 
           var old = this._changing ? this._previousAttributes : this.attributes;
-
+          
           //<custom code>
           diff = objToPaths(diff);
           old = objToPaths(old);
@@ -5282,7 +5282,7 @@ Sanitize.Config.RELAXED = {
 
     //For use in NodeJS
     if (typeof module != 'undefined') module.exports = DeepModel;
-
+    
     return Backbone;
 
 }));
@@ -8898,11 +8898,11 @@ window.JST["fields/address"] = function(__obj) {
     };
     (function() {
       var format, i, j, len, len1, ref, ref1, ref2, x;
-
+    
       format = this.model.get('address_format');
-
+    
       _print(_safe('\n\n'));
-
+    
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -8912,9 +8912,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
-
+    
       _print(_safe('\n\n'));
-
+    
       if (format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -8960,9 +8960,9 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n    </div>\n  </div>\n'));
       }
-
+    
       _print(_safe('\n\n<div class=\'fr_grid\'>\n  '));
-
+    
       if (format !== 'city_state' && format !== 'country') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -8980,9 +8980,9 @@ window.JST["fields/address"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_zipcode\' />\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n\n  '));
-
+    
       if (format !== 'city_state' && format !== 'city_state_zip') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
         _print(this.domId());
@@ -9002,11 +9002,11 @@ window.JST["fields/address"] = function(__obj) {
         }
         _print(_safe('\n      </select>\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9049,19 +9049,19 @@ window.JST["fields/block_of_text"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/labels"](this)));
-
+    
       _print(_safe('\n\n<div class=\'fr_text size_'));
-
+    
       _print(this.model.getSize());
-
+    
       _print(_safe('\'>\n  '));
-
+    
       _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9104,11 +9104,11 @@ window.JST["fields/checkboxes"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/options_field"](this)));
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9151,15 +9151,15 @@ window.JST["fields/confirm"] = function(__obj) {
     };
     (function() {
       _print(_safe('<label class=\'fr_option control\'>\n  <input type=\'checkbox\' data-rv-checked=\'model.value\' />\n  '));
-
+    
       _print(this.model.get('label'));
-
+    
       _print(_safe(JST["partials/required"](this)));
-
+    
       _print(_safe('\n</label>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9202,23 +9202,23 @@ window.JST["fields/date"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_day" />\n  </div>\n\n  '));
-
+    
       if (!this.model.get('disable_year')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -9226,11 +9226,11 @@ window.JST["fields/date"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_year" />\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9273,21 +9273,21 @@ window.JST["fields/dropdown"] = function(__obj) {
     };
     (function() {
       var i, len, option, ref;
-
+    
       _print(_safe('<select id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
-
+    
       if (this.model.get('include_blank_option')) {
         _print(_safe('\n    <option selected value="">\n      '));
         _print(FormRenderer.t.choose_an_option);
         _print(_safe('\n    </option>\n  '));
       }
-
+    
       _print(_safe('\n\n  '));
-
+    
       ref = this.model.getOptions();
       for (i = 0, len = ref.length; i < len; i++) {
         option = ref[i];
@@ -9297,11 +9297,11 @@ window.JST["fields/dropdown"] = function(__obj) {
         _print(option.translated_label || option.label);
         _print(_safe('\n    </option>\n  '));
       }
-
+    
       _print(_safe('\n</select>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9344,13 +9344,13 @@ window.JST["fields/email"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text" inputmode="email"\n       id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9393,9 +9393,9 @@ window.JST["fields/file"] = function(__obj) {
     };
     (function() {
       var attachment, exts, i, len, ref;
-
+    
       _print(_safe('<div class=\'fr_files\'>\n  '));
-
+    
       ref = this.model.getFiles();
       for (i = 0, len = ref.length; i < len; i++) {
         attachment = ref[i];
@@ -9407,9 +9407,9 @@ window.JST["fields/file"] = function(__obj) {
         _print(FormRenderer.t.remove);
         _print(_safe('</button>\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n</div>\n\n'));
-
+    
       if (this.model.canAddFile()) {
         _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
         _print(this.domId());
@@ -9435,11 +9435,11 @@ window.JST["fields/file"] = function(__obj) {
         }
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9482,33 +9482,33 @@ window.JST["fields/identification"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('-name\'>'));
-
+    
       _print(FormRenderer.t.name);
-
+    
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('-email\'>'));
-
+    
       _print(FormRenderer.t.email);
-
+    
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9551,25 +9551,25 @@ window.JST["fields/map_marker"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    '));
-
+    
       _print(FormRenderer.t.click_to_set);
-
+    
       _print(_safe('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>'));
-
+    
       _print(FormRenderer.t.coordinates);
-
+    
       _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
-
+    
       _print(FormRenderer.t.na);
-
+    
       _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>'));
-
+    
       _print(FormRenderer.t.clear);
-
+    
       _print(_safe('</a>\n  </div>\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9612,25 +9612,25 @@ window.JST["fields/number"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
-
+    
       _print(this.calculateSize());
-
+    
       _print(_safe('" />\n\n'));
-
+    
       if (this.model.get('units')) {
         _print(_safe('\n  <span class=\'fr_units\'>\n    '));
         _print(this.model.get('units'));
         _print(_safe('\n  </span>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9673,9 +9673,9 @@ window.JST["fields/page_break"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9718,17 +9718,17 @@ window.JST["fields/paragraph"] = function(__obj) {
     };
     (function() {
       _print(_safe('<textarea\n   id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n   class="size_'));
-
+    
       _print(this.model.getSize());
-
+    
       _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9771,17 +9771,17 @@ window.JST["fields/phone"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
-
+    
       _print(this.phonePlaceholder());
-
+    
       _print(_safe('" />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9824,19 +9824,19 @@ window.JST["fields/price"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_dollars">'));
-
+    
       _print(FormRenderer.t.dollars);
-
+    
       _print(_safe('</label>\n    <input type="text"\n           id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
-
+    
       if (!this.model.get('disable_cents')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -9846,11 +9846,11 @@ window.JST["fields/price"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_cents" />\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9893,11 +9893,11 @@ window.JST["fields/radio"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["partials/options_field"](this)));
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -9940,27 +9940,27 @@ window.JST["fields/section_break"] = function(__obj) {
     };
     (function() {
       var formattedDescription;
-
+    
       _print(_safe(JST["partials/labels"](this)));
-
+    
       _print(_safe('\n\n'));
-
+    
       formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
-
+    
       _print(_safe('\n<'));
-
+    
       _print(this.model.sizeToHeaderTag());
-
+    
       _print(_safe('>'));
-
+    
       _print(this.model.get('label'));
-
+    
       _print(_safe('</'));
-
+    
       _print(this.model.sizeToHeaderTag());
-
+    
       _print(_safe('>\n'));
-
+    
       if (formattedDescription) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
@@ -9968,11 +9968,11 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe(formattedDescription));
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n\n<hr />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10015,9 +10015,9 @@ window.JST["fields/table"] = function(__obj) {
     };
     (function() {
       var column, i, j, k, l, len, len1, len2, m, n, ref, ref1, ref2, ref3;
-
+    
       _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
-
+    
       ref = this.model.getColumns();
       for (k = 0, len = ref.length; k < len; k++) {
         column = ref[k];
@@ -10025,9 +10025,9 @@ window.JST["fields/table"] = function(__obj) {
         _print(column.translated_label || column.label);
         _print(_safe('</th>\n      '));
       }
-
+    
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
-
+    
       for (i = l = 0, ref1 = this.model.numRows() - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
@@ -10069,9 +10069,9 @@ window.JST["fields/table"] = function(__obj) {
         }
         _print(_safe('\n        </td>\n      </tr>\n    '));
       }
-
+    
       _print(_safe('\n  </tbody>\n\n  '));
-
+    
       if (this.model.get('column_totals')) {
         _print(_safe('\n    <tfoot>\n      <tr>\n        '));
         ref3 = this.model.getColumns();
@@ -10083,9 +10083,9 @@ window.JST["fields/table"] = function(__obj) {
         }
         _print(_safe('\n        <td class="fr_table_col_remove"></td>\n      </tr>\n    </tfoot>\n  '));
       }
-
+    
       _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
-
+    
       if (this.model.canAddRows()) {
         _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
         _print(_safe(FormRenderer.ADD_ROW_ICON));
@@ -10093,11 +10093,11 @@ window.JST["fields/table"] = function(__obj) {
         _print(FormRenderer.t.add_another);
         _print(_safe('\n    </a>\n  '));
       }
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10140,17 +10140,17 @@ window.JST["fields/text"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text"\n       id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n       class="size_'));
-
+    
       _print(this.model.getSize());
-
+    
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10193,23 +10193,23 @@ window.JST["fields/time"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('_minutes" />\n  </div>\n\n  '));
-
+    
       if (!this.model.get('disable_seconds')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
         _print(this.domId());
@@ -10217,11 +10217,11 @@ window.JST["fields/time"] = function(__obj) {
         _print(this.domId());
         _print(_safe('_seconds" />\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\' aria-label=\'AM/PM\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10264,13 +10264,13 @@ window.JST["fields/website"] = function(__obj) {
     };
     (function() {
       _print(_safe('<input type="text" inputmode="url"\n       id="'));
-
+    
       _print(this.domId());
-
+    
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10313,13 +10313,13 @@ window.JST["main"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_loading\'>\n  '));
-
+    
       _print(FormRenderer.t.loading_form);
-
+    
       _print(_safe('\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10366,11 +10366,11 @@ window.JST["partials/description"] = function(__obj) {
         _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10413,9 +10413,9 @@ window.JST["partials/error"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_error\' data-rv-show=\'model.error\' data-rv-text=\'model.error\'></div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10458,7 +10458,7 @@ window.JST["partials/label"] = function(__obj) {
     };
     (function() {
       _print(_safe('<label '));
-
+    
       if (this.model.group || this.model.wrapper === 'fieldset') {
         _print(_safe('aria-hidden="true"'));
       } else {
@@ -10466,21 +10466,21 @@ window.JST["partials/label"] = function(__obj) {
         _print(this.domId());
         _print(_safe('"'));
       }
-
+    
       _print(_safe('>\n  '));
-
+    
       _print(this.model.get('label'));
-
+    
       _print(_safe(JST["partials/required"](this)));
-
+    
       _print(_safe('\n  '));
-
+    
       _print(_safe(JST["partials/labels"](this)));
-
+    
       _print(_safe('\n</label>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10543,11 +10543,11 @@ window.JST["partials/labels"] = function(__obj) {
         }
         _print(_safe('\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10590,9 +10590,9 @@ window.JST["partials/length_counter"] = function(__obj) {
     };
     (function() {
       _print(_safe('<span class=\'fr_length_counter\' data-rv-text=\'model.currentLength\'></span>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10635,19 +10635,19 @@ window.JST["partials/length_validations"] = function(__obj) {
     };
     (function() {
       var max, min, units;
-
+    
       min = this.model.get('minlength');
-
+    
       _print(_safe('\n'));
-
+    
       max = this.model.get('maxlength');
-
+    
       _print(_safe('\n'));
-
+    
       units = this.model.getLengthValidationUnits();
-
+    
       _print(_safe('\n\n'));
-
+    
       if (this.model.hasLengthValidation()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
         if (min && max) {
@@ -10683,11 +10683,11 @@ window.JST["partials/length_validations"] = function(__obj) {
         _print(_safe(JST["partials/length_counter"](this)));
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10730,7 +10730,7 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     };
     (function() {
       var max, min;
-
+    
       if (this.model.hasMinMaxValidation()) {
         _print(_safe('\n  '));
         min = this.model.get('min');
@@ -10752,11 +10752,11 @@ window.JST["partials/min_max_validations"] = function(__obj) {
         }
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10799,11 +10799,11 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.model.field_type](this)));
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10846,11 +10846,11 @@ window.JST["partials/options_field"] = function(__obj) {
     };
     (function() {
       var fieldType, i, len, option, ref;
-
+    
       fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
-
+    
       _print(_safe('\n\n'));
-
+    
       ref = this.model.getOptions();
       for (i = 0, len = ref.length; i < len; i++) {
         option = ref[i];
@@ -10862,9 +10862,9 @@ window.JST["partials/options_field"] = function(__obj) {
         _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
-
+    
       _print(_safe('\n\n'));
-
+    
       if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
         _print(fieldType);
@@ -10878,11 +10878,11 @@ window.JST["partials/options_field"] = function(__obj) {
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10925,7 +10925,7 @@ window.JST["partials/pagination"] = function(__obj) {
     };
     (function() {
       var i, idx, j, len, ref;
-
+    
       if (this.form_renderer.visiblePages().length > 1) {
         _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
         ref = this.form_renderer.visiblePages();
@@ -10951,11 +10951,11 @@ window.JST["partials/pagination"] = function(__obj) {
         }
         _print(_safe('\n  </ul>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -10998,15 +10998,15 @@ window.JST["partials/repeating_group"] = function(__obj) {
     };
     (function() {
       _print(_safe('<fieldset class=\'fr_fieldset\'>\n  <legend>'));
-
+    
       _print(this.model.get('label'));
-
+    
       _print(_safe('</legend>\n  '));
-
+    
       _print(_safe(JST["partials/label"](this)));
-
+    
       _print(_safe('\n\n  '));
-
+    
       if (this.model.isSkipped()) {
         _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
         _print(FormRenderer.t.answer);
@@ -11028,11 +11028,11 @@ window.JST["partials/repeating_group"] = function(__obj) {
         }
         _print(_safe('\n  '));
       }
-
+    
       _print(_safe('\n</fieldset>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11075,21 +11075,21 @@ window.JST["partials/repeating_group_entry"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_group_entry_idx\'>#'));
-
+    
       _print(this.idx + 1);
-
+    
       _print(_safe('</div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
-
+    
       if (this.entry.canRemove()) {
         _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry fr_group_entry_remove\'>'));
         _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
         _print(_safe('</a>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11134,11 +11134,11 @@ window.JST["partials/required"] = function(__obj) {
       if (this.model.get('required')) {
         _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11199,27 +11199,27 @@ window.JST["partials/response_field"] = function(__obj) {
         _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n\n'));
-
+    
       _print(_safe(JST["partials/length_validations"](this)));
-
+    
       _print(_safe('\n'));
-
+    
       _print(_safe(JST["partials/min_max_validations"](this)));
-
+    
       _print(_safe('\n'));
-
+    
       _print(_safe(JST["partials/error"](this)));
-
+    
       _print(_safe('\n'));
-
+    
       _print(_safe(JST["partials/description"](this)));
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11262,13 +11262,13 @@ window.JST["plugins/bookmark_draft"] = function(__obj) {
     };
     (function() {
       _print(_safe('<div class=\'fr_bookmark\'>\n  <a href=\'#\' class=\'js-fr-bookmark\'>'));
-
+    
       _print(FormRenderer.t.finish_later);
-
+    
       _print(_safe('</a>\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11311,9 +11311,9 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
     };
     (function() {
       var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
+    
       _print(_safe('<div class=\'fr_bottom\'>\n  '));
-
+    
       if (indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
         _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
         if (this.form_renderer.state.get('hasServerErrors')) {
@@ -11331,9 +11331,9 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         }
         _print(_safe('\n    </div>\n  '));
       }
-
+    
       _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
-
+    
       if (!this.form_renderer.isFirstPage()) {
         _print(_safe('\n      <button data-fr-previous-page class=\''));
         _print(FormRenderer.BUTTON_CLASS);
@@ -11341,9 +11341,9 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         _print(FormRenderer.t.back_to_page.replace(':num', this.form_renderer.previousPage()));
         _print(_safe('\n      </button>\n    '));
       }
-
+    
       _print(_safe('\n\n    '));
-
+    
       if (this.form_renderer.state.get('submitting')) {
         _print(_safe('\n      <button disabled class=\''));
         _print(FormRenderer.BUTTON_CLASS);
@@ -11361,11 +11361,11 @@ window.JST["plugins/bottom_bar"] = function(__obj) {
         }
         _print(_safe('\n      </button>\n    '));
       }
-
+    
       _print(_safe('\n  </div>\n</div>\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {
@@ -11412,11 +11412,11 @@ window.JST["plugins/error_bar"] = function(__obj) {
         _print(_safe(FormRenderer.t.error_bar.errors));
         _print(_safe('\n  </div>\n'));
       }
-
+    
       _print(_safe('\n'));
-
+    
     }).call(this);
-
+    
     return __out.join('');
   }).call((function() {
     var obj = {

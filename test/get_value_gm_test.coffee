@@ -87,14 +87,15 @@ EXPECTED_PRESENT_VALUES = {
   "51": "510-123-4567",
   "52": true,
   "3900": {
-    "checked": ["Other"],
+    "checked": [],
+    "other_checked": "on",
     "other_text": "some alternative answer"
   },
   "3901": {
     "checked": [
-      "Choice #2",
-      "Other"
+      "Choice #2"
     ],
+    "other_checked": true,
     "other_text": "some alternative answer"
   }
 }

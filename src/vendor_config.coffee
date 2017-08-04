@@ -24,6 +24,9 @@ rivets.formatters.eq = (value, checkAgainst) ->
   else
     value == checkAgainst
 
+rivets.formatters.optionIsSelected = (value) ->
+  value == true || value == 'on'
+
 rivets.binders.checkedarray =
   publishes: true
 

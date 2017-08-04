@@ -196,6 +196,10 @@ FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.
 FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend
   field_type: 'radio'
 
+  deselectAllOtherOptions: (ev) ->
+    radio_grouping = $(ev.target).closest('.fr_field_wrapper')
+    radio_grouping.find('input[type=radio]:checked').not(ev.target).prop('checked', false).trigger 'input'
+
 FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend
   field_type: 'dropdown'
   setExistingValue: (x) ->

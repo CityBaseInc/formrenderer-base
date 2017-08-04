@@ -2,7 +2,13 @@
 
 <% for option in @model.getOptions(): %>
   <label class='fr_option control'>
-    <input type='<%= fieldType %>' data-rv-checkedarray='model.value.checked' value="<%= option.label %>" />
+    <input type='<%= fieldType %>'
+      data-rv-checkedarray='model.value.checked'
+      value="<%= option.label %>"
+      <% if @model.field_type == 'radio': %>
+        data-rv-on-click="model:deselectAllOtherOptions"
+      <% end %>
+    />
     <%= option.translated_label || option.label %>
   </label>
 <% end %>
@@ -10,10 +16,15 @@
 <% if @model.get('include_other_option'): %>
   <div class='fr_option fr_other_option'>
     <label class='control'>
-      <input type='<%= fieldType %>' data-rv-checkedarray="model.value.checked" value="<%= FormRenderer.t.other %>" />
+      <input type='<%= fieldType %>'
+        data-rv-checked="model.value.other_checked"
+        <% if @model.field_type == 'radio': %>
+          data-rv-on-click="model:deselectAllOtherOptions"
+        <% end %>
+      />
       <%= FormRenderer.t.other %>
     </label>
 
-    <input type='text' data-rv-show='model.value.checked | eq <%= FormRenderer.t.other %>' data-rv-input='model.value.other_text' placeholder='<%= FormRenderer.t.write_here %>' />
+    <input type='text' data-rv-show='model.value.other_checked | optionIsSelected %>' data-rv-input='model.value.other_text' placeholder='<%= FormRenderer.t.write_here %>' />
   </div>
 <% end %>

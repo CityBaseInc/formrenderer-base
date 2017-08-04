@@ -6274,6 +6274,10 @@ rivets.formatters.eq = function(value, checkAgainst) {
   }
 };
 
+rivets.formatters.optionIsSelected = function(value) {
+  return value === true || value === 'on';
+};
+
 rivets.binders.checkedarray = {
   publishes: true,
   routine: function(el, value) {
@@ -7418,7 +7422,12 @@ rivets.configure({
   });
 
   FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
-    field_type: 'radio'
+    field_type: 'radio',
+    deselectAllOtherOptions: function(ev) {
+      var radio_grouping;
+      radio_grouping = $(ev.target).closest('.fr_field_wrapper');
+      return radio_grouping.find('input[type=radio]:checked').not(ev.target).prop('checked', false).trigger('input');
+    }
   });
 
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
@@ -10542,9 +10551,13 @@ window.JST["partials/options_field"] = function(__obj) {
         option = ref[i];
         _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
         _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(_safe('\'\n      data-rv-checkedarray=\'model.value.checked\'\n      value="'));
         _print(option.label);
-        _print(_safe('" />\n    '));
+        _print(_safe('"\n      '));
+        if (this.model.field_type === 'radio') {
+          _print(_safe('\n        data-rv-on-click="model:deselectAllOtherOptions"\n      '));
+        }
+        _print(_safe('\n    />\n    '));
         _print(option.translated_label || option.label);
         _print(_safe('\n  </label>\n'));
       }
@@ -10554,13 +10567,13 @@ window.JST["partials/options_field"] = function(__obj) {
       if (this.model.get('include_other_option')) {
         _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
         _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray="model.value.checked" value="'));
+        _print(_safe('\'\n        data-rv-checked="model.value.other_checked"\n        '));
+        if (this.model.field_type === 'radio') {
+          _print(_safe('\n          data-rv-on-click="model:deselectAllOtherOptions"\n        '));
+        }
+        _print(_safe('\n      />\n      '));
         _print(FormRenderer.t.other);
-        _print(_safe('" />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.checked | eq '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\' data-rv-input=\'model.value.other_text\' placeholder=\''));
+        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.other_checked | optionIsSelected %>\' data-rv-input=\'model.value.other_text\' placeholder=\''));
         _print(FormRenderer.t.write_here);
         _print(_safe('\' />\n  </div>\n'));
       }

@@ -45,6 +45,7 @@ Fixtures.KITCHEN_SINK_FORM = [
         label: "Choice #2"
       }
     ],
+    include_other_option: true,
     required: false,
     blind: false,
     admin_only: false,

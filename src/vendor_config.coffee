@@ -36,7 +36,10 @@ rivets.binders.checkedarray =
   bind: (el) ->
     if el.type == 'radio'
       $(el).bind 'change.rivets', =>
-        @model.set @keypath, [el.value]
+        if el.checked
+          @model.set @keypath, [el.value]
+        else
+          @model.set @keypath, false
 
     else
       $(el).bind 'change.rivets', =>

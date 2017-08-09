@@ -31,20 +31,29 @@ rivets.binders.checkedarray =
     el.checked = _.contains(value, el.value)
 
   bind: (el) ->
-    if el.type == 'radio'
-      $(el).bind 'change.rivets', =>
-        @model.set @keypath, [el.value]
+    $(el).bind 'change.rivets', =>
+      val = @model.get(@keypath) || []
 
-    else
-      $(el).bind 'change.rivets', =>
-        val = @model.get(@keypath) || []
+      newVal = if el.checked
+                  _.uniq(val.concat(el.value))
+                else
+                  _.without(val, el.value)
 
-        newVal = if el.checked
-                   _.uniq(val.concat(el.value))
-                 else
-                   _.without(val, el.value)
+      @model.set @keypath, newVal
 
-        @model.set @keypath, newVal
+  unbind: (el) ->
+    $(el).unbind('change.rivets')
+
+
+rivets.binders.dobtradio =
+  publishes: true
+
+  routine: (el, value) ->
+    el.checked = _.contains(value, el.value)
+
+  bind: (el) ->
+    $(el).bind 'change.rivets', =>
+      @model.set @keypath, [el.value]
 
   unbind: (el) ->
     $(el).unbind('change.rivets')

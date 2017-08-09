@@ -8,13 +8,18 @@
 <% if @model.get('include_other_option'): %>
   <div class='fr_option fr_other_option'>
     <label class='control'>
-      <input type='radio' data-rv-dobtradio="model.value.checked" value="other" />
+      <input
+          class='other-option'
+          type='radio'
+          value='other'
+          data-rv-dobtradio='model.value.checked'
+      />
       <%= FormRenderer.t.other %>
     </label>
 
     <input
         type='text'
-        data-rv-show='model.value.checked | eq <%= FormRenderer.t.other %>'
+        data-rv-show='model.value.other_checked'
         data-rv-input='model.value.other_text'
         placeholder='<%= FormRenderer.t.write_here %>'
     />

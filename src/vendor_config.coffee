@@ -55,6 +55,11 @@ rivets.binders.dobtradio =
     $(el).bind 'change.rivets', =>
       @model.set @keypath, [el.value]
 
+      if $(el).hasClass('other-option') and $(el).is(':checked')
+        @model.set 'value.other_checked', true
+      else
+        @model.set 'value.other_checked', false
+
   unbind: (el) ->
     $(el).unbind('change.rivets')
 

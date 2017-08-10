@@ -44,8 +44,7 @@ rivets.binders.checkedarray =
   unbind: (el) ->
     $(el).unbind('change.rivets')
 
-
-rivets.binders.dobtradio =
+rivets.binders.dobtradiogroup =
   publishes: true
 
   routine: (el, value) ->
@@ -55,10 +54,11 @@ rivets.binders.dobtradio =
     $(el).bind 'change.rivets', =>
       @model.set @keypath, [el.value]
 
-      if $(el).hasClass('other-option') and $(el).is(':checked')
+      if $(el).hasClass('other-option')
         @model.set 'value.other_checked', true
       else
-        @model.set 'value.other_checked', false
+        @model.unset 'value.other_checked'
+        @model.unset 'value.other_text'
 
   unbind: (el) ->
     $(el).unbind('change.rivets')

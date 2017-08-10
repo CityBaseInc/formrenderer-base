@@ -1,6 +1,10 @@
 <% for option in @model.getOptions(): %>
   <label class='fr_option control'>
-    <input type='radio' data-rv-dobtradio='model.value.checked' value="<%= option.label %>" />
+    <input
+      type='radio'
+      data-rv-dobtradiogroup='model.value.checked'
+      value='<%= option.label %>'
+    />
     <%= option.translated_label || option.label %>
   </label>
 <% end %>
@@ -9,19 +13,19 @@
   <div class='fr_option fr_other_option'>
     <label class='control'>
       <input
-          class='other-option'
-          type='radio'
-          value='other'
-          data-rv-dobtradio='model.value.checked'
+        type='radio'
+        class='other-option'
+        value='<%= FormRenderer.t.other %>'
+        data-rv-dobtradiogroup='model.value.checked'
       />
       <%= FormRenderer.t.other %>
     </label>
 
     <input
-        type='text'
-        data-rv-show='model.value.other_checked'
-        data-rv-input='model.value.other_text'
-        placeholder='<%= FormRenderer.t.write_here %>'
+      type='text'
+      data-rv-show='model.value.other_checked'
+      data-rv-input='model.value.other_text'
+      placeholder='<%= FormRenderer.t.write_here %>'
     />
   </div>
 <% end %>

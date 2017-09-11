@@ -6246,8 +6246,7 @@ var ISOCountryNames = {
 };
 var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
 !function(t){"use strict";function r(t){var r={path:!0,query:!0,hash:!0};return t?(/^[a-z]+:/.test(t)&&(r.protocol=!0,r.host=!0,/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i.test(t)&&(r.port=!0),/\/\/(.*?)(?::(.*?))?@/.test(t)&&(r.user=!0,r.pass=!0)),r):r}function e(t,e,o){var u,f,l,y=h?"file://"+(process.platform.match(/^win/i)?"/":"")+p("fs").realpathSync("."):document.location.href;e||(e=y),h?u=p("url").parse(e):(u=document.createElement("a"),u.href=e);var d=r(e);l=e.match(/\/\/(.*?)(?::(.*?))?@/)||[];for(f in a)t[f]=d[f]?u[a[f]]||"":"";if(t.protocol=t.protocol.replace(/:$/,""),t.query=t.query.replace(/^\?/,""),t.hash=s(t.hash.replace(/^#/,"")),t.user=s(l[1]||""),t.pass=s(l[2]||""),t.port=c[t.protocol]==t.port||0==t.port?"":t.port,!d.protocol&&/[^\/#?]/.test(e.charAt(0))&&(t.path=e.split("?")[0].split("#")[0]),!d.protocol&&o){var g=new n(y.match(/(.*\/)/)[0]),m=g.path.split("/"),v=t.path.split("/"),q=["protocol","user","pass","host","port"],w=q.length;for(m.pop(),f=0;w>f;f++)t[q[f]]=g[q[f]];for(;".."===v[0];)m.pop(),v.shift();t.path=("/"!==e.charAt(0)?m.join("/"):"")+"/"+v.join("/")}t.path=t.path.replace(/^\/{2,}/,"/"),t.paths(("/"===t.path.charAt(0)?t.path.slice(1):t.path).split("/")),t.query=new i(t.query)}function o(t){return encodeURIComponent(t).replace(/'/g,"%27")}function s(t){return t=t.replace(/\+/g," "),t=t.replace(/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e,o){var s=parseInt(r,16)-224,i=parseInt(e,16)-128;if(0===s&&32>i)return t;var n=parseInt(o,16)-128,h=(s<<12)+(i<<6)+n;return h>65535?t:String.fromCharCode(h)}),t=t.replace(/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e){var o=parseInt(r,16)-192;if(2>o)return t;var s=parseInt(e,16)-128;return String.fromCharCode((o<<6)+s)}),t.replace(/%([0-7][0-9a-f])/gi,function(t,r){return String.fromCharCode(parseInt(r,16))})}function i(t){for(var r,e=/([^=&]+)(=([^&]*))?/g;r=e.exec(t);){var o=decodeURIComponent(r[1].replace(/\+/g," ")),i=r[3]?s(r[3]):"";void 0!==this[o]&&null!==this[o]?(this[o]instanceof Array||(this[o]=[this[o]]),this[o].push(i)):this[o]=i}}function n(t,r){e(this,t,!r)}var h="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,p=h?t.require:null,a={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},c={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};i.prototype.toString=function(){var t,r,e="",s=o;for(t in this)if(!(this[t]instanceof Function||null===this[t]))if(this[t]instanceof Array){var i=this[t].length;if(i)for(r=0;i>r;r++)e+=e?"&":"",e+=s(t)+"="+s(this[t][r]);else e+=(e?"&":"")+s(t)+"="}else e+=e?"&":"",e+=s(t)+"="+s(this[t]);return e},n.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},n.prototype.queryLength=function(){var t,r=0;for(t in this)this[t]instanceof Function||r++;return r},n.prototype.isEmptyQuery=function(){return 0===this.queryLength()},n.prototype.paths=function(t){var r,e="",i=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(e="/"),r=t.length;r>i;i++)t[i]=!i&&t[i].match(/^\w:$/)?t[i]:o(t[i]);this.path=e+t.join("/")}for(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/"),i=0,r=t.length;r>i;i++)t[i]=s(t[i]);return t},n.prototype.encode=o,n.prototype.decode=s,n.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},n.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&o(this.user)+(this.pass&&":"+o(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+o(this.hash))},t[t.exports?"exports":"Url"]=n}("undefined"!=typeof module&&module.exports?module:window);
-var $, _str,
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var $, _str;
 
 $ = jQuery;
 
@@ -6266,39 +6265,44 @@ rivets.binders.input = {
   }
 };
 
-rivets.formatters.eq = function(value, checkAgainst) {
-  if (value.constructor === Array) {
-    return __indexOf.call(value, checkAgainst) >= 0;
-  } else {
-    return value === checkAgainst;
-  }
-};
-
 rivets.binders.checkedarray = {
   publishes: true,
   routine: function(el, value) {
     return el.checked = _.contains(value, el.value);
   },
   bind: function(el) {
-    if (el.type === 'radio') {
-      return $(el).bind('change.rivets', (function(_this) {
-        return function() {
-          return _this.model.set(_this.keypath, [el.value]);
-        };
-      })(this));
-    } else {
-      return $(el).bind('change.rivets', (function(_this) {
-        return function() {
-          var newVal, val;
-          val = _this.model.get(_this.keypath) || [];
-          newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
-          return _this.model.set(_this.keypath, newVal);
-        };
-      })(this));
-    }
+    return $(el).bind('change.rivets', (function(_this) {
+      return function() {
+        var newVal, val;
+        val = _this.model.get(_this.keypath) || [];
+        newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
+        return _this.model.set(_this.keypath, newVal);
+      };
+    })(this));
   },
   unbind: function(el) {
     return $(el).unbind('change.rivets');
+  }
+};
+
+rivets.binders.dobtradiogroup = {
+  publishes: true,
+  routine: function(el, value) {
+    return el.checked = $(el).hasClass('js_other_option') ? this.model.get('value.other_checked') : _.contains(value, el.value);
+  },
+  bind: function(el) {
+    return $(el).bind('change.rivets', (function(_this) {
+      return function() {
+        if ($(el).hasClass('js_other_option')) {
+          _this.model.set('value.other_checked', true);
+          return _this.model.set(_this.keypath, []);
+        } else {
+          _this.model.unset('value.other_checked');
+          _this.model.unset('value.other_text');
+          return _this.model.set(_this.keypath, [el.value]);
+        }
+      };
+    })(this));
   }
 };
 
@@ -8789,7 +8793,27 @@ window.JST["fields/checkboxes"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["partials/options_field"](this)));
+      var i, len, option, ref;
+    
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(option.label);
+        _print(_safe('" />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\' />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     
@@ -9578,7 +9602,27 @@ window.JST["fields/radio"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["partials/options_field"](this)));
+      var i, len, option, ref;
+    
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-dobtradiogroup=\'model.value.checked\'\n           value="'));
+        _print(option.label);
+        _print(_safe('"\n    />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-dobtradiogroup=\'model.value.checked\'\n             class="js_other_option"\n      />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\'\n    />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     
@@ -10485,85 +10529,6 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.field_type](this)));
-    
-      _print(_safe('\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/options_field"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      var fieldType, i, len, option, ref;
-    
-      fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
-    
-      _print(_safe('\n\n'));
-    
-      ref = this.model.getOptions();
-      for (i = 0, len = ref.length; i < len; i++) {
-        option = ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
-        _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
-        _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray="model.value.checked" value="'));
-        _print(FormRenderer.t.other);
-        _print(_safe('" />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.checked | eq '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\' data-rv-input=\'model.value.other_text\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
     
       _print(_safe('\n'));
     

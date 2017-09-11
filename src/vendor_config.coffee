@@ -35,9 +35,9 @@ rivets.binders.checkedarray =
       val = @model.get(@keypath) || []
 
       newVal = if el.checked
-                  _.uniq(val.concat(el.value))
-                else
-                  _.without(val, el.value)
+                 _.uniq(val.concat(el.value))
+               else
+                 _.without(val, el.value)
 
       @model.set @keypath, newVal
 

@@ -7,3 +7,6 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
       'identification'
     else if !@get('value.email').match(FormRenderer.EMAIL_REGEX)
       'email'
+
+FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend
+  field_type: 'identification'

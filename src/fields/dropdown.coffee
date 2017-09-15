@@ -14,3 +14,6 @@ FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.ex
         @set 'value', checkedOption.label
       else
         @unset 'value'
+
+FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField.extend
+  field_type: 'dropdown'

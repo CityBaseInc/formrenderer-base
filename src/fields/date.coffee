@@ -24,3 +24,6 @@ FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend
     unless (year > 0) && (0 < month <= 12) && (0 < day <= maxDays)
       'date'
 
+FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend
+  wrapper: 'fieldset'
+  field_type: 'date'

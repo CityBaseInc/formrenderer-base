@@ -11,3 +11,7 @@ FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.ext
       'Yes'
     else
       'No'
+
+FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend
+  wrapper: 'none'
+  field_type: 'confirm'

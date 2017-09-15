@@ -7485,6 +7485,10 @@ rivets.configure({
     field_type: 'block_of_text'
   });
 
+  FormRenderer.Views.ResponseFieldBlockOfText = FormRenderer.Views.ResponseField.extend({
+    field_type: 'block_of_text'
+  });
+
 }).call(this);
 
 (function() {
@@ -7523,6 +7527,11 @@ rivets.configure({
     }
   });
 
+  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'checkboxes'
+  });
+
 }).call(this);
 
 (function() {
@@ -7542,6 +7551,11 @@ rivets.configure({
         return 'No';
       }
     }
+  });
+
+  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'none',
+    field_type: 'confirm'
   });
 
 }).call(this);
@@ -7572,6 +7586,11 @@ rivets.configure({
     }
   });
 
+  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'date'
+  });
+
 }).call(this);
 
 (function() {
@@ -7597,6 +7616,10 @@ rivets.configure({
     }
   });
 
+  FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField.extend({
+    field_type: 'dropdown'
+  });
+
 }).call(this);
 
 (function() {
@@ -7607,6 +7630,10 @@ rivets.configure({
         return 'email';
       }
     }
+  });
+
+  FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField.extend({
+    field_type: 'email'
   });
 
 }).call(this);
@@ -7757,6 +7784,10 @@ rivets.configure({
     }
   });
 
+  FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
+    field_type: 'identification'
+  });
+
 }).call(this);
 
 (function() {
@@ -7896,10 +7927,18 @@ rivets.configure({
     field_type: 'page_break'
   });
 
+  FormRenderer.Views.ResponseFieldPageBreak = FormRenderer.Views.ResponseField.extend({
+    field_type: 'page_break'
+  });
+
 }).call(this);
 
 (function() {
   FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
+    field_type: 'paragraph'
+  });
+
+  FormRenderer.Views.ResponseFieldParagraph = FormRenderer.Views.ResponseField.extend({
     field_type: 'paragraph'
   });
 
@@ -7979,10 +8018,19 @@ rivets.configure({
     wrapper: 'fieldset'
   });
 
+  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'radio'
+  });
+
 }).call(this);
 
 (function() {
   FormRenderer.Models.ResponseFieldSectionBreak = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'section_break'
+  });
+
+  FormRenderer.Views.ResponseFieldSectionBreak = FormRenderer.Views.ResponseField.extend({
     field_type: 'section_break'
   });
 
@@ -8165,6 +8213,10 @@ rivets.configure({
     field_type: 'text'
   });
 
+  FormRenderer.Views.ResponseFieldText = FormRenderer.Views.ResponseField.extend({
+    field_type: 'text'
+  });
+
 }).call(this);
 
 (function() {
@@ -8195,10 +8247,19 @@ rivets.configure({
     }
   });
 
+  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'time'
+  });
+
 }).call(this);
 
 (function() {
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
+    field_type: 'website'
+  });
+
+  FormRenderer.Views.ResponseFieldWebsite = FormRenderer.Views.ResponseField.extend({
     field_type: 'website'
   });
 

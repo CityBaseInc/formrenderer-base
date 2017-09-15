@@ -17,3 +17,7 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
 
     unless (1 <= hours <= 12) && (0 <= minutes <= 59) && (0 <= seconds <= 59)
       'time'
+
+FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend
+  wrapper: 'fieldset'
+  field_type: 'time'

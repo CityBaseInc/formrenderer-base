@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="1.1.2"
+version=$1
 
 if [ -z "$version" ]; then
   echo 'You must pass a semantic version number as the first (and only) argument.'

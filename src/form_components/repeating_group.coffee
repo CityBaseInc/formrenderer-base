@@ -1,4 +1,4 @@
-FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
+FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
   group: true
 
   initialize: ->
@@ -55,7 +55,7 @@ FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.exten
   canAdd: ->
     @entries.length < @maxEntries()
 
-FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend
+FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend
   initialize: (_attrs, @fr, @repeatingGroup) ->
     @initFormComponents @repeatingGroup.get('children'), @get('value') || {}
 
@@ -120,7 +120,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     @form_renderer?.trigger 'viewRendered', @
     @
 
-FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend
+FormRenderer.Views.ResponseFieldRepeatingGroupEntry = Backbone.View.extend
   className: 'fr_group_entry'
 
   initialize: (options) ->

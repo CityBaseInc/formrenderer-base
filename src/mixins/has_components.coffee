@@ -41,4 +41,4 @@ HasComponents =
     @reflectConditions() if needsRender
 
 _.extend FormRenderer.prototype, HasComponents
-_.extend FormRenderer.Models.RepeatingGroupEntry.prototype, HasComponents
+_.extend FormRenderer.Models.ResponseFieldRepeatingGroupEntry.prototype, HasComponents

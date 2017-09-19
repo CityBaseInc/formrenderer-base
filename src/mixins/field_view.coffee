@@ -18,5 +18,5 @@ FieldView =
   domId: ->
     @model.cid
 
-_.extend FormRenderer.Views.RepeatingGroup.prototype, FieldView
+_.extend FormRenderer.Views.ResponseFieldRepeatingGroup.prototype, FieldView
 _.extend FormRenderer.Views.ResponseField.prototype, FieldView

@@ -6774,7 +6774,7 @@ rivets.configure({
   FormRenderer.formComponentViewClass = function(field) {
     var foundKlass;
     if (field.group) {
-      return FormRenderer.Views.RepeatingGroup;
+      return FormRenderer.Views.ResponseFieldRepeatingGroup;
     } else if ((foundKlass = FormRenderer.Views["ResponseField" + (_str.classify(field.field_type))])) {
       return foundKlass;
     } else {
@@ -6792,15 +6792,12 @@ rivets.configure({
   };
 
   FormRenderer.formComponentModelClass = function(field) {
-    if (field.type === 'group') {
-      return FormRenderer.Models.RepeatingGroup;
-    } else {
-      return FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
-    }
+    return FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
   };
 
   FormRenderer.buildFormComponentModel = function(field, fr, parent) {
     var klass;
+    console.log(field);
     klass = FormRenderer.formComponentModelClass(field);
     return new klass(field, fr, parent);
   };
@@ -6882,7 +6879,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.2.1';
+  FormRenderer.VERSION = '1.2.2';
 
 }).call(this);
 
@@ -7220,7 +7217,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Models.RepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
+  FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
     group: true,
     initialize: function() {
       FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
@@ -7237,6 +7234,8 @@ rivets.configure({
       return _results;
     },
     setExistingValue: function(entryValues) {
+      console.log("setting existing RS value: " + entryValues);
+      console.log(this.isRequired);
       if (this.isRequired()) {
         if (!entryValues || entryValues.length === 0) {
           entryValues = [{}];
@@ -7250,14 +7249,14 @@ rivets.configure({
       }
       return this.entries = _.map(entryValues, (function(_this) {
         return function(value) {
-          return new FormRenderer.Models.RepeatingGroupEntry({
+          return new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({
             value: value
           }, _this.fr, _this);
         };
       })(this));
     },
     addEntry: function() {
-      return this.entries.push(new FormRenderer.Models.RepeatingGroupEntry({}, this.fr, this));
+      return this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
     },
     removeEntry: function(idx) {
       this.entries.splice(idx, 1);
@@ -7287,10 +7286,12 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.RepeatingGroupEntry = Backbone.Model.extend({
+  FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend({
     initialize: function(_attrs, fr, repeatingGroup) {
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
+      console.log("here");
+      debugger;
       return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
     },
     reflectConditions: function() {
@@ -7301,7 +7302,7 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Views.RepeatingGroup = Backbone.View.extend({
+  FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend({
     className: 'fr_response_field fr_response_field_group',
     events: {
       'click .js-remove-entry': 'removeEntry',
@@ -7360,7 +7361,7 @@ rivets.configure({
       _ref = this.model.entries;
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
         entry = _ref[idx];
-        view = new FormRenderer.Views.RepeatingGroupEntry({
+        view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({
           entry: entry,
           form_renderer: this.form_renderer,
           idx: idx
@@ -7381,7 +7382,7 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Views.RepeatingGroupEntry = Backbone.View.extend({
+  FormRenderer.Views.ResponseFieldRepeatingGroupEntry = Backbone.View.extend({
     className: 'fr_group_entry',
     initialize: function(options) {
       this.entry = options.entry;
@@ -8381,7 +8382,7 @@ rivets.configure({
     }
   };
 
-  _.extend(FormRenderer.Views.RepeatingGroup.prototype, FieldView);
+  _.extend(FormRenderer.Views.ResponseFieldRepeatingGroup.prototype, FieldView);
 
   _.extend(FormRenderer.Views.ResponseField.prototype, FieldView);
 
@@ -8407,6 +8408,7 @@ rivets.configure({
       this.formComponents = new Backbone.Collection;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
+        console.log(field);
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
@@ -8447,7 +8449,7 @@ rivets.configure({
 
   _.extend(FormRenderer.prototype, HasComponents);
 
-  _.extend(FormRenderer.Models.RepeatingGroupEntry.prototype, HasComponents);
+  _.extend(FormRenderer.Models.ResponseFieldRepeatingGroupEntry.prototype, HasComponents);
 
 }).call(this);
 

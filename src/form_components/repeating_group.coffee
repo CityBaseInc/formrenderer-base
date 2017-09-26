@@ -24,11 +24,11 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
         @set('skipped', true)
 
     @entries = _.map entryValues, (value) =>
-      new FormRenderer.Models.RepeatingGroupEntry({ value }, @fr, @)
+      new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({ value }, @fr, @)
 
   addEntry: ->
     @entries.push(
-      new FormRenderer.Models.RepeatingGroupEntry({}, @fr, @)
+      new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, @fr, @)
     )
 
   removeEntry: (idx) ->
@@ -65,7 +65,7 @@ FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend
   canRemove: ->
     @repeatingGroup.entries.length > 1
 
-FormRenderer.Views.RepeatingGroup = Backbone.View.extend
+FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
   className: 'fr_response_field fr_response_field_group'
 
   events:
@@ -104,7 +104,7 @@ FormRenderer.Views.RepeatingGroup = Backbone.View.extend
     $els = $()
 
     for entry, idx in @model.entries
-      view = new FormRenderer.Views.RepeatingGroupEntry(
+      view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry(
         entry: entry,
         form_renderer: @form_renderer,
         idx: idx

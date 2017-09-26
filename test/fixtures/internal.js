@@ -246,6 +246,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     blind: false,
     admin_only: false,
     type: "group",
+    field_type: "repeating_group",
     children: [
       {
         id: 54,
@@ -457,6 +458,7 @@ Fixtures.REPEATING_KITCHEN_SINK = [
     blind: false,
     admin_only: false,
     type: "group",
+    field_type: "repeating_group",
     children: [
       {
         id: 54,

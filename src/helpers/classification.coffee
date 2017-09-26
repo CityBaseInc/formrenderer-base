@@ -1,6 +1,6 @@
 FormRenderer.formComponentViewClass = (field) ->
   if field.group
-    FormRenderer.Views.RepeatingGroup
+    FormRenderer.Views.ResponseFieldRepeatingGroup
   else if (foundKlass = FormRenderer.Views["ResponseField#{_str.classify(field.field_type)}"])
     foundKlass
   else

@@ -549,7 +549,6 @@ rivets.configure({
 
   FormRenderer.buildFormComponentModel = function(field, fr, parent) {
     var klass;
-    console.log(field);
     klass = FormRenderer.formComponentModelClass(field);
     return new klass(field, fr, parent);
   };
@@ -986,8 +985,6 @@ rivets.configure({
       return _results;
     },
     setExistingValue: function(entryValues) {
-      console.log("setting existing RS value: " + entryValues);
-      console.log(this.isRequired);
       if (this.isRequired()) {
         if (!entryValues || entryValues.length === 0) {
           entryValues = [{}];
@@ -1042,8 +1039,6 @@ rivets.configure({
     initialize: function(_attrs, fr, repeatingGroup) {
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      console.log("here");
-      debugger;
       return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
     },
     reflectConditions: function() {
@@ -2160,7 +2155,6 @@ rivets.configure({
       this.formComponents = new Backbone.Collection;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
-        console.log(field);
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);

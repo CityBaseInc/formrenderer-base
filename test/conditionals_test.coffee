@@ -94,7 +94,7 @@ describe 'Conditionals', ->
           ]
         ,
           id: 2
-          type: 'group'
+          field_type: 'repeating_group'
           label: 'List your depdendents'
           children: [
             {
@@ -125,7 +125,7 @@ describe 'Conditionals', ->
           responses: {}
         response_fields: [
           id: 1
-          type: 'group'
+          field_type: 'repeating_group'
           label: 'List your depdendents'
           children: [
             {

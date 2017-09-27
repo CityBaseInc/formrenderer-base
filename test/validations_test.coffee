@@ -91,7 +91,7 @@ describe 'validations', ->
           responses: {}
         response_fields: [
           id: 1
-          type: 'group'
+          field_type: 'repeating_group'
           label: 'Your dependents'
           children: [
             {
@@ -128,7 +128,7 @@ describe 'validations', ->
           responses: {}
         response_fields: [
           id: 1
-          type: 'group'
+          field_type: 'repeating_group'
           label: 'Your dependents'
           required: true
           children: [

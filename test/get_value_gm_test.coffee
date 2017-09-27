@@ -146,8 +146,7 @@ describe '#getValue', ->
     $('.fr_response_field_phone input').val('510-123-4567').trigger('input')
     $('.fr_response_field_map_marker .fr_map_cover').click()
     $('.fr_response_field_confirm input').first().click().trigger('change')
-    $('.fr_response_field_group').first().find('[type=text]').val('Large Round Son').
-      trigger('input')
+    $('.fr_response_field_group').first().find('[type=text]').val('Large Round Son').trigger('input')
 
     # File
     inlineFileUpload = $('input[type=file]').data('inline-file-upload')

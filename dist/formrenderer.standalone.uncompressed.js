@@ -970,6 +970,7 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
     group: true,
+    field_type: 'repeating_group',
     initialize: function() {
       FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
       return this.entries = [];

@@ -1,5 +1,6 @@
 FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormComponent.extend
   group: true
+  field_type: 'repeating_group'
 
   initialize: ->
     FormRenderer.Models.BaseFormComponent::initialize.apply @, arguments

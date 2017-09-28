@@ -1,5 +1,4 @@
-(function(window){var $, _str,
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+(function(window){var $, _str;
 
 $ = jQuery;
 
@@ -18,39 +17,44 @@ rivets.binders.input = {
   }
 };
 
-rivets.formatters.eq = function(value, checkAgainst) {
-  if (value.constructor === Array) {
-    return __indexOf.call(value, checkAgainst) >= 0;
-  } else {
-    return value === checkAgainst;
-  }
-};
-
 rivets.binders.checkedarray = {
   publishes: true,
   routine: function(el, value) {
     return el.checked = _.contains(value, el.value);
   },
   bind: function(el) {
-    if (el.type === 'radio') {
-      return $(el).bind('change.rivets', (function(_this) {
-        return function() {
-          return _this.model.set(_this.keypath, [el.value]);
-        };
-      })(this));
-    } else {
-      return $(el).bind('change.rivets', (function(_this) {
-        return function() {
-          var newVal, val;
-          val = _this.model.get(_this.keypath) || [];
-          newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
-          return _this.model.set(_this.keypath, newVal);
-        };
-      })(this));
-    }
+    return $(el).bind('change.rivets', (function(_this) {
+      return function() {
+        var newVal, val;
+        val = _this.model.get(_this.keypath) || [];
+        newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
+        return _this.model.set(_this.keypath, newVal);
+      };
+    })(this));
   },
   unbind: function(el) {
     return $(el).unbind('change.rivets');
+  }
+};
+
+rivets.binders.dobtradiogroup = {
+  publishes: true,
+  routine: function(el, value) {
+    return el.checked = $(el).hasClass('js_other_option') ? this.model.get('value.other_checked') : _.contains(value, el.value);
+  },
+  bind: function(el) {
+    return $(el).bind('change.rivets', (function(_this) {
+      return function() {
+        if ($(el).hasClass('js_other_option')) {
+          _this.model.set('value.other_checked', true);
+          return _this.model.set(_this.keypath, []);
+        } else {
+          _this.model.unset('value.other_checked');
+          _this.model.unset('value.other_text');
+          return _this.model.set(_this.keypath, [el.value]);
+        }
+      };
+    })(this));
   }
 };
 
@@ -2913,7 +2917,27 @@ window.JST["fields/checkboxes"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["partials/options_field"](this)));
+      var i, len, option, ref;
+    
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="'));
+        _print(option.label);
+        _print(_safe('" />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\' />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     
@@ -3702,7 +3726,27 @@ window.JST["fields/radio"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["partials/options_field"](this)));
+      var i, len, option, ref;
+    
+      ref = this.model.getOptions();
+      for (i = 0, len = ref.length; i < len; i++) {
+        option = ref[i];
+        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-dobtradiogroup=\'model.value.checked\'\n           value="'));
+        _print(option.label);
+        _print(_safe('"\n    />\n    '));
+        _print(option.translated_label || option.label);
+        _print(_safe('\n  </label>\n'));
+      }
+    
+      _print(_safe('\n\n'));
+    
+      if (this.model.get('include_other_option')) {
+        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-dobtradiogroup=\'model.value.checked\'\n             class="js_other_option"\n      />\n      '));
+        _print(FormRenderer.t.other);
+        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
+        _print(FormRenderer.t.write_here);
+        _print(_safe('\'\n    />\n  </div>\n'));
+      }
     
       _print(_safe('\n'));
     
@@ -4609,85 +4653,6 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
     };
     (function() {
       _print(_safe(JST["fields/" + this.model.field_type](this)));
-    
-      _print(_safe('\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
-}
-window.JST["partials/options_field"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      var fieldType, i, len, option, ref;
-    
-      fieldType = this.model.field_type === 'radio' ? 'radio' : 'checkbox';
-    
-      _print(_safe('\n\n'));
-    
-      ref = this.model.getOptions();
-      for (i = 0, len = ref.length; i < len; i++) {
-        option = ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\''));
-        _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray=\'model.value.checked\' value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
-      }
-    
-      _print(_safe('\n\n'));
-    
-      if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\''));
-        _print(fieldType);
-        _print(_safe('\' data-rv-checkedarray="model.value.checked" value="'));
-        _print(FormRenderer.t.other);
-        _print(_safe('" />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\' data-rv-show=\'model.value.checked | eq '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\' data-rv-input=\'model.value.other_text\' placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
-      }
     
       _print(_safe('\n'));
     

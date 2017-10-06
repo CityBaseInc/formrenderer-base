@@ -112,6 +112,22 @@ FormRenderer.Models.ResponseField = Backbone.DeepModel.extend
 
     prevValue != @isVisible
 
+  # Determines whether this field is hidden on a brand new response form.
+  # This is a helper method for FormBuilder.
+  isDefaultHidden: (fieldCollection) ->
+    if @get('admin_only') == true
+      true
+    else if @isConditional()
+      visible = _[@conditionMethod()] @getConditions(), (c) =>
+        (new FormRenderer.ConditionChecker(
+          null,
+          c,
+          fieldCollection.get(c.response_field_id)
+        )).isVisible()
+      !visible
+    else
+      false
+
   conditionMethod: ->
     if @get('condition_method') == 'any'
       'any'

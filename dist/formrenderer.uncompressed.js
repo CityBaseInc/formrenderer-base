@@ -6939,10 +6939,11 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(form_renderer, condition) {
+    function ConditionChecker(form_renderer, condition, field) {
       var _ref;
       this.form_renderer = form_renderer;
       this.condition = condition;
+      this.field = field;
       this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
     }
 
@@ -7012,7 +7013,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.responseField = function() {
-      return this.form_renderer.response_fields.get(this.condition.response_field_id);
+      return this.field || this.form_renderer.response_fields.get(this.condition.response_field_id);
     };
 
     return ConditionChecker;
@@ -7316,6 +7317,21 @@ rivets.configure({
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
+    },
+    isDefaultHidden: function(fieldCollection) {
+      var visible;
+      if (this.get('admin_only') === true) {
+        return true;
+      } else if (this.isConditional()) {
+        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
+          return function(c) {
+            return (new FormRenderer.ConditionChecker(null, c, fieldCollection.get(c.response_field_id))).isVisible();
+          };
+        })(this));
+        return !visible;
+      } else {
+        return false;
+      }
     },
     conditionMethod: function() {
       if (this.get('condition_method') === 'any') {

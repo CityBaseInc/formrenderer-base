@@ -10283,7 +10283,7 @@ window.JST["partials/labels"] = function(__obj) {
         }
         _print(_safe('\n  '));
         if (this.model.isConditional()) {
-          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-fork\'></i>'));
+          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-code-fork\'></i>'));
           _print(FormRenderer.t.has_conditions);
           _print(_safe('</span>\n  '));
         }

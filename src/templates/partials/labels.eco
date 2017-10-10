@@ -6,6 +6,6 @@
     <span class='label label_fb'><i class='fa fa-eye-slash'></i> <%= FormRenderer.t.blind %></span>
   <% end %>
   <% if @model.isConditional(): %>
-    <span class='label label_fb'><i class='fa fa-fork'></i><%= FormRenderer.t.has_conditions %></span>
+    <span class='label label_fb'><i class='fa fa-code-fork'></i><%= FormRenderer.t.has_conditions %></span>
   <% end %>
 <% end %>

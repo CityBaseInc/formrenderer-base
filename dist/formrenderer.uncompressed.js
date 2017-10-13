@@ -6939,10 +6939,11 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(form_renderer, condition) {
+    function ConditionChecker(form_renderer, condition, field) {
       var _ref;
       this.form_renderer = form_renderer;
       this.condition = condition;
+      this.field = field;
       this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
     }
 
@@ -7012,7 +7013,7 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.responseField = function() {
-      return this.form_renderer.response_fields.get(this.condition.response_field_id);
+      return this.field || this.form_renderer.response_fields.get(this.condition.response_field_id);
     };
 
     return ConditionChecker;
@@ -7311,11 +7312,26 @@ rivets.configure({
       var prevValue;
       prevValue = !!this.isVisible;
       this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(c) {
-          return _this.form_renderer.isConditionalVisible(c);
+        return function(condition) {
+          return _this.form_renderer.isConditionalVisible(condition);
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
+    },
+    isHidden: function(fieldCollection) {
+      var visible;
+      if (this.get('admin_only') === true) {
+        return true;
+      } else if (this.isConditional()) {
+        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
+          return function(condition) {
+            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
+          };
+        })(this));
+        return !visible;
+      } else {
+        return false;
+      }
     },
     conditionMethod: function() {
       if (this.get('condition_method') === 'any') {
@@ -10267,7 +10283,7 @@ window.JST["partials/labels"] = function(__obj) {
         }
         _print(_safe('\n  '));
         if (this.model.isConditional()) {
-          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-fork\'></i>'));
+          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-code-fork\'></i>'));
           _print(FormRenderer.t.has_conditions);
           _print(_safe('</span>\n  '));
         }

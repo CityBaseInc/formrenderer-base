@@ -1064,20 +1064,20 @@ rivets.configure({
       var prevValue;
       prevValue = !!this.isVisible;
       this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(c) {
-          return _this.form_renderer.isConditionalVisible(c);
+        return function(condition) {
+          return _this.form_renderer.isConditionalVisible(condition);
         };
       })(this)) : true);
       return prevValue !== this.isVisible;
     },
-    isDefaultHidden: function(fieldCollection) {
+    isHidden: function(fieldCollection) {
       var visible;
       if (this.get('admin_only') === true) {
         return true;
       } else if (this.isConditional()) {
         visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
-          return function(c) {
-            return (new FormRenderer.ConditionChecker(null, c, fieldCollection.get(c.response_field_id))).isVisible();
+          return function(condition) {
+            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
           };
         })(this));
         return !visible;

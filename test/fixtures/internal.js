@@ -892,6 +892,7 @@ Fixtures.FormRendererOptions = {
         {
           id: 36,
           type: "group",
+          field_type: 'repeating_group',
           label: "Firearm details",
           conditions: [
             {

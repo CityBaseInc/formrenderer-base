@@ -6906,11 +6906,12 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(responseField, condition) {
+    function ConditionChecker(form_renderer, condition, field) {
       var _ref;
-      this.responseField = responseField;
+      this.form_renderer = form_renderer;
       this.condition = condition;
-      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
+      this.field = field;
+      this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6978,6 +6979,10 @@ rivets.configure({
       }
     };
 
+    ConditionChecker.prototype.responseField = function() {
+      return this.field || this.form_renderer.response_fields.get(this.condition.response_field_id);
+    };
+
     return ConditionChecker;
 
   })();
@@ -7038,6 +7043,21 @@ rivets.configure({
         return 'any';
       } else {
         return 'all';
+      }
+    },
+    isHidden: function(fieldCollection) {
+      var visible;
+      if (this.get('admin_only') === true) {
+        return true;
+      } else if (this.isConditional()) {
+        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
+          return function(condition) {
+            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
+          };
+        })(this));
+        return !visible;
+      } else {
+        return false;
       }
     }
   });
@@ -8933,7 +8953,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another":"Add another","answer":"Answer this question","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","choose_an_option":"Choose an option","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","hidden":"Hidden","hidden_until_rules_met":"Hidden until rules are met","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","skip":"Skip this question","skipped":"This question is skipped.","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another":"Add another","answer":"Answer this question","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","choose_an_option":"Choose an option","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","has_conditions":"Has conditions","hidden":"Hidden","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","skip":"Skip this question","skipped":"This question is skipped.","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -10626,21 +10646,21 @@ window.JST["partials/labels"] = function(__obj) {
     (function() {
       if (this.showLabels) {
         _print(_safe('\n  '));
-        if (this.model.get('blind')) {
-          _print(_safe('\n    <span class=\'label\'>'));
-          _print(FormRenderer.t.blind);
-          _print(_safe('</span>\n  '));
-        }
-        _print(_safe('\n  '));
         if (this.model.get('admin_only')) {
-          _print(_safe('\n    <span class=\'label\'>'));
+          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-lock\'></i>'));
           _print(FormRenderer.t.hidden);
           _print(_safe('</span>\n  '));
         }
         _print(_safe('\n  '));
+        if (this.model.get('blind')) {
+          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-eye-slash\'></i> '));
+          _print(FormRenderer.t.blind);
+          _print(_safe('</span>\n  '));
+        }
+        _print(_safe('\n  '));
         if (this.model.isConditional()) {
-          _print(_safe('\n    <span class=\'label\'>'));
-          _print(FormRenderer.t.hidden_until_rules_met);
+          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-code-fork\'></i>'));
+          _print(FormRenderer.t.has_conditions);
           _print(_safe('</span>\n  '));
         }
         _print(_safe('\n'));

@@ -1,11 +1,11 @@
 <% if @showLabels: %>
-  <% if @model.get('blind'): %>
-    <span class='label'><%= FormRenderer.t.blind %></span>
-  <% end %>
   <% if @model.get('admin_only'): %>
-    <span class='label'><%= FormRenderer.t.hidden %></span>
+    <span class='label label_fb'><i class='fa fa-lock'></i><%= FormRenderer.t.hidden %></span>
+  <% end %>
+  <% if @model.get('blind'): %>
+    <span class='label label_fb'><i class='fa fa-eye-slash'></i> <%= FormRenderer.t.blind %></span>
   <% end %>
   <% if @model.isConditional(): %>
-    <span class='label'><%= FormRenderer.t.hidden_until_rules_met %></span>
+    <span class='label label_fb'><i class='fa fa-code-fork'></i><%= FormRenderer.t.has_conditions %></span>
   <% end %>
 <% end %>

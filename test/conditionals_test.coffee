@@ -238,6 +238,23 @@ describe 'ConditionChecker', ->
     beforeEach ->
       @fr = new FormRenderer Fixtures.FormRendererOptions.SHORT()
 
+    it 'initializes directly from a field', ->
+      conditional =
+        method: 'eq'
+        value: '123'
+        response_field_id: '35'
+
+      field = @fr.response_fields.get(conditional.response_field_id)
+
+      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      expect(checker.isVisible()).to.eql(false)
+
+      field.setExistingValue('123')
+
+      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      expect(checker.isVisible()).to.eql(true)
+
+
     it 'calculates', ->
       for method, deets of Fixtures.Conditional.methods
         conditional =

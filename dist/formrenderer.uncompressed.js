@@ -7226,6 +7226,21 @@ rivets.configure({
         _ref.trigger('viewRendered', this);
       }
       return this;
+    },
+    isHidden: function(fieldCollection) {
+      var visible;
+      if (this.get('admin_only') === true) {
+        return true;
+      } else if (this.isConditional()) {
+        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
+          return function(condition) {
+            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
+          };
+        })(this));
+        return !visible;
+      } else {
+        return false;
+      }
     }
   });
 

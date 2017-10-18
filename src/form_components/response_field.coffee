@@ -134,20 +134,3 @@ FormRenderer.Views.ResponseField = Backbone.View.extend
     @auditLength()
     @form_renderer?.trigger 'viewRendered', @
     @
-
-  # This is a helper method designed to be used ONLY from formbuilder.
-  # FormBuilder doesn't have access to a full formrenderer context, so
-  # the field collection is passed directly into this helper.
-  isHidden: (fieldCollection) ->
-    if @get('admin_only') == true
-      true
-    else if @isConditional()
-      visible = _[@conditionMethod()] @getConditions(), (condition) =>
-        (new FormRenderer.ConditionChecker(
-          null,
-          condition,
-          fieldCollection.get(condition.response_field_id)
-        )).isVisible()
-      !visible
-    else
-      false

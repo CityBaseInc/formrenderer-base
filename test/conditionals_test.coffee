@@ -244,14 +244,14 @@ describe 'ConditionChecker', ->
         value: '123'
         response_field_id: '35'
 
-      field = @fr.response_fields.get(conditional.response_field_id)
+      field = @fr.formComponents.get('35')
 
-      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      checker = new FormRenderer.ConditionChecker(field, conditional)
       expect(checker.isVisible()).to.eql(false)
 
       field.setExistingValue('123')
 
-      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      checker = new FormRenderer.ConditionChecker(field, conditional)
       expect(checker.isVisible()).to.eql(true)
 
 

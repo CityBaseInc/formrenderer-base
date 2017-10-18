@@ -6355,6 +6355,7 @@ rivets.configure({
     constructor: function(options) {
       var p, _i, _len, _ref;
       this.fr = this;
+      window.fr = this.fr;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
       this.state = new Backbone.Model({
@@ -6882,7 +6883,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.2.2';
+  FormRenderer.VERSION = '1.2.1';
 
 }).call(this);
 
@@ -6906,12 +6907,11 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(form_renderer, condition, field) {
+    function ConditionChecker(responseField, condition) {
       var _ref;
-      this.form_renderer = form_renderer;
+      this.responseField = responseField;
       this.condition = condition;
-      this.field = field;
-      this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
+      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6977,10 +6977,6 @@ rivets.configure({
       } else {
         return this.method_present() && this["method_" + this.condition.method]();
       }
-    };
-
-    ConditionChecker.prototype.responseField = function() {
-      return this.field || this.form_renderer.response_fields.get(this.condition.response_field_id);
     };
 
     return ConditionChecker;

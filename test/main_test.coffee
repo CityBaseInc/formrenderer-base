@@ -11,7 +11,7 @@ describe '#formatCents', ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
 
   it 'formats single-digit cents properly', ->
-    price = @fr.response_fields.find (rf) -> rf.field_type == 'price'
+    price = @fr.formComponents.find (rf) -> rf.field_type == 'price'
     $cents = $('.fr_response_field_price input[data-rv-input="model.value.cents"]')
     $cents.val('3').trigger('blur')
     expect($cents.val()).to.equal('03')
@@ -23,7 +23,7 @@ describe 'adding and removing rows', ->
 
   it 'functions properly', ->
     $('button:contains("Next page")').click()
-    table = @fr.response_fields.find (rf) -> rf.field_type == 'table'
+    table = @fr.formComponents.find (rf) -> rf.field_type == 'table'
     $('[data-rv-input="model.value.0.0"]').val('hi').trigger('input')
     expect(_.size(table.get('value')[0])).to.eql 2
     expect($('[data-rv-input="model.value.0.2"]').length).to.eql 0
@@ -44,7 +44,7 @@ describe 'state', ->
 
     describe 'after change event is fired', ->
       before ->
-        @fr.response_fields.trigger('change:value')
+        @fr.formComponents.trigger('change:value')
 
       it 'has changes', ->
         expect(@fr.state.get('hasChanges')).to.equal(true)
@@ -237,3 +237,50 @@ describe 'translated content', ->
     expect($("option:contains('drop2')").length).to.eql 1
     expect($("label:contains('rad2')").length).to.eql 1
     expect($("th:contains('col2')").length).to.eql 1
+
+describe 'repeating sections', ->
+  beforeEach ->
+    @frData =
+      project_id: 'dummy_val'
+      response:
+        id: 'xxx'
+        responses: {}
+      response_fields: [
+        id: 1
+        field_type: 'repeating_group'
+        label: 'Your dependents'
+        children: [
+          {
+            id: 2
+            field_type: 'text',
+            label: 'Name'
+          }
+        ]
+      ]
+
+  describe 'without an existing value', ->
+    it 'adds the first value', ->
+      @fr = new FormRenderer(@frData)
+      expect(@fr.formComponents.get(1).entries.length).to.equal(1)
+      expect(@fr.formComponents.get(1).isSkipped()).to.equal(false)
+
+  describe 'when skipped', ->
+    it 'sets the initial skipped state', ->
+      @frData.response.responses['1'] = []
+      @fr = new FormRenderer(@frData)
+      expect(@fr.formComponents.get(1).entries.length).to.equal(0)
+      expect(@fr.formComponents.get(1).isSkipped()).to.equal(true)
+
+  it 'can add entries up to the max', ->
+    @frData.response_fields[0].maxentries = 2
+    @fr = new FormRenderer(@frData)
+    expect($('.fr_response_field_2').length).to.equal(1)
+    $('.js-add-entry').click()
+    expect($('.fr_response_field_2').length).to.equal(2)
+    expect($('.js-add-entry').length).to.equal(0)
+
+  describe 'when required', ->
+    it 'cannot remove the last entry', ->
+      @frData.response_fields[0].required = true
+      @fr = new FormRenderer(@frData)
+      expect($('.js-remove-entry').length).to.equal(0)

@@ -1,19 +1,19 @@
-<% if @wrapper == 'fieldset': %>
+<% if @model.wrapper == 'fieldset': %>
   <fieldset class='fr_fieldset'>
     <legend><%= @model.get('label') %></legend>
     <%- JST["partials/label"](@) %>
     <div class='fr_field_wrapper'>
-      <%- JST["fields/#{@field_type}"](@) %>
+      <%- JST["fields/#{@model.field_type}"](@) %>
     </div>
   </fieldset>
-<% else if @wrapper == 'label': %>
+<% else if @model.wrapper == 'label': %>
   <%- JST["partials/label"](@) %>
   <div class='fr_field_wrapper'>
-    <%- JST["fields/#{@field_type}"](@) %>
+    <%- JST["fields/#{@model.field_type}"](@) %>
   </div>
 <% else: %>
   <div class='fr_field_wrapper'>
-    <%- JST["fields/#{@field_type}"](@) %>
+    <%- JST["fields/#{@model.field_type}"](@) %>
   </div>
 <% end %>
 

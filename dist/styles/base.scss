@@ -144,6 +144,10 @@
   font-size: $fr_font_small;
   .fr_map_coord {
     float: left;
+    width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   a {
     float: right;
@@ -327,4 +331,46 @@
     opacity: 0.65;
     cursor: default;
   }
+}
+
+// Repeating groups
+
+.fr_group_entry_idx {
+  color: $fr_muted_color;
+}
+
+.fr_group_entry {
+  margin: $fr_rhythm / 2 0;
+  @include cf;
+  .fr_group_entry_fields {
+    float: left;
+    width: 80%;
+    @media screen and (min-width: 600px) {
+      width: 90%;
+    }
+  }
+}
+
+.fr_group_entry_fields {
+  margin: 3px 0;
+  border: 1px solid $fr_light_gray;
+  padding: $fr_rhythm;
+
+  .fr_response_field:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.fr_group_entry_remove {
+  float: right;
+}
+
+.fr_group_answer,
+.fr_group_skip {
+  font-size: $fr_font_small;
+}
+
+.fr_group_skipped {
+  margin-top: $fr_rhythm / 2;
+  color: $fr_muted_color;
 }

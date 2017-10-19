@@ -10,10 +10,7 @@ FormRenderer.Views.Page = Backbone.View.extend
     @hide()
 
     for rf in @models
-      view = new FormRenderer.Views["ResponseField#{_str.classify(rf.field_type)}"](
-        model: rf,
-        form_renderer: @form_renderer
-      )
+      view = FormRenderer.buildFormComponentView(rf, @form_renderer)
       @$el.append view.render().el
       view.reflectConditions()
       @views.push view
@@ -29,13 +26,28 @@ FormRenderer.Views.Page = Backbone.View.extend
     view.trigger('shown') for view in @views
 
   reflectConditions: ->
-    for view in @views
-      view.reflectConditions()
+    view.reflectConditions() for view in @views
 
   validate: ->
-    for rf in _.filter(@models, ((rf) -> rf.input_field) )
-      rf.validate()
+    component.validateComponent() for component in @models
+
+  fieldViews: ->
+    _.tap [], (arr) =>
+      for view in @views
+        if view.model.group
+          if !view.model.isSkipped()
+            for entry in view.model.entries
+              for fieldView in entry.view.views
+                arr.push(fieldView)
+        else
+          arr.push(view)
 
   firstViewWithError: ->
-    _.find @views, (view) ->
+    _.find @fieldViews(), (view) ->
       view.model.errors.length > 0
+
+  isVisible: ->
+    _.any @models, (rf) -> rf.isVisible
+
+  isValid: ->
+    !@firstViewWithError()

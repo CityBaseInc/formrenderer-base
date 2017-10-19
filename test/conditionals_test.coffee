@@ -75,6 +75,85 @@ describe 'Conditionals', ->
   it 'does not trigger validations on hidden fields', ->
     expect(@fr.validate()).to.equal(true)
 
+  describe 'repeating groups', ->
+    it 'can be conditional', ->
+      $('body').html('<div data-formrenderer />')
+
+      @fr = new FormRenderer(
+        project_id: 'dummy_val'
+        response:
+          id: 'xxx'
+          responses: {}
+        response_fields: [
+          id: 1
+          field_type: 'dropdown'
+          label: 'Do you have dependents?'
+          options: [
+            { label: 'Yes' }
+            { label: 'No' }
+          ]
+        ,
+          id: 2
+          field_type: 'repeating_group'
+          label: 'List your depdendents'
+          children: [
+            {
+              id: 3
+              field_type: 'text',
+              label: 'Name'
+            }
+          ]
+          conditions: [
+            response_field_id: 1
+            method: 'eq'
+            value: 'Yes'
+          ]
+        ]
+      )
+
+      expect($('.fr_response_field_3').is(':visible')).to.equal(true)
+      select 'Do you have dependents?', 'No'
+      expect($('.fr_response_field_3').is(':visible')).to.equal(false)
+
+    it 'can contain conditions inside of entries', ->
+      $('body').html('<div data-formrenderer />')
+
+      @fr = new FormRenderer(
+        project_id: 'dummy_val'
+        response:
+          id: 'xxx'
+          responses: {}
+        response_fields: [
+          id: 1
+          field_type: 'repeating_group'
+          label: 'List your depdendents'
+          children: [
+            {
+              id: 2
+              field_type: 'text',
+              label: 'Name'
+            },
+            {
+              id: 3
+              field_type: 'text',
+              label: 'Age'
+              conditions: [
+                response_field_id: 2
+                method: 'eq'
+                value: 'Carl'
+              ]
+            }
+          ]
+        ]
+      )
+
+      expect($('.fr_response_field_3').is(':visible')).to.equal(false)
+      fillIn 'Name', 'Carl'
+      expect($('.fr_response_field_3').is(':visible')).to.equal(true)
+      $('.js-add-entry').click()
+      expect($('.fr_response_field_3').first().is(':visible')).to.equal(true)
+      expect($('.fr_response_field_3').last().is(':visible')).to.equal(false)
+
   describe 'pagination', ->
     it 'only shows visible pages', ->
       expect(@visiblePageNumbers()).to.eql([1, 2])
@@ -138,7 +217,11 @@ describe 'ConditionChecker', ->
       value: 'asdf'
       response_field_id: '99999'
 
-    checker = new FormRenderer.ConditionChecker(@fr, conditional)
+    checker = new FormRenderer.ConditionChecker(
+      @fr.formComponents.get(conditional.response_field_id),
+      conditional
+    )
+
     expect(checker.isVisible()).to.eql(true)
 
   describe 'values', ->
@@ -161,14 +244,14 @@ describe 'ConditionChecker', ->
         value: '123'
         response_field_id: '35'
 
-      field = @fr.response_fields.get(conditional.response_field_id)
+      field = @fr.formComponents.get('35')
 
-      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      checker = new FormRenderer.ConditionChecker(field, conditional)
       expect(checker.isVisible()).to.eql(false)
 
       field.setExistingValue('123')
 
-      checker = new FormRenderer.ConditionChecker(null, conditional, field)
+      checker = new FormRenderer.ConditionChecker(field, conditional)
       expect(checker.isVisible()).to.eql(true)
 
 
@@ -179,7 +262,10 @@ describe 'ConditionChecker', ->
           value: deets.value
           response_field_id: '35'
 
-        checker = new FormRenderer.ConditionChecker(@fr, conditional)
+        checker = new FormRenderer.ConditionChecker(
+          @fr.formComponents.get(conditional.response_field_id),
+          conditional
+        )
 
         for x in deets.true
           checker.value = x

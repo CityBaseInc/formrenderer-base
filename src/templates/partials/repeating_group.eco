@@ -1,0 +1,20 @@
+<fieldset class='fr_fieldset'>
+  <legend><%= @model.get('label') %></legend>
+  <%- JST["partials/label"](@) %>
+
+  <% if @model.isSkipped(): %>
+    <a href='#' class='js-skip fr_group_answer'><%= FormRenderer.t.answer %></a>
+    <div class='fr_group_skipped'><%= FormRenderer.t.skipped %></div>
+  <% else: %>
+    <% unless @model.isRequired(): %>
+      <a href='#' class='js-skip fr_group_skip'><%= FormRenderer.t.skip %></a>
+    <% end %>
+
+    <div class='fr_group_entries'>
+    </div>
+
+    <% if @model.canAdd(): %>
+      <a href='#' class='js-add-entry fr_group_add'><%= FormRenderer.t.add_another %></a>
+    <% end %>
+  <% end %>
+</fieldset>

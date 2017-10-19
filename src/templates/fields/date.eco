@@ -1,8 +1,8 @@
 <div class='fr_grid'>
   <div class='has_sub_label'>
-    <label class="fr_sub_label" for="<%= @getDomId() %>_month">MM</label>
+    <label class="fr_sub_label" for="<%= @domId() %>_month">MM</label>
     <input type="text"
-           id="<%= @getDomId() %>_month"
+           id="<%= @domId() %>_month"
            data-rv-input='model.value.month'
            maxlength='2'
            size='2' />
@@ -11,24 +11,24 @@
   <div class='fr_spacer'>/</div>
 
   <div class='has_sub_label'>
-    <label class="fr_sub_label" for="<%= @getDomId() %>_day">DD</label>
+    <label class="fr_sub_label" for="<%= @domId() %>_day">DD</label>
     <input type="text"
            data-rv-input='model.value.day'
            maxlength='2'
            size='2'
-           id="<%= @getDomId() %>_day" />
+           id="<%= @domId() %>_day" />
   </div>
 
   <% unless @model.get('disable_year'): %>
     <div class='fr_spacer'>/</div>
 
     <div class='has_sub_label'>
-      <label class="fr_sub_label" for="<%= @getDomId() %>_year">YYYY</label>
+      <label class="fr_sub_label" for="<%= @domId() %>_year">YYYY</label>
       <input type="text"
              data-rv-input='model.value.year'
              maxlength='4'
              size='4'
-             id="<%= @getDomId() %>_year" />
+             id="<%= @domId() %>_year" />
     </div>
   <% end %>
 </div>

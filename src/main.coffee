@@ -22,6 +22,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   ## Initialization logic
 
   constructor: (options) ->
+    @fr = @
     @options = $.extend {}, @defaults, options
     @requests = 0
     @state = new Backbone.Model
@@ -46,12 +47,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
-      @initResponseFields()
+      @initFormComponents(@options.response_fields, @options.response.responses)
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins
       @validate() if @options.validateImmediately
-      @initConditions()
       @trigger 'ready'
       @options.onReady?()
 
@@ -78,7 +78,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       data: @loadParams()
       headers: @serverHeaders
       success: (data) =>
-        @options.response.id = data.response_id
+        @options.response.id = data.response?.id
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
 
@@ -99,31 +99,17 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           )
           @trigger 'errorSaving', xhr
 
-  # Create a collection for our response fields
-  initResponseFields: ->
-    @response_fields = new Backbone.Collection
-
-    for rf in @options.response_fields
-      model = new FormRenderer.Models["ResponseField#{_str.classify(rf.field_type)}"](
-        rf,
-        form_renderer: @
-      )
-      model.setExistingValue(@options.response.responses[model.get('id')]) if model.input_field
-      @response_fields.add model
-
-    @listenTo @response_fields, 'change:value change:value.*', $.proxy(@_onChange, @)
-
   # Build pages, which contain the response fields views.
   initPages: ->
     addPage = =>
       @subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page(form_renderer: @)
 
-    @numPages = @response_fields.filter((rf) -> rf.get('field_type') == 'page_break').length + 1
+    @numPages = @formComponents.where(field_type: 'page_break').length + 1
     @state.set 'activePage', 1
     currentPageInLoop = 1
     addPage()
 
-    @response_fields.each (rf) =>
+    @formComponents.each (rf) =>
       if rf.get('field_type') == 'page_break'
         currentPageInLoop++
         addPage()
@@ -142,16 +128,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     for pageNumber, page of @subviews.pages
       page.show()
 
-  initConditions: ->
-    @listenTo @response_fields, 'change:value change:value.*', (rf) =>
-      @runConditions(rf)
-
-    @allConditions = _.flatten(
-      @response_fields.map (rf) ->
-        _.map rf.getConditions(), (c) ->
-          _.extend {}, c, parent: rf
-    )
-
   ## Pages / Validation
 
   activatePage: (newPageNumber) ->
@@ -166,11 +142,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     return @areAllPagesValid()
 
   isPageVisible: (pageNumber) ->
-    @subviews.pages[pageNumber] &&
-    !!_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.isVisible))
+    @subviews.pages[pageNumber]?.isVisible()
 
   isPageValid: (pageNumber) ->
-    !_.find(@subviews.pages[pageNumber].models, ((rf) -> rf.input_field && rf.errors.length > 0))
+    @subviews.pages[pageNumber]?.isValid()
 
   focusFirstError: ->
     page = @invalidPages()[0]
@@ -216,12 +191,6 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
   ## Saving
 
-  getValue: ->
-    _.tap {}, (h) =>
-      @response_fields.each (rf) ->
-        if rf.input_field && rf.isVisible
-          h[rf.get('id')] = rf.getValue()
-
   loadParams: ->
     {
       v: 0
@@ -239,7 +208,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @options.saveParams
     )
 
-  _onChange: ->
+  responsesChanged: ->
     @state.set('hasChanges', true)
 
     # Handle the edge case when the form is saved while there's an AJAX
@@ -327,61 +296,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     else
       @save cb: cb
 
-  ## Conditionals - will break into separate classes
-
   reflectConditions: ->
     page.reflectConditions() for _, page of @subviews.pages
     @subviews.pagination?.render()
-
-  runConditions: (rf) ->
-    needsRender = false
-
-    _.each @conditionsForResponseField(rf), (c) ->
-      if c.parent.calculateVisibility()
-        needsRender = true
-
-    @reflectConditions() if needsRender
-
-  conditionsForResponseField: (rf) ->
-    _.filter @allConditions, (condition) ->
-      "#{condition.response_field_id}" == "#{rf.id}"
-
-  isConditionalVisible: (condition) ->
-    (new FormRenderer.ConditionChecker(@, condition)).isVisible()
-
-## Master list of field types
-
-FormRenderer.INPUT_FIELD_TYPES = [
-  'identification'
-  'address'
-  'checkboxes'
-  'date'
-  'dropdown'
-  'email'
-  'file'
-  'number'
-  'paragraph'
-  'phone'
-  'price'
-  'radio'
-  'table'
-  'text'
-  'time'
-  'website'
-  'map_marker'
-  'confirm'
-]
-
-FormRenderer.NON_INPUT_FIELD_TYPES = [
-  'block_of_text'
-  'page_break'
-  'section_break'
-]
-
-FormRenderer.FIELD_TYPES = _.union(
-  FormRenderer.INPUT_FIELD_TYPES,
-  FormRenderer.NON_INPUT_FIELD_TYPES
-)
 
 ## Class-level configs
 
@@ -389,14 +306,17 @@ FormRenderer.BUTTON_CLASS = 'fr_button'
 FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453]
 FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'
 
+# Keep in-sync with Screendoor
+FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i
+
 FormRenderer.ADD_ROW_ICON = '+'
 FormRenderer.REMOVE_ROW_ICON = '-'
+FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove'
 
 ## Settin' these up for later
 
 FormRenderer.Views = {}
 FormRenderer.Models = {}
-FormRenderer.Validators = {}
 FormRenderer.Plugins = {}
 
 ## Plugin utilities
@@ -406,76 +326,3 @@ FormRenderer.addPlugin = (x) ->
 
 FormRenderer.removePlugin = (x) ->
   @::defaults.plugins = _.without(@::defaults.plugins, x)
-
-## Overrideable utilities
-
-FormRenderer.loadLeaflet = (cb) ->
-  if L?.GeoJSON?
-    cb()
-  else
-    requireOnce FormRenderer.MAPBOX_URL, cb
-
-FormRenderer.initMap = (el) ->
-  L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg'
-  L.mapbox.map(el, 'adamjacobbecker.ja7plkah')
-
-FormRenderer.getLength = (wordsOrChars, val) ->
-  trimmed = _str.trim(val)
-
-  if wordsOrChars == 'words'
-    (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length
-  else
-    trimmed.length
-
-autoLink = (str) ->
-  pattern = ///
-    (^|[\s\n]|<br\/?>) # Capture the beginning of string or line or leading whitespace
-    (
-      (?:https?|ftp):// # Look for a valid URL protocol (non-captured)
-      [\-A-Z0-9+\u0026\u2019@#/%?=()~_|!:,.;]* # Valid URL characters (any number of times)
-      [\-A-Z0-9+\u0026@#/%=~()_|] # String must end in a valid URL character
-    )
-  ///gi
-
-  str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>")
-
-sanitizeConfig = _.extend {}, Sanitize.Config.RELAXED
-sanitizeConfig.attributes.a.push 'target'
-
-sanitize = (str, config) ->
-  try
-    n = document.createElement('div')
-    n.innerHTML = str
-    s = new Sanitize(config or Sanitize.Config.RELAXED)
-    c = s.clean_node(n)
-    o = document.createElement('div')
-    o.appendChild c.cloneNode(true)
-    return o.innerHTML
-  catch e
-    return _.escape(str)
-
-simpleFormat = (str = '') ->
-  "#{str}".replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
-
-FormRenderer.formatHTML = (unsafeHTML) ->
-  sanitize(
-    autoLink(
-      simpleFormat(unsafeHTML)
-    ),
-    sanitizeConfig
-  )
-
-FormRenderer.toBoolean = (str) ->
-  _.contains ['True', 'Yes', 'true', '1', 1, 'yes', true], str
-
-FormRenderer.normalizeNumber = (value, units) ->
-  returnVal = value.
-                replace(/,/g, '').
-                replace(/-/g, '').
-                replace(/^\+/, '').
-                trim()
-
-  if units
-    returnVal = returnVal.replace(new RegExp(units + '$', 'i'), '').trim()
-
-  returnVal

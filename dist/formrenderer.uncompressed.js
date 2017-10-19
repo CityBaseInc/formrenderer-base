@@ -6335,7 +6335,7 @@ rivets.configure({
 });
 
 (function() {
-  var FormRenderer, autoLink, sanitize, sanitizeConfig, simpleFormat;
+  var FormRenderer;
 
   window.FormRenderer = FormRenderer = Backbone.View.extend({
     defaults: {
@@ -6354,6 +6354,8 @@ rivets.configure({
     },
     constructor: function(options) {
       var p, _i, _len, _ref;
+      this.fr = this;
+      window.fr = this.fr;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
       this.state = new Backbone.Model({
@@ -6387,7 +6389,7 @@ rivets.configure({
         return function() {
           var _base, _j, _len1, _ref1;
           _this.$el.find('.fr_loading').remove();
-          _this.initResponseFields();
+          _this.initFormComponents(_this.options.response_fields, _this.options.response.responses);
           _this.initPages();
           if (_this.options.enablePages) {
             _this.initPagination();
@@ -6404,7 +6406,6 @@ rivets.configure({
           if (_this.options.validateImmediately) {
             _this.validate();
           }
-          _this.initConditions();
           _this.trigger('ready');
           return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
         };
@@ -6432,10 +6433,10 @@ rivets.configure({
         headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
-            var _base, _base1, _ref;
-            _this.options.response.id = data.response_id;
+            var _base, _base1, _ref, _ref1;
+            _this.options.response.id = (_ref = data.response) != null ? _ref.id : void 0;
             (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
+            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref1 = data.response) != null ? _ref1.responses : void 0) || {});
             if (_this.options.afterSubmit == null) {
               _this.options.afterSubmit = {
                 method: 'page',
@@ -6458,22 +6459,6 @@ rivets.configure({
         })(this)
       });
     },
-    initResponseFields: function() {
-      var model, rf, _i, _len, _ref;
-      this.response_fields = new Backbone.Collection;
-      _ref = this.options.response_fields;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        model = new FormRenderer.Models["ResponseField" + (_str.classify(rf.field_type))](rf, {
-          form_renderer: this
-        });
-        if (model.input_field) {
-          model.setExistingValue(this.options.response.responses[model.get('id')]);
-        }
-        this.response_fields.add(model);
-      }
-      return this.listenTo(this.response_fields, 'change:value change:value.*', $.proxy(this._onChange, this));
-    },
     initPages: function() {
       var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
       addPage = (function(_this) {
@@ -6483,13 +6468,13 @@ rivets.configure({
           });
         };
       })(this);
-      this.numPages = this.response_fields.filter(function(rf) {
-        return rf.get('field_type') === 'page_break';
+      this.numPages = this.formComponents.where({
+        field_type: 'page_break'
       }).length + 1;
       this.state.set('activePage', 1);
       currentPageInLoop = 1;
       addPage();
-      this.response_fields.each((function(_this) {
+      this.formComponents.each((function(_this) {
         return function(rf) {
           if (rf.get('field_type') === 'page_break') {
             currentPageInLoop++;
@@ -6524,20 +6509,6 @@ rivets.configure({
       }
       return _results;
     },
-    initConditions: function() {
-      this.listenTo(this.response_fields, 'change:value change:value.*', (function(_this) {
-        return function(rf) {
-          return _this.runConditions(rf);
-        };
-      })(this));
-      return this.allConditions = _.flatten(this.response_fields.map(function(rf) {
-        return _.map(rf.getConditions(), function(c) {
-          return _.extend({}, c, {
-            parent: rf
-          });
-        });
-      }));
-    },
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
       this.subviews.pages[newPageNumber].show();
@@ -6555,14 +6526,12 @@ rivets.configure({
       return this.areAllPagesValid();
     },
     isPageVisible: function(pageNumber) {
-      return this.subviews.pages[pageNumber] && !!_.find(this.subviews.pages[pageNumber].models, (function(rf) {
-        return rf.isVisible;
-      }));
+      var _ref;
+      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isVisible() : void 0;
     },
     isPageValid: function(pageNumber) {
-      return !_.find(this.subviews.pages[pageNumber].models, (function(rf) {
-        return rf.input_field && rf.errors.length > 0;
-      }));
+      var _ref;
+      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isValid() : void 0;
     },
     focusFirstError: function() {
       var page, view;
@@ -6631,17 +6600,6 @@ rivets.configure({
         return this.activatePage(this.nextPage());
       }
     },
-    getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          return _this.response_fields.each(function(rf) {
-            if (rf.input_field && rf.isVisible) {
-              return h[rf.get('id')] = rf.getValue();
-            }
-          });
-        };
-      })(this));
-    },
     loadParams: function() {
       return {
         v: 0,
@@ -6655,7 +6613,7 @@ rivets.configure({
         skip_validation: this.options.skipValidation
       }, this.options.saveParams);
     },
-    _onChange: function() {
+    responsesChanged: function() {
       this.state.set('hasChanges', true);
       if (this.isSaving) {
         return this.changedWhileSaving = true;
@@ -6784,34 +6742,8 @@ rivets.configure({
         page.reflectConditions();
       }
       return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
-    },
-    runConditions: function(rf) {
-      var needsRender;
-      needsRender = false;
-      _.each(this.conditionsForResponseField(rf), function(c) {
-        if (c.parent.calculateVisibility()) {
-          return needsRender = true;
-        }
-      });
-      if (needsRender) {
-        return this.reflectConditions();
-      }
-    },
-    conditionsForResponseField: function(rf) {
-      return _.filter(this.allConditions, function(condition) {
-        return ("" + condition.response_field_id) === ("" + rf.id);
-      });
-    },
-    isConditionalVisible: function(condition) {
-      return (new FormRenderer.ConditionChecker(this, condition)).isVisible();
     }
   });
-
-  FormRenderer.INPUT_FIELD_TYPES = ['identification', 'address', 'checkboxes', 'date', 'dropdown', 'email', 'file', 'number', 'paragraph', 'phone', 'price', 'radio', 'table', 'text', 'time', 'website', 'map_marker', 'confirm'];
-
-  FormRenderer.NON_INPUT_FIELD_TYPES = ['block_of_text', 'page_break', 'section_break'];
-
-  FormRenderer.FIELD_TYPES = _.union(FormRenderer.INPUT_FIELD_TYPES, FormRenderer.NON_INPUT_FIELD_TYPES);
 
   FormRenderer.BUTTON_CLASS = 'fr_button';
 
@@ -6819,15 +6751,17 @@ rivets.configure({
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
+  FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i;
+
   FormRenderer.ADD_ROW_ICON = '+';
 
   FormRenderer.REMOVE_ROW_ICON = '-';
 
+  FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
+
   FormRenderer.Views = {};
 
   FormRenderer.Models = {};
-
-  FormRenderer.Validators = {};
 
   FormRenderer.Plugins = {};
 
@@ -6839,28 +6773,43 @@ rivets.configure({
     return this.prototype.defaults.plugins = _.without(this.prototype.defaults.plugins, x);
   };
 
-  FormRenderer.loadLeaflet = function(cb) {
-    if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
-      return cb();
+}).call(this);
+
+(function() {
+  FormRenderer.formComponentViewClass = function(field) {
+    var foundKlass;
+    if (field.group) {
+      return FormRenderer.Views.ResponseFieldRepeatingGroup;
+    } else if ((foundKlass = FormRenderer.Views["ResponseField" + (_str.classify(field.field_type))])) {
+      return foundKlass;
     } else {
-      return requireOnce(FormRenderer.MAPBOX_URL, cb);
+      return FormRenderer.Views.ResponseField;
     }
   };
 
-  FormRenderer.initMap = function(el) {
-    L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
-    return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
+  FormRenderer.buildFormComponentView = function(field, fr) {
+    var klass;
+    klass = FormRenderer.formComponentViewClass(field);
+    return new klass({
+      model: field,
+      form_renderer: fr
+    });
   };
 
-  FormRenderer.getLength = function(wordsOrChars, val) {
-    var trimmed;
-    trimmed = _str.trim(val);
-    if (wordsOrChars === 'words') {
-      return (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
-    } else {
-      return trimmed.length;
-    }
+  FormRenderer.formComponentModelClass = function(field) {
+    return FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
   };
+
+  FormRenderer.buildFormComponentModel = function(field, fr, parent) {
+    var klass;
+    klass = FormRenderer.formComponentModelClass(field);
+    return new klass(field, fr, parent);
+  };
+
+}).call(this);
+
+(function() {
+  var autoLink, sanitize, sanitizeConfig, simpleFormat;
 
   autoLink = function(str) {
     var pattern;
@@ -6899,10 +6848,22 @@ rivets.configure({
     return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
   };
 
-  FormRenderer.toBoolean = function(str) {
-    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
+}).call(this);
+
+(function() {
+  FormRenderer.getLength = function(wordsOrChars, val) {
+    var trimmed;
+    trimmed = _str.trim(val);
+    if (wordsOrChars === 'words') {
+      return (trimmed.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || '').length;
+    } else {
+      return trimmed.length;
+    }
   };
 
+}).call(this);
+
+(function() {
   FormRenderer.normalizeNumber = function(value, units) {
     var returnVal;
     returnVal = value.replace(/,/g, '').replace(/-/g, '').replace(/^\+/, '').trim();
@@ -6915,7 +6876,14 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.1.4';
+  FormRenderer.toBoolean = function(str) {
+    return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
+  };
+
+}).call(this);
+
+(function() {
+  FormRenderer.VERSION = '1.2.1';
 
 }).call(this);
 
@@ -6939,12 +6907,11 @@ rivets.configure({
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(form_renderer, condition, field) {
+    function ConditionChecker(responseField, condition) {
       var _ref;
-      this.form_renderer = form_renderer;
+      this.responseField = responseField;
       this.condition = condition;
-      this.field = field;
-      this.value = ((_ref = this.responseField()) != null ? _ref.toText() : void 0) || '';
+      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6988,12 +6955,12 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.length = function() {
-      return FormRenderer.getLength(this.responseField().getLengthValidationUnits(), this.value);
+      return FormRenderer.getLength(this.responseField.getLengthValidationUnits(), this.value);
     };
 
     ConditionChecker.prototype.isValid = function() {
       var _ref;
-      return this.responseField() && _.all(['response_field_id', 'method'], ((function(_this) {
+      return this.responseField && _.all(['response_field_id', 'method'], ((function(_this) {
         return function(x) {
           return _this.condition[x];
         };
@@ -7012,10 +6979,6 @@ rivets.configure({
       }
     };
 
-    ConditionChecker.prototype.responseField = function() {
-      return this.field || this.form_renderer.response_fields.get(this.condition.response_field_id);
-    };
-
     return ConditionChecker;
 
   })();
@@ -7023,300 +6986,60 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Validators.DateValidator = {
-    validate: function(model) {
-      var day, daysPerMonth, febDays, maxDays, month, year;
-      if (model.get('disable_year')) {
-        year = 2000;
-      } else {
-        year = parseInt(model.get('value.year'), 10) || 0;
-      }
-      day = parseInt(model.get('value.day'), 10) || 0;
-      month = parseInt(model.get('value.month'), 10) || 0;
-      febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
-      daysPerMonth = [31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-      maxDays = daysPerMonth[month - 1];
-      if (!((year > 0) && ((0 < month && month <= 12)) && ((0 < day && day <= maxDays)))) {
-        return 'date';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.EmailValidator = {
-    VALID_REGEX: /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i,
-    validate: function(model) {
-      if (!model.get('value').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
-        return 'email';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.IdentificationValidator = {
-    validate: function(model) {
-      if (!model.get('value.email') || !model.get('value.name')) {
-        return 'identification';
-      } else if (!model.get('value.email').match(FormRenderer.Validators.EmailValidator.VALID_REGEX)) {
-        return 'email';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.IntegerValidator = {
-    validate: function(model) {
-      var normalized;
-      if (!model.get('integer_only')) {
-        return;
-      }
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
-      if (!normalized.match(/^-?\d+$/)) {
-        return 'integer';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.MinMaxLengthValidator = {
-    validate: function(model) {
-      var count, max, min;
-      if (!(model.get('minlength') || model.get('maxlength'))) {
-        return;
-      }
-      min = parseInt(model.get('minlength'), 10) || void 0;
-      max = parseInt(model.get('maxlength'), 10) || void 0;
-      count = FormRenderer.getLength(model.getLengthValidationUnits(), model.get('value'));
-      if (min && count < min) {
-        return 'short';
-      } else if (max && count > max) {
-        return 'long';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.MinMaxValidator = {
-    validate: function(model) {
-      var max, min, value;
-      if (!(model.get('min') || model.get('max'))) {
-        return;
-      }
-      min = model.get('min') && parseFloat(model.get('min'));
-      max = model.get('max') && parseFloat(model.get('max'));
-      value = model.field_type === 'price' ? parseFloat("" + (model.get('value.dollars') || 0) + "." + (model.get('value.cents') || 0)) : parseFloat(model.get('value').replace(/,/g, ''));
-      if (min && value < min) {
-        return 'small';
-      } else if (max && value > max) {
-        return 'large';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.NumberValidator = {
-    validate: function(model) {
-      var normalized;
-      normalized = FormRenderer.normalizeNumber(model.get('value'), model.get('units'));
-      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
-        return 'number';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.PhoneValidator = {
-    validate: function(model) {
-      var digitsOnly, isUs, minDigits, _ref;
-      isUs = model.get('phone_format') === 'us';
-      minDigits = isUs ? 10 : 7;
-      digitsOnly = ((_ref = model.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
-      if (!(digitsOnly.length >= minDigits)) {
-        if (isUs) {
-          return 'us_phone';
-        } else {
-          return 'phone';
-        }
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.PriceValidator = {
-    validate: function(model) {
-      var values;
-      values = [];
-      if (model.get('value.dollars')) {
-        values.push(model.get('value.dollars').replace(/,/g, '').replace(/^\$/, ''));
-      }
-      if (model.get('value.cents')) {
-        values.push(model.get('value.cents'));
-      }
-      if (!_.every(values, function(x) {
-        return x.match(/^-?\d+$/);
-      })) {
-        return 'price';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  FormRenderer.Validators.TimeValidator = {
-    validate: function(model) {
-      var hours, minutes, seconds;
-      hours = parseInt(model.get('value.hours'), 10) || 0;
-      minutes = parseInt(model.get('value.minutes'), 10) || 0;
-      seconds = parseInt(model.get('value.seconds'), 10) || 0;
-      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
-        return 'time';
-      }
-    }
-  };
-
-}).call(this);
-
-(function() {
-  var i, _i, _len, _ref,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  FormRenderer.Models.ResponseField = Backbone.DeepModel.extend({
-    input_field: true,
-    field_type: void 0,
-    validators: [],
+  FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
+    initialize: function(_, fr, parent) {
+      this.fr = fr;
+      this.parent = parent;
+      return this.calculateVisibility();
+    },
     sync: function() {},
-    initialize: function(_attrs, options) {
-      if (options == null) {
-        options = {};
-      }
-      this.form_renderer = options.form_renderer;
-      this.errors = [];
-      this.calculateVisibility();
-      if (this.hasLengthValidations()) {
-        return this.listenTo(this, 'change:value', this.calculateLength);
-      }
-    },
-    validate: function(opts) {
-      var errorIs, errorKey, errorWas, validator, _i, _len, _ref;
-      if (opts == null) {
-        opts = {};
-      }
-      errorWas = this.get('error');
-      this.errors = [];
-      if (!this.isVisible) {
-        return;
-      }
-      if (!this.hasValue()) {
-        if (this.isRequired()) {
-          this.errors.push(FormRenderer.t.errors.blank);
-        }
-      } else {
-        _ref = this.validators;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          validator = _ref[_i];
-          errorKey = validator.validate(this);
-          if (errorKey) {
-            this.errors.push(FormRenderer.t.errors[errorKey]);
-          }
-        }
-      }
-      errorIs = this.getError();
-      if (opts.clearOnly && errorWas !== errorIs) {
-        this.set('error', null);
-      } else {
-        this.set('error', this.getError());
-      }
-      return this.form_renderer.trigger('afterValidate afterValidate:one', this);
-    },
-    isRequired: function() {
-      return this.get('required');
-    },
-    getError: function() {
-      if (this.errors.length > 0) {
-        return this.errors.join(' ');
-      }
-    },
-    hasLengthValidations: function() {
-      var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxLengthValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('minlength') || this.get('maxlength'));
-    },
-    calculateLength: function() {
-      return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
-    },
-    hasMinMaxValidations: function() {
-      var _ref;
-      return (_ref = FormRenderer.Validators.MinMaxValidator, __indexOf.call(this.validators, _ref) >= 0) && (this.get('min') || this.get('max'));
-    },
-    getLengthValidationUnits: function() {
-      return this.get('min_max_length_units') || 'characters';
-    },
-    setExistingValue: function(x) {
-      if (x) {
-        this.set('value', x);
-      }
-      if (this.hasLengthValidations()) {
-        return this.calculateLength();
-      }
-    },
-    getValue: function() {
-      return this.get('value');
-    },
-    toText: function() {
-      return this.getValue();
-    },
-    hasValue: function() {
-      return !!this.get('value');
-    },
-    hasAnyValueInHash: function() {
-      return _.some(this.get('value'), function(v, k) {
-        return !!v;
-      });
-    },
-    hasValueHashKey: function(keys) {
-      return _.some(keys, (function(_this) {
-        return function(key) {
-          return !!_this.get("value." + key);
-        };
-      })(this));
-    },
-    getOptions: function() {
-      return this.get('options') || [];
-    },
-    getColumns: function() {
-      return this.get('columns') || [];
+    validateComponent: function() {},
+    setExistingValue: function() {},
+    shouldPersistValue: function() {
+      return this.isVisible && (this.group || this.input_field);
     },
     getConditions: function() {
       return this.get('conditions') || [];
     },
+    isRequired: function() {
+      return this.get('required');
+    },
     isConditional: function() {
       return this.getConditions().length > 0;
     },
-    calculateVisibility: function() {
+    parentGroupIsHidden: function() {
+      return (this.parent.repeatingGroup != null) && !this.parent.repeatingGroup.isVisible;
+    },
+    calculateVisibilityIsChanged: function() {
       var prevValue;
       prevValue = !!this.isVisible;
-      this.isVisible = (!this.form_renderer ? true : this.isConditional() ? _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(condition) {
-          return _this.form_renderer.isConditionalVisible(condition);
-        };
-      })(this)) : true);
+      this.calculateVisibility();
       return prevValue !== this.isVisible;
+    },
+    calculateVisibility: function() {
+      return this.isVisible = this._calculateIsVisible();
+    },
+    _calculateIsVisible: function() {
+      if (!this.fr) {
+        return true;
+      }
+      if (!this.isConditional()) {
+        return true;
+      }
+      return _[this.conditionMethod()](this.getConditions(), (function(_this) {
+        return function(conditionHash) {
+          var conditionChecker;
+          conditionChecker = new FormRenderer.ConditionChecker(_this.parent.formComponents.get(conditionHash.response_field_id), conditionHash);
+          return conditionChecker.isVisible();
+        };
+      })(this));
+    },
+    conditionMethod: function() {
+      if (this.get('condition_method') === 'any') {
+        return 'any';
+      } else {
+        return 'all';
+      }
     },
     isHidden: function(fieldCollection) {
       var visible;
@@ -7332,13 +7055,80 @@ rivets.configure({
       } else {
         return false;
       }
+    }
+  });
+
+}).call(this);
+
+(function() {
+  var _isPageButton,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  _isPageButton = function(el) {
+    return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
+  };
+
+  FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend({
+    input_field: true,
+    wrapper: 'label',
+    field_type: void 0,
+    validators: [],
+    ignoreKeysWhenCheckingPresence: function() {
+      return [];
     },
-    conditionMethod: function() {
-      if (this.get('condition_method') === 'any') {
-        return 'any';
-      } else {
-        return 'all';
+    initialize: function() {
+      FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
+      this.errors = [];
+      if (this.hasLengthValidation()) {
+        return this.listenTo(this, 'change:value', this.calculateLength);
       }
+    },
+    getError: function() {
+      if (this.errors.length > 0) {
+        return this.errors.join(' ');
+      }
+    },
+    calculateLength: function() {
+      return this.set('currentLength', FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value')));
+    },
+    getLengthValidationUnits: function() {
+      return this.get('min_max_length_units') || 'characters';
+    },
+    setExistingValue: function(x) {
+      if (x) {
+        this.set('value', x);
+      }
+      if (this.hasLengthValidation()) {
+        return this.calculateLength();
+      }
+    },
+    getValue: function() {
+      return this.get('value') || this.defaultValue();
+    },
+    defaultValue: function() {
+      if (this.valueType === 'hash') {
+        return {};
+      }
+    },
+    toText: function() {
+      return this.getValue();
+    },
+    hasValue: function() {
+      if (this.valueType === 'hash') {
+        return _.some(this.get('value') || {}, (function(_this) {
+          return function(v, k) {
+            return !(__indexOf.call(_this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
+          };
+        })(this));
+      } else {
+        return !!this.get('value');
+      }
+    },
+    getOptions: function() {
+      return this.get('options') || [];
+    },
+    getColumns: function() {
+      return this.get('columns') || [];
     },
     getSize: function() {
       return this.get('size') || 'small';
@@ -7352,59 +7142,391 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
-    input_field: false,
-    field_type: void 0,
-    validate: function() {},
-    sync: function() {}
-  });
-
-  FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
-    field_type: 'identification',
-    validators: [FormRenderer.Validators.IdentificationValidator],
-    isRequired: function() {
-      return true;
+  FormRenderer.Views.ResponseField = Backbone.View.extend({
+    className: 'fr_response_field',
+    events: {
+      'blur input, textarea, select': '_onBlur'
     },
-    hasValue: function() {
-      return this.hasValueHashKey(['email', 'name']);
-    }
-  });
-
-  FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
-    field_type: 'map_marker',
-    latLng: function() {
-      return this.get('value');
+    initialize: function(options) {
+      this._sharedInitialize(options);
+      this.listenTo(this.model, 'afterValidate', this.render);
+      this.listenTo(this.model, 'change', this._onInput);
+      this.listenTo(this.model, 'change:currentLength', this.auditLength);
+      this.listenTo(this.model, 'change:error', this.toggleErrorModifier);
+      return this.$el.addClass("fr_response_field_" + this.model.field_type);
     },
-    defaultLatLng: function() {
-      var lat, lng;
-      if ((lat = this.get('default_lat')) && (lng = this.get('default_lng'))) {
-        return [lat, lng];
+    _onBlur: function(e) {
+      if (this.model.hasValue()) {
+        return setTimeout((function(_this) {
+          return function() {
+            var newActive;
+            newActive = document.activeElement;
+            if (!$.contains(_this.el, newActive)) {
+              if (_isPageButton(newActive)) {
+                return $(document).one('mouseup', function() {
+                  return _this.model.validateComponent();
+                });
+              } else {
+                return _this.model.validateComponent();
+              }
+            }
+          };
+        })(this), 1);
+      }
+    },
+    _onInput: function() {
+      if (this.model.errors.length > 0) {
+        return this.model.validateComponent({
+          clearOnly: true
+        });
+      }
+    },
+    focus: function() {
+      return this.$el.find(':input:eq(0)').focus();
+    },
+    auditLength: function() {
+      var $lc, validationRes;
+      if (!this.model.hasLengthValidation()) {
+        return;
+      }
+      if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
+        return;
+      }
+      validationRes = this.model.validateLength();
+      if (validationRes === 'short') {
+        return $lc.addClass('is_short').removeClass('is_long');
+      } else if (validationRes === 'long') {
+        return $lc.addClass('is_long').removeClass('is_short');
+      } else {
+        return $lc.removeClass('is_short is_long');
+      }
+    },
+    toggleErrorModifier: function() {
+      return this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
+    },
+    partialName: function() {
+      if (this.model.input_field) {
+        return 'response_field';
+      } else {
+        return 'non_input_response_field';
+      }
+    },
+    render: function() {
+      var _ref;
+      this.$el.html(JST["partials/" + (this.partialName())](this));
+      rivets.bind(this.$el, {
+        model: this.model
+      });
+      this.auditLength();
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
+      return this;
+    },
+    isHidden: function(fieldCollection) {
+      var visible;
+      if (this.get('admin_only') === true) {
+        return true;
+      } else if (this.isConditional()) {
+        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
+          return function(condition) {
+            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
+          };
+        })(this));
+        return !visible;
+      } else {
+        return false;
       }
     }
   });
 
+}).call(this);
+
+(function() {
+  FormRenderer.Models.NonInputResponseField = FormRenderer.Models.ResponseField.extend({
+    input_field: false,
+    validateComponent: function() {}
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormComponent.extend({
+    group: true,
+    field_type: 'repeating_group',
+    initialize: function() {
+      FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
+      return this.entries = [];
+    },
+    validateComponent: function() {
+      var entry, _i, _len, _ref, _results;
+      _ref = this.entries;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        entry = _ref[_i];
+        _results.push(entry.formComponents.invoke('validateComponent'));
+      }
+      return _results;
+    },
+    setExistingValue: function(entryValues) {
+      if (this.isRequired()) {
+        if (!entryValues || entryValues.length === 0) {
+          entryValues = [{}];
+        }
+      } else {
+        if (!entryValues) {
+          entryValues = [{}];
+        } else if (_.isArray(entryValues) && _.isEmpty(entryValues)) {
+          this.set('skipped', true);
+        }
+      }
+      return this.entries = _.map(entryValues, (function(_this) {
+        return function(value) {
+          return new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({
+            value: value
+          }, _this.fr, _this);
+        };
+      })(this));
+    },
+    addEntry: function() {
+      return this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
+    },
+    removeEntry: function(idx) {
+      this.entries.splice(idx, 1);
+      if (this.entries.length === 0) {
+        return this.set('skipped', true);
+      }
+    },
+    isSkipped: function() {
+      return !!this.get('skipped');
+    },
+    getValue: function() {
+      if (this.isSkipped()) {
+        return [];
+      } else {
+        return _.invoke(this.entries, 'getValue');
+      }
+    },
+    maxEntries: function() {
+      if (this.get('maxentries')) {
+        return parseInt(this.get('maxentries'), 10) || Infinity;
+      } else {
+        return Infinity;
+      }
+    },
+    canAdd: function() {
+      return this.entries.length < this.maxEntries();
+    }
+  });
+
+  FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend({
+    initialize: function(_attrs, fr, repeatingGroup) {
+      this.fr = fr;
+      this.repeatingGroup = repeatingGroup;
+      return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
+    },
+    reflectConditions: function() {
+      return this.view.reflectConditions();
+    },
+    canRemove: function() {
+      return this.repeatingGroup.entries.length > 1;
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend({
+    className: 'fr_response_field fr_response_field_group',
+    events: {
+      'click .js-remove-entry': 'removeEntry',
+      'click .js-add-entry': 'addEntry',
+      'click .js-skip': 'toggleSkip'
+    },
+    initialize: function(options) {
+      this._sharedInitialize(options);
+      this.on('shown', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('shown'));
+          }
+          return _results;
+        };
+      })(this));
+      return this.on('hidden', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('hidden'));
+          }
+          return _results;
+        };
+      })(this));
+    },
+    toggleSkip: function() {
+      this.model.set('skipped', !this.model.isSkipped());
+      if (!this.model.isSkipped() && this.model.entries.length === 0) {
+        this.addEntry();
+      }
+      return this.render();
+    },
+    addEntry: function() {
+      this.model.addEntry();
+      this.render();
+      return _.last(this.views).focus();
+    },
+    removeEntry: function(e) {
+      var idx;
+      idx = this.$el.find('.js-remove-entry').index(e.target);
+      this.model.removeEntry(idx);
+      return this.render();
+    },
+    render: function() {
+      var $els, entry, idx, view, _i, _len, _ref, _ref1;
+      this.views = [];
+      $els = $();
+      _ref = this.model.entries;
+      for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
+        entry = _ref[idx];
+        view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({
+          entry: entry,
+          form_renderer: this.form_renderer,
+          idx: idx
+        });
+        entry.view = view;
+        $els = $els.add(view.render().el);
+        this.views.push(view);
+      }
+      this.$el.html(JST['partials/repeating_group'](this));
+      rivets.bind(this.$el, {
+        model: this.model
+      });
+      this.$el.find('.fr_group_entries').append($els);
+      if ((_ref1 = this.form_renderer) != null) {
+        _ref1.trigger('viewRendered', this);
+      }
+      return this;
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldRepeatingGroupEntry = Backbone.View.extend({
+    className: 'fr_group_entry',
+    initialize: function(options) {
+      this.entry = options.entry;
+      this.form_renderer = options.form_renderer;
+      this.idx = options.idx;
+      this.views = [];
+      this.on('shown', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('shown'));
+          }
+          return _results;
+        };
+      })(this));
+      return this.on('hidden', (function(_this) {
+        return function() {
+          var view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            _results.push(view.trigger('hidden'));
+          }
+          return _results;
+        };
+      })(this));
+    },
+    render: function() {
+      var $children, _ref;
+      this.$el.html(JST['partials/repeating_group_entry'](this));
+      if ((_ref = this.form_renderer) != null) {
+        _ref.trigger('viewRendered', this);
+      }
+      $children = this.$el.find('.fr_group_entry_fields');
+      this.entry.formComponents.each((function(_this) {
+        return function(rf) {
+          var view;
+          view = FormRenderer.buildFormComponentView(rf, _this.form_renderer);
+          $children.append(view.render().el);
+          view.reflectConditions();
+          return _this.views.push(view);
+        };
+      })(this));
+      return this;
+    },
+    reflectConditions: function() {
+      var view, _i, _len, _ref, _results;
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        _results.push(view.reflectConditions());
+      }
+      return _results;
+    },
+    focus: function() {
+      return this.views[0].focus();
+    }
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldAddress = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
     field_type: 'address',
+    valueType: 'hash',
+    ignoreKeysWhenCheckingPresence: function() {
+      if (this.get('address_format') === 'country') {
+        return [];
+      } else {
+        return ['country'];
+      }
+    },
     setExistingValue: function(x) {
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       if (!(x != null ? x.country : void 0)) {
         return this.set('value.country', 'US');
       }
     },
-    hasValue: function() {
-      if (this.get('address_format') === 'country') {
-        return !!this.get('value.country');
-      } else {
-        return this.hasValueHashKey(['street', 'city', 'state', 'zipcode']);
-      }
-    },
     toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
+      return _.values(_.pick(this.getValue(), 'street', 'city', 'state', 'zipcode', 'country')).join(' ');
     }
   });
 
+  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.listenTo(this.model, 'change:value.country', this.render);
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldBlockOfText = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'block_of_text'
+  });
+
+  FormRenderer.Views.ResponseFieldBlockOfText = FormRenderer.Views.ResponseField.extend({
+    field_type: 'block_of_text'
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldCheckboxes = FormRenderer.Models.ResponseField.extend({
     field_type: 'checkboxes',
+    wrapper: 'fieldset',
     setExistingValue: function(x) {
       var h, option, _i, _len, _ref;
       if (x == null) {
@@ -7437,10 +7559,73 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
-    field_type: 'radio'
+  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'checkboxes'
   });
 
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
+    field_type: 'confirm',
+    wrapper: 'none',
+    getValue: function() {
+      return this.get('value') || false;
+    },
+    setExistingValue: function(x) {
+      return this.set('value', !!x);
+    },
+    toText: function() {
+      if (this.get('value')) {
+        return 'Yes';
+      } else {
+        return 'No';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'none',
+    field_type: 'confirm'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'date',
+    valueType: 'hash',
+    toText: function() {
+      return _.values(_.pick(this.getValue(), 'month', 'day', 'year')).join('/');
+    },
+    validateType: function() {
+      var day, daysPerMonth, febDays, maxDays, month, year;
+      if (this.get('disable_year')) {
+        year = 2000;
+      } else {
+        year = parseInt(this.get('value.year'), 10) || 0;
+      }
+      day = parseInt(this.get('value.day'), 10) || 0;
+      month = parseInt(this.get('value.month'), 10) || 0;
+      febDays = new Date(year, 1, 29).getMonth() === 1 ? 29 : 28;
+      daysPerMonth = [31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      maxDays = daysPerMonth[month - 1];
+      if (!((year > 0) && ((0 < month && month <= 12)) && ((0 < day && day <= maxDays)))) {
+        return 'date';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'date'
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldDropdown = FormRenderer.Models.ResponseField.extend({
     field_type: 'dropdown',
     setExistingValue: function(x) {
@@ -7448,9 +7633,9 @@ rivets.configure({
       if (x != null) {
         return FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
       } else {
-        checkedOption = _.find(this.getOptions(), (function(option) {
+        checkedOption = _.find(this.getOptions(), function(option) {
           return FormRenderer.toBoolean(option.checked);
-        }));
+        });
         if (!checkedOption && !this.get('include_blank_option')) {
           checkedOption = _.first(this.getOptions());
         }
@@ -7463,122 +7648,31 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.extend({
-    field_type: 'table',
-    initialize: function() {
-      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
-      if (this.get('column_totals')) {
-        return this.listenTo(this, 'change:value.*', this.calculateColumnTotals);
-      }
-    },
-    canAddRows: function() {
-      return this.numRows < this.maxRows();
-    },
-    minRows: function() {
-      return parseInt(this.get('minrows'), 10) || 0;
-    },
-    maxRows: function() {
-      if (this.get('maxrows')) {
-        return parseInt(this.get('maxrows'), 10) || Infinity;
-      } else {
-        return Infinity;
-      }
-    },
-    setExistingValue: function(x) {
-      var firstColumnLength, _ref;
-      firstColumnLength = ((_ref = _.find(x, (function() {
-        return true;
-      }))) != null ? _ref.length : void 0) || 0;
-      this.numRows = Math.max(this.minRows(), firstColumnLength, 1);
-      return this.set('value', _.tap([], (function(_this) {
-        return function(arr) {
-          var colArr, column, i, _i, _j, _len, _ref1, _ref2, _ref3, _results;
-          _ref1 = _this.getColumns();
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            column = _ref1[_i];
-            colArr = [];
-            for (i = _j = 0, _ref2 = _this.numRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
-              colArr.push(_this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0));
-            }
-            _results.push(arr.push(colArr));
-          }
-          return _results;
-        };
-      })(this)));
-    },
-    hasValue: function() {
-      return _.some(this.getValue(), (function(_this) {
-        return function(colVals, colLabel) {
-          return _.some(colVals, function(v, idx) {
-            return !_this.getPresetValue(colLabel, idx) && !!v;
-          });
-        };
-      })(this));
-    },
-    getPresetValue: function(columnLabel, row) {
-      var _ref, _ref1;
-      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
-    },
-    getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          var column, i, j, _i, _len, _ref, _results;
-          _ref = _this.getColumns();
-          _results = [];
-          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-            column = _ref[j];
-            h[column.label] = [];
-            _results.push((function() {
-              var _j, _ref1, _results1;
-              _results1 = [];
-              for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
-              }
-              return _results1;
-            }).call(_this));
-          }
-          return _results;
-        };
-      })(this));
-    },
-    toText: function() {
-      return _.flatten(_.values(this.getValue())).join(' ');
-    },
-    calculateColumnTotals: function() {
-      var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
-      _ref = this.getColumns();
-      _results = [];
-      for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-        column = _ref[j];
-        columnVals = [];
-        for (i = _j = 0, _ref1 = this.numRows - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          columnVals.push(parseFloat((this.get("value." + j + "." + i) || '').replace(/\$?,?/g, '')));
-        }
-        columnSum = _.reduce(columnVals, function(memo, num) {
-          if (_.isNaN(num)) {
-            return memo;
-          } else {
-            return memo + num;
-          }
-        }, 0);
-        _results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
-      }
-      return _results;
-    },
-    formatColumnSum: function(num) {
-      var parsed, precision, _ref;
-      if (num > 0) {
-        parsed = parseFloat(num.toFixed(10));
-        precision = ((_ref = ("" + parsed).split('.')[1]) != null ? _ref.length : void 0) || 0;
-        return _str.numberFormat(parsed, precision, '.', ',');
-      } else {
-        return '';
+  FormRenderer.Views.ResponseFieldDropdown = FormRenderer.Views.ResponseField.extend({
+    field_type: 'dropdown'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
+    field_type: 'email',
+    validateType: function() {
+      if (!this.get('value').match(FormRenderer.EMAIL_REGEX)) {
+        return 'email';
       }
     }
   });
 
+  FormRenderer.Views.ResponseFieldEmail = FormRenderer.Views.ResponseField.extend({
+    field_type: 'email'
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
     field_type: 'file',
     addFile: function(id, filename) {
       var files;
@@ -7629,33 +7723,223 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldDate = FormRenderer.Models.ResponseField.extend({
-    field_type: 'date',
-    validators: [FormRenderer.Validators.DateValidator],
-    hasValue: function() {
-      return this.hasValueHashKey(['month', 'day', 'year']);
+  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click [data-fr-remove-file]': 'doRemove'
+    }),
+    render: function() {
+      var uploadingFilename;
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.$input = this.$el.find('input');
+      this.$label = this.$el.find('.fr_add_file label');
+      this.$error = this.$el.find('.fr_add_file .fr_error');
+      uploadingFilename = void 0;
+      this.$label.on('click', function(e) {
+        if ($(this).hasClass('disabled')) {
+          return e.preventDefault();
+        }
+      });
+      if (this.form_renderer) {
+        this.$input.inlineFileUpload({
+          method: 'post',
+          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          ajaxOpts: {
+            headers: this.form_renderer.serverHeaders
+          },
+          additionalParams: {
+            project_id: this.form_renderer.options.project_id,
+            response_field_id: this.model.get('id'),
+            v: 0
+          },
+          start: (function(_this) {
+            return function(data) {
+              uploadingFilename = data.filename;
+              _this.$label.addClass('disabled');
+              _this.$label.text(FormRenderer.t.uploading);
+              return _this.form_renderer.requests += 1;
+            };
+          })(this),
+          progress: (function(_this) {
+            return function(data) {
+              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+            };
+          })(this),
+          complete: (function(_this) {
+            return function() {
+              return _this.form_renderer.requests -= 1;
+            };
+          })(this),
+          success: (function(_this) {
+            return function(data) {
+              _this.model.addFile(data.data.file_id, uploadingFilename);
+              return _this.render();
+            };
+          })(this),
+          error: (function(_this) {
+            return function(data) {
+              var errorText, _ref;
+              _this.render();
+              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
+              _this.$error.text(errorText || FormRenderer.t.error).show();
+              return setTimeout(function() {
+                return _this.$error.hide();
+              }, 2000);
+            };
+          })(this)
+        });
+      }
+      return this;
     },
-    toText: function() {
-      return _.values(_.pick(this.getValue() || {}, 'month', 'day', 'year')).join('/');
+    doRemove: function(e) {
+      var idx;
+      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
+      this.model.removeFile(idx);
+      return this.render();
     }
   });
 
-  FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.EmailValidator],
-    field_type: 'email'
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseField.extend({
+    field_type: 'identification',
+    valueType: 'hash',
+    isRequired: function() {
+      return true;
+    },
+    validateType: function() {
+      if (!this.get('value.email') || !this.get('value.name')) {
+        return 'identification';
+      } else if (!this.get('value.email').match(FormRenderer.EMAIL_REGEX)) {
+        return 'email';
+      }
+    }
   });
 
+  FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
+    field_type: 'identification'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.loadLeaflet = function(cb) {
+    if ((typeof L !== "undefined" && L !== null ? L.GeoJSON : void 0) != null) {
+      return cb();
+    } else {
+      return requireOnce(FormRenderer.MAPBOX_URL, cb);
+    }
+  };
+
+  FormRenderer.initMap = function(el) {
+    L.mapbox.accessToken = 'pk.eyJ1IjoiYWRhbWphY29iYmVja2VyIiwiYSI6Im1SVEQtSm8ifQ.ZgEOSXsv9eLfGQ-9yAmtIg';
+    return L.mapbox.map(el, 'adamjacobbecker.ja7plkah');
+  };
+
+  FormRenderer.Models.ResponseFieldMapMarker = FormRenderer.Models.ResponseField.extend({
+    field_type: 'map_marker',
+    latLng: function() {
+      return this.get('value');
+    },
+    defaultLatLng: function() {
+      var lat, lng;
+      if ((lat = this.get('default_lat')) && (lng = this.get('default_lng'))) {
+        return [lat, lng];
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click .fr_map_cover': 'enable',
+      'click [data-fr-clear-map]': 'disable'
+    }),
+    initialize: function() {
+      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
+      return this.on('shown', function() {
+        var _ref;
+        this.refreshing = true;
+        if ((_ref = this.map) != null) {
+          _ref._onResize();
+        }
+        return setTimeout((function(_this) {
+          return function() {
+            return _this.refreshing = false;
+          };
+        })(this), 0);
+      });
+    },
+    render: function() {
+      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
+      this.$cover = this.$el.find('.fr_map_cover');
+      FormRenderer.loadLeaflet((function(_this) {
+        return function() {
+          _this.initMap();
+          if (_this.model.latLng()) {
+            return _this.enable();
+          }
+        };
+      })(this));
+      return this;
+    },
+    initMap: function() {
+      this.map = FormRenderer.initMap(this.$el.find('.fr_map_map')[0]);
+      this.$el.find('.fr_map_map').data('map', this.map);
+      this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
+      this.marker = L.marker([0, 0]);
+      return this.map.on('move', $.proxy(this._onMove, this));
+    },
+    _onMove: function() {
+      var center;
+      if (this.refreshing) {
+        return;
+      }
+      center = this.map.getCenter();
+      this.marker.setLatLng(center);
+      this.model.set({
+        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
+      });
+      return this.model.trigger('change:value.0 change:value.1');
+    },
+    enable: function() {
+      if (!this.map) {
+        return;
+      }
+      this.map.addLayer(this.marker);
+      this.$cover.hide();
+      return this._onMove();
+    },
+    disable: function(e) {
+      e.preventDefault();
+      this.map.removeLayer(this.marker);
+      this.$el.find('.fr_map_cover').show();
+      return this.model.unset('value');
+    }
+  });
+
+}).call(this);
+
+(function() {
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.NumberValidator, FormRenderer.Validators.MinMaxValidator, FormRenderer.Validators.IntegerValidator],
     field_type: 'number',
+    validateType: function() {
+      var normalized;
+      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
+      if (!normalized.match(/^-?\d*(\.\d+)?$/)) {
+        return 'number';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldNumber = FormRenderer.Views.ResponseField.extend({
     calculateSize: function() {
       var digits, digitsInt;
-      if ((digitsInt = parseInt(this.get('max'), 10))) {
+      if ((digitsInt = parseInt(this.model.get('max'), 10))) {
         digits = ("" + digitsInt).length;
       } else {
         digits = 6;
       }
-      if (!this.get('integer_only')) {
+      if (!this.model.get('integer_only')) {
         digits += 2;
       }
       if (digits > 6) {
@@ -7668,34 +7952,312 @@ rivets.configure({
     }
   });
 
-  FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
-    field_type: 'paragraph',
-    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldPageBreak = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'page_break'
   });
 
-  FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.PriceValidator, FormRenderer.Validators.MinMaxValidator],
-    field_type: 'price',
-    hasValue: function() {
-      return this.hasValueHashKey(['dollars', 'cents']);
-    },
-    toText: function() {
-      var raw;
-      raw = this.getValue() || {};
-      return "" + (raw.dollars || '0') + "." + (raw.cents || '00');
+  FormRenderer.Views.ResponseFieldPageBreak = FormRenderer.Views.ResponseField.extend({
+    field_type: 'page_break'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldParagraph = FormRenderer.Models.ResponseField.extend({
+    field_type: 'paragraph'
+  });
+
+  FormRenderer.Views.ResponseFieldParagraph = FormRenderer.Views.ResponseField.extend({
+    field_type: 'paragraph'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
+    field_type: 'phone',
+    validateType: function() {
+      var digitsOnly, isUs, minDigits, _ref;
+      isUs = this.get('phone_format') === 'us';
+      minDigits = isUs ? 10 : 7;
+      digitsOnly = ((_ref = this.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      if (!(digitsOnly.length >= minDigits)) {
+        if (isUs) {
+          return 'us_phone';
+        } else {
+          return 'phone';
+        }
+      }
     }
   });
 
-  FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
-    field_type: 'text',
-    validators: [FormRenderer.Validators.MinMaxLengthValidator]
+  FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
+    phonePlaceholder: function() {
+      if (this.model.get('phone_format') === 'us') {
+        return '(xxx) xxx-xxxx';
+      }
+    }
   });
 
-  FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
-    validators: [FormRenderer.Validators.TimeValidator],
-    field_type: 'time',
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldPrice = FormRenderer.Models.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'price',
+    valueType: 'hash',
+    toText: function() {
+      return "" + (this.getValue().dollars || '0') + "." + (this.getValue().cents || '00');
+    },
+    validateType: function() {
+      var values;
+      values = [];
+      if (this.get('value.dollars')) {
+        values.push(("" + (this.get('value.dollars'))).replace(/,/g, '').replace(/^\$/, ''));
+      }
+      if (this.get('value.cents')) {
+        values.push("" + (this.get('value.cents')));
+      }
+      if (!_.every(values, function(x) {
+        return x.match(/^-?\d+$/);
+      })) {
+        return 'price';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'blur [data-rv-input="model.value.cents"]': 'formatCents'
+    }),
+    formatCents: function(e) {
+      var cents;
+      cents = $(e.target).val();
+      if (cents && cents.match(/^\d$/)) {
+        return this.model.set('value.cents', "0" + cents);
+      }
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldRadio = FormRenderer.Models.ResponseFieldCheckboxes.extend({
+    field_type: 'radio',
+    wrapper: 'fieldset'
+  });
+
+  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'radio'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldSectionBreak = FormRenderer.Models.NonInputResponseField.extend({
+    field_type: 'section_break'
+  });
+
+  FormRenderer.Views.ResponseFieldSectionBreak = FormRenderer.Views.ResponseField.extend({
+    field_type: 'section_break'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.extend({
+    field_type: 'table',
+    initialize: function() {
+      FormRenderer.Models.ResponseField.prototype.initialize.apply(this, arguments);
+      if (this.get('column_totals')) {
+        return this.listenTo(this, 'change:value.*', this.calculateColumnTotals);
+      }
+    },
+    canAddRows: function() {
+      return this.numRows() < this.maxRows();
+    },
+    minRows: function() {
+      return parseInt(this.get('minrows'), 10) || 0;
+    },
+    maxRows: function() {
+      if (this.get('maxrows')) {
+        return parseInt(this.get('maxrows'), 10) || Infinity;
+      } else {
+        return Infinity;
+      }
+    },
+    setExistingValue: function(x) {
+      var existingNumRows, _ref;
+      existingNumRows = Math.max(this.minRows(), ((_ref = _.values(x)[0]) != null ? _ref.length : void 0) || 0, 1);
+      return this.set('value', _.tap([], (function(_this) {
+        return function(arr) {
+          var colArr, column, _i, _j, _len, _ref1, _ref2, _results, _results1;
+          _ref1 = _this.getColumns();
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            column = _ref1[_i];
+            colArr = _.map((function() {
+              _results1 = [];
+              for (var _j = 0, _ref2 = existingNumRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; 0 <= _ref2 ? _j++ : _j--){ _results1.push(_j); }
+              return _results1;
+            }).apply(this), function(i) {
+              var _ref3;
+              return _this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0);
+            });
+            _results.push(arr.push(colArr));
+          }
+          return _results;
+        };
+      })(this)));
+    },
+    numRows: function() {
+      var _ref;
+      return Math.max(this.minRows(), ((_ref = this.get('value')) != null ? _ref[0].length : void 0) || 0, 1);
+    },
     hasValue: function() {
-      return this.hasValueHashKey(['hours', 'minutes', 'seconds']);
+      return _.some(this.getValue(), (function(_this) {
+        return function(colVals, colLabel) {
+          return _.some(colVals, function(v, idx) {
+            return !_this.getPresetValue(colLabel, idx) && !!v;
+          });
+        };
+      })(this));
+    },
+    getPresetValue: function(columnLabel, row) {
+      var _ref, _ref1;
+      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
+    },
+    getValue: function() {
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          var column, i, j, _i, _len, _ref, _results;
+          _ref = _this.getColumns();
+          _results = [];
+          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
+            column = _ref[j];
+            h[column.label] = [];
+            _results.push((function() {
+              var _j, _ref1, _results1;
+              _results1 = [];
+              for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
+              }
+              return _results1;
+            }).call(_this));
+          }
+          return _results;
+        };
+      })(this));
+    },
+    toText: function() {
+      return _.flatten(_.values(this.getValue())).join(' ');
+    },
+    calculateColumnTotals: function() {
+      var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
+      _ref = this.getColumns();
+      _results = [];
+      for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
+        column = _ref[j];
+        columnVals = [];
+        for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          columnVals.push(parseFloat((this.get("value." + j + "." + i) || '').replace(/\$?,?/g, '')));
+        }
+        columnSum = _.reduce(columnVals, function(memo, num) {
+          if (_.isNaN(num)) {
+            return memo;
+          } else {
+            return memo + num;
+          }
+        }, 0);
+        _results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
+      }
+      return _results;
+    },
+    formatColumnSum: function(num) {
+      var parsed, precision, _ref;
+      if (num > 0) {
+        parsed = parseFloat(num.toFixed(10));
+        precision = ((_ref = ("" + parsed).split('.')[1]) != null ? _ref.length : void 0) || 0;
+        return _str.numberFormat(parsed, precision, '.', ',');
+      } else {
+        return '';
+      }
+    }
+  });
+
+  FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
+    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
+      'click .js-add-row': 'addRow',
+      'click .js-remove-row': 'removeRow'
+    }),
+    canRemoveRow: function(rowIdx) {
+      var min;
+      min = Math.max(1, this.model.minRows());
+      return rowIdx > (min - 1);
+    },
+    addRow: function(e) {
+      var col, newVal, vals, _ref;
+      e.preventDefault();
+      newVal = {};
+      _ref = this.model.get('value');
+      for (col in _ref) {
+        vals = _ref[col];
+        newVal[col] = vals.concat('');
+      }
+      this.model.set('value', newVal);
+      return this.render();
+    },
+    removeRow: function(e) {
+      var col, idx, newVal, vals, _ref;
+      e.preventDefault();
+      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
+      newVal = {};
+      _ref = this.model.get('value');
+      for (col in _ref) {
+        vals = _ref[col];
+        newVal[col] = _.tap([], function(arr) {
+          var i, val, _results;
+          _results = [];
+          for (i in vals) {
+            val = vals[i];
+            if (parseInt(i, 10) !== idx) {
+              _results.push(arr.push(val));
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        });
+      }
+      this.model.set('value', newVal);
+      return this.render();
+    }
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
+    field_type: 'text'
+  });
+
+  FormRenderer.Views.ResponseFieldText = FormRenderer.Views.ResponseField.extend({
+    field_type: 'text'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend({
+    field_type: 'time',
+    wrapper: 'fieldset',
+    valueType: 'hash',
+    ignoreKeysWhenCheckingPresence: function() {
+      return ['am_pm'];
     },
     setExistingValue: function(x) {
       FormRenderer.Models.ResponseField.prototype.setExistingValue.apply(this, arguments);
@@ -7704,45 +8266,220 @@ rivets.configure({
       }
     },
     toText: function() {
-      var raw;
-      raw = this.getValue() || {};
-      return "" + (raw.hours || '00') + ":" + (raw.minutes || '00') + ":" + (raw.seconds || '00') + " " + raw.am_pm;
-    }
-  });
-
-  FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
-    field_type: 'website'
-  });
-
-  FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
-    field_type: 'phone',
-    validators: [FormRenderer.Validators.PhoneValidator]
-  });
-
-  FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.extend({
-    field_type: 'confirm',
-    getValue: function() {
-      return this.get('value') || false;
+      return "" + (this.getValue().hours || '00') + ":" + (this.getValue().minutes || '00') + ":" + (this.getValue().seconds || '00') + " " + (this.getValue().am_pm);
     },
-    setExistingValue: function(x) {
-      return this.set('value', !!x);
-    },
-    toText: function() {
-      if (this.get('value')) {
-        return 'Yes';
-      } else {
-        return 'No';
+    validateType: function() {
+      var hours, minutes, seconds;
+      hours = parseInt(this.get('value.hours'), 10) || 0;
+      minutes = parseInt(this.get('value.minutes'), 10) || 0;
+      seconds = parseInt(this.get('value.seconds'), 10) || 0;
+      if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
+        return 'time';
       }
     }
   });
 
-  _ref = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    i = _ref[_i];
-    FormRenderer.Models["ResponseField" + (_str.classify(i))] = FormRenderer.Models.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
+  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
+    wrapper: 'fieldset',
+    field_type: 'time'
+  });
+
+}).call(this);
+
+(function() {
+  FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
+    field_type: 'website'
+  });
+
+  FormRenderer.Views.ResponseFieldWebsite = FormRenderer.Views.ResponseField.extend({
+    field_type: 'website'
+  });
+
+}).call(this);
+
+(function() {
+  var FieldValidation;
+
+  FieldValidation = {
+    validateType: function() {},
+    validationFns: ['validateType', 'validateInteger', 'validateLength', 'validateMinMax'],
+    validateComponent: function(opts) {
+      var errorIs, errorKey, errorWas, validationFn, _i, _len, _ref;
+      if (opts == null) {
+        opts = {};
+      }
+      errorWas = this.get('error');
+      this.errors = [];
+      if (!(this.isVisible && !this.parentGroupIsHidden())) {
+        return;
+      }
+      if (!this.hasValue()) {
+        if (this.isRequired()) {
+          this.errors.push(FormRenderer.t.errors.blank);
+        }
+      } else {
+        _ref = this.validationFns;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          validationFn = _ref[_i];
+          errorKey = this[validationFn]();
+          if (errorKey) {
+            this.errors.push(FormRenderer.t.errors[errorKey]);
+          }
+        }
+      }
+      errorIs = this.getError();
+      if (opts.clearOnly && errorWas !== errorIs) {
+        this.set('error', null);
+      } else {
+        this.set('error', this.getError());
+      }
+      return this.fr.trigger('afterValidate afterValidate:one', this);
+    },
+    hasIntegerValidation: function() {
+      return this.field_type === 'number' && this.get('integer_only');
+    },
+    validateInteger: function() {
+      var normalized;
+      if (!this.hasIntegerValidation()) {
+        return;
+      }
+      normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
+      if (!normalized.match(/^-?\d+$/)) {
+        return 'integer';
+      }
+    },
+    hasLengthValidation: function() {
+      var _ref;
+      return ((_ref = this.field_type) === 'text' || _ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
+    },
+    validateLength: function() {
+      var count, max, min;
+      if (!this.hasLengthValidation()) {
+        return;
+      }
+      min = parseInt(this.get('minlength'), 10) || void 0;
+      max = parseInt(this.get('maxlength'), 10) || void 0;
+      count = FormRenderer.getLength(this.getLengthValidationUnits(), this.get('value'));
+      if (min && count < min) {
+        return 'short';
+      } else if (max && count > max) {
+        return 'long';
+      }
+    },
+    hasMinMaxValidation: function() {
+      var _ref;
+      return ((_ref = this.field_type) === 'number' || _ref === 'price') && (this.get('min') || this.get('max'));
+    },
+    validateMinMax: function() {
+      var max, min, value;
+      if (!this.hasMinMaxValidation()) {
+        return;
+      }
+      min = this.get('min') && parseFloat(this.get('min'));
+      max = this.get('max') && parseFloat(this.get('max'));
+      value = this.field_type === 'price' ? parseFloat("" + (this.get('value.dollars') || 0) + "." + (this.get('value.cents') || 0)) : parseFloat(this.get('value').replace(/,/g, ''));
+      if (min && value < min) {
+        return 'small';
+      } else if (max && value > max) {
+        return 'large';
+      }
+    }
+  };
+
+  _.extend(FormRenderer.Models.ResponseField.prototype, FieldValidation);
+
+}).call(this);
+
+(function() {
+  var FieldView;
+
+  FieldView = {
+    _sharedInitialize: function(options) {
+      this.form_renderer = options.form_renderer, this.model = options.model;
+      if (this.model.id) {
+        this.$el.addClass("fr_response_field_" + this.model.id);
+      }
+      return this.showLabels = this.form_renderer ? this.form_renderer.options.showLabels : this.showLabels = options.showLabels;
+    },
+    reflectConditions: function() {
+      if (this.model.isVisible) {
+        return this.$el.show();
+      } else {
+        return this.$el.hide();
+      }
+    },
+    domId: function() {
+      return this.model.cid;
+    }
+  };
+
+  _.extend(FormRenderer.Views.ResponseFieldRepeatingGroup.prototype, FieldView);
+
+  _.extend(FormRenderer.Views.ResponseField.prototype, FieldView);
+
+}).call(this);
+
+(function() {
+  var HasComponents;
+
+  HasComponents = {
+    getValue: function() {
+      return _.tap({}, (function(_this) {
+        return function(h) {
+          return _this.formComponents.each(function(c) {
+            if (c.shouldPersistValue()) {
+              return h[c.get('id')] = c.getValue();
+            }
+          });
+        };
+      })(this));
+    },
+    initFormComponents: function(fieldData, responseData) {
+      var field, model, _i, _len;
+      this.formComponents = new Backbone.Collection;
+      for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
+        field = fieldData[_i];
+        model = FormRenderer.buildFormComponentModel(field, this.fr, this);
+        model.setExistingValue(responseData[model.get('id')]);
+        this.formComponents.add(model);
+      }
+      this.initConditions();
+      return this.listenTo(this.formComponents, 'change:value change:value.*', function(rf) {
+        this.runConditions(rf);
+        return this.fr.responsesChanged();
+      });
+    },
+    initConditions: function() {
+      return this.allConditions = _.flatten(this.formComponents.map(function(rf) {
+        return _.map(rf.getConditions(), function(c) {
+          return _.extend({}, c, {
+            parent: rf
+          });
+        });
+      }));
+    },
+    conditionsForResponseField: function(rf) {
+      return _.filter(this.allConditions, function(condition) {
+        return ("" + condition.response_field_id) === ("" + rf.id);
+      });
+    },
+    runConditions: function(rf) {
+      var needsRender;
+      needsRender = false;
+      _.each(this.conditionsForResponseField(rf), function(c) {
+        if (c.parent.calculateVisibilityIsChanged()) {
+          return needsRender = true;
+        }
+      });
+      if (needsRender) {
+        return this.reflectConditions();
+      }
+    }
+  };
+
+  _.extend(FormRenderer.prototype, HasComponents);
+
+  _.extend(FormRenderer.Models.ResponseFieldRepeatingGroupEntry.prototype, HasComponents);
 
 }).call(this);
 
@@ -8089,10 +8826,7 @@ rivets.configure({
       _ref = this.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         rf = _ref[_i];
-        view = new FormRenderer.Views["ResponseField" + (_str.classify(rf.field_type))]({
-          model: rf,
-          form_renderer: this.form_renderer
-        });
+        view = FormRenderer.buildFormComponentView(rf, this.form_renderer);
         this.$el.append(view.render().el);
         view.reflectConditions();
         this.views.push(view);
@@ -8132,21 +8866,67 @@ rivets.configure({
       return _results;
     },
     validate: function() {
-      var rf, _i, _len, _ref, _results;
-      _ref = _.filter(this.models, (function(rf) {
-        return rf.input_field;
-      }));
+      var component, _i, _len, _ref, _results;
+      _ref = this.models;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
-        _results.push(rf.validate());
+        component = _ref[_i];
+        _results.push(component.validateComponent());
       }
       return _results;
     },
+    fieldViews: function() {
+      return _.tap([], (function(_this) {
+        return function(arr) {
+          var entry, fieldView, view, _i, _len, _ref, _results;
+          _ref = _this.views;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            view = _ref[_i];
+            if (view.model.group) {
+              if (!view.model.isSkipped()) {
+                _results.push((function() {
+                  var _j, _len1, _ref1, _results1;
+                  _ref1 = view.model.entries;
+                  _results1 = [];
+                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                    entry = _ref1[_j];
+                    _results1.push((function() {
+                      var _k, _len2, _ref2, _results2;
+                      _ref2 = entry.view.views;
+                      _results2 = [];
+                      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                        fieldView = _ref2[_k];
+                        _results2.push(arr.push(fieldView));
+                      }
+                      return _results2;
+                    })());
+                  }
+                  return _results1;
+                })());
+              } else {
+                _results.push(void 0);
+              }
+            } else {
+              _results.push(arr.push(view));
+            }
+          }
+          return _results;
+        };
+      })(this));
+    },
     firstViewWithError: function() {
-      return _.find(this.views, function(view) {
+      return _.find(this.fieldViews(), function(view) {
         return view.model.errors.length > 0;
       });
+    },
+    isVisible: function() {
+      return _.any(this.models, function(rf) {
+        return rf.isVisible;
+      });
+    },
+    isValid: function() {
+      return !this.firstViewWithError();
     }
   });
 
@@ -8174,399 +8954,6 @@ rivets.configure({
 
 }).call(this);
 
-(function() {
-  var i, _i, _j, _len, _len1, _ref, _ref1;
-
-  FormRenderer.Views.ResponseField = Backbone.View.extend({
-    wrapper: 'label',
-    field_type: void 0,
-    className: 'fr_response_field',
-    events: {
-      'blur input, textarea, select': '_onBlur'
-    },
-    initialize: function(options) {
-      this.form_renderer = options.form_renderer;
-      if (this.form_renderer) {
-        this.showLabels = this.form_renderer.options.showLabels;
-      } else {
-        this.showLabels = options.showLabels;
-      }
-      this.model = options.model;
-      this.listenTo(this.model, 'afterValidate', this.render);
-      this.listenTo(this.model, 'change', this._onInput);
-      this.listenTo(this.model, 'change:currentLength', this.auditLength);
-      this.$el.addClass("fr_response_field_" + this.field_type);
-      if (this.model.id) {
-        return this.$el.attr('id', "fr_response_field_" + this.model.id);
-      }
-    },
-    getDomId: function() {
-      return this.model.cid;
-    },
-    reflectConditions: function() {
-      if (this.model.isVisible) {
-        return this.$el.show();
-      } else {
-        return this.$el.hide();
-      }
-    },
-    _onBlur: function(e) {
-      if (this.model.hasValue()) {
-        return setTimeout((function(_this) {
-          return function() {
-            var newActive;
-            newActive = document.activeElement;
-            if (!$.contains(_this.el, newActive)) {
-              if (_this._isPageButton(newActive)) {
-                return $(document).one('mouseup', function() {
-                  return _this.model.validate();
-                });
-              } else {
-                return _this.model.validate();
-              }
-            }
-          };
-        })(this), 1);
-      }
-    },
-    _isPageButton: function(el) {
-      return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
-    },
-    _onInput: function() {
-      if (this.model.errors.length > 0) {
-        return this.model.validate({
-          clearOnly: true
-        });
-      }
-    },
-    focus: function() {
-      return this.$el.find(':input:eq(0)').focus();
-    },
-    auditLength: function() {
-      var $lc, validation;
-      if (!this.model.hasLengthValidations()) {
-        return;
-      }
-      if (!($lc = this.$el.find('.fr_length_counter'))[0]) {
-        return;
-      }
-      validation = FormRenderer.Validators.MinMaxLengthValidator.validate(this.model);
-      if (validation === 'short') {
-        return $lc.addClass('is_short').removeClass('is_long');
-      } else if (validation === 'long') {
-        return $lc.addClass('is_long').removeClass('is_short');
-      } else {
-        return $lc.removeClass('is_short is_long');
-      }
-    },
-    render: function() {
-      var _ref;
-      this.$el[this.model.getError() ? 'addClass' : 'removeClass']('error');
-      this.$el.html(JST['partials/response_field'](this));
-      rivets.bind(this.$el, {
-        model: this.model
-      });
-      this.auditLength();
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  FormRenderer.Views.NonInputResponseField = FormRenderer.Views.ResponseField.extend({
-    render: function() {
-      var _ref;
-      this.$el.html(JST['partials/non_input_response_field'](this));
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
-      }
-      return this;
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldPrice = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'price',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'blur [data-rv-input="model.value.cents"]': 'formatCents'
-    }),
-    formatCents: function(e) {
-      var cents;
-      cents = $(e.target).val();
-      if (cents && cents.match(/^\d$/)) {
-        return this.model.set('value.cents', "0" + cents);
-      }
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend({
-    field_type: 'table',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click .js-add-row': 'addRow',
-      'click .js-remove-row': 'removeRow'
-    }),
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('shown', function() {
-        return this.initExpanding();
-      });
-    },
-    render: function() {
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.initExpanding();
-      return this;
-    },
-    initExpanding: function() {},
-    canRemoveRow: function(rowIdx) {
-      var min;
-      min = Math.max(1, this.model.minRows());
-      return rowIdx > (min - 1);
-    },
-    addRow: function(e) {
-      e.preventDefault();
-      this.model.numRows++;
-      return this.render();
-    },
-    removeRow: function(e) {
-      var col, idx, modelVal, newVal, vals;
-      e.preventDefault();
-      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
-      modelVal = this.model.get('value');
-      newVal = {};
-      for (col in modelVal) {
-        vals = modelVal[col];
-        newVal[col] = _.tap({}, function(h) {
-          var i, val, _results;
-          _results = [];
-          for (i in vals) {
-            val = vals[i];
-            i = parseInt(i, 10);
-            if (i < idx) {
-              _results.push(h[i] = val);
-            } else if (i > idx) {
-              _results.push(h[i - 1] = val);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        });
-      }
-      this.model.numRows--;
-      this.model.attributes.value = newVal;
-      this.model.trigger('change change:value', this.model);
-      return this.render();
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'file',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click [data-fr-remove-file]': 'doRemove'
-    }),
-    render: function() {
-      var uploadingFilename;
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$input = this.$el.find('input');
-      this.$label = this.$el.find('.fr_add_file label');
-      this.$error = this.$el.find('.fr_add_file .fr_error');
-      uploadingFilename = void 0;
-      this.$label.on('click', function(e) {
-        if ($(this).hasClass('disabled')) {
-          return e.preventDefault();
-        }
-      });
-      if (this.form_renderer) {
-        this.$input.inlineFileUpload({
-          method: 'post',
-          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
-          ajaxOpts: {
-            headers: this.form_renderer.serverHeaders
-          },
-          additionalParams: {
-            project_id: this.form_renderer.options.project_id,
-            response_field_id: this.model.get('id'),
-            v: 0
-          },
-          start: (function(_this) {
-            return function(data) {
-              uploadingFilename = data.filename;
-              _this.$label.addClass('disabled');
-              _this.$label.text(FormRenderer.t.uploading);
-              return _this.form_renderer.requests += 1;
-            };
-          })(this),
-          progress: (function(_this) {
-            return function(data) {
-              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
-            };
-          })(this),
-          complete: (function(_this) {
-            return function() {
-              return _this.form_renderer.requests -= 1;
-            };
-          })(this),
-          success: (function(_this) {
-            return function(data) {
-              _this.model.addFile(data.data.file_id, uploadingFilename);
-              return _this.render();
-            };
-          })(this),
-          error: (function(_this) {
-            return function(data) {
-              var errorText, _ref;
-              _this.render();
-              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$error.text(errorText || FormRenderer.t.error).show();
-              return setTimeout(function() {
-                return _this.$error.hide();
-              }, 2000);
-            };
-          })(this)
-        });
-      }
-      return this;
-    },
-    doRemove: function(e) {
-      var idx;
-      idx = this.$el.find('[data-fr-remove-file]').index(e.target);
-      this.model.removeFile(idx);
-      return this.render();
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldMapMarker = FormRenderer.Views.ResponseField.extend({
-    field_type: 'map_marker',
-    events: _.extend({}, FormRenderer.Views.ResponseField.prototype.events, {
-      'click .fr_map_cover': 'enable',
-      'click [data-fr-clear-map]': 'disable'
-    }),
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.on('shown', function() {
-        var _ref;
-        this.refreshing = true;
-        if ((_ref = this.map) != null) {
-          _ref._onResize();
-        }
-        return setTimeout((function(_this) {
-          return function() {
-            return _this.refreshing = false;
-          };
-        })(this), 0);
-      });
-    },
-    render: function() {
-      FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
-      this.$cover = this.$el.find('.fr_map_cover');
-      FormRenderer.loadLeaflet((function(_this) {
-        return function() {
-          _this.initMap();
-          if (_this.model.latLng()) {
-            return _this.enable();
-          }
-        };
-      })(this));
-      return this;
-    },
-    initMap: function() {
-      this.map = FormRenderer.initMap(this.$el.find('.fr_map_map')[0]);
-      this.$el.find('.fr_map_map').data('map', this.map);
-      this.map.setView(this.model.latLng() || this.model.defaultLatLng() || FormRenderer.DEFAULT_LAT_LNG, 13);
-      this.marker = L.marker([0, 0]);
-      return this.map.on('move', $.proxy(this._onMove, this));
-    },
-    _onMove: function() {
-      var center;
-      if (this.refreshing) {
-        return;
-      }
-      center = this.map.getCenter();
-      this.marker.setLatLng(center);
-      this.model.set({
-        value: [center.lat.toFixed(7), center.lng.toFixed(7)]
-      });
-      return this.model.trigger('change:value.0 change:value.1');
-    },
-    enable: function() {
-      if (!this.map) {
-        return;
-      }
-      this.map.addLayer(this.marker);
-      this.$cover.hide();
-      return this._onMove();
-    },
-    disable: function(e) {
-      e.preventDefault();
-      this.map.removeLayer(this.marker);
-      this.$el.find('.fr_map_cover').show();
-      return this.model.unset('value');
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldAddress = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'address',
-    initialize: function() {
-      FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
-      return this.listenTo(this.model, 'change:value.country', this.render);
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldPhone = FormRenderer.Views.ResponseField.extend({
-    field_type: 'phone',
-    phonePlaceholder: function() {
-      if (this.model.get('phone_format') === 'us') {
-        return '(xxx) xxx-xxxx';
-      }
-    }
-  });
-
-  FormRenderer.Views.ResponseFieldCheckboxes = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'checkboxes'
-  });
-
-  FormRenderer.Views.ResponseFieldRadio = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'radio'
-  });
-
-  FormRenderer.Views.ResponseFieldTime = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'time'
-  });
-
-  FormRenderer.Views.ResponseFieldDate = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'fieldset',
-    field_type: 'date'
-  });
-
-  FormRenderer.Views.ResponseFieldConfirm = FormRenderer.Views.ResponseField.extend({
-    wrapper: 'none',
-    field_type: 'confirm'
-  });
-
-  _ref = _.without(FormRenderer.INPUT_FIELD_TYPES, 'address', 'checkboxes', 'radio', 'table', 'file', 'map_marker', 'price', 'phone', 'date', 'time', 'confirm');
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    i = _ref[_i];
-    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.ResponseField.extend({
-      field_type: i
-    });
-  }
-
-  _ref1 = FormRenderer.NON_INPUT_FIELD_TYPES;
-  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-    i = _ref1[_j];
-    FormRenderer.Views["ResponseField" + (_str.classify(i))] = FormRenderer.Views.NonInputResponseField.extend({
-      field_type: i
-    });
-  }
-
-}).call(this);
-
 FormRenderer.FILE_TYPES = {
   "images": ["bmp", "gif", "jpg", "jpeg", "png", "psd", "tif", "tiff"],
   "videos": ["m4v", "mp4", "mov", "mpg"],
@@ -8577,7 +8964,7 @@ FormRenderer.FILE_TYPES = {
   "pdfs": ["pdf"]
 }
 ;
-var FormRendererEN = {"address":"Address","add_another_row":"Add another row","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","choose_an_option":"Choose an option","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","has_conditions":"Has conditions","hidden":"Hidden","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
+var FormRendererEN = {"address":"Address","add_another":"Add another","answer":"Answer this question","back_to_page":"Back to page :num","blind":"Blind","bookmark_hint":"To finish your response later, copy the link below.","cents":"Cents","characters":"characters","choose_an_option":"Choose an option","city":"City","clear":"Clear","click_to_set":"Click to set location","coordinates":"Coordinates","country":"Country","dollars":"Dollars","email":"Email","enter_at_least":"Enter at least :min","enter_between":"Enter between :min and :max","enter_exactly":"Enter :num","enter_up_to":"Enter up to :max","error":"Error","errors":{"blank":"This field can't be blank.","date":"Please enter a valid date.","email":"Please enter a valid email address.","identification":"Please enter your name and email address.","integer":"Please enter a whole number.","large":"Your answer is too large.","long":"Your answer is too long.","number":"Please enter a valid number.","phone":"Please enter a valid phone number.","price":"Please enter a valid price.","short":"Your answer is too short.","small":"Your answer is too small.","time":"Please enter a valid time.","us_phone":"Please enter a valid 10-digit phone number."},"error_bar":{"errors":"Your response has <a href='#'>validation errors</a>."},"error_filename":"Error reading filename","error_loading":"Error loading form","error_saving":"Error saving","finishing_up":"Finishing up...","finish_later":"Finish this later","has_conditions":"Has conditions","hidden":"Hidden","loading_form":"Loading form...","na":"N/A","name":"Name","next_page":"Next page","not_supported":"Sorry, your browser does not support this embedded form. Please visit <a href=':url?fr_not_supported=t'>:url</a> to fill out this form.","other":"Other","postal_code":"Postal Code","province":"Province","remove":"Remove","saved":"Saved","saving":"Saving...","skip":"Skip this question","skipped":"This question is skipped.","state":"State","state_province_region":"State / Province / Region","submit":"Submit","submitting":"Submitting","thanks":"Thanks for submitting our form!","upload":"Upload a file","uploading":"Uploading...","upload_another":"Upload another file","we_accept":"We'll accept","words":"words","write_here":"Write your answer here","zip_code":"ZIP Code"};
 if (typeof FormRenderer !== 'undefined') FormRenderer.t = FormRendererEN;
 if (!window.JST) {
   window.JST = {};
@@ -8611,11 +8998,11 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_street\'>'));
         _print(FormRenderer.t.address);
         _print(_safe('</label>\n      <input type="text"\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
       }
     
@@ -8623,13 +9010,13 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'country') {
         _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_city\'>'));
         _print(FormRenderer.t.city);
         _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\'\n             id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_state\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
@@ -8647,7 +9034,7 @@ window.JST["fields/address"] = function(__obj) {
         _print(_safe('\n      </label>\n\n      '));
         if ((ref = this.model.get('value.country')) === 'US' || ref === 'CA') {
           _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
-          _print(this.getDomId());
+          _print(this.domId());
           _print(_safe('_state\'>\n          <option></option>\n          '));
           ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
           for (i = 0, len = ref1.length; i < len; i++) {
@@ -8661,7 +9048,7 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        </select>\n      '));
         } else {
           _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' id=\''));
-          _print(this.getDomId());
+          _print(this.domId());
           _print(_safe('_state\' />\n      '));
         }
         _print(_safe('\n    </div>\n  </div>\n'));
@@ -8671,7 +9058,7 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'country') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_zipcode\'>\n        '));
         if (this.model.get('value.country') === 'US') {
           _print(_safe('\n          '));
@@ -8683,7 +9070,7 @@ window.JST["fields/address"] = function(__obj) {
           _print(_safe('\n        '));
         }
         _print(_safe('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\'\n             id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_zipcode\' />\n    </div>\n  '));
       }
     
@@ -8691,11 +9078,11 @@ window.JST["fields/address"] = function(__obj) {
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
         _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_country\'>'));
         _print(FormRenderer.t.country);
         _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_country\'>\n        '));
         ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (j = 0, len1 = ref2.length; j < len1; j++) {
@@ -8929,27 +9316,27 @@ window.JST["fields/date"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_day" />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_year')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_year" />\n    </div>\n  '));
       }
     
@@ -9002,7 +9389,7 @@ window.JST["fields/dropdown"] = function(__obj) {
     
       _print(_safe('<select id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('" data-rv-value=\'model.value\'>\n  '));
     
@@ -9071,7 +9458,7 @@ window.JST["fields/email"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text" inputmode="email"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
     
@@ -9138,13 +9525,13 @@ window.JST["fields/file"] = function(__obj) {
     
       if (this.model.canAddFile()) {
         _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('\' class=\''));
         _print(FormRenderer.BUTTON_CLASS);
         _print(_safe('\'>\n      '));
         _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
         _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('\'\n           '));
         if ((exts = this.model.getAcceptedExtensions())) {
           _print(_safe('\n            accept=\''));
@@ -9209,7 +9596,7 @@ window.JST["fields/identification"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-name\'>'));
     
@@ -9217,11 +9604,11 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-email\'>'));
     
@@ -9229,7 +9616,7 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
     
@@ -9339,11 +9726,11 @@ window.JST["fields/number"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
     
-      _print(this.model.calculateSize());
+      _print(this.calculateSize());
     
       _print(_safe('" />\n\n'));
     
@@ -9445,7 +9832,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     (function() {
       _print(_safe('<textarea\n   id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n   class="size_'));
     
@@ -9498,7 +9885,7 @@ window.JST["fields/phone"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
     
@@ -9551,7 +9938,7 @@ window.JST["fields/price"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_dollars">'));
     
@@ -9559,17 +9946,17 @@ window.JST["fields/price"] = function(__obj) {
     
       _print(_safe('</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_cents')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_cents">'));
         _print(FormRenderer.t.cents);
         _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_cents" />\n    </div>\n  '));
       }
     
@@ -9774,7 +10161,7 @@ window.JST["fields/table"] = function(__obj) {
     
       _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
     
-      for (i = l = 0, ref1 = this.model.numRows - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
+      for (i = l = 0, ref1 = this.model.numRows() - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
         _print(_safe('\n      <tr data-row-index="'));
         _print(i);
         _print(_safe('">\n        '));
@@ -9800,7 +10187,7 @@ window.JST["fields/table"] = function(__obj) {
             _print(_safe('"\n                        '));
             if (j === 0 && i === 0) {
               _print(_safe('id=\''));
-              _print(this.getDomId());
+              _print(this.domId());
               _print(_safe('\''));
             }
             _print(_safe(' />\n          '));
@@ -9836,7 +10223,7 @@ window.JST["fields/table"] = function(__obj) {
         _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
         _print(_safe(FormRenderer.ADD_ROW_ICON));
         _print(_safe('\n      '));
-        _print(FormRenderer.t.add_another_row);
+        _print(FormRenderer.t.add_another);
         _print(_safe('\n    </a>\n  '));
       }
     
@@ -9887,7 +10274,7 @@ window.JST["fields/text"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       class="size_'));
     
@@ -9940,27 +10327,27 @@ window.JST["fields/time"] = function(__obj) {
     (function() {
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('_minutes" />\n  </div>\n\n  '));
     
       if (!this.model.get('disable_seconds')) {
         _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('_seconds" />\n    </div>\n  '));
       }
     
@@ -10011,7 +10398,7 @@ window.JST["fields/website"] = function(__obj) {
     (function() {
       _print(_safe('<input type="text" inputmode="url"\n       id="'));
     
-      _print(this.getDomId());
+      _print(this.domId());
     
       _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
     
@@ -10205,11 +10592,11 @@ window.JST["partials/label"] = function(__obj) {
     (function() {
       _print(_safe('<label '));
     
-      if (this.usesFieldset) {
+      if (this.model.group || this.model.wrapper === 'fieldset') {
         _print(_safe('aria-hidden="true"'));
       } else {
         _print(_safe('for="'));
-        _print(this.getDomId());
+        _print(this.domId());
         _print(_safe('"'));
       }
     
@@ -10394,7 +10781,7 @@ window.JST["partials/length_validations"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      if (this.model.hasLengthValidations()) {
+      if (this.model.hasLengthValidation()) {
         _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
         if (min && max) {
           _print(_safe('\n        '));
@@ -10477,7 +10864,7 @@ window.JST["partials/min_max_validations"] = function(__obj) {
     (function() {
       var max, min;
     
-      if (this.model.hasMinMaxValidations()) {
+      if (this.model.hasMinMaxValidation()) {
         _print(_safe('\n  '));
         min = this.model.get('min');
         _print(_safe('\n  '));
@@ -10544,7 +10931,7 @@ window.JST["partials/non_input_response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe(JST["fields/" + this.field_type](this)));
+      _print(_safe(JST["fields/" + this.model.field_type](this)));
     
       _print(_safe('\n'));
     
@@ -10643,6 +11030,140 @@ window.JST["partials/pagination"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["partials/repeating_group"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<fieldset class=\'fr_fieldset\'>\n  <legend>'));
+    
+      _print(this.model.get('label'));
+    
+      _print(_safe('</legend>\n  '));
+    
+      _print(_safe(JST["partials/label"](this)));
+    
+      _print(_safe('\n\n  '));
+    
+      if (this.model.isSkipped()) {
+        _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
+        _print(FormRenderer.t.answer);
+        _print(_safe('</a>\n    <div class=\'fr_group_skipped\'>'));
+        _print(FormRenderer.t.skipped);
+        _print(_safe('</div>\n  '));
+      } else {
+        _print(_safe('\n    '));
+        if (!this.model.isRequired()) {
+          _print(_safe('\n      <a href=\'#\' class=\'js-skip fr_group_skip\'>'));
+          _print(FormRenderer.t.skip);
+          _print(_safe('</a>\n    '));
+        }
+        _print(_safe('\n\n    <div class=\'fr_group_entries\'>\n    </div>\n\n    '));
+        if (this.model.canAdd()) {
+          _print(_safe('\n      <a href=\'#\' class=\'js-add-entry fr_group_add\'>'));
+          _print(FormRenderer.t.add_another);
+          _print(_safe('</a>\n    '));
+        }
+        _print(_safe('\n  '));
+      }
+    
+      _print(_safe('\n</fieldset>\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/repeating_group_entry"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'fr_group_entry_idx\'>#'));
+    
+      _print(this.idx + 1);
+    
+      _print(_safe('</div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
+    
+      if (this.entry.canRemove()) {
+        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry fr_group_entry_remove\'>'));
+        _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
+        _print(_safe('</a>\n'));
+      }
+    
+      _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["partials/required"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -10713,23 +11234,23 @@ window.JST["partials/response_field"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      if (this.wrapper === 'fieldset') {
+      if (this.model.wrapper === 'fieldset') {
         _print(_safe('\n  <fieldset class=\'fr_fieldset\'>\n    <legend>'));
         _print(this.model.get('label'));
         _print(_safe('</legend>\n    '));
         _print(_safe(JST["partials/label"](this)));
         _print(_safe('\n    <div class=\'fr_field_wrapper\'>\n      '));
-        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n    </div>\n  </fieldset>\n'));
-      } else if (this.wrapper === 'label') {
+      } else if (this.model.wrapper === 'label') {
         _print(_safe('\n  '));
         _print(_safe(JST["partials/label"](this)));
         _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
-        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n  </div>\n'));
       } else {
         _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
-        _print(_safe(JST["fields/" + this.field_type](this)));
+        _print(_safe(JST["fields/" + this.model.field_type](this)));
         _print(_safe('\n  </div>\n'));
       }
     

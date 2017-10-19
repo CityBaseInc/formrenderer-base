@@ -1,0 +1,76 @@
+FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
+  # @param @fr the fr instance
+  # @param @parent either the fr instance, or the RepeatingGroupEntry
+  # that this field belongs to.
+  initialize: (_, @fr, @parent) ->
+    @calculateVisibility()
+
+  sync: ->
+
+  # Not named `validate` beacuse that conflicts with Backbone
+  validateComponent: ->
+
+  setExistingValue: ->
+
+  shouldPersistValue: ->
+    @isVisible &&
+    (@group || @input_field)
+
+  getConditions: ->
+    @get('conditions') || []
+
+  isRequired: ->
+    @get('required')
+
+  isConditional: ->
+    @getConditions().length > 0
+
+  parentGroupIsHidden: ->
+    @parent.repeatingGroup? && !@parent.repeatingGroup.isVisible
+
+  # @return [Boolean] true if the new value is different than the old value
+  calculateVisibilityIsChanged: ->
+    prevValue = !!@isVisible
+    @calculateVisibility()
+    prevValue != @isVisible
+
+  calculateVisibility: ->
+    @isVisible = @_calculateIsVisible()
+
+  _calculateIsVisible: ->
+    # If we're not in a form_renderer context, it's visible
+    return true unless @fr
+
+    # If no conditions, it's visible
+    return true unless @isConditional()
+
+    _[@conditionMethod()] @getConditions(), (conditionHash) =>
+      conditionChecker = new FormRenderer.ConditionChecker(
+        @parent.formComponents.get(conditionHash.response_field_id),
+        conditionHash
+      )
+
+      conditionChecker.isVisible()
+
+  conditionMethod: ->
+    if @get('condition_method') == 'any'
+      'any'
+    else
+      'all'
+
+  # This is a helper method designed to be used ONLY from formbuilder.
+  # FormBuilder doesn't have access to a full formrenderer context, so
+  # the field collection is passed directly into this helper.
+  isHidden: (fieldCollection) ->
+    if @get('admin_only') == true
+      true
+    else if @isConditional()
+      visible = _[@conditionMethod()] @getConditions(), (condition) =>
+        (new FormRenderer.ConditionChecker(
+          null,
+          condition,
+          fieldCollection.get(condition.response_field_id)
+        )).isVisible()
+      !visible
+    else
+      false

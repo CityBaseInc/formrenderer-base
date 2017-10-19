@@ -1,5 +1,5 @@
 <input type="text"
        inputmode="tel"
-       id="<%= @getDomId() %>"
+       id="<%= @domId() %>"
        data-rv-input='model.value'
        placeholder="<%= @phonePlaceholder() %>" />

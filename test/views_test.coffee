@@ -1,12 +1,33 @@
+ALL_FIELD_TYPES = [
+  'identification'
+  'address'
+  'checkboxes'
+  'date'
+  'dropdown'
+  'email'
+  'file'
+  'number'
+  'paragraph'
+  'phone'
+  'price'
+  'radio'
+  'table'
+  'text'
+  'time'
+  'website'
+  'map_marker'
+  'confirm'
+  'block_of_text'
+  'page_break'
+  'section_break'
+]
+
 describe 'response field views', ->
   it 'can be rendered without a form_renderer instance', ->
-    for field_type in FormRenderer.FIELD_TYPES
+    for field_type in ALL_FIELD_TYPES
       model = new FormRenderer.Models["ResponseField#{_.str.classify(field_type)}"]
-
-      view = new FormRenderer.Views["ResponseField#{_.str.classify(field_type)}"](
-        model: model
-      )
-
+      viewKlass = FormRenderer.formComponentViewClass(model)
+      view = new viewKlass(model: model)
       expect(view.render()).to.be.ok
 
 # Since we can't actually test a file upload, we'll test how the view
@@ -32,7 +53,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
       expect($('.fr_add_file label').hasClass('disabled')).to.eql true
       @ifu.options.success(data: { file_id: 123 })
       expect($('.fr_add_file label').hasClass('disabled')).to.eql false
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' }
         ]
@@ -62,7 +83,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
       @ifu.options.start(filename: 'filename two')
       @ifu.options.success(data: { file_id: 456 })
       expect($('.fr_add_file label').length).to.eql 1
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' },
           { id: 456, filename: 'filename two' }
@@ -71,7 +92,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
 
       # And removes them...
       $('[data-fr-remove-file]').last().click()
-      expect(@fr.response_fields.models[0].get('value')).to.eql(
+      expect(@fr.formComponents.models[0].get('value')).to.eql(
         [
           { id: 123, filename: 'filename yo' }
         ]

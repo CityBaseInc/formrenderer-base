@@ -19,6 +19,8 @@ EXPECTED_BLANK_VALUES = {
   "3901": {
     checked: []
   },
+  "41": {},
+  "43": {},
   "44": {
     "am_pm": "AM"
   },
@@ -36,7 +38,8 @@ EXPECTED_BLANK_VALUES = {
       ""
     ]
   },
-  "52": false
+  "52": false,
+  "53": [{}]
 }
 
 EXPECTED_PRESENT_VALUES = {
@@ -86,6 +89,11 @@ EXPECTED_PRESENT_VALUES = {
   "50": ["40.7700118", "-73.9800453"],
   "51": "510-123-4567",
   "52": true,
+  "53": [
+    {
+      "54":"Large Round Son"
+    }
+  ],
   "3900": {
     "checked": [],
     "other_checked": true,
@@ -139,6 +147,7 @@ describe '#getValue', ->
     $('.fr_response_field_phone input').val('510-123-4567').trigger('input')
     $('.fr_response_field_map_marker .fr_map_cover').click()
     $('.fr_response_field_confirm input').first().click().trigger('change')
+    $('.fr_response_field_group').first().find('[type=text]').val('Large Round Son').trigger('input')
 
     # File
     inlineFileUpload = $('input[type=file]').data('inline-file-upload')

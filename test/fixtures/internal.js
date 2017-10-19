@@ -9,18 +9,13 @@ Fixtures.RESPONSE_FIELD = {
 Fixtures.KITCHEN_SINK_FORM = [
   {
     id: 35,
-    form_id: 5,
     label: "Text",
     required: true,
     blind: true,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.152Z",
-    updated_at: "2014-08-22T20:50:37.152Z",
     field_type: "text",
-    cid: null
   }, {
     id: 36,
-    form_id: 5,
     label: "Paragraph",
     size: "large",
     description: "How would you complete this project?",
@@ -28,13 +23,9 @@ Fixtures.KITCHEN_SINK_FORM = [
     required: false,
     blind: false,
     admin_only: true,
-    created_at: "2014-08-22T20:50:37.169Z",
-    updated_at: "2014-08-22T20:50:37.169Z",
     field_type: "paragraph",
-    cid: null
   }, {
     id: 37,
-    form_id: 5,
     label: "Checkboxes",
     options: [
       {
@@ -48,59 +39,39 @@ Fixtures.KITCHEN_SINK_FORM = [
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.187Z",
-    updated_at: "2014-08-22T20:50:37.187Z",
     field_type: "checkboxes",
-    cid: null
   }, {
     id: 38,
-    form_id: 5,
     label: "THE SECTION!",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.217Z",
-    updated_at: "2014-08-22T20:50:37.217Z",
     field_type: "section_break",
-    cid: null
   }, {
     id: 100,
-    form_id: 5,
     label: "",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.217Z",
-    updated_at: "2014-08-22T20:50:37.217Z",
     field_type: "page_break",
-    cid: null
   }, {
     id: 101,
-    form_id: 5,
     label: "New page",
     description: "hey hey hey.",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.217Z",
-    updated_at: "2014-08-22T20:50:37.217Z",
     field_type: "section_break",
-    cid: null
   }, {
     id: 102,
-    form_id: 5,
     label: "",
     description: "Howdyhowdyhowdy",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.217Z",
-    updated_at: "2014-08-22T20:50:37.217Z",
     field_type: "block_of_text",
-    cid: null
   }, {
     id: 39,
-    form_id: 5,
     label: "Radio",
     options: [
       {
@@ -114,10 +85,7 @@ Fixtures.KITCHEN_SINK_FORM = [
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.235Z",
-    updated_at: "2014-08-22T20:50:37.235Z",
     field_type: "radio",
-    cid: null
   }, {
     id: 3900,
     form_id: 5,
@@ -162,7 +130,6 @@ Fixtures.KITCHEN_SINK_FORM = [
     cid: null
   }, {
     id: 40,
-    form_id: 5,
     label: "Dropdown",
     options: [
       {
@@ -177,102 +144,66 @@ Fixtures.KITCHEN_SINK_FORM = [
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.259Z",
-    updated_at: "2014-08-22T20:50:37.259Z",
     field_type: "dropdown",
-    cid: null
   }, {
     id: 41,
-    form_id: 5,
     label: "Price",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.284Z",
-    updated_at: "2014-08-22T20:50:37.284Z",
     field_type: "price",
-    cid: null
   }, {
     id: 42,
-    form_id: 5,
     label: "Number",
     units: "things",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.300Z",
-    updated_at: "2014-08-22T20:50:37.300Z",
     field_type: "number",
-    cid: null
   }, {
     id: 43,
-    form_id: 5,
     label: "Date",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.319Z",
-    updated_at: "2014-08-22T20:50:37.319Z",
     field_type: "date",
-    cid: null
   }, {
     id: 44,
-    form_id: 5,
     label: "Time",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.336Z",
-    updated_at: "2014-08-22T20:50:37.336Z",
     field_type: "time",
-    cid: null
   }, {
     id: 45,
-    form_id: 5,
     label: "Website",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.456Z",
-    updated_at: "2014-08-22T20:50:37.456Z",
     field_type: "website",
-    cid: null
   }, {
     id: 46,
-    form_id: 5,
     label: "File",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.473Z",
-    updated_at: "2014-08-22T20:50:37.473Z",
     field_type: "file",
-    cid: null
   }, {
     id: 47,
-    form_id: 5,
     label: "Email",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.491Z",
-    updated_at: "2014-08-22T20:50:37.491Z",
     field_type: "email",
-    cid: null
   }, {
     id: 48,
-    form_id: 5,
     label: "Address",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.508Z",
-    updated_at: "2014-08-22T20:50:37.508Z",
     field_type: "address",
-    cid: null
   }, {
     id: 49,
-    form_id: 5,
     label: "Table",
     columns: [
       {
@@ -285,44 +216,413 @@ Fixtures.KITCHEN_SINK_FORM = [
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.524Z",
-    updated_at: "2014-08-22T20:50:37.524Z",
     field_type: "table",
-    cid: null
   }, {
     id: 50,
-    form_id: 5,
     label: "MapMarker",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.547Z",
-    updated_at: "2014-08-22T20:50:37.547Z",
     field_type: "map_marker",
-    cid: null
   }, {
     id: 51,
-    form_id: 5,
     label: "Phone (US)",
     phone_format: "us",
     required: false,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.547Z",
-    updated_at: "2014-08-22T20:50:37.547Z",
     field_type: "phone",
-    cid: null
   }, {
     id: 52,
-    form_id: 5,
     label: "I accept the terms of Service.",
     required: true,
     blind: false,
     admin_only: false,
-    created_at: "2014-08-22T20:50:37.547Z",
-    updated_at: "2014-08-22T20:50:37.547Z",
     field_type: "confirm",
-    cid: null
+  }, {
+    id: 53,
+    label: "Please list your dependents",
+    required: false,
+    blind: false,
+    admin_only: false,
+    type: "group",
+    field_type: "repeating_group",
+    children: [
+      {
+        id: 54,
+        label: "Name",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "text"
+      }
+    ]
+  }
+];
+
+Fixtures.REPEATING_KITCHEN_SINK = [
+  {
+    id: 35,
+    label: "Text",
+    required: true,
+    blind: true,
+    admin_only: false,
+    field_type: "text",
+  }, {
+    id: 36,
+    label: "Paragraph",
+    size: "large",
+    description: "How would you complete this project?",
+    minlength: "10",
+    required: false,
+    blind: false,
+    admin_only: true,
+    field_type: "paragraph",
+  }, {
+    id: 37,
+    label: "Checkboxes",
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1 (yas)"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "checkboxes",
+  }, {
+    id: 38,
+    label: "THE SECTION!",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "section_break",
+  }, {
+    id: 100,
+    label: "",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "page_break",
+  }, {
+    id: 101,
+    label: "New page",
+    description: "hey hey hey.",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "section_break",
+  }, {
+    id: 102,
+    label: "",
+    description: "Howdyhowdyhowdy",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "block_of_text",
+  }, {
+    id: 39,
+    label: "Radio",
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "radio",
+  }, {
+    id: 40,
+    label: "Dropdown",
+    options: [
+      {
+        checked: "false",
+        label: "Choice #1"
+      }, {
+        checked: "false",
+        label: "Choice #2"
+      }
+    ],
+    include_blank_option: true,
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "dropdown",
+  }, {
+    id: 41,
+    label: "Price",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "price",
+  }, {
+    id: 42,
+    label: "Number",
+    units: "things",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "number",
+  }, {
+    id: 43,
+    label: "Date",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "date",
+  }, {
+    id: 44,
+    label: "Time",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "time",
+  }, {
+    id: 45,
+    label: "Website",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "website",
+  }, {
+    id: 46,
+    label: "File",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "file",
+  }, {
+    id: 47,
+    label: "Email",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "email",
+  }, {
+    id: 48,
+    label: "Address",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "address",
+  }, {
+    id: 49,
+    label: "Table",
+    columns: [
+      {
+        label: "column one"
+      }, {
+        label: "column two"
+      }
+    ],
+    minrows: "2",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "table",
+  }, {
+    id: 50,
+    label: "MapMarker",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "map_marker",
+  }, {
+    id: 51,
+    label: "Phone (US)",
+    phone_format: "us",
+    required: false,
+    blind: false,
+    admin_only: false,
+    field_type: "phone",
+  }, {
+    id: 52,
+    label: "I accept the terms of Service.",
+    required: true,
+    blind: false,
+    admin_only: false,
+    field_type: "confirm",
+  }, {
+    id: 53,
+    label: "Please list your dependents",
+    required: false,
+    blind: false,
+    admin_only: false,
+    type: "group",
+    field_type: "repeating_group",
+    children: [
+      {
+        id: 54,
+        label: "Name",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "text"
+      }, {
+        id: 55,
+        label: "Paragraph",
+        size: "large",
+        description: "How would you complete this project?",
+        minlength: "10",
+        required: false,
+        blind: false,
+        admin_only: true,
+        field_type: "paragraph",
+      }, {
+        id: 56,
+        label: "Checkboxes",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1 (yas)"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "checkboxes",
+      }, {
+        id: 57,
+        label: "New page",
+        description: "hey hey hey.",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "section_break",
+      }, {
+        id: 58,
+        label: "",
+        description: "Howdyhowdyhowdy",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "block_of_text",
+      }, {
+        id: 59,
+        label: "Radio",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "radio",
+      }, {
+        id: 60,
+        label: "Dropdown",
+        options: [
+          {
+            checked: "false",
+            label: "Choice #1"
+          }, {
+            checked: "false",
+            label: "Choice #2"
+          }
+        ],
+        include_blank_option: true,
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "dropdown",
+      }, {
+        id: 61,
+        label: "Price",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "price",
+      }, {
+        id: 62,
+        label: "Number",
+        units: "things",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "number",
+      }, {
+        id: 63,
+        label: "Date",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "date",
+      }, {
+        id: 64,
+        label: "Time",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "time",
+      }, {
+        id: 65,
+        label: "Website",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "website",
+      }, {
+        id: 66,
+        label: "File",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "file",
+      }, {
+        id: 67,
+        label: "Email",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "email",
+      }, {
+        id: 68,
+        label: "Address",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "address",
+      }, {
+        id: 69,
+        label: "MapMarker",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "map_marker",
+      }, {
+        id: 70,
+        label: "Phone (US)",
+        phone_format: "us",
+        required: false,
+        blind: false,
+        admin_only: false,
+        field_type: "phone",
+      }, {
+        id: 71,
+        label: "I accept the terms of Service.",
+        required: true,
+        blind: false,
+        admin_only: false,
+        field_type: "confirm",
+      }
+    ]
   }
 ];
 
@@ -378,6 +678,16 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  REPEATING_KITCHEN_SINK: function() {
+    return {
+      project_id: 'dummy_val',
+      response_fields: Fixtures.REPEATING_KITCHEN_SINK,
+      response: {
+        id: 'xxx',
+        responses: {}
+      }
+    };
+  },
   KITCHEN_SINK_REQ: function(){
     return {
       project_id: 'dummy_val',
@@ -396,35 +706,26 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 1,
-          form_id: 5,
           label: "Text (small)",
           size: 'small',
           maxlength: 20,
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         },
         {
           id: 2,
-          form_id: 5,
           label: "Text (medium)",
           size: 'medium',
           minlength: 10,
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         },
         {
           id: 3,
-          form_id: 5,
           label: "Text (large)",
           size: 'large',
           minlength: 10,
@@ -432,14 +733,10 @@ Fixtures.FormRendererOptions = {
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         },
         {
           id: 4,
-          form_id: 5,
           label: "paragraph (small)",
           size: 'small',
           minlength: 10,
@@ -448,14 +745,10 @@ Fixtures.FormRendererOptions = {
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "paragraph",
-          cid: null
         },
         {
           id: 5,
-          form_id: 5,
           label: "paragraph (medium)",
           size: 'medium',
           minlength: 10,
@@ -463,14 +756,10 @@ Fixtures.FormRendererOptions = {
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "paragraph",
-          cid: null
         },
         {
           id: 6,
-          form_id: 5,
           label: "paragraph (large)",
           size: 'large',
           minlength: 10,
@@ -478,94 +767,67 @@ Fixtures.FormRendererOptions = {
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "paragraph",
-          cid: null
         },
         {
           id: 7,
-          form_id: 5,
           label: "block_of_text (small)",
           size: 'small',
           description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "block_of_text",
-          cid: null
         },
         {
           id: 8,
-          form_id: 5,
           label: "block_of_text (medium)",
           size: 'medium',
           description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "block_of_text",
-          cid: null
         },
         {
           id: 9,
-          form_id: 5,
           label: "block_of_text (large)",
           size: 'large',
           description: 'i am a block of text, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "block_of_text",
-          cid: null
         },
         {
           id: 10,
-          form_id: 5,
           label: "section_break (small)",
           size: 'small',
           description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "section_break",
-          cid: null
         },
         {
           id: 11,
-          form_id: 5,
           label: "section_break (medium)",
           size: 'medium',
           description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "section_break",
-          cid: null
         },
         {
           id: 12,
-          form_id: 5,
           label: "section_break (large)",
           size: 'large',
           description: 'i am a section break, yo',
           required: true,
           blind: true,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "section_break",
-          cid: null
         }
       ],
       response: {
@@ -580,26 +842,18 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 34,
-          form_id: 5,
           label: "",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "identification",
-          cid: null
         }, {
           id: 35,
-          form_id: 5,
           label: "Text",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }
       ],
       response: {
@@ -612,13 +866,103 @@ Fixtures.FormRendererOptions = {
       }
     };
   },
+  REPEATING_SECTIONS: function() {
+    return {
+      project_id: 'dummy_val',
+      response_fields: [
+        {
+          id: 34,
+          label: "",
+          required: false,
+          blind: false,
+          admin_only: false,
+          field_type: "identification",
+        }, {
+          id: 35,
+          label: "Do you have firearms to register?",
+          required: false,
+          blind: false,
+          admin_only: false,
+          field_type: "dropdown",
+          options: [
+            { label: "Yes" },
+            { label: "No" }
+          ]
+        },
+        {
+          id: 36,
+          type: "group",
+          field_type: 'repeating_group',
+          label: "Firearm details",
+          conditions: [
+            {
+              response_field_id: 35,
+              method: 'eq',
+              value: 'Yes'
+            }
+          ],
+          children: [
+            {
+              id: 37,
+              label: "Type of firearm",
+              required: true,
+              blind: false,
+              admin_only: false,
+              field_type: "dropdown",
+              options: [
+                { label: "Handgun" },
+                { label: "Rifle" }
+              ]
+            },
+            {
+              id: 39,
+              label: "Rifle identifier",
+              required: true,
+              blind: false,
+              admin_only: false,
+              field_type: "number",
+              conditions: [
+                {
+                  response_field_id: 37,
+                  method: 'eq',
+                  value: 'Rifle'
+                }
+              ]
+            },
+            {
+              id: 38,
+              label: "Serial number",
+              required: true,
+              blind: false,
+              admin_only: false,
+              field_type: "text",
+            }
+          ]
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {
+          36: [
+            {
+              37: "Handgun",
+              38: "123456"
+            },
+            {
+              37: "Rifle",
+              38: "ABCDEF"
+            }
+          ]
+        }
+      }
+    };
+  },
   CONDITIONAL: function() {
     return {
       project_id: 'dummy_val',
       response_fields: [
         {
           id: 35,
-          form_id: 5,
           label: "Do you like conditional form fields?",
           options: [
             {
@@ -632,13 +976,9 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "dropdown",
-          cid: null
         }, {
           id: 36,
-          form_id: 5,
           label: "Dang, that sucks.",
           size: 'large',
           conditions: [
@@ -651,24 +991,16 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "section_break",
-          cid: null
         }, {
           id: 37,
-          form_id: 5,
           label: "What's your email address?",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "email",
-          cid: null
         }, {
           id: 38,
-          form_id: 5,
           label: "What are the nuclear launch codes?",
           conditions: [
             {
@@ -680,48 +1012,32 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }, {
           id: 39,
-          form_id: 5,
           label: "What's the most boring part of the job?",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }, {
           id: 40,
-          form_id: 5,
           label: "Guess a number...",
           required: false,
           blind: false,
           admin_only: false,
           min: 1,
           max: 10,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "number",
-          cid: null
         }, {
           id: 100,
-          form_id: 5,
           label: "",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.217Z",
-          updated_at: "2014-08-22T20:50:37.217Z",
           field_type: "page_break",
-          cid: null
         }, {
           id: 41,
-          form_id: 5,
           label: "Why do you like big numbers?",
           conditions: [
             {
@@ -733,35 +1049,23 @@ Fixtures.FormRendererOptions = {
           required: true,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }, {
           id: 101,
-          form_id: 5,
           label: "",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.217Z",
-          updated_at: "2014-08-22T20:50:37.217Z",
           field_type: "page_break",
-          cid: null
         }, {
           id: 42,
-          form_id: 5,
           label: "Guess a price...",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "price",
-          cid: null
         }, {
           id: 43,
-          form_id: 5,
           label: "Why so expensive?",
           conditions: [
             {
@@ -773,10 +1077,7 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }
       ],
       response: {
@@ -791,33 +1092,24 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 35,
-          form_id: 5,
           label: "Essay 1",
           min_max_length_units: 'words',
           maxlength: 100,
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "paragraph",
-          cid: null
         }, {
           id: 36,
-          form_id: 5,
           label: "Essay 2",
           min_max_length_units: 'characters',
           maxlength: 100,
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "paragraph",
-          cid: null
         }, {
           id: 37,
-          form_id: 5,
           label: "Please elaborate... (lt 10 words)",
           conditions: [
             {
@@ -829,13 +1121,9 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }, {
           id: 38,
-          form_id: 5,
           label: "No more! (gt 10 characters)",
           conditions: [
             {
@@ -847,10 +1135,7 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }
       ],
       response: {
@@ -865,7 +1150,6 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 35,
-          form_id: 5,
           label: "Question 1",
           options: [
             {
@@ -879,13 +1163,9 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "checkboxes",
-          cid: null
         }, {
           id: 36,
-          form_id: 5,
           label: "Question 2",
           options: [
             {
@@ -899,13 +1179,9 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "checkboxes",
-          cid: null
         }, {
           id: 37,
-          form_id: 5,
           label: "Why do you like the word 'yes'?",
           conditions: [
             {
@@ -921,10 +1197,7 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "text",
-          cid: null
         }
       ],
       response: {
@@ -949,15 +1222,11 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 34,
-          form_id: 5,
           label: "",
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "identification",
-          cid: null
         }
       ],
       response: {
@@ -972,16 +1241,12 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 35,
-          form_id: 5,
           label: "Text",
           file_types: 'images',
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.152Z",
-          updated_at: "2014-08-22T20:50:37.152Z",
           field_type: "file",
-          cid: null
         }
       ],
       response: {
@@ -996,7 +1261,6 @@ Fixtures.FormRendererOptions = {
       response_fields: [
         {
           id: 49,
-          form_id: 5,
           label: "Table",
           columns: [
             {
@@ -1016,10 +1280,7 @@ Fixtures.FormRendererOptions = {
           required: false,
           blind: false,
           admin_only: false,
-          created_at: "2014-08-22T20:50:37.524Z",
-          updated_at: "2014-08-22T20:50:37.524Z",
           field_type: "table",
-          cid: null
         }
       ],
       response: {

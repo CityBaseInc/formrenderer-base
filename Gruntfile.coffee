@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     version: grunt.file.read("src/version.coffee").match(/\'([0-9\.]+)\'\s/)[1]
     pkg: '<json:package.json>'
     srcFolder: 'src'
-    compiledFolder: 'compiled' # Temporary holding area.
+    compiledFolder: 'tmp/compiled'
     distFolder: 'dist'
     vendorFolder: 'vendor'
     testFolder: 'test'
@@ -41,11 +41,16 @@ module.exports = (grunt) ->
         files:
           '<%= compiledFolder %>/scripts.js': [
             '<%= srcFolder %>/main.coffee'
+            '<%= srcFolder %>/helpers/*.coffee'
             '<%= srcFolder %>/version.coffee'
             '<%= srcFolder %>/data.coffee'
             '<%= srcFolder %>/condition_checker.coffee'
-            '<%= srcFolder %>/validators/*.coffee'
-            '<%= srcFolder %>/models.coffee'
+            '<%= srcFolder %>/form_components/base.coffee'
+            '<%= srcFolder %>/form_components/response_field.coffee'
+            '<%= srcFolder %>/form_components/non_input.coffee'
+            '<%= srcFolder %>/form_components/repeating_group.coffee'
+            '<%= srcFolder %>/fields/*.coffee'
+            '<%= srcFolder %>/mixins/*.coffee'
             '<%= srcFolder %>/plugins/base.coffee'
             '<%= srcFolder %>/plugins/default/*.coffee'
             '<%= srcFolder %>/views/*.coffee'
@@ -127,7 +132,9 @@ module.exports = (grunt) ->
           '<%= testFolder %>/support/fixtures/*.js',
           'fixtures/*.json'
         ]
-        tasks: 'default'
+        tasks: ['default', 'test']
+        options:
+          atBegin: true
       test:
         files: ['<%= testFolder %>/**/*_test.{coffee,js}']
         tasks: 'test'
@@ -189,7 +196,7 @@ module.exports = (grunt) ->
     )
 
     grunt.file.write(
-      'compiled/file_types.js',
+      "#{grunt.config.get('compiledFolder')}/file_types.js",
       "FormRenderer.FILE_TYPES = #{grunt.file.read('fixtures/file_types.json')};"
     )
 

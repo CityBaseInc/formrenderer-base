@@ -10,7 +10,7 @@
   </thead>
 
   <tbody>
-    <% for i in [0..(@model.numRows - 1)]: %>
+    <% for i in [0..(@model.numRows() - 1)]: %>
       <tr data-row-index="<%= i %>">
         <% for column, j in @model.getColumns(): %>
           <% if @model.getPresetValue(column.label, i): %>
@@ -21,7 +21,7 @@
               <textarea data-rv-input='model.value.<%= j %>.<%= i %>'
                         rows='1'
                         aria-label="<%= column.translated_label || column.label %> #<%= i + 1 %>"
-                        <% if j == 0 && i == 0: %>id='<%= @getDomId() %>'<% end %> />
+                        <% if j == 0 && i == 0: %>id='<%= @domId() %>'<% end %> />
           <% end %>
           </td>
         <% end %>
@@ -53,7 +53,7 @@
   <% if @model.canAddRows(): %>
     <a class='js-add-row' href='#'>
       <%- FormRenderer.ADD_ROW_ICON %>
-      <%= FormRenderer.t.add_another_row %>
+      <%= FormRenderer.t.add_another %>
     </a>
   <% end %>
 </div>

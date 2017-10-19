@@ -6,20 +6,22 @@ before ->
       responses: {}
     response_fields: []
 
-  @assertValid = (value) ->
+  @setValue = (value) ->
     @model.unset('value')
     @model.set('value', value)
-    expect(@validator.validate(@model)).to.equal(undefined)
+    @model.validateComponent()
+
+  @assertValid = (value) ->
+    @setValue(value)
+    expect(@model.getError()).to.equal(undefined)
 
   @assertInvalid = (value) ->
-    @model.unset('value')
-    @model.set('value', value)
-    expect(@validator.validate(@model)).not.to.equal(undefined)
+    @setValue(value)
+    expect(@model.getError()).not.to.equal(undefined)
 
-describe 'DateValidator', ->
+describe 'Date', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldDate
-    @validator = FormRenderer.Validators.DateValidator
+    @model = new FormRenderer.Models.ResponseFieldDate({}, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.DATE.valid
@@ -28,11 +30,9 @@ describe 'DateValidator', ->
     for x in Fixtures.Validation.DATE.invalid
       @assertInvalid.call @, x
 
-describe 'DateValidator for month/day only', ->
+describe 'Date (month/day only)', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldDate
-    @model.set 'disable_year', true
-    @validator = FormRenderer.Validators.DateValidator
+    @model = new FormRenderer.Models.ResponseFieldDate({ disable_year: true }, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.DATE_DISABLE_YEAR.valid
@@ -41,10 +41,9 @@ describe 'DateValidator for month/day only', ->
     for x in Fixtures.Validation.DATE_DISABLE_YEAR.invalid
       @assertInvalid.call @, x
 
-describe 'EmailValidator', ->
+describe 'Email', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldEmail
-    @validator = FormRenderer.Validators.EmailValidator
+    @model = new FormRenderer.Models.ResponseFieldEmail({}, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.EMAIL.valid
@@ -53,12 +52,9 @@ describe 'EmailValidator', ->
     for x in Fixtures.Validation.EMAIL.invalid
       @assertInvalid.call @, x
 
-describe 'NumberValidator', ->
+describe 'Number', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldNumber(
-      units: 'Beezles'
-    )
-    @validator = FormRenderer.Validators.NumberValidator
+    @model = new FormRenderer.Models.ResponseFieldNumber({ units: 'Beezles' }, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.NUMBER.valid
@@ -67,10 +63,9 @@ describe 'NumberValidator', ->
     for x in Fixtures.Validation.NUMBER.invalid
       @assertInvalid.call @, x
 
-describe 'PriceValidator', ->
+describe 'Price', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldPrice
-    @validator = FormRenderer.Validators.PriceValidator
+    @model = new FormRenderer.Models.ResponseFieldPrice({}, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.PRICE.valid
@@ -79,10 +74,9 @@ describe 'PriceValidator', ->
     for x in Fixtures.Validation.PRICE.invalid
       @assertInvalid.call @, x
 
-describe 'TimeValidator', ->
+describe 'Time', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldTime
-    @validator = FormRenderer.Validators.TimeValidator
+    @model = new FormRenderer.Models.ResponseFieldTime({}, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.TIME.valid
@@ -93,8 +87,7 @@ describe 'TimeValidator', ->
 
 describe 'MinMaxLengthValidator', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldParagraph
-    @validator = FormRenderer.Validators.MinMaxLengthValidator
+    @model = new FormRenderer.Models.ResponseFieldParagraph({}, @fr, @fr)
 
   describe 'characters', ->
     before ->
@@ -120,12 +113,7 @@ describe 'MinMaxLengthValidator', ->
 
 describe 'MinMaxValidator', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldNumber(
-      min: '5',
-      max: '10'
-    )
-
-    @validator = FormRenderer.Validators.MinMaxValidator
+    @model = new FormRenderer.Models.ResponseFieldNumber({ min: '5', max: '10' }, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.MIN_MAX.valid
@@ -136,11 +124,7 @@ describe 'MinMaxValidator', ->
 
 describe 'IntegerValidator', ->
   before ->
-    @model = new FormRenderer.Models.ResponseFieldNumber(
-      integer_only: true
-    )
-
-    @validator = FormRenderer.Validators.IntegerValidator
+    @model = new FormRenderer.Models.ResponseFieldNumber({ integer_only: true }, @fr, @fr)
 
   it 'validates properly', ->
     for x in Fixtures.Validation.INTEGER.valid
@@ -149,14 +133,10 @@ describe 'IntegerValidator', ->
     for x in Fixtures.Validation.INTEGER.invalid
       @assertInvalid.call @, x
 
-describe 'PhoneValidator', ->
+describe 'Phone', ->
   describe 'US format', ->
     before ->
-      @model = new FormRenderer.Models.ResponseFieldPhone(
-        phone_format: 'us'
-      )
-
-      @validator = FormRenderer.Validators.PhoneValidator
+      @model = new FormRenderer.Models.ResponseFieldPhone({ phone_format: 'us' }, @fr, @fr)
 
     it 'validates properly', ->
       for x in Fixtures.Validation.US_PHONE.valid
@@ -167,8 +147,7 @@ describe 'PhoneValidator', ->
 
   describe 'Intl format', ->
     before ->
-      @model = new FormRenderer.Models.ResponseFieldPhone()
-      @validator = FormRenderer.Validators.PhoneValidator
+      @model = new FormRenderer.Models.ResponseFieldPhone({}, @fr, @fr)
 
     it 'validates properly', ->
       for x in Fixtures.Validation.INTL_PHONE.valid

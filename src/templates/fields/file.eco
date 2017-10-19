@@ -9,12 +9,12 @@
 
 <% if @model.canAddFile(): %>
   <div class='fr_add_file'>
-    <label for='<%= @getDomId() %>' class='<%= FormRenderer.BUTTON_CLASS %>'>
+    <label for='<%= @domId() %>' class='<%= FormRenderer.BUTTON_CLASS %>'>
       <%= if @model.getFiles().length then FormRenderer.t.upload_another else FormRenderer.t.upload %>
     </label>
 
     <input type='file'
-           id='<%= @getDomId() %>'
+           id='<%= @domId() %>'
            <% if (exts = @model.getAcceptedExtensions()): %>
             accept='<%= exts.join(',') %>'
            <% end %>

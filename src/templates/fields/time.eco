@@ -1,8 +1,8 @@
 <div class='fr_grid'>
   <div class='has_sub_label'>
-    <label class="fr_sub_label" for="<%= @getDomId() %>_hours">HH</label>
+    <label class="fr_sub_label" for="<%= @domId() %>_hours">HH</label>
     <input type="text"
-           id="<%= @getDomId() %>_hours"
+           id="<%= @domId() %>_hours"
            data-rv-input='model.value.hours'
            maxlength='2'
            size='2' />
@@ -11,24 +11,24 @@
   <div class='fr_spacer'>:</div>
 
   <div class='has_sub_label'>
-    <label class="fr_sub_label" for="<%= @getDomId() %>_minutes">MM</label>
+    <label class="fr_sub_label" for="<%= @domId() %>_minutes">MM</label>
     <input type="text"
            data-rv-input='model.value.minutes'
            maxlength='2'
            size='2'
-           id="<%= @getDomId() %>_minutes" />
+           id="<%= @domId() %>_minutes" />
   </div>
 
   <% unless @model.get('disable_seconds'): %>
     <div class='fr_spacer'>:</div>
 
     <div class='has_sub_label'>
-      <label class="fr_sub_label" for="<%= @getDomId() %>_seconds">SS</label>
+      <label class="fr_sub_label" for="<%= @domId() %>_seconds">SS</label>
       <input type="text"
              data-rv-input='model.value.seconds'
              maxlength='2'
              size='2'
-             id="<%= @getDomId() %>_seconds" />
+             id="<%= @domId() %>_seconds" />
     </div>
   <% end %>
 

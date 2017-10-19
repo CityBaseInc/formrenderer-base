@@ -1,13 +1,8 @@
 presenceMethods = ['present', 'blank']
 
 class FormRenderer.ConditionChecker
-  # ConditionChecker may be called from outside the FormRenderer context,
-  # e.g. from FormBuilder. In that case, pass in @field instead of @form_renderer.
-  # NOTE: For the next major release, we can decouple ConditionChecker from the
-  # @form_renderer object altogether by just forcing all external callers to pass
-  # in @field
-  constructor: (@form_renderer, @condition, @field) ->
-    @value = @responseField()?.toText() || ''
+  constructor: (@responseField, @condition) ->
+    @value = @responseField?.toText() || ''
 
   method_eq: ->
     @value.toLowerCase() == @condition.value.toLowerCase()
@@ -41,12 +36,12 @@ class FormRenderer.ConditionChecker
 
   length: ->
     FormRenderer.getLength(
-      @responseField().getLengthValidationUnits(),
+      @responseField.getLengthValidationUnits(),
       @value
     )
 
   isValid: ->
-    @responseField() &&
+    @responseField &&
     _.all(['response_field_id', 'method'], ( (x) => @condition[x] )) &&
     (@condition.method in presenceMethods || @condition['value'])
 
@@ -59,5 +54,3 @@ class FormRenderer.ConditionChecker
       @method_present() &&
       @["method_#{@condition.method}"]()
 
-  responseField: ->
-    @field || @form_renderer.response_fields.get(@condition.response_field_id)

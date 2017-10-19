@@ -16,19 +16,19 @@
     "dist/formrenderer.js"
   ],
   "dependencies": {
-    "backbone": "~1.1.2",
-    "underscore": "~1.6.0",
-    "underscore.string": "~2.3.3",
-    "ajb-sanitize": "~1.0.1",
-    "js-cookie": "~2.1.1",
-    "backbone-deep-model": "~0.10.4",
+    "backbone": "1.1.2",
+    "underscore": "1.6.0",
+    "underscore.string": "2.3.3",
+    "ajb-sanitize": "1.0.1",
+    "js-cookie": "2.1.3",
+    "backbone-deep-model": "0.10.4",
     "rivets-dobt": "1.0.0",
-    "iso-country-names": "~0.1.0",
-    "beforeunload.js": ">=0.1.1",
-    "store.js": "~1.3.16",
-    "jquery-form": "~3.46.0",
-    "inline_file_upload": "~0.0.4",
-    "require_once": "~0.0.1",
-    "domurl": "~2.1.0"
+    "iso-country-names": "0.1.0",
+    "beforeunload.js": "0.3.2",
+    "store.js": "1.3.16",
+    "jquery-form": "3.46.0",
+    "inline_file_upload": "0.0.4",
+    "require_once": "0.0.1",
+    "domurl": "2.1.7"
   }
 }

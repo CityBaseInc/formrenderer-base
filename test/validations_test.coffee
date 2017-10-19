@@ -82,6 +82,68 @@ describe 'validations', ->
       expect($(document.activeElement).attr('id')).
         to.equal(labelToInput('Paragraph').attr('id'))
 
+  describe 'a form with optional repeating sections', ->
+    beforeEach ->
+      @fr = new FormRenderer
+        project_id: 'dummy_val'
+        response:
+          id: 'xxx'
+          responses: {}
+        response_fields: [
+          id: 1
+          field_type: 'repeating_group'
+          label: 'Your dependents'
+          children: [
+            {
+              id: 2
+              field_type: 'text',
+              label: 'Name',
+              required: true
+            }
+          ]
+        ]
+
+    it 'is invalid if a required field inside the entry is blank', ->
+      expect(@fr.validate()).to.equal(false)
+      fillIn 'Name', 'asdf'
+      expect(@fr.validate()).to.equal(true)
+
+    it 'navigates to the first error inside of a repeating section', ->
+      @fr.validate()
+      $('a:contains("validation errors")').click()
+      expect($(document.activeElement).attr('id')).
+        to.equal(labelToInput('Name').attr('id'))
+
+    it 'is valid if the repeating sections are blank', ->
+      expect(@fr.validate()).to.equal(false)
+      $('.js-skip').first().click()
+      expect(@fr.validate()).to.equal(true)
+
+  describe 'a form with required repeating sections', ->
+    beforeEach ->
+      @fr = new FormRenderer
+        project_id: 'dummy_val'
+        response:
+          id: 'xxx'
+          responses: {}
+        response_fields: [
+          id: 1
+          field_type: 'repeating_group'
+          label: 'Your dependents'
+          required: true
+          children: [
+            {
+              id: 2
+              field_type: 'text',
+              label: 'Name'
+            }
+          ]
+        ]
+
+    it 'it always has at least one entry', ->
+      expect(@fr.validate()).to.equal(true)
+
+
   describe 'table field w/ preset values', ->
     beforeEach ->
       @fr = new FormRenderer Fixtures.FormRendererOptions.TABLE_REQ()

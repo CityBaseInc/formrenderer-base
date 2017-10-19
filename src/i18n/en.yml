@@ -1,7 +1,8 @@
 ---
 en:
   address: Address
-  add_another_row: Add another row
+  add_another: Add another
+  answer: Answer this question
   back_to_page: Back to page :num
   blind: Blind
   bookmark_hint: To finish your response later, copy the link below.
@@ -56,6 +57,8 @@ en:
   remove: Remove
   saved: Saved
   saving: Saving...
+  skip: Skip this question
+  skipped: This question is skipped.
   state: State
   state_province_region: State / Province / Region
   submit: Submit

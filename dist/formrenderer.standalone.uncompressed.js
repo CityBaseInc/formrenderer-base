@@ -107,7 +107,6 @@ rivets.configure({
     constructor: function(options) {
       var p, _i, _len, _ref;
       this.fr = this;
-      window.fr = this.fr;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
       this.state = new Backbone.Model({
@@ -635,7 +634,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.2.1';
+  FormRenderer.VERSION = '1.2.2';
 
 }).call(this);
 
@@ -974,21 +973,6 @@ rivets.configure({
         _ref.trigger('viewRendered', this);
       }
       return this;
-    },
-    isHidden: function(fieldCollection) {
-      var visible;
-      if (this.get('admin_only') === true) {
-        return true;
-      } else if (this.isConditional()) {
-        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
-          return function(condition) {
-            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
-          };
-        })(this));
-        return !visible;
-      } else {
-        return false;
-      }
     }
   });
 

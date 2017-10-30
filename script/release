@@ -16,7 +16,7 @@ git commit -am "release $version"
 git tag $version
 git push origin master --tags
 grunt s3:version
-grunt s3:autoupdate
+#grunt s3:autoupdate
 
 # Create a new gem on rails-assets
 curl -H "Content-Type: application/json" \

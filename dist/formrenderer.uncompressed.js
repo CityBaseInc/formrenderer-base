@@ -6764,6 +6764,12 @@ rivets.configure({
 
   FormRenderer.Plugins = {};
 
+  FormRenderer.Validators = {
+    EmailValidator: {
+      VALID_REGEX: FormRenderer.EMAIL_REGEX
+    }
+  };
+
   FormRenderer.addPlugin = function(x) {
     return this.prototype.defaults.plugins.push(x);
   };
@@ -8421,6 +8427,7 @@ rivets.configure({
     initFormComponents: function(fieldData, responseData) {
       var field, model, _i, _len;
       this.formComponents = new Backbone.Collection;
+      this.response_fields = this.formComponents;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);

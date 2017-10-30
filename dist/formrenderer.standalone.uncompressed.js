@@ -516,6 +516,12 @@ rivets.configure({
 
   FormRenderer.Plugins = {};
 
+  FormRenderer.Validators = {
+    EmailValidator: {
+      VALID_REGEX: FormRenderer.EMAIL_REGEX
+    }
+  };
+
   FormRenderer.addPlugin = function(x) {
     return this.prototype.defaults.plugins.push(x);
   };

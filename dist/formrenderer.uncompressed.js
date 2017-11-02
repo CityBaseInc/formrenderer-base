@@ -6895,6 +6895,10 @@ rivets.configure({
     return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
   };
 
+  FormRenderer.format = function(originalHTML) {
+    return autoLink(simpleFormat(originalHTML));
+  };
+
   FormRenderer.formatHTML = function(unsafeHTML) {
     return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
   };
@@ -8762,7 +8766,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+      _print(FormRenderer.format(this.model.get('description')));
     
       _print(_safe('\n</div>\n'));
     
@@ -9691,7 +9695,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
+      formattedDescription = FormRenderer.format(this.model.get('description'));
     
       _print(_safe('\n<'));
     
@@ -9711,7 +9715,7 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
         _print(_safe('\'>\n    '));
-        _print(_safe(formattedDescription));
+        _print(formattedDescription);
         _print(_safe('\n  </div>\n'));
       }
     
@@ -10109,7 +10113,7 @@ window.JST["partials/description"] = function(__obj) {
     (function() {
       if (this.model.get('description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+        _print(FormRenderer.format(this.model.get('description')));
         _print(_safe('\n  </div>\n'));
       }
     

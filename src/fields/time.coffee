@@ -11,9 +11,9 @@ FormRenderer.Models.ResponseFieldTime = FormRenderer.Models.ResponseField.extend
     "#{@getValue().hours || '00'}:#{@getValue().minutes || '00'}:#{@getValue().seconds || '00'} #{@getValue().am_pm}"
 
   validateType: ->
-    hours = parseInt(@get('value.hours'), 10) || 0
-    minutes = parseInt(@get('value.minutes'), 10) || 0
-    seconds = parseInt(@get('value.seconds'), 10) || 0
+    hours = parseInt(@get('value.hours'), 10)
+    minutes = parseInt(@get('value.minutes'), 10)
+    seconds = parseInt(@get('value.seconds'), 10)
 
     unless (1 <= hours <= 12) && (0 <= minutes <= 59) && (0 <= seconds <= 59)
       'time'

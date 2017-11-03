@@ -2012,9 +2012,10 @@ rivets.configure({
     },
     validateType: function() {
       var hours, minutes, seconds;
-      hours = parseInt(this.get('value.hours'), 10) || 0;
-      minutes = parseInt(this.get('value.minutes'), 10) || 0;
-      seconds = parseInt(this.get('value.seconds'), 10) || 0;
+      hours = parseInt(this.get('value.hours'), 10);
+      minutes = parseInt(this.get('value.minutes'), 10);
+      seconds = parseInt(this.get('value.seconds'), 10);
+      debugger;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
         return 'time';
       }

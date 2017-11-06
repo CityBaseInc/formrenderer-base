@@ -36,7 +36,11 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
         arr.push(colArr)
 
   numRows: ->
-    Math.max @minRows(), (@get('value')?[0].length || 0), 1
+    value = @get('value')
+    if value.length
+      Math.max @minRows(), (value[0].length || 0), 1
+    else
+      0
 
   # Ignore preset values when calculating hasValue
   hasValue: ->

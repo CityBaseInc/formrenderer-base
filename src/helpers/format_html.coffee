@@ -10,28 +10,11 @@ autoLink = (str) ->
 
   str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>")
 
-sanitizeConfig = _.extend {}, Sanitize.Config.RELAXED
-sanitizeConfig.attributes.a.push 'target'
-
-sanitize = (str, config) ->
-  try
-    n = document.createElement('div')
-    n.innerHTML = str
-    s = new Sanitize(config or Sanitize.Config.RELAXED)
-    c = s.clean_node(n)
-    o = document.createElement('div')
-    o.appendChild c.cloneNode(true)
-    return o.innerHTML
-  catch e
-    return _.escape(str)
-
 simpleFormat = (str = '') ->
   "#{str}".replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
 
-FormRenderer.formatHTML = (unsafeHTML) ->
-  sanitize(
-    autoLink(
-      simpleFormat(unsafeHTML)
-    ),
-    sanitizeConfig
+FormRenderer.format = (originalHTML) ->
+  autoLink(
+    simpleFormat(originalHTML)
   )
+

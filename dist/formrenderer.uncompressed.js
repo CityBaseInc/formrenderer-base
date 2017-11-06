@@ -8376,6 +8376,9 @@ rivets.configure({
     },
     domId: function() {
       return this.model.cid;
+    },
+    getDomId: function() {
+      return domId;
     }
   };
 

@@ -566,32 +566,12 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var autoLink, sanitize, sanitizeConfig, simpleFormat;
+  var autoLink, simpleFormat;
 
   autoLink = function(str) {
     var pattern;
     pattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi;
     return str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>");
-  };
-
-  sanitizeConfig = _.extend({}, Sanitize.Config.RELAXED);
-
-  sanitizeConfig.attributes.a.push('target');
-
-  sanitize = function(str, config) {
-    var c, e, n, o, s;
-    try {
-      n = document.createElement('div');
-      n.innerHTML = str;
-      s = new Sanitize(config || Sanitize.Config.RELAXED);
-      c = s.clean_node(n);
-      o = document.createElement('div');
-      o.appendChild(c.cloneNode(true));
-      return o.innerHTML;
-    } catch (_error) {
-      e = _error;
-      return _.escape(str);
-    }
   };
 
   simpleFormat = function(str) {
@@ -601,8 +581,8 @@ rivets.configure({
     return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
   };
 
-  FormRenderer.formatHTML = function(unsafeHTML) {
-    return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
+  FormRenderer.format = function(originalHTML) {
+    return autoLink(simpleFormat(originalHTML));
   };
 
 }).call(this);
@@ -2897,7 +2877,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+      _print(FormRenderer.format(this.model.get('description')));
     
       _print(_safe('\n</div>\n'));
     
@@ -3826,7 +3806,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
+      formattedDescription = FormRenderer.format(this.model.get('description'));
     
       _print(_safe('\n<'));
     
@@ -3846,7 +3826,7 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
         _print(_safe('\'>\n    '));
-        _print(_safe(formattedDescription));
+        _print(formattedDescription);
         _print(_safe('\n  </div>\n'));
       }
     
@@ -4244,7 +4224,7 @@ window.JST["partials/description"] = function(__obj) {
     (function() {
       if (this.model.get('description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+        _print(FormRenderer.format(this.model.get('description')));
         _print(_safe('\n  </div>\n'));
       }
     

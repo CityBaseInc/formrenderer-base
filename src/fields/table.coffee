@@ -37,7 +37,7 @@ FormRenderer.Models.ResponseFieldTable = FormRenderer.Models.ResponseField.exten
 
   numRows: ->
     value = @get('value')
-    if value.length
+    if value? && value.length
       Math.max @minRows(), (value[0].length || 0), 1
     else
       0

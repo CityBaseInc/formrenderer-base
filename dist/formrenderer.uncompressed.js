@@ -8098,7 +8098,7 @@ rivets.configure({
     numRows: function() {
       var value;
       value = this.get('value');
-      if (value.length) {
+      if ((value != null) && value.length) {
         return Math.max(this.minRows(), value[0].length || 0, 1);
       } else {
         return 0;
@@ -8258,7 +8258,7 @@ rivets.configure({
       var hours, minutes, seconds;
       hours = parseInt(this.get('value.hours'), 10);
       minutes = parseInt(this.get('value.minutes'), 10);
-      seconds = parseInt(this.get('value.seconds'), 10);
+      seconds = parseInt(this.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
         return 'time';
       }

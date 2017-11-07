@@ -73,13 +73,12 @@ module.exports = (grunt) ->
             'bower_components/backbone/backbone.js'
             'bower_components/underscore.string/dist/underscore.string.min.js'
             'bower_components/beforeunload.js/index.js'
-            'bower_components/ajb-sanitize/lib/sanitize.js'
-            'bower_components/ajb-sanitize/lib/sanitize/config/relaxed.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets-dobt/dist/rivets.js'
             'bower_components/iso-country-names/index.js'
             'bower_components/require_once/require_once.js'
-            'bower_components/domurl/url.min.js'
+            'bower_components/domurl/url.min.js',
+            'bower_components/DOMPurify/dist/purify.min.js'
           ]
           '<%= compiledFolder %>/formrenderer.js': [
             '<%= compiledFolder %>/vendor_config.js'
@@ -204,5 +203,6 @@ module.exports = (grunt) ->
                                  'coffee:config', 'coffee:all', 'coffee:extras', 'concat:all',
                                  'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
-  grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']
+  grunt.registerTask 'build', ['default', 'dist']
+  grunt.registerTask 'all', ['build', 'test']

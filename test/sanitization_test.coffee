@@ -21,12 +21,12 @@ google.com'>This is a link</a><script>alert('hi')</script>"
   it 'removes script tags', ->
     expect($('.fr_response_field script').length).to.equal(0)
 
-  xit 'preserves anchor tags', ->
+  it 'preserves anchor tags', ->
     expect($('.fr_response_field a[href*=google]').attr('href'))
       .to
       .equal('http://www.google.com')
 
-  xit 'simple formats', ->
+  it 'simple formats', ->
     expect($('.fr_response_field br').length).to.equal(2)
 
   it 'does not mess with existing link targets', ->
@@ -46,23 +46,18 @@ describe 'handling of undefiend', ->
   it 'does not render undefined text', ->
     expect($('.fr_response_field:contains("undefined")').length).to.equal(0)
 
-describe 'image tags', ->
-  before ->
-    @createFormRendererWithFieldDescription """
-      <img src='blah.jpg' />
-    """
-
-  xit 'preserves them', ->
-    expect($('.fr_response_field img').length).to.equal(1)
-    expect($('.fr_response_field img').attr('src')).to.equal('blah.jpg')
-
 describe 'autolinking', ->
   before ->
     @createFormRendererWithFieldDescription """
       http://www.google.com
     """
 
-  xit 'preserves them', ->
+  it 'preserves them', ->
     expect($('.fr_response_field a').length).to.equal(1)
     expect($('.fr_response_field a').attr('href')).to.equal('http://www.google.com')
     expect($('.fr_response_field a').attr('target')).to.equal('_blank')
+
+describe 'formatAndSanitizeHTML', ->
+  it 'prevents XSS', ->
+    expect(FormRenderer.formatAndSanitizeHTML('<script>alert(1)</script>')).to.equal('')
+    expect(FormRenderer.formatAndSanitizeHTML('<details open ontoggle=alert(1)>')).to.equal('')

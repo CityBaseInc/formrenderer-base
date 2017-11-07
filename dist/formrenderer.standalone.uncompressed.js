@@ -566,7 +566,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var autoLink, simpleFormat;
+  var ALLOWED_ATTRIBUTES, ALLOWED_TAGS, autoLink, sanitize, simpleFormat;
+
+  ALLOWED_TAGS = ['a', 'p', 'br', 'b', 'strong', 'em', 'i'];
+
+  ALLOWED_ATTRIBUTES = ['href', 'target'];
 
   autoLink = function(str) {
     var pattern;
@@ -581,8 +585,15 @@ rivets.configure({
     return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
   };
 
-  FormRenderer.format = function(originalHTML) {
-    return autoLink(simpleFormat(originalHTML));
+  sanitize = function(str) {
+    return DOMPurify.sanitize(str, {
+      ALLOWED_TAGS: ALLOWED_TAGS,
+      ALLOWED_ATTR: ALLOWED_ATTRIBUTES
+    });
+  };
+
+  FormRenderer.formatAndSanitizeHTML = function(unsafeHTML) {
+    return sanitize(autoLink(simpleFormat(unsafeHTML)));
   };
 
 }).call(this);
@@ -2880,7 +2891,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(FormRenderer.format(this.model.get('description')));
+      _print(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description'))));
     
       _print(_safe('\n</div>\n'));
     
@@ -3809,7 +3820,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      formattedDescription = FormRenderer.format(this.model.get('description'));
+      formattedDescription = FormRenderer.formatAndSanitizeHTML(this.model.get('description'));
     
       _print(_safe('\n<'));
     
@@ -3829,7 +3840,7 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
         _print(_safe('\'>\n    '));
-        _print(formattedDescription);
+        _print(this.safe(formattedDescription));
         _print(_safe('\n  </div>\n'));
       }
     
@@ -4227,7 +4238,7 @@ window.JST["partials/description"] = function(__obj) {
     (function() {
       if (this.model.get('description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(FormRenderer.format(this.model.get('description')));
+        _print(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description'))));
         _print(_safe('\n  </div>\n'));
       }
     

@@ -1,3 +1,18 @@
+ALLOWED_TAGS = [
+    'a',
+    'p',
+    'br',
+    'b',
+    'strong',
+    'em',
+    'i'
+  ]
+
+ALLOWED_ATTRIBUTES = [
+    'href',
+    'target'
+  ]
+
 autoLink = (str) ->
   pattern = ///
     (^|[\s\n]|<br\/?>) # Capture the beginning of string or line or leading whitespace
@@ -13,8 +28,13 @@ autoLink = (str) ->
 simpleFormat = (str = '') ->
   "#{str}".replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
 
-FormRenderer.format = (originalHTML) ->
-  autoLink(
-    simpleFormat(originalHTML)
+sanitize = (str) ->
+  DOMPurify.sanitize(str, { ALLOWED_TAGS: ALLOWED_TAGS, ALLOWED_ATTR: ALLOWED_ATTRIBUTES })
+
+FormRenderer.formatAndSanitizeHTML = (unsafeHTML) ->
+  sanitize(
+    autoLink(
+      simpleFormat(unsafeHTML)
+    )
   )
 

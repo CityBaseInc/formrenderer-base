@@ -1,5 +1,5 @@
 <%- JST["partials/labels"](@) %>
 
 <div class='fr_text size_<%= @model.getSize() %>'>
-  <%= FormRenderer.format(@model.get('description')) %>
+  <%= @safe FormRenderer.formatAndSanitizeHTML(@model.get('description')) %>
 </div>

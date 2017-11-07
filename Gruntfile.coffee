@@ -204,5 +204,5 @@ module.exports = (grunt) ->
                                  'coffee:config', 'coffee:all', 'coffee:extras', 'concat:all',
                                  'concat:dist', 'sass:all', 'clean:compiled']
   grunt.registerTask 'dist', ['cssmin:dist', 'uglify:dist']
-  grunt.registerTask 'all', ['default', 'dist']
   grunt.registerTask 'test', ['karma:main']
+  grunt.registerTask 'all', ['default', 'dist', 'test']

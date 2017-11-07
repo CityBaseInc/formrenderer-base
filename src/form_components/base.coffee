@@ -41,12 +41,16 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
     # If we're not in a form_renderer context, it's visible
     return true unless @fr
 
+    @satisfiesConditions(@parent.formComponents)
+
+  # NOTE: this method is called directly from FormBuilder
+  satisfiesConditions: (formComponents) ->
     # If no conditions, it's visible
     return true unless @isConditional()
 
     _[@conditionMethod()] @getConditions(), (conditionHash) =>
       conditionChecker = new FormRenderer.ConditionChecker(
-        @parent.formComponents.get(conditionHash.response_field_id),
+        formComponents.get(conditionHash.response_field_id),
         conditionHash
       )
 
@@ -58,19 +62,3 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
     else
       'all'
 
-  # This is a helper method designed to be used ONLY from formbuilder.
-  # FormBuilder doesn't have access to a full formrenderer context, so
-  # the field collection is passed directly into this helper.
-  isHidden: (fieldCollection) ->
-    if @get('admin_only') == true
-      true
-    else if @isConditional()
-      visible = _[@conditionMethod()] @getConditions(), (condition) =>
-        (new FormRenderer.ConditionChecker(
-          null,
-          condition,
-          fieldCollection.get(condition.response_field_id)
-        )).isVisible()
-      !visible
-    else
-      false

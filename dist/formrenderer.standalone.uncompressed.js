@@ -771,13 +771,16 @@ rivets.configure({
       if (!this.fr) {
         return true;
       }
+      return this.satisfiesConditions(this.parent.formComponents);
+    },
+    satisfiesConditions: function(formComponents) {
       if (!this.isConditional()) {
         return true;
       }
       return _[this.conditionMethod()](this.getConditions(), (function(_this) {
         return function(conditionHash) {
           var conditionChecker;
-          conditionChecker = new FormRenderer.ConditionChecker(_this.parent.formComponents.get(conditionHash.response_field_id), conditionHash);
+          conditionChecker = new FormRenderer.ConditionChecker(formComponents.get(conditionHash.response_field_id), conditionHash);
           return conditionChecker.isVisible();
         };
       })(this));
@@ -787,21 +790,6 @@ rivets.configure({
         return 'any';
       } else {
         return 'all';
-      }
-    },
-    isHidden: function(fieldCollection) {
-      var visible;
-      if (this.get('admin_only') === true) {
-        return true;
-      } else if (this.isConditional()) {
-        visible = _[this.conditionMethod()](this.getConditions(), (function(_this) {
-          return function(condition) {
-            return (new FormRenderer.ConditionChecker(null, condition, fieldCollection.get(condition.response_field_id))).isVisible();
-          };
-        })(this));
-        return !visible;
-      } else {
-        return false;
       }
     }
   });

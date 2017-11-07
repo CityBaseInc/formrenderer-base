@@ -18,5 +18,9 @@ FieldView =
   domId: ->
     @model.cid
 
+  # This method has been deprecated and is only around to alias to domId() for backwards-compatibility.
+  getDomId: ->
+    domId
+
 _.extend FormRenderer.Views.ResponseFieldRepeatingGroup.prototype, FieldView
 _.extend FormRenderer.Views.ResponseField.prototype, FieldView

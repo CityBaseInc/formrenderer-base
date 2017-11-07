@@ -319,6 +319,13 @@ FormRenderer.Views = {}
 FormRenderer.Models = {}
 FormRenderer.Plugins = {}
 
+## Validators have been deprecated, but are kept here for backwards-compatibility.
+FormRenderer.Validators = {
+  EmailValidator: {
+    VALID_REGEX: FormRenderer.EMAIL_REGEX
+  }
+};
+
 ## Plugin utilities
 
 FormRenderer.addPlugin = (x) ->

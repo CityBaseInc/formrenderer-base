@@ -9,6 +9,11 @@ HasComponents =
   initFormComponents: (fieldData, responseData) ->
     @formComponents = new Backbone.Collection
 
+    # @response_fields has been deprecated as of October 2017 in favor of using
+    # @formComponents instead, but is still temporarily included for the sake of
+    # backwards-compatibility.
+    @response_fields = @formComponents
+
     for field in fieldData
       model = FormRenderer.buildFormComponentModel(field, @fr, @)
       model.setExistingValue(responseData[model.get('id')])

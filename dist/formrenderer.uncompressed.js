@@ -1364,7 +1364,7 @@ var slice = [].slice;
 })(window.jQuery, window);
 
 /*!
- * JavaScript Cookie v2.1.4
+ * JavaScript Cookie v2.1.3
  * https://github.com/js-cookie/js-cookie
  *
  * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
@@ -1421,9 +1421,6 @@ var slice = [].slice;
 					attributes.expires = expires;
 				}
 
-				// We're using "expires" because "max-age" is not supported by IE
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
 				try {
 					result = JSON.stringify(value);
 					if (/^[\{\[]/.test(result)) {
@@ -1442,19 +1439,13 @@ var slice = [].slice;
 				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
 				key = key.replace(/[\(\)]/g, escape);
 
-				var stringifiedAttributes = '';
-
-				for (var attributeName in attributes) {
-					if (!attributes[attributeName]) {
-						continue;
-					}
-					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
-						continue;
-					}
-					stringifiedAttributes += '=' + attributes[attributeName];
-				}
-				return (document.cookie = key + '=' + value + stringifiedAttributes);
+				return (document.cookie = [
+					key, '=', value,
+					attributes.expires ? '; expires=' + attributes.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+					attributes.path ? '; path=' + attributes.path : '',
+					attributes.domain ? '; domain=' + attributes.domain : '',
+					attributes.secure ? '; secure' : ''
+				].join(''));
 			}
 
 			// Read
@@ -6764,6 +6755,12 @@ rivets.configure({
 
   FormRenderer.Plugins = {};
 
+  FormRenderer.Validators = {
+    EmailValidator: {
+      VALID_REGEX: FormRenderer.EMAIL_REGEX
+    }
+  };
+
   FormRenderer.addPlugin = function(x) {
     return this.prototype.defaults.plugins.push(x);
   };
@@ -6808,32 +6805,12 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var autoLink, sanitize, sanitizeConfig, simpleFormat;
+  var autoLink, simpleFormat;
 
   autoLink = function(str) {
     var pattern;
     pattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi;
     return str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>");
-  };
-
-  sanitizeConfig = _.extend({}, Sanitize.Config.RELAXED);
-
-  sanitizeConfig.attributes.a.push('target');
-
-  sanitize = function(str, config) {
-    var c, e, n, o, s;
-    try {
-      n = document.createElement('div');
-      n.innerHTML = str;
-      s = new Sanitize(config || Sanitize.Config.RELAXED);
-      c = s.clean_node(n);
-      o = document.createElement('div');
-      o.appendChild(c.cloneNode(true));
-      return o.innerHTML;
-    } catch (_error) {
-      e = _error;
-      return _.escape(str);
-    }
   };
 
   simpleFormat = function(str) {
@@ -6843,8 +6820,8 @@ rivets.configure({
     return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
   };
 
-  FormRenderer.formatHTML = function(unsafeHTML) {
-    return sanitize(autoLink(simpleFormat(unsafeHTML)), sanitizeConfig);
+  FormRenderer.format = function(originalHTML) {
+    return autoLink(simpleFormat(originalHTML));
   };
 
 }).call(this);
@@ -6882,7 +6859,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.2.3';
+  FormRenderer.VERSION = '1.2.5';
 
 }).call(this);
 
@@ -8087,8 +8064,13 @@ rivets.configure({
       })(this)));
     },
     numRows: function() {
-      var _ref;
-      return Math.max(this.minRows(), ((_ref = this.get('value')) != null ? _ref[0].length : void 0) || 0, 1);
+      var value;
+      value = this.get('value');
+      if ((value != null) && value.length) {
+        return Math.max(this.minRows(), value[0].length || 0, 1);
+      } else {
+        return 0;
+      }
     },
     hasValue: function() {
       return _.some(this.getValue(), (function(_this) {
@@ -8242,8 +8224,8 @@ rivets.configure({
     },
     validateType: function() {
       var hours, minutes, seconds;
-      hours = parseInt(this.get('value.hours'), 10) || 0;
-      minutes = parseInt(this.get('value.minutes'), 10) || 0;
+      hours = parseInt(this.get('value.hours'), 10);
+      minutes = parseInt(this.get('value.minutes'), 10);
       seconds = parseInt(this.get('value.seconds'), 10) || 0;
       if (!(((1 <= hours && hours <= 12)) && ((0 <= minutes && minutes <= 59)) && ((0 <= seconds && seconds <= 59)))) {
         return 'time';
@@ -8382,6 +8364,9 @@ rivets.configure({
     },
     domId: function() {
       return this.model.cid;
+    },
+    getDomId: function() {
+      return domId;
     }
   };
 
@@ -8409,6 +8394,7 @@ rivets.configure({
     initFormComponents: function(fieldData, responseData) {
       var field, model, _i, _len;
       this.formComponents = new Backbone.Collection;
+      this.response_fields = this.formComponents;
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
@@ -9121,7 +9107,7 @@ window.JST["fields/block_of_text"] = function(__obj) {
     
       _print(_safe('\'>\n  '));
     
-      _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+      _print(FormRenderer.format(this.model.get('description')));
     
       _print(_safe('\n</div>\n'));
     
@@ -10050,7 +10036,7 @@ window.JST["fields/section_break"] = function(__obj) {
     
       _print(_safe('\n\n'));
     
-      formattedDescription = FormRenderer.formatHTML(this.model.get('description'));
+      formattedDescription = FormRenderer.format(this.model.get('description'));
     
       _print(_safe('\n<'));
     
@@ -10070,7 +10056,7 @@ window.JST["fields/section_break"] = function(__obj) {
         _print(_safe('\n  <div class=\'fr_text size_'));
         _print(this.model.getSize());
         _print(_safe('\'>\n    '));
-        _print(_safe(formattedDescription));
+        _print(formattedDescription);
         _print(_safe('\n  </div>\n'));
       }
     
@@ -10468,7 +10454,7 @@ window.JST["partials/description"] = function(__obj) {
     (function() {
       if (this.model.get('description')) {
         _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(_safe(FormRenderer.formatHTML(this.model.get('description'))));
+        _print(FormRenderer.format(this.model.get('description')));
         _print(_safe('\n  </div>\n'));
       }
     

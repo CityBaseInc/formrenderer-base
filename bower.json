@@ -30,6 +30,6 @@
     "inline_file_upload": "0.0.4",
     "require_once": "0.0.1",
     "domurl": "2.1.7",
-    "DOMPurify": "~1.0.2"
+    "dompurify": "~1.0.2"
   }
 }

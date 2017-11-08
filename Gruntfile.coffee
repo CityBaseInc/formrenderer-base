@@ -78,7 +78,7 @@ module.exports = (grunt) ->
             'bower_components/iso-country-names/index.js'
             'bower_components/require_once/require_once.js'
             'bower_components/domurl/url.min.js',
-            'bower_components/DOMPurify/dist/purify.min.js'
+            'bower_components/dompurify/dist/purify.min.js'
           ]
           '<%= compiledFolder %>/formrenderer.js': [
             '<%= compiledFolder %>/vendor_config.js'

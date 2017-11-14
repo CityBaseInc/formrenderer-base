@@ -559,6 +559,8 @@ rivets.configure({
 
   FormRenderer.buildFormComponentModel = function(field, fr, parent) {
     var klass;
+    console.log('building model for ');
+    console.log(field);
     klass = FormRenderer.formComponentModelClass(field);
     return new klass(field, fr, parent);
   };
@@ -977,6 +979,7 @@ rivets.configure({
     field_type: 'repeating_group',
     initialize: function() {
       FormRenderer.Models.BaseFormComponent.prototype.initialize.apply(this, arguments);
+      console.log('initializing repeating group with 0 entires');
       return this.entries = [];
     },
     validateComponent: function() {
@@ -1001,6 +1004,7 @@ rivets.configure({
           this.set('skipped', true);
         }
       }
+      console.log('setting entries in setExistingValue');
       return this.entries = _.map(entryValues, (function(_this) {
         return function(value) {
           return new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({
@@ -1010,6 +1014,7 @@ rivets.configure({
       })(this));
     },
     addEntry: function() {
+      console.log('adding repeatinggroup entry');
       return this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
     },
     removeEntry: function(idx) {
@@ -1041,10 +1046,22 @@ rivets.configure({
   });
 
   FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend({
+    field_type: 'repeating_group_entry',
     initialize: function(_attrs, fr, repeatingGroup) {
+      var children;
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
+      console.log('initializing repeating group entry');
+      window.group = this.repeatingGroup;
+      children = this.repeatingGroup.get('children');
+      if (children == null) {
+        children = [];
+      }
+      console.log('children are');
+      console.log(children);
+      console.log('value is');
+      console.log(this.get('value'));
+      return this.initFormComponents(children, this.get('value') || {});
     },
     reflectConditions: function() {
       return this.view.reflectConditions();
@@ -1110,7 +1127,9 @@ rivets.configure({
       var $els, entry, idx, view, _i, _len, _ref, _ref1;
       this.views = [];
       $els = $();
-      _ref = this.model.entries;
+      console.log('rendering entries 2');
+      console.log(this.model.entries);
+      _ref = this.model.entries || [];
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
         entry = _ref[idx];
         view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({
@@ -2167,13 +2186,18 @@ rivets.configure({
       var field, model, _i, _len;
       this.formComponents = new Backbone.Collection;
       this.response_fields = this.formComponents;
+      console.log('parent initFormComponents');
+      console.log(fieldData);
+      console.log(responseData);
       for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
         field = fieldData[_i];
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
       }
+      console.log('after fieldData loop; initing conditions');
       this.initConditions();
+      console.log('setting up listeners');
       return this.listenTo(this.formComponents, 'change:value change:value.*', function(rf) {
         this.runConditions(rf);
         return this.fr.responsesChanged();

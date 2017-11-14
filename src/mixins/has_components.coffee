@@ -14,13 +14,20 @@ HasComponents =
     # backwards-compatibility.
     @response_fields = @formComponents
 
+    console.log 'parent initFormComponents'
+    console.log fieldData
+    console.log responseData
+
     for field in fieldData
       model = FormRenderer.buildFormComponentModel(field, @fr, @)
       model.setExistingValue(responseData[model.get('id')])
       @formComponents.add model
 
+    console.log 'after fieldData loop; initing conditions'
+
     @initConditions()
 
+    console.log 'setting up listeners'
     @listenTo @formComponents, 'change:value change:value.*', (rf) ->
       @runConditions(rf)
       @fr.responsesChanged()

@@ -18,5 +18,7 @@ FormRenderer.formComponentModelClass = (field) ->
   FormRenderer.Models["ResponseField#{_str.classify(field.field_type)}"]
 
 FormRenderer.buildFormComponentModel = (field, fr, parent) ->
+  console.log('building model for ')
+  console.log(field)
   klass = FormRenderer.formComponentModelClass(field)
   new klass(field, fr, parent)

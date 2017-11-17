@@ -1046,7 +1046,6 @@ rivets.configure({
       var children;
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      window.group = this.repeatingGroup;
       children = this.repeatingGroup.get('children');
       if (children == null) {
         children = [];

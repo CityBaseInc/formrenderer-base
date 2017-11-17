@@ -60,7 +60,6 @@ FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend
   field_type: 'repeating_group_entry'
 
   initialize: (_attrs, @fr, @repeatingGroup) ->
-    window.group = @repeatingGroup
     children = @repeatingGroup.get('children')
     unless children?
       children = []

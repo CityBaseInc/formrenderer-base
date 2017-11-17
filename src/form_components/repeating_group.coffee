@@ -4,7 +4,6 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
 
   initialize: ->
     FormRenderer.Models.BaseFormComponent::initialize.apply @, arguments
-    console.log 'initializing repeating group with 0 entires'
     @entries = []
 
   validateComponent: ->
@@ -25,13 +24,10 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
       else if _.isArray(entryValues) && _.isEmpty(entryValues)
         @set('skipped', true)
 
-    console.log 'setting entries in setExistingValue'
-
     @entries = _.map entryValues, (value) =>
       new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({ value }, @fr, @)
 
   addEntry: ->
-    console.log 'adding repeatinggroup entry'
     @entries.push(
       new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, @fr, @)
     )
@@ -64,15 +60,10 @@ FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend
   field_type: 'repeating_group_entry'
 
   initialize: (_attrs, @fr, @repeatingGroup) ->
-    console.log 'initializing repeating group entry'
     window.group = @repeatingGroup
     children = @repeatingGroup.get('children')
     unless children?
       children = []
-    console.log 'children are'
-    console.log children
-    console.log 'value is'
-    console.log @get('value')
     @initFormComponents children, @get('value') || {}
 
   reflectConditions: ->
@@ -119,8 +110,6 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
     @views = []
     $els = $()
 
-    console.log 'rendering entries 2'
-    console.log @model.entries
     for entry, idx in (@model.entries || [])
       view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry(
         entry: entry,

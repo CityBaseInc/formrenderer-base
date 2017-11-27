@@ -57,8 +57,13 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
     @entries.length < @maxEntries()
 
 FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend
+  field_type: 'repeating_group_entry'
+
   initialize: (_attrs, @fr, @repeatingGroup) ->
-    @initFormComponents @repeatingGroup.get('children'), @get('value') || {}
+    children = @repeatingGroup.get('children')
+    unless children?
+      children = []
+    @initFormComponents children, @get('value') || {}
 
   reflectConditions: ->
     @view.reflectConditions()
@@ -104,7 +109,7 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
     @views = []
     $els = $()
 
-    for entry, idx in @model.entries
+    for entry, idx in (@model.entries || [])
       view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry(
         entry: entry,
         form_renderer: @form_renderer,

@@ -6986,10 +6986,16 @@ rivets.configure({
   });
 
   FormRenderer.Models.ResponseFieldRepeatingGroupEntry = Backbone.Model.extend({
+    field_type: 'repeating_group_entry',
     initialize: function(_attrs, fr, repeatingGroup) {
+      var children;
       this.fr = fr;
       this.repeatingGroup = repeatingGroup;
-      return this.initFormComponents(this.repeatingGroup.get('children'), this.get('value') || {});
+      children = this.repeatingGroup.get('children');
+      if (children == null) {
+        children = [];
+      }
+      return this.initFormComponents(children, this.get('value') || {});
     },
     reflectConditions: function() {
       return this.view.reflectConditions();
@@ -7055,7 +7061,7 @@ rivets.configure({
       var $els, entry, idx, view, _i, _len, _ref, _ref1;
       this.views = [];
       $els = $();
-      _ref = this.model.entries;
+      _ref = this.model.entries || [];
       for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
         entry = _ref[idx];
         view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({

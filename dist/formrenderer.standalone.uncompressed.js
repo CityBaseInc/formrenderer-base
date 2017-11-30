@@ -508,6 +508,8 @@ rivets.configure({
 
   FormRenderer.REMOVE_ROW_ICON = '-';
 
+  FormRenderer.REMOVE_ENTRY_LINK_CLASS = '';
+
   FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
 
   FormRenderer.Views = {};
@@ -4791,7 +4793,7 @@ window.JST["partials/repeating_group"] = function(__obj) {
     
       _print(this.model.get('label'));
     
-      _print(_safe('</legend>\n  '));
+      _print(_safe('</legend>\n\n  '));
     
       _print(_safe(JST["partials/label"](this)));
     
@@ -4812,7 +4814,9 @@ window.JST["partials/repeating_group"] = function(__obj) {
         }
         _print(_safe('\n\n    <div class=\'fr_group_entries\'>\n    </div>\n\n    '));
         if (this.model.canAdd()) {
-          _print(_safe('\n      <a href=\'#\' class=\'js-add-entry fr_group_add\'>'));
+          _print(_safe('\n      <a href=\'#\' class=\'js-add-entry '));
+          _print(FormRenderer.BUTTON_CLASS);
+          _print(_safe('\'>'));
           _print(FormRenderer.t.add_another);
           _print(_safe('</a>\n    '));
         }
@@ -4864,14 +4868,16 @@ window.JST["partials/repeating_group_entry"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_group_entry_idx\'>#'));
+      _print(_safe('<div class=\'fr_group_entry_idx\'><span>'));
     
       _print(this.idx + 1);
     
-      _print(_safe('</div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
+      _print(_safe('</span></div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
     
       if (this.entry.canRemove()) {
-        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry fr_group_entry_remove\'>'));
+        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry '));
+        _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_CLASS));
+        _print(_safe('\'>'));
         _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
         _print(_safe('</a>\n'));
       }

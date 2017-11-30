@@ -1,5 +1,6 @@
 <fieldset class='fr_fieldset'>
   <legend><%= @model.get('label') %></legend>
+
   <%- JST["partials/label"](@) %>
 
   <% if @model.isSkipped(): %>
@@ -14,7 +15,7 @@
     </div>
 
     <% if @model.canAdd(): %>
-      <a href='#' class='js-add-entry fr_group_add'><%= FormRenderer.t.add_another %></a>
+      <a href='#' class='js-add-entry <%= FormRenderer.BUTTON_CLASS %>'><%= FormRenderer.t.add_another %></a>
     <% end %>
   <% end %>
 </fieldset>

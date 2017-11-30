@@ -1,8 +1,8 @@
-<div class='fr_group_entry_idx'>#<%= @idx + 1 %></div>
+<div class='fr_group_entry_idx'><span><%= @idx + 1 %></span></div>
 
 <div class='fr_group_entry_fields'>
 </div>
 
 <% if @entry.canRemove(): %>
-  <a href='#' class='js-remove-entry fr_group_entry_remove'><%- FormRenderer.REMOVE_ENTRY_LINK_HTML %></a>
+  <a href='#' class='js-remove-entry <%- FormRenderer.REMOVE_ENTRY_LINK_CLASS %>'><%- FormRenderer.REMOVE_ENTRY_LINK_HTML %></a>
 <% end %>

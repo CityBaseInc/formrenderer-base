@@ -101,7 +101,7 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
     _.last(@views).focus()
 
   removeEntry: (e) ->
-    idx = @$el.find('.js-remove-entry').index(e.target)
+    idx = @$el.find('.js-remove-entry').index(e.target.closest('.js-remove-entry'))
     @model.removeEntry(idx)
     @render()
 

@@ -116,7 +116,8 @@
     float: right; }
 
 .fr_field_wrapper {
-  position: relative; }
+  position: relative;
+  clear: both; }
 
 .fr_length_counter {
   padding: 1px 4px;
@@ -251,7 +252,8 @@
 
 .fr_group_skipped {
   margin-top: 10px;
-  color: #888; }
+  color: #888;
+  clear: both; }
 
 .fr_bottom {
   display: table;

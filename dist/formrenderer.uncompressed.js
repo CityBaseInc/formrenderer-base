@@ -6453,7 +6453,7 @@ rivets.configure({
 
   FormRenderer.REMOVE_ROW_ICON = '-';
 
-  FormRenderer.REMOVE_ENTRY_LINK_CLASS = '';
+  FormRenderer.REMOVE_ENTRY_LINK_CLASS = 'fr_group_entry_remove';
 
   FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
 
@@ -7055,7 +7055,7 @@ rivets.configure({
     },
     removeEntry: function(e) {
       var idx;
-      idx = this.$el.find('.js-remove-entry').index(e.target);
+      idx = this.$el.find('.js-remove-entry').index(e.target.closest('.js-remove-entry'));
       this.model.removeEntry(idx);
       return this.render();
     },
@@ -7076,6 +7076,10 @@ rivets.configure({
         this.views.push(view);
       }
       this.$el.html(JST['partials/repeating_group'](this));
+      this.$el.removeClass('is_truncated');
+      if (this.model.entries.length && this.model.entries[0].formComponents.length > 1) {
+        this.$el.addClass('is_truncated');
+      }
       rivets.bind(this.$el, {
         model: this.model
       });
@@ -10747,7 +10751,7 @@ window.JST["partials/repeating_group"] = function(__obj) {
       if (this.model.isSkipped()) {
         _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
         _print(FormRenderer.t.answer);
-        _print(_safe('</a>\n    <div class=\'fr_group_skipped\'>'));
+        _print(_safe('</a>\n    <div class=\'fr_group_skipped\' style=\'clear: both\'>'));
         _print(FormRenderer.t.skipped);
         _print(_safe('</div>\n  '));
       } else {

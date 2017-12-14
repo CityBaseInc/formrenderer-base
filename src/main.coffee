@@ -311,7 +311,7 @@ FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/
 
 FormRenderer.ADD_ROW_ICON = '+'
 FormRenderer.REMOVE_ROW_ICON = '-'
-FormRenderer.REMOVE_ENTRY_LINK_CLASS = ''
+FormRenderer.REMOVE_ENTRY_LINK_CLASS = 'fr_group_entry_remove'
 FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove'
 
 ## Settin' these up for later

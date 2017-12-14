@@ -121,6 +121,11 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
       @views.push view
 
     @$el.html JST['partials/repeating_group'](@)
+
+    @$el.removeClass('is_truncated')
+    if (@model.entries.length && @model.entries[0].formComponents.length > 1)
+      @$el.addClass('is_truncated')
+
     rivets.bind @$el, { @model }
     @$el.find('.fr_group_entries').append($els)
     @form_renderer?.trigger 'viewRendered', @

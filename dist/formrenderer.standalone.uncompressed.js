@@ -508,7 +508,7 @@ rivets.configure({
 
   FormRenderer.REMOVE_ROW_ICON = '-';
 
-  FormRenderer.REMOVE_ENTRY_LINK_CLASS = '';
+  FormRenderer.REMOVE_ENTRY_LINK_CLASS = 'fr_group_entry_remove';
 
   FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
 
@@ -1131,6 +1131,10 @@ rivets.configure({
         this.views.push(view);
       }
       this.$el.html(JST['partials/repeating_group'](this));
+      this.$el.removeClass('is_truncated');
+      if ((this.model.entries.length != null) && this.model.entries[0].formComponents.length > 1) {
+        this.$el.addClass('is_truncated');
+      }
       rivets.bind(this.$el, {
         model: this.model
       });

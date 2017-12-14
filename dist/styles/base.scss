@@ -156,6 +156,7 @@
 
 .fr_field_wrapper {
   position: relative;
+  clear: both;
 }
 
 .fr_length_counter {
@@ -373,4 +374,5 @@
 .fr_group_skipped {
   margin-top: $fr_rhythm / 2;
   color: $fr_muted_color;
+  clear: both;
 }

@@ -7077,7 +7077,7 @@ rivets.configure({
       }
       this.$el.html(JST['partials/repeating_group'](this));
       this.$el.removeClass('is_truncated');
-      if (this.model.entries.length && this.model.entries[0].formComponents.length > 1) {
+      if (this.model.entries.length && this.model.entries[0].formComponents.length > 0) {
         this.$el.addClass('is_truncated');
       }
       rivets.bind(this.$el, {

@@ -32,11 +32,15 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
       new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, @fr, @)
     )
 
+    @fr.responsesChanged()
+
   removeEntry: (idx) ->
     @entries.splice(idx, 1)
 
     if @entries.length == 0
       @set('skipped', true)
+
+    @fr.responsesChanged()
 
   isSkipped: ->
     !!@get('skipped')
@@ -92,6 +96,8 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
     # When clicking "answer this question", add an entry if there are none
     if !@model.isSkipped() && @model.entries.length == 0
       @addEntry()
+
+    @form_renderer.responsesChanged()
 
     @render()
 

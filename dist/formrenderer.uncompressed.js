@@ -6957,13 +6957,15 @@ rivets.configure({
       })(this));
     },
     addEntry: function() {
-      return this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
+      this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
+      return this.fr.responsesChanged();
     },
     removeEntry: function(idx) {
       this.entries.splice(idx, 1);
       if (this.entries.length === 0) {
-        return this.set('skipped', true);
+        this.set('skipped', true);
       }
+      return this.fr.responsesChanged();
     },
     isSkipped: function() {
       return !!this.get('skipped');
@@ -7046,6 +7048,7 @@ rivets.configure({
       if (!this.model.isSkipped() && this.model.entries.length === 0) {
         this.addEntry();
       }
+      this.form_renderer.responsesChanged();
       return this.render();
     },
     addEntry: function() {

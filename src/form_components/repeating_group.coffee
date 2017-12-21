@@ -123,7 +123,7 @@ FormRenderer.Views.ResponseFieldRepeatingGroup = Backbone.View.extend
     @$el.html JST['partials/repeating_group'](@)
 
     @$el.removeClass('is_truncated')
-    if (@model.entries.length && @model.entries[0].formComponents.length > 1)
+    if (@model.entries.length && @model.entries[0].formComponents.length > 0)
       @$el.addClass('is_truncated')
 
     rivets.bind @$el, { @model }

@@ -2507,9 +2507,16 @@ rivets.configure({
     }
 
     SavedSession.prototype.beforeFormLoad = function() {
-      var draftKey, _base;
+      var cookieKey, draftKey, _base;
       draftKey = "project-" + this.fr.options.project_id + "-response-id";
-      (_base = this.fr.options.response).id || (_base.id = Cookies.get(draftKey));
+      cookieKey = Cookies.get(draftKey);
+      if (cookieKey != null) {
+        if (this.validCookie(cookieKey)) {
+          (_base = this.fr.options.response).id || (_base.id = cookieKey);
+        } else {
+          Cookies.remove(draftKey);
+        }
+      }
       this.fr.on('afterSave', function() {
         if (!this.state.get('submitting')) {
           return Cookies.set(draftKey, this.options.response.id);
@@ -2521,6 +2528,10 @@ rivets.configure({
       return this.fr.on('errorSaving', function() {
         return Cookies.remove(draftKey);
       });
+    };
+
+    SavedSession.prototype.validCookie = function(cookieValue) {
+      return cookieValue.indexOf(',') !== -1;
     };
 
     return SavedSession;

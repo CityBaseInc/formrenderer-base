@@ -8454,9 +8454,11 @@ rivets.configure({
     SavedSession.prototype.beforeFormLoad = function() {
       var cookieKey, draftKey, _base;
       draftKey = "project-" + this.fr.options.project_id + "-response-id";
-      cookieKey = Cookies.get(draftKey);
+      if (this.fr.options.response.id == null) {
+        cookieKey = Cookies.get(draftKey);
+      }
       if (cookieKey != null) {
-        if (this.validCookie(cookieKey)) {
+        if (validCookie(cookieKey)) {
           (_base = this.fr.options.response).id || (_base.id = cookieKey);
         } else {
           Cookies.remove(draftKey);

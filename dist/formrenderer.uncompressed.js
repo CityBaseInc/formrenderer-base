@@ -8458,7 +8458,7 @@ rivets.configure({
         cookieKey = Cookies.get(draftKey);
       }
       if (cookieKey != null) {
-        if (validCookie(cookieKey)) {
+        if (cookieKey.indexOf(',') !== -1) {
           (_base = this.fr.options.response).id || (_base.id = cookieKey);
         } else {
           Cookies.remove(draftKey);
@@ -8475,10 +8475,6 @@ rivets.configure({
       return this.fr.on('errorSaving', function() {
         return Cookies.remove(draftKey);
       });
-    };
-
-    SavedSession.prototype.validCookie = function(cookieValue) {
-      return cookieValue.indexOf(',') !== -1;
     };
 
     return SavedSession;

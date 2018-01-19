@@ -13,7 +13,7 @@ class FormRenderer.Plugins.SavedSession extends FormRenderer.Plugins.Base
     # before setting it as our response ID. If it's invalid, we clear the cookie
     # and leave the response ID unset so we can generate one within FormRenderer.
     if cookieKey?
-      if validCookie(cookieKey)
+      if cookieKey.indexOf(',') != -1
         @fr.options.response.id ||= cookieKey
       else
         Cookies.remove draftKey
@@ -27,8 +27,3 @@ class FormRenderer.Plugins.SavedSession extends FormRenderer.Plugins.Base
 
     @fr.on 'errorSaving', ->
       Cookies.remove draftKey
-
-  validCookie: (cookieValue) ->
-    # The cookie is valid if it has the response_id and the encrypted hash,
-    # separated by a comma. We're just looking for the comma, here.
-    cookieValue.indexOf(',') != -1

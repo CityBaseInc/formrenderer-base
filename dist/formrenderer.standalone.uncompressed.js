@@ -4812,7 +4812,7 @@ window.JST["partials/repeating_group"] = function(__obj) {
     
       _print(_safe(JST["partials/label"](this)));
     
-      _print(_safe('\n\n  <div class="fr_group_description">'));
+      _print(_safe('\n\n  <div class="fr_description">'));
     
       _print(this.model.get('description'));
     

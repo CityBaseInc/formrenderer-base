@@ -38,9 +38,10 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
     @isVisible = @_calculateIsVisible()
 
   _calculateIsVisible: ->
-    # If we're not in a form_renderer context, it's visible
-    return true unless @fr
+    # If we're not in a form_renderer context, this field is visible
+    return true unless @renderingRespondentForm()
 
+    # Otherwise, it's only visible if it satisfies its conditions of visibility.
     @satisfiesConditions(@parent.formComponents)
 
   # NOTE: this method is called directly from FormBuilder
@@ -62,3 +63,7 @@ FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend
     else
       'all'
 
+  renderingRespondentForm: ->
+    # If we don't have a form_renderer context, fields can still be rendered.
+    # This function lets us branch based on whether we're on a form or e.g. in a formbuilder.
+    !!@fr

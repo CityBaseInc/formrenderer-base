@@ -3,7 +3,13 @@
 
   <%- JST["partials/label"](@) %>
 
-  <div class="fr_description"><%= @model.get('description') %></div>
+  <div class="fr_description">
+    <% if @model.renderingRespondentForm(): %>
+      <%= @model.get('description') %>
+    <% else: %>
+      <%= @model.getTruncatedDescription() %>
+    <% end %>
+  </div>
 
   <% if @model.isSkipped(): %>
     <a href='#' class='js-skip fr_group_answer'><%= FormRenderer.t.answer %></a>

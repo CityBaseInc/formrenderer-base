@@ -51,6 +51,15 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
     else
       _.invoke @entries, 'getValue'
 
+  getTruncatedDescription: ->
+    description = @get('description', '')
+    truncation_length = 140
+
+    if description.length > truncation_length
+      description = description.substr(0, truncation_length).trim() + '…'
+
+    description
+
   maxEntries: ->
     if @get('maxentries')
       parseInt(@get('maxentries'), 10) || Infinity

@@ -3,6 +3,8 @@
 
   <%- JST["partials/label"](@) %>
 
+  <div class="fr_group_description"><%= @model.get('description') %></div>
+
   <% if @model.isSkipped(): %>
     <a href='#' class='js-skip fr_group_answer'><%= FormRenderer.t.answer %></a>
     <div class='fr_group_skipped' style='clear: both'><%= FormRenderer.t.skipped %></div>

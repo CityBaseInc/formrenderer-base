@@ -242,6 +242,7 @@ Fixtures.KITCHEN_SINK_FORM = [
   }, {
     id: 53,
     label: "Please list your dependents",
+    description: "Only children below age 50 please",
     required: false,
     blind: false,
     admin_only: false,
@@ -894,6 +895,7 @@ Fixtures.FormRendererOptions = {
           type: "group",
           field_type: 'repeating_group',
           label: "Firearm details",
+          description: "Please list the details of your firearm.",
           conditions: [
             {
               response_field_id: 35,

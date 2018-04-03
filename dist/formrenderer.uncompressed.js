@@ -10757,7 +10757,11 @@ window.JST["partials/repeating_group"] = function(__obj) {
     
       _print(_safe(JST["partials/label"](this)));
     
-      _print(_safe('\n\n  '));
+      _print(_safe('\n\n  <div class="fr_group_description">'));
+    
+      _print(this.model.get('description'));
+    
+      _print(_safe('</div>\n\n  '));
     
       if (this.model.isSkipped()) {
         _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));

@@ -52,10 +52,10 @@ FormRenderer.Models.ResponseFieldRepeatingGroup = FormRenderer.Models.BaseFormCo
       _.invoke @entries, 'getValue'
 
   getTruncatedDescription: ->
-    description = @get('description', '')
+    description = @get('description')
     truncation_length = 140
 
-    if description.length > truncation_length
+    if description && description.length > truncation_length
       description = description.substr(0, truncation_length).trim() + '…'
 
     description

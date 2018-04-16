@@ -6981,9 +6981,9 @@ rivets.configure({
     },
     getTruncatedDescription: function() {
       var description, truncation_length;
-      description = this.get('description', '');
+      description = this.get('description');
       truncation_length = 140;
-      if (description.length > truncation_length) {
+      if (description && description.length > truncation_length) {
         description = description.substr(0, truncation_length).trim() + '…';
       }
       return description;

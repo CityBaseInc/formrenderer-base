@@ -6714,7 +6714,7 @@ rivets.configure({
       return this.isVisible = this._calculateIsVisible();
     },
     _calculateIsVisible: function() {
-      if (!this.fr) {
+      if (!this.renderingRespondentForm()) {
         return true;
       }
       return this.satisfiesConditions(this.parent.formComponents);
@@ -6737,6 +6737,9 @@ rivets.configure({
       } else {
         return 'all';
       }
+    },
+    renderingRespondentForm: function() {
+      return !!this.fr;
     }
   });
 
@@ -6975,6 +6978,15 @@ rivets.configure({
       } else {
         return _.invoke(this.entries, 'getValue');
       }
+    },
+    getTruncatedDescription: function() {
+      var description, truncation_length;
+      description = this.get('description', '');
+      truncation_length = 140;
+      if (description.length > truncation_length) {
+        description = description.substr(0, truncation_length).trim() + '…';
+      }
+      return description;
     },
     maxEntries: function() {
       if (this.get('maxentries')) {
@@ -10757,7 +10769,19 @@ window.JST["partials/repeating_group"] = function(__obj) {
     
       _print(_safe(JST["partials/label"](this)));
     
-      _print(_safe('\n\n  '));
+      _print(_safe('\n\n  <div class="fr_description">\n    '));
+    
+      if (this.model.renderingRespondentForm()) {
+        _print(_safe('\n      '));
+        _print(this.model.get('description'));
+        _print(_safe('\n    '));
+      } else {
+        _print(_safe('\n      '));
+        _print(this.model.getTruncatedDescription());
+        _print(_safe('\n    '));
+      }
+    
+      _print(_safe('\n  </div>\n\n  '));
     
       if (this.model.isSkipped()) {
         _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));

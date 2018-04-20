@@ -6793,6 +6793,8 @@ rivets.configure({
     defaultValue: function() {
       if (this.valueType === 'hash') {
         return {};
+      } else if (this.valueType === 'string') {
+        return "";
       }
     },
     toText: function() {
@@ -7348,6 +7350,7 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend({
+    valueType: 'string',
     field_type: 'email',
     validateType: function() {
       if (!this.get('value').match(FormRenderer.EMAIL_REGEX)) {
@@ -7614,6 +7617,7 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend({
     field_type: 'number',
+    valueType: 'string',
     validateType: function() {
       var normalized;
       normalized = FormRenderer.normalizeNumber(this.get('value'), this.get('units'));
@@ -7671,6 +7675,7 @@ rivets.configure({
 (function() {
   FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend({
     field_type: 'phone',
+    valueType: 'string',
     validateType: function() {
       var digitsOnly, isUs, minDigits, _ref;
       isUs = this.get('phone_format') === 'us';
@@ -7939,7 +7944,8 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldText = FormRenderer.Models.ResponseField.extend({
-    field_type: 'text'
+    field_type: 'text',
+    valueType: 'string'
   });
 
   FormRenderer.Views.ResponseFieldText = FormRenderer.Views.ResponseField.extend({
@@ -7985,7 +7991,8 @@ rivets.configure({
 
 (function() {
   FormRenderer.Models.ResponseFieldWebsite = FormRenderer.Models.ResponseField.extend({
-    field_type: 'website'
+    field_type: 'website',
+    valueType: 'string'
   });
 
   FormRenderer.Views.ResponseFieldWebsite = FormRenderer.Views.ResponseField.extend({

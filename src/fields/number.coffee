@@ -1,5 +1,6 @@
 FormRenderer.Models.ResponseFieldNumber = FormRenderer.Models.ResponseField.extend
   field_type: 'number'
+  valueType: 'string'
 
   validateType: ->
     normalized = FormRenderer.normalizeNumber(@get('value'), @get('units'))

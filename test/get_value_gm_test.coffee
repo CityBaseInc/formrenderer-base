@@ -8,7 +8,6 @@
 
 EXPECTED_BLANK_VALUES = {
   "35": "",
-  "36": "",
   "37": {
     checked: []
   },
@@ -21,7 +20,6 @@ EXPECTED_BLANK_VALUES = {
   "3901": {
     checked: []
   },
-  "40": "",
   "41": {},
   "42": "",
   "43": {},
@@ -46,7 +44,9 @@ EXPECTED_BLANK_VALUES = {
   },
   "51": "",
   "52": false,
-  "53": [{}]
+  "53": [{
+    "54": ""
+  }]
 }
 
 EXPECTED_PRESENT_VALUES = {

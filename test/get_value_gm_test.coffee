@@ -7,6 +7,7 @@
 # the output, and if you're satisfied, you can finally update the constant.
 
 EXPECTED_BLANK_VALUES = {
+  "35": "",
   "37": {
     checked: []
   },
@@ -20,10 +21,13 @@ EXPECTED_BLANK_VALUES = {
     checked: []
   },
   "41": {},
+  "42": "",
   "43": {},
   "44": {
     "am_pm": "AM"
   },
+  "45": "",
+  "47": "",
   "46": [],
   "48": {
     "country": "US"
@@ -38,8 +42,11 @@ EXPECTED_BLANK_VALUES = {
       ""
     ]
   },
+  "51": "",
   "52": false,
-  "53": [{}]
+  "53": [{
+    "54": ""
+  }]
 }
 
 EXPECTED_PRESENT_VALUES = {

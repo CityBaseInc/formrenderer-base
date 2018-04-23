@@ -1,4 +1,5 @@
 FormRenderer.Models.ResponseFieldEmail = FormRenderer.Models.ResponseField.extend
+  valueType: 'string'
   field_type: 'email'
   validateType: ->
     unless @get('value').match(FormRenderer.EMAIL_REGEX)

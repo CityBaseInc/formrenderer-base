@@ -1,5 +1,6 @@
 FormRenderer.Models.ResponseFieldPhone = FormRenderer.Models.ResponseField.extend
   field_type: 'phone'
+  valueType: 'string'
 
   validateType: ->
     isUs = @get('phone_format') == 'us'

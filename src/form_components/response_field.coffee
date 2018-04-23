@@ -40,6 +40,8 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
   defaultValue: ->
     if @valueType == 'hash'
       {}
+    else if @valueType == 'string'
+      ""
 
   # used for conditionals
   toText: ->

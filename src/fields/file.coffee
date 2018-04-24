@@ -28,6 +28,8 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
       10
     else
       1
+  maxSingleFileSize: ->
+    250
 
 FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
   events: _.extend {}, FormRenderer.Views.ResponseField::events,

@@ -9,6 +9,10 @@
 
 <% if @model.canAddFile(): %>
   <div class='fr_add_file'>
+    <div class='fr_file_size_limit'>
+      Individual files cannot be larger than <%= @model.maxSingleFileSize() %> MB.
+    </div>
+
     <label for='<%= @domId() %>' class='<%= FormRenderer.BUTTON_CLASS %>'>
       <%= if @model.getFiles().length then FormRenderer.t.upload_another else FormRenderer.t.upload %>
     </label>

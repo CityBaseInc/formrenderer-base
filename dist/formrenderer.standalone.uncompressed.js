@@ -360,7 +360,9 @@ rivets.configure({
     },
     saveParams: function() {
       return _.extend(this.loadParams(), {
-        skip_validation: this.options.skipValidation
+        skip_validation: this.options.skipValidation,
+        form_id: this.options.form_id,
+        initial_response_id: this.options.initial_response_id
       }, this.options.saveParams);
     },
     responsesChanged: function() {

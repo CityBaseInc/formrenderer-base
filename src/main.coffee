@@ -203,11 +203,19 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       @loadParams(),
       {
         skip_validation: @options.skipValidation,
-        form_id: @options.form_id,
-        initial_response_id: @options.initial_response_id
       },
-      @options.saveParams
+      @options.saveParams,
+      @followUpFormParams()
     )
+
+  followUpFormParams: ->
+    if @options.follow_up_form_id? && @options.initial_response_id?
+      {
+        follow_up_form_id: @options.follow_up_form_id,
+        initial_response_id: @options.initial_response_id
+      }
+    else
+      {}
 
   responsesChanged: ->
     @state.set('hasChanges', true)

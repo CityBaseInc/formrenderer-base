@@ -6305,10 +6305,18 @@ rivets.configure({
     },
     saveParams: function() {
       return _.extend(this.loadParams(), {
-        skip_validation: this.options.skipValidation,
-        form_id: this.options.form_id,
-        initial_response_id: this.options.initial_response_id
-      }, this.options.saveParams);
+        skip_validation: this.options.skipValidation
+      }, this.options.saveParams, this.followUpFormParams());
+    },
+    followUpFormParams: function() {
+      if ((this.options.follow_up_form_id != null) && (this.options.initial_response_id != null)) {
+        return {
+          follow_up_form_id: this.options.follow_up_form_id,
+          initial_response_id: this.options.initial_response_id
+        };
+      } else {
+        return {};
+      }
     },
     responsesChanged: function() {
       this.state.set('hasChanges', true);

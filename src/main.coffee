@@ -202,7 +202,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     _.extend(
       @loadParams(),
       {
-        skip_validation: @options.skipValidation,
+        skip_validation: @options.skipValidation
       },
       @options.saveParams,
       @followUpFormParams()

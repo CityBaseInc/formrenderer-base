@@ -361,7 +361,17 @@ rivets.configure({
     saveParams: function() {
       return _.extend(this.loadParams(), {
         skip_validation: this.options.skipValidation
-      }, this.options.saveParams);
+      }, this.options.saveParams, this.followUpFormParams());
+    },
+    followUpFormParams: function() {
+      if ((this.options.follow_up_form_id != null) && (this.options.initial_response_id != null)) {
+        return {
+          follow_up_form_id: this.options.follow_up_form_id,
+          initial_response_id: this.options.initial_response_id
+        };
+      } else {
+        return {};
+      }
     },
     responsesChanged: function() {
       this.state.set('hasChanges', true);
@@ -632,7 +642,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.3.6';
+  FormRenderer.VERSION = '1.3.7';
 
 }).call(this);
 

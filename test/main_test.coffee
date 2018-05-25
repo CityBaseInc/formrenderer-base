@@ -139,6 +139,24 @@ describe '#submit', ->
     @fr.submit()
     expect(FormRenderer::save).to.have.been.called
 
+describe '#saveParams', ->
+  beforeEach ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()
+
+  describe 'with a follow up form', ->
+    beforeEach ->
+      @fr.options.follow_up_form_id = 3
+      @fr.options.initial_response_id = 4
+
+    it 'includes follow up form params', ->
+      expect(@fr.saveParams().follow_up_form_id).to.equal(3)
+      expect(@fr.saveParams().initial_response_id).to.equal(4)
+
+  describe 'without a follow up form', ->
+    it 'does not include follow up form params', ->
+      expect(@fr.saveParams().hasOwnProperty('follow_up_form_id')).to.equal(false)
+      expect(@fr.saveParams().hasOwnProperty('initial_response_id')).to.equal(false)
+
 describe 'options', ->
   describe 'enablePages', ->
     it 'is enabled by default', ->

@@ -1577,7 +1577,10 @@ rivets.configure({
   });
 
   FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
-    field_type: 'identification'
+    field_type: 'identification',
+    makeStatic: function() {
+      return this.isRenderingStatic = true;
+    }
   });
 
 }).call(this);
@@ -3376,6 +3379,8 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
+      var ref, ref1, ref2, ref3;
+    
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.domId());
@@ -3384,11 +3389,19 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(FormRenderer.t.name);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
+      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n\n    '));
     
-      _print(this.domId());
+      if (this.isRenderingStatic || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null)) {
+        _print(_safe('\n      <span>'));
+        _print(this.model.get('value.name'));
+        _print(_safe('</span>\n    '));
+      } else {
+        _print(_safe('\n      <input type=\'text\'\n             id=\''));
+        _print(this.domId());
+        _print(_safe('-name\'\n             data-rv-input=\'model.value.name\' />\n    '));
+      }
     
-      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
+      _print(_safe('\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.domId());
     
@@ -3396,11 +3409,19 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(FormRenderer.t.email);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
+      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n\n    '));
     
-      _print(this.domId());
+      if (this.isRenderingStatic || (((ref2 = this.form_renderer) != null ? (ref3 = ref2.options) != null ? ref3.follow_up_form_id : void 0 : void 0) != null)) {
+        _print(_safe('\n      <span>'));
+        _print(this.model.get('value.email'));
+        _print(_safe('</span>\n    '));
+      } else {
+        _print(_safe('\n      <input type="text"\n             id=\''));
+        _print(this.domId());
+        _print(_safe('-email\'\n             data-rv-input=\'model.value.email\' />\n    '));
+      }
     
-      _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
+      _print(_safe('\n  </div>\n</div>\n'));
     
     }).call(this);
     

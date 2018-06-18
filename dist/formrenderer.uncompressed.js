@@ -6309,7 +6309,7 @@ rivets.configure({
       }, this.options.saveParams, this.followUpFormParams());
     },
     followUpFormParams: function() {
-      if ((this.options.follow_up_form_id != null) && (this.options.initial_response_id != null)) {
+      if (this.isRenderingFollowUpForm()) {
         return {
           follow_up_form_id: this.options.follow_up_form_id,
           initial_response_id: this.options.initial_response_id
@@ -6317,6 +6317,9 @@ rivets.configure({
       } else {
         return {};
       }
+    },
+    isRenderingFollowUpForm: function() {
+      return !!this.options.follow_up_form_id;
     },
     responsesChanged: function() {
       this.state.set('hasChanges', true);
@@ -7518,6 +7521,14 @@ rivets.configure({
       } else if (!this.get('value.email').match(FormRenderer.EMAIL_REGEX)) {
         return 'email';
       }
+    },
+    getValue: function() {
+      var _ref;
+      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+        return null;
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.getValue.apply(this, arguments);
+      }
     }
   });
 
@@ -7525,6 +7536,10 @@ rivets.configure({
     field_type: 'identification',
     disableInput: function() {
       return this.isInputDisabled = true;
+    },
+    shouldRenderInputs: function() {
+      var _ref;
+      return !!this.isInputDisabled || ((_ref = this.form_renderer) != null ? _ref.isRenderingFollowUpForm() : void 0);
     }
   });
 
@@ -9324,13 +9339,7 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var isInputDisabled, ref, ref1;
-    
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n\n    '));
-    
-      isInputDisabled = this.isInputDisabled || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null);
-    
-      _print(_safe('\n\n    <label for=\''));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.domId());
     
@@ -9340,13 +9349,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n\n      '));
     
-      if (!isInputDisabled) {
+      if (!this.shouldRenderInputs()) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (isInputDisabled) {
+      if (this.shouldRenderInputs()) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.name'));
         _print(_safe('</span>\n    '));
@@ -9366,13 +9375,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n      '));
     
-      if (!isInputDisabled) {
+      if (!this.shouldRenderInputs()) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (isInputDisabled) {
+      if (this.shouldRenderInputs()) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.email'));
         _print(_safe('</span>\n    '));

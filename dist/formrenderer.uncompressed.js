@@ -9324,19 +9324,29 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var ref, ref1, ref2, ref3;
+      var isStatic, ref, ref1;
     
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
+      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n\n    '));
+    
+      isStatic = this.isRenderingStatic || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null);
+    
+      _print(_safe('\n\n    <label for=\''));
     
       _print(this.domId());
     
-      _print(_safe('-name\'>'));
+      _print(_safe('-name\'>\n      '));
     
       _print(FormRenderer.t.name);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n\n    '));
+      _print(_safe('\n\n      '));
     
-      if (this.isRenderingStatic || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null)) {
+      if (!isStatic) {
+        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
+      }
+    
+      _print(_safe('\n    </label>\n\n    '));
+    
+      if (isStatic) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.name'));
         _print(_safe('</span>\n    '));
@@ -9350,13 +9360,19 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(this.domId());
     
-      _print(_safe('-email\'>'));
+      _print(_safe('-email\'>\n      '));
     
       _print(FormRenderer.t.email);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n\n    '));
+      _print(_safe('\n      '));
     
-      if (this.isRenderingStatic || (((ref2 = this.form_renderer) != null ? (ref3 = ref2.options) != null ? ref3.follow_up_form_id : void 0 : void 0) != null)) {
+      if (!isStatic) {
+        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
+      }
+    
+      _print(_safe('\n    </label>\n\n    '));
+    
+      if (isStatic) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.email'));
         _print(_safe('</span>\n    '));

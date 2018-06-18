@@ -1,8 +1,17 @@
 <div class='fr_grid'>
   <div class='fr_half'>
-    <label for='<%= @domId() %>-name'><%= FormRenderer.t.name %> <abbr class='fr_required' title='required'>*</abbr></label>
 
-    <% if @isRenderingStatic || @form_renderer?.options?.follow_up_form_id?: %>
+    <% isStatic = @isRenderingStatic || @form_renderer?.options?.follow_up_form_id? %>
+
+    <label for='<%= @domId() %>-name'>
+      <%= FormRenderer.t.name %>
+
+      <% unless isStatic: %>
+        <abbr class='fr_required' title='required'>*</abbr>
+      <% end %>
+    </label>
+
+    <% if isStatic: %>
       <span><%= @model.get('value.name') %></span>
     <% else: %>
       <input type='text'
@@ -12,9 +21,14 @@
   </div>
 
   <div class='fr_half'>
-    <label for='<%= @domId() %>-email'><%= FormRenderer.t.email %> <abbr class='fr_required' title='required'>*</abbr></label>
+    <label for='<%= @domId() %>-email'>
+      <%= FormRenderer.t.email %>
+      <% unless isStatic: %>
+        <abbr class='fr_required' title='required'>*</abbr>
+      <% end %>
+    </label>
 
-    <% if @isRenderingStatic || @form_renderer?.options?.follow_up_form_id?: %>
+    <% if isStatic: %>
       <span><%= @model.get('value.email') %></span>
     <% else: %>
       <input type="text"

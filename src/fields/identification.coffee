@@ -8,6 +8,13 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
     else if !@get('value.email').match(FormRenderer.EMAIL_REGEX)
       'email'
 
+  shouldPersistValue: ->
+    if @fr?.isRenderingFollowUpForm()
+      false
+    else
+      FormRenderer.Models.ResponseField::shouldPersistValue.apply @, arguments
+
+
   getValue: ->
     if @fr?.isRenderingFollowUpForm()
       null

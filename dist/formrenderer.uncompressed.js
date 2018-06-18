@@ -7522,6 +7522,14 @@ rivets.configure({
         return 'email';
       }
     },
+    shouldPersistValue: function() {
+      var _ref;
+      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+        return false;
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.shouldPersistValue.apply(this, arguments);
+      }
+    },
     getValue: function() {
       var _ref;
       if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {

@@ -842,11 +842,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }, {
           id: 35,
@@ -872,11 +869,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }, {
           id: 35,
@@ -1223,11 +1217,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }
       ],

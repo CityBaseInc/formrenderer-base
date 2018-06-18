@@ -14,3 +14,5 @@ FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseFiel
   disableInput: ->
     @isInputDisabled = true
 
+  shouldRenderInputs: ->
+    !!@isInputDisabled || @form_renderer?.isRenderingFollowUpForm()

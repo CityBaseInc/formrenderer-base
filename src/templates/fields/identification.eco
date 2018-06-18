@@ -1,17 +1,14 @@
 <div class='fr_grid'>
   <div class='fr_half'>
-
-    <% isInputDisabled = @isInputDisabled || @form_renderer?.options?.follow_up_form_id? %>
-
     <label for='<%= @domId() %>-name'>
       <%= FormRenderer.t.name %>
 
-      <% unless isInputDisabled: %>
+      <% unless @shouldRenderInputs(): %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if isInputDisabled: %>
+    <% if @shouldRenderInputs(): %>
       <span><%= @model.get('value.name') %></span>
     <% else: %>
       <input type='text'
@@ -23,12 +20,12 @@
   <div class='fr_half'>
     <label for='<%= @domId() %>-email'>
       <%= FormRenderer.t.email %>
-      <% unless isInputDisabled: %>
+      <% unless @shouldRenderInputs(): %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if isInputDisabled: %>
+    <% if @shouldRenderInputs(): %>
       <span><%= @model.get('value.email') %></span>
     <% else: %>
       <input type="text"

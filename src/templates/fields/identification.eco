@@ -1,17 +1,17 @@
 <div class='fr_grid'>
   <div class='fr_half'>
 
-    <% isStatic = @isRenderingStatic || @form_renderer?.options?.follow_up_form_id? %>
+    <% isInputDisabled = @isInputDisabled || @form_renderer?.options?.follow_up_form_id? %>
 
     <label for='<%= @domId() %>-name'>
       <%= FormRenderer.t.name %>
 
-      <% unless isStatic: %>
+      <% unless isInputDisabled: %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if isStatic: %>
+    <% if isInputDisabled: %>
       <span><%= @model.get('value.name') %></span>
     <% else: %>
       <input type='text'
@@ -23,12 +23,12 @@
   <div class='fr_half'>
     <label for='<%= @domId() %>-email'>
       <%= FormRenderer.t.email %>
-      <% unless isStatic: %>
+      <% unless isInputDisabled: %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if isStatic: %>
+    <% if isInputDisabled: %>
       <span><%= @model.get('value.email') %></span>
     <% else: %>
       <input type="text"

@@ -11,6 +11,6 @@ FormRenderer.Models.ResponseFieldIdentification = FormRenderer.Models.ResponseFi
 FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend
   field_type: 'identification'
 
-  makeStatic: ->
-    @isRenderingStatic = true
+  disableInput: ->
+    @isInputDisabled = true
 

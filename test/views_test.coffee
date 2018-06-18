@@ -38,7 +38,7 @@ describe 'FormRenderer.Views.ResponseFieldIdentification', ->
         model: new FormRenderer.Models.ResponseFieldIdentification
       )
 
-      idView.makeStatic()
+      idView.disableInput()
 
       $('body').append(idView.render().$el)
 

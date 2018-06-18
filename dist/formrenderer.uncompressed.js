@@ -7523,8 +7523,8 @@ rivets.configure({
 
   FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
     field_type: 'identification',
-    makeStatic: function() {
-      return this.isRenderingStatic = true;
+    disableInput: function() {
+      return this.isInputDisabled = true;
     }
   });
 
@@ -9324,11 +9324,11 @@ window.JST["fields/identification"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      var isStatic, ref, ref1;
+      var isInputDisabled, ref, ref1;
     
       _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n\n    '));
     
-      isStatic = this.isRenderingStatic || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null);
+      isInputDisabled = this.isInputDisabled || (((ref = this.form_renderer) != null ? (ref1 = ref.options) != null ? ref1.follow_up_form_id : void 0 : void 0) != null);
     
       _print(_safe('\n\n    <label for=\''));
     
@@ -9340,13 +9340,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n\n      '));
     
-      if (!isStatic) {
+      if (!isInputDisabled) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (isStatic) {
+      if (isInputDisabled) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.name'));
         _print(_safe('</span>\n    '));
@@ -9366,13 +9366,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n      '));
     
-      if (!isStatic) {
+      if (!isInputDisabled) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (isStatic) {
+      if (isInputDisabled) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.email'));
         _print(_safe('</span>\n    '));

@@ -7545,7 +7545,7 @@ rivets.configure({
     disableInput: function() {
       return this.isInputDisabled = true;
     },
-    shouldRenderInputs: function() {
+    dontRenderInputs: function() {
       var _ref;
       return !!this.isInputDisabled || ((_ref = this.form_renderer) != null ? _ref.isRenderingFollowUpForm() : void 0);
     }
@@ -9357,13 +9357,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n\n      '));
     
-      if (!this.shouldRenderInputs()) {
+      if (!this.dontRenderInputs()) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (this.shouldRenderInputs()) {
+      if (this.dontRenderInputs()) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.name'));
         _print(_safe('</span>\n    '));
@@ -9383,13 +9383,13 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(_safe('\n      '));
     
-      if (!this.shouldRenderInputs()) {
+      if (!this.dontRenderInputs()) {
         _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
       }
     
       _print(_safe('\n    </label>\n\n    '));
     
-      if (this.shouldRenderInputs()) {
+      if (this.dontRenderInputs()) {
         _print(_safe('\n      <span>'));
         _print(this.model.get('value.email'));
         _print(_safe('</span>\n    '));

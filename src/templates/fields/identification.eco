@@ -3,12 +3,12 @@
     <label for='<%= @domId() %>-name'>
       <%= FormRenderer.t.name %>
 
-      <% unless @shouldRenderInputs(): %>
+      <% unless @dontRenderInputs(): %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if @shouldRenderInputs(): %>
+    <% if @dontRenderInputs(): %>
       <span><%= @model.get('value.name') %></span>
     <% else: %>
       <input type='text'
@@ -20,12 +20,12 @@
   <div class='fr_half'>
     <label for='<%= @domId() %>-email'>
       <%= FormRenderer.t.email %>
-      <% unless @shouldRenderInputs(): %>
+      <% unless @dontRenderInputs(): %>
         <abbr class='fr_required' title='required'>*</abbr>
       <% end %>
     </label>
 
-    <% if @shouldRenderInputs(): %>
+    <% if @dontRenderInputs(): %>
       <span><%= @model.get('value.email') %></span>
     <% else: %>
       <input type="text"

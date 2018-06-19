@@ -209,13 +209,16 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     )
 
   followUpFormParams: ->
-    if @options.follow_up_form_id? && @options.initial_response_id?
+    if @isRenderingFollowUpForm()
       {
         follow_up_form_id: @options.follow_up_form_id,
         initial_response_id: @options.initial_response_id
       }
     else
       {}
+
+  isRenderingFollowUpForm: ->
+    !!@options.follow_up_form_id
 
   responsesChanged: ->
     @state.set('hasChanges', true)

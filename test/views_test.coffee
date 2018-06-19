@@ -30,6 +30,45 @@ describe 'response field views', ->
       view = new viewKlass(model: model)
       expect(view.render()).to.be.ok
 
+describe 'FormRenderer.Views.ResponseFieldIdentification', ->
+  # #makeStatic is used internally by Screendoor's Formbuilder
+  describe '#makeStatic', ->
+    it 'does not render input fields when called', ->
+      idView = new FormRenderer.Views.ResponseFieldIdentification(
+        model: new FormRenderer.Models.ResponseFieldIdentification
+      )
+
+      idView.disableInput()
+
+      $('body').append(idView.render().$el)
+
+      $idenField = $('.fr_response_field_identification')
+
+      # identification field should render
+      expect($idenField.length).to.eql(1)
+
+      # no inputs should be rendered
+      expect($idenField.find('input').length).to.eql(0)
+
+
+  context 'Follow-up forms', ->
+    beforeEach ->
+      $('body').html('<div data-formrenderer />')
+      new FormRenderer Fixtures.FormRendererOptions.FOLLOW_UP_FORM()
+      @$iden_field = $('.fr_response_field_identification')
+
+    it 'does not render input fields', ->
+      # identification field should render
+      expect(@$iden_field.length).to.eql 1
+
+      # no inputs should be rendered
+      expect(@$iden_field.find('input').length).to.eql(0)
+
+    it "renders the respondent's name and email", ->
+      # $iden_field
+      expect(@$iden_field.text()).to.include('Bilbo')
+      expect(@$iden_field.text()).to.include('bilbo@shire.net')
+
 # Since we can't actually test a file upload, we'll test how the view
 # responds to various events
 describe 'FormRenderer.Views.ResponseFieldFile', ->

@@ -6309,7 +6309,7 @@ rivets.configure({
       }, this.options.saveParams, this.followUpFormParams());
     },
     followUpFormParams: function() {
-      if ((this.options.follow_up_form_id != null) && (this.options.initial_response_id != null)) {
+      if (this.isRenderingFollowUpForm()) {
         return {
           follow_up_form_id: this.options.follow_up_form_id,
           initial_response_id: this.options.initial_response_id
@@ -6317,6 +6317,9 @@ rivets.configure({
       } else {
         return {};
       }
+    },
+    isRenderingFollowUpForm: function() {
+      return !!this.options.follow_up_form_id;
     },
     responsesChanged: function() {
       this.state.set('hasChanges', true);
@@ -7518,11 +7521,34 @@ rivets.configure({
       } else if (!this.get('value.email').match(FormRenderer.EMAIL_REGEX)) {
         return 'email';
       }
+    },
+    shouldPersistValue: function() {
+      var _ref;
+      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+        return false;
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.shouldPersistValue.apply(this, arguments);
+      }
+    },
+    getValue: function() {
+      var _ref;
+      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+        return null;
+      } else {
+        return FormRenderer.Models.ResponseField.prototype.getValue.apply(this, arguments);
+      }
     }
   });
 
   FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
-    field_type: 'identification'
+    field_type: 'identification',
+    disableInput: function() {
+      return this.isInputDisabled = true;
+    },
+    dontRenderInputs: function() {
+      var _ref;
+      return !!this.isInputDisabled || ((_ref = this.form_renderer) != null ? _ref.isRenderingFollowUpForm() : void 0);
+    }
   });
 
 }).call(this);
@@ -9325,27 +9351,55 @@ window.JST["fields/identification"] = function(__obj) {
     
       _print(this.domId());
     
-      _print(_safe('-name\'>'));
+      _print(_safe('-name\'>\n      '));
     
       _print(FormRenderer.t.name);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type=\'text\'\n           id=\''));
+      _print(_safe('\n\n      '));
+    
+      if (!this.dontRenderInputs()) {
+        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
+      }
+    
+      _print(_safe('\n    </label>\n\n    '));
+    
+      if (this.dontRenderInputs()) {
+        _print(_safe('\n      <span>'));
+        _print(this.model.get('value.name'));
+        _print(_safe('</span>\n    '));
+      } else {
+        _print(_safe('\n      <input type=\'text\'\n             id=\''));
+        _print(this.domId());
+        _print(_safe('-name\'\n             data-rv-input=\'model.value.name\' />\n    '));
+      }
+    
+      _print(_safe('\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
     
       _print(this.domId());
     
-      _print(_safe('-name\'\n           data-rv-input=\'model.value.name\' />\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
-    
-      _print(this.domId());
-    
-      _print(_safe('-email\'>'));
+      _print(_safe('-email\'>\n      '));
     
       _print(FormRenderer.t.email);
     
-      _print(_safe(' <abbr class=\'fr_required\' title=\'required\'>*</abbr></label>\n    <input type="text"\n           id=\''));
+      _print(_safe('\n      '));
     
-      _print(this.domId());
+      if (!this.dontRenderInputs()) {
+        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
+      }
     
-      _print(_safe('-email\'\n           data-rv-input=\'model.value.email\' />\n  </div>\n</div>\n'));
+      _print(_safe('\n    </label>\n\n    '));
+    
+      if (this.dontRenderInputs()) {
+        _print(_safe('\n      <span>'));
+        _print(this.model.get('value.email'));
+        _print(_safe('</span>\n    '));
+      } else {
+        _print(_safe('\n      <input type="text"\n             id=\''));
+        _print(this.domId());
+        _print(_safe('-email\'\n             data-rv-input=\'model.value.email\' />\n    '));
+      }
+    
+      _print(_safe('\n  </div>\n</div>\n'));
     
     }).call(this);
     

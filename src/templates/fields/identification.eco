@@ -1,15 +1,36 @@
 <div class='fr_grid'>
   <div class='fr_half'>
-    <label for='<%= @domId() %>-name'><%= FormRenderer.t.name %> <abbr class='fr_required' title='required'>*</abbr></label>
-    <input type='text'
-           id='<%= @domId() %>-name'
-           data-rv-input='model.value.name' />
+    <label for='<%= @domId() %>-name'>
+      <%= FormRenderer.t.name %>
+
+      <% unless @dontRenderInputs(): %>
+        <abbr class='fr_required' title='required'>*</abbr>
+      <% end %>
+    </label>
+
+    <% if @dontRenderInputs(): %>
+      <span><%= @model.get('value.name') %></span>
+    <% else: %>
+      <input type='text'
+             id='<%= @domId() %>-name'
+             data-rv-input='model.value.name' />
+    <% end %>
   </div>
 
   <div class='fr_half'>
-    <label for='<%= @domId() %>-email'><%= FormRenderer.t.email %> <abbr class='fr_required' title='required'>*</abbr></label>
-    <input type="text"
-           id='<%= @domId() %>-email'
-           data-rv-input='model.value.email' />
+    <label for='<%= @domId() %>-email'>
+      <%= FormRenderer.t.email %>
+      <% unless @dontRenderInputs(): %>
+        <abbr class='fr_required' title='required'>*</abbr>
+      <% end %>
+    </label>
+
+    <% if @dontRenderInputs(): %>
+      <span><%= @model.get('value.email') %></span>
+    <% else: %>
+      <input type="text"
+             id='<%= @domId() %>-email'
+             data-rv-input='model.value.email' />
+    <% end %>
   </div>
 </div>

@@ -842,11 +842,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }, {
           id: 35,
@@ -872,11 +869,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }, {
           id: 35,
@@ -1223,11 +1217,8 @@ Fixtures.FormRendererOptions = {
       project_id: 'dummy_val',
       response_fields: [
         {
-          id: 34,
-          label: "",
-          required: false,
-          blind: false,
-          admin_only: false,
+          id: 'id',
+          required: true,
           field_type: "identification",
         }
       ],
@@ -1288,6 +1279,29 @@ Fixtures.FormRendererOptions = {
       response: {
         id: 'xxx',
         responses: {}
+      }
+    };
+  },
+  FOLLOW_UP_FORM: function() {
+    return {
+      project_id: 'dummy-val',
+      follow_up_form_id: 2,
+      initial_response_id: 'xxx',
+      response_fields: [
+        {
+          id: 'id',
+          field_type: "identification",
+          required: true
+        }
+      ],
+      response: {
+        id: 'xxx',
+        responses: {
+          id: {
+            name: 'Bilbo',
+            email: 'bilbo@shire.net'
+          }
+        }
       }
     };
   }

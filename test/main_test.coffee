@@ -157,6 +157,16 @@ describe '#saveParams', ->
       expect(@fr.saveParams().hasOwnProperty('follow_up_form_id')).to.equal(false)
       expect(@fr.saveParams().hasOwnProperty('initial_response_id')).to.equal(false)
 
+describe '#isRenderingFollowUpForm', ->
+  context 'with a follow_up_form_id present', ->
+    it 'returns true', ->
+      fr = new FormRenderer Fixtures.FormRendererOptions.FOLLOW_UP_FORM()
+      expect(fr.isRenderingFollowUpForm()).to.equal(true)
+
+  it 'returns false', ->
+    fr = new FormRenderer Fixtures.FormRendererOptions.LOADED()
+    expect(fr.isRenderingFollowUpForm()).to.equal(false)
+
 describe 'options', ->
   describe 'enablePages', ->
     it 'is enabled by default', ->

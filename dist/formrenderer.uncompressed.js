@@ -6676,14 +6676,14 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.isVisible = function() {
-      var _ref, _ref1;
-      if ((_ref = this.responseField.fr.options) != null ? _ref.skipConditions : void 0) {
+      var _ref, _ref1, _ref2, _ref3;
+      if ((_ref = this.responseField) != null ? (_ref1 = _ref.fr) != null ? (_ref2 = _ref1.options) != null ? _ref2.skipConditions : void 0 : void 0 : void 0) {
         return true;
       }
       if (!this.isValid()) {
         return true;
       }
-      if (_ref1 = this.condition.method, __indexOf.call(presenceMethods, _ref1) >= 0) {
+      if (_ref3 = this.condition.method, __indexOf.call(presenceMethods, _ref3) >= 0) {
         return this["method_" + this.condition.method]();
       } else {
         return this.method_present() && this["method_" + this.condition.method]();

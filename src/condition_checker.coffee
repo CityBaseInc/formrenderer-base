@@ -46,7 +46,7 @@ class FormRenderer.ConditionChecker
     (@condition.method in presenceMethods || @condition['value'])
 
   isVisible: ->
-    return true if this.responseField.fr.options?.skipConditions
+    return true if this.responseField?.fr?.options?.skipConditions
     return true unless @isValid()
 
     if @condition.method in presenceMethods

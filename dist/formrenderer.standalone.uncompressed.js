@@ -99,6 +99,7 @@ rivets.configure({
       responderLanguage: void 0,
       preview: false,
       skipValidation: void 0,
+      skipConditions: void 0,
       saveParams: {},
       showLabels: false,
       scrollToPadding: 0,
@@ -730,11 +731,14 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.isVisible = function() {
-      var _ref;
+      var _ref, _ref1, _ref2, _ref3;
+      if ((_ref = this.responseField) != null ? (_ref1 = _ref.fr) != null ? (_ref2 = _ref1.options) != null ? _ref2.skipConditions : void 0 : void 0 : void 0) {
+        return true;
+      }
       if (!this.isValid()) {
         return true;
       }
-      if (_ref = this.condition.method, __indexOf.call(presenceMethods, _ref) >= 0) {
+      if (_ref3 = this.condition.method, __indexOf.call(presenceMethods, _ref3) >= 0) {
         return this["method_" + this.condition.method]();
       } else {
         return this.method_present() && this["method_" + this.condition.method]();

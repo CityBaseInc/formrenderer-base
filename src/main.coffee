@@ -49,6 +49,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     @loadFromServer =>
       @$el.find('.fr_loading').remove()
       @initFormComponents(@options.response_fields, @options.response.responses)
+      # After we have the form, send the auth token back to Screendoor API to retrieve the name and email
+      if @isRenderingFollowUpForm() then @requestFollowUpFormIdentifiers()
       @initPages()
       if @options.enablePages then @initPagination() else @initNoPagination()
       p.afterFormLoad?() for p in @plugins
@@ -98,6 +100,20 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""
           )
           @trigger 'errorSaving', xhr
+
+  # Hit a new Screendoor endpoint
+  @requestFollowUpFormIdentifiers: (respondentAuthToken) ->
+    $.ajax
+      url: "#{@options.screendoorbase}/api/respondent_authentication/identifiers"
+      type: 'get'
+      dataType: 'json'
+      # Grab the respondent auth token from the URL params before this and add it to data
+      /* data: @loadParams() */
+      data: JSON.stringify(respondent_auth_token: @token)
+      headers: @serverHeaders
+      success: (data) =>
+        @options.respondent_name ||= data.respondent.name
+        @options.respondent_email ||= data.respondent.email
 
   # Build pages, which contain the response fields views.
   initPages: ->

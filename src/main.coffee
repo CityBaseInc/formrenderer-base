@@ -212,6 +212,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       v: 0
       response_id: @options.response.id
       project_id: @options.project_id
+      follow_up_form_id: @options.follow_up_form_id
       responder_language: @options.responderLanguage
     }
 

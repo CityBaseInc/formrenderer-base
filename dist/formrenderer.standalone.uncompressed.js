@@ -351,12 +351,17 @@ rivets.configure({
         return this.activatePage(this.nextPage());
       }
     },
+    queryParams: function() {
+      return FormRenderer.queryParams(document.location.search);
+    },
     loadParams: function() {
       return {
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        responder_language: this.options.responderLanguage
+        responder_language: this.options.responderLanguage,
+        query_params: this.queryParams(),
+        follow_up_form_params: this.followUpFormParams()
       };
     },
     saveParams: function() {
@@ -634,6 +639,21 @@ rivets.configure({
       returnVal = returnVal.replace(new RegExp(units + '$', 'i'), '').trim();
     }
     return returnVal;
+  };
+
+}).call(this);
+
+(function() {
+  FormRenderer.queryParams = function(value) {
+    return value.substring(1).split('&').filter(function(value) {
+      return value !== '';
+    }).reduce((function(params, entry) {
+      entry = entry.split('=');
+      if (entry.length === 2) {
+        params[entry[0]] = entry[1];
+      }
+      return params;
+    }), {});
   };
 
 }).call(this);

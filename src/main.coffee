@@ -195,14 +195,16 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   ## Saving
 
   loadParams: ->
-    {
-      v: 0
-      response_id: @options.response.id
-      project_id: @options.project_id
-      responder_language: @options.responderLanguage
-      query_params: @queryParams()
-      follow_up_form_params: @followUpFormParams()
-    }
+    _.extend(
+      {
+        v: 0
+        response_id: @options.response.id
+        project_id: @options.project_id
+        responder_language: @options.responderLanguage
+        query_params: @queryParams()
+      },
+      @followUpFormParams()
+    )
 
   saveParams: ->
     _.extend(
@@ -210,10 +212,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       {
         skip_validation: @options.skipValidation
       },
-      @options.saveParams,
-      # TODO(fuf): We should exclude the follow up form params from here as they
-      # are already part of the loadParams. This may be a breaking change.
-      @followUpFormParams()
+      @options.saveParams
     )
 
   followUpFormParams: ->

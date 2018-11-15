@@ -355,19 +355,18 @@ rivets.configure({
       return FormRenderer.queryParams(document.location.search);
     },
     loadParams: function() {
-      return {
+      return _.extend({
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
         responder_language: this.options.responderLanguage,
-        query_params: this.queryParams(),
-        follow_up_form_params: this.followUpFormParams()
-      };
+        query_params: this.queryParams()
+      }, this.followUpFormParams());
     },
     saveParams: function() {
       return _.extend(this.loadParams(), {
         skip_validation: this.options.skipValidation
-      }, this.options.saveParams, this.followUpFormParams());
+      }, this.options.saveParams);
     },
     followUpFormParams: function() {
       if (this.isRenderingFollowUpForm()) {

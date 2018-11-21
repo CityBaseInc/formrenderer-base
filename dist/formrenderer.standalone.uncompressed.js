@@ -351,18 +351,22 @@ rivets.configure({
         return this.activatePage(this.nextPage());
       }
     },
+    queryParams: function() {
+      return FormRenderer.queryParams(document.location.search);
+    },
     loadParams: function() {
-      return {
+      return _.extend({
         v: 0,
         response_id: this.options.response.id,
         project_id: this.options.project_id,
-        responder_language: this.options.responderLanguage
-      };
+        responder_language: this.options.responderLanguage,
+        query_params: this.queryParams()
+      }, this.followUpFormParams());
     },
     saveParams: function() {
       return _.extend(this.loadParams(), {
         skip_validation: this.options.skipValidation
-      }, this.options.saveParams, this.followUpFormParams());
+      }, this.options.saveParams);
     },
     followUpFormParams: function() {
       if (this.isRenderingFollowUpForm()) {
@@ -639,6 +643,21 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  FormRenderer.queryParams = function(value) {
+    return value.substring(1).split('&').filter(function(value) {
+      return value !== '';
+    }).reduce((function(params, entry) {
+      entry = entry.split('=');
+      if (entry.length === 2) {
+        params[entry[0]] = entry[1];
+      }
+      return params;
+    }), {});
+  };
+
+}).call(this);
+
+(function() {
   FormRenderer.toBoolean = function(str) {
     return _.contains(['True', 'Yes', 'true', '1', 1, 'yes', true], str);
   };
@@ -646,7 +665,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.3.10';
+  FormRenderer.VERSION = '1.3.11';
 
 }).call(this);
 

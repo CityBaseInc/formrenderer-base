@@ -72,6 +72,10 @@ describe '#loadFromServer', ->
   afterEach ->
     @server.restore()
 
+  it 'loads query params as part of load params', ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.NOT_LOADED()
+    expect(Object.keys(@fr.loadParams().query_params).length).to.eq(0)
+
   it 'loads just the project', ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.RESPONSE_LOADED()
 

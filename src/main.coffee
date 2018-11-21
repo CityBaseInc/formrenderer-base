@@ -189,15 +189,22 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     else
       @activatePage(@nextPage())
 
+  queryParams: ->
+    FormRenderer.queryParams(document.location.search)
+
   ## Saving
 
   loadParams: ->
-    {
-      v: 0
-      response_id: @options.response.id
-      project_id: @options.project_id
-      responder_language: @options.responderLanguage
-    }
+    _.extend(
+      {
+        v: 0
+        response_id: @options.response.id
+        project_id: @options.project_id
+        responder_language: @options.responderLanguage
+        query_params: @queryParams()
+      },
+      @followUpFormParams()
+    )
 
   saveParams: ->
     _.extend(
@@ -205,8 +212,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       {
         skip_validation: @options.skipValidation
       },
-      @options.saveParams,
-      @followUpFormParams()
+      @options.saveParams
     )
 
   followUpFormParams: ->

@@ -31,5 +31,8 @@
     "require_once": "0.0.1",
     "domurl": "2.1.7",
     "dompurify": "~1.0.2"
+  },
+  "resolutions": {
+    "event-stream": "3.3.4"
   }
 }

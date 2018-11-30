@@ -5955,10 +5955,10 @@ rivets.binders.input = {
   publishes: true,
   routine: rivets.binders.value.routine,
   bind: function(el) {
-    return $(el).bind("" + rivets.inputEvent + ".rivets", this.publish);
+    return $(el).bind(rivets.inputEvent + ".rivets", this.publish);
   },
   unbind: function(el) {
-    return $(el).unbind("" + rivets.inputEvent + ".rivets");
+    return $(el).unbind(rivets.inputEvent + ".rivets");
   }
 };
 
@@ -6051,7 +6051,7 @@ rivets.configure({
       plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'SavedSession']
     },
     constructor: function(options) {
-      var p, _i, _len, _ref;
+      var i, len, p, ref;
       this.fr = this;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
@@ -6073,9 +6073,9 @@ rivets.configure({
           return new FormRenderer.Plugins[pluginName](_this);
         };
       })(this));
-      _ref = this.plugins;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        p = _ref[_i];
+      ref = this.plugins;
+      for (i = 0, len = ref.length; i < len; i++) {
+        p = ref[i];
         if (typeof p.beforeFormLoad === "function") {
           p.beforeFormLoad();
         }
@@ -6084,7 +6084,7 @@ rivets.configure({
       this.trigger('viewRendered', this);
       this.loadFromServer((function(_this) {
         return function() {
-          var _base, _j, _len1, _ref1;
+          var base, j, len1, ref1;
           _this.$el.find('.fr_loading').remove();
           _this.initFormComponents(_this.options.response_fields, _this.options.response.responses);
           _this.initPages();
@@ -6093,9 +6093,9 @@ rivets.configure({
           } else {
             _this.initNoPagination();
           }
-          _ref1 = _this.plugins;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            p = _ref1[_j];
+          ref1 = _this.plugins;
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            p = ref1[j];
             if (typeof p.afterFormLoad === "function") {
               p.afterFormLoad();
             }
@@ -6104,7 +6104,7 @@ rivets.configure({
             _this.validate();
           }
           _this.trigger('ready');
-          return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
+          return typeof (base = _this.options).onReady === "function" ? base.onReady() : void 0;
         };
       })(this));
       this.$el.on('submit', function(e) {
@@ -6116,23 +6116,23 @@ rivets.configure({
       return 'withCredentials' in new XMLHttpRequest();
     },
     projectUrl: function() {
-      return "" + this.options.screendoorBase + "/projects/" + this.options.project_id;
+      return this.options.screendoorBase + "/projects/" + this.options.project_id;
     },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
       }
       return $.ajax({
-        url: "" + this.options.screendoorBase + "/api/form_renderer/load",
+        url: this.options.screendoorBase + "/api/form_renderer/load",
         type: 'get',
         dataType: 'json',
         data: this.loadParams(),
         headers: this.serverHeaders,
         success: (function(_this) {
           return function(data) {
-            var _base, _base1, _ref;
-            (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
+            var base, base1, ref;
+            (base = _this.options).response_fields || (base.response_fields = data.project.response_fields);
+            (base1 = _this.options.response).responses || (base1.responses = ((ref = data.response) != null ? ref.responses : void 0) || {});
             if (_this.options.afterSubmit == null) {
               _this.options.afterSubmit = {
                 method: 'page',
@@ -6144,11 +6144,11 @@ rivets.configure({
         })(this),
         error: (function(_this) {
           return function(xhr) {
-            var _ref;
+            var ref;
             if (!_this.corsSupported()) {
               return _this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(/\:url/g, _this.projectUrl()));
             } else {
-              _this.$el.find('.fr_loading').text("" + FormRenderer.t.error_loading + ": \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
+              _this.$el.find('.fr_loading').text(FormRenderer.t.error_loading + ": \"" + (((ref = xhr.responseJSON) != null ? ref.error : void 0) || 'Unknown') + "\"");
               return _this.trigger('errorSaving', xhr);
             }
           };
@@ -6156,7 +6156,7 @@ rivets.configure({
       });
     },
     initPages: function() {
-      var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
+      var addPage, currentPageInLoop, page, pageNumber, ref, results;
       addPage = (function(_this) {
         return function() {
           return _this.subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page({
@@ -6180,13 +6180,13 @@ rivets.configure({
           }
         };
       })(this));
-      _ref = this.subviews.pages;
-      _results = [];
-      for (pageNumber in _ref) {
-        page = _ref[pageNumber];
-        _results.push(this.$el.append(page.render().el));
+      ref = this.subviews.pages;
+      results = [];
+      for (pageNumber in ref) {
+        page = ref[pageNumber];
+        results.push(this.$el.append(page.render().el));
       }
-      return _results;
+      return results;
     },
     initPagination: function() {
       this.subviews.pagination = new FormRenderer.Views.Pagination({
@@ -6196,14 +6196,14 @@ rivets.configure({
       return this.subviews.pages[this.state.get('activePage')].show();
     },
     initNoPagination: function() {
-      var page, pageNumber, _ref, _results;
-      _ref = this.subviews.pages;
-      _results = [];
-      for (pageNumber in _ref) {
-        page = _ref[pageNumber];
-        _results.push(page.show());
+      var page, pageNumber, ref, results;
+      ref = this.subviews.pages;
+      results = [];
+      for (pageNumber in ref) {
+        page = ref[pageNumber];
+        results.push(page.show());
       }
-      return _results;
+      return results;
     },
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
@@ -6212,22 +6212,22 @@ rivets.configure({
       return this.state.set('activePage', newPageNumber);
     },
     validate: function() {
-      var page, _, _ref;
-      _ref = this.subviews.pages;
-      for (_ in _ref) {
-        page = _ref[_];
+      var _, page, ref;
+      ref = this.subviews.pages;
+      for (_ in ref) {
+        page = ref[_];
         page.validate();
       }
       this.trigger('afterValidate afterValidate:all');
       return this.areAllPagesValid();
     },
     isPageVisible: function(pageNumber) {
-      var _ref;
-      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isVisible() : void 0;
+      var ref;
+      return (ref = this.subviews.pages[pageNumber]) != null ? ref.isVisible() : void 0;
     },
     isPageValid: function(pageNumber) {
-      var _ref;
-      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isValid() : void 0;
+      var ref;
+      return (ref = this.subviews.pages[pageNumber]) != null ? ref.isValid() : void 0;
     },
     focusFirstError: function() {
       var page, view;
@@ -6238,11 +6238,11 @@ rivets.configure({
       return view.focus();
     },
     invalidPages: function() {
-      var _i, _ref, _results;
+      var i, ref, results;
       return _.filter((function() {
-        _results = [];
-        for (var _i = 1, _ref = this.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--){ _results.push(_i); }
-        return _results;
+        results = [];
+        for (var i = 1, ref = this.numPages; 1 <= ref ? i <= ref : i >= ref; 1 <= ref ? i++ : i--){ results.push(i); }
+        return results;
       }).apply(this), (function(_this) {
         return function(x) {
           return _this.isPageValid(x) === false;
@@ -6255,18 +6255,18 @@ rivets.configure({
     visiblePages: function() {
       return _.tap([], (function(_this) {
         return function(a) {
-          var num, _, _ref, _results;
-          _ref = _this.subviews.pages;
-          _results = [];
-          for (num in _ref) {
-            _ = _ref[num];
+          var _, num, ref, results;
+          ref = _this.subviews.pages;
+          results = [];
+          for (num in ref) {
+            _ = ref[num];
             if (_this.isPageVisible(num)) {
-              _results.push(a.push(parseInt(num, 10)));
+              results.push(a.push(parseInt(num, 10)));
             } else {
-              _results.push(void 0);
+              results.push(void 0);
             }
           }
-          return _results;
+          return results;
         };
       })(this));
     },
@@ -6343,7 +6343,7 @@ rivets.configure({
       this.isSaving = true;
       this.changedWhileSaving = false;
       return $.ajax({
-        url: "" + this.options.screendoorBase + "/api/form_renderer/save",
+        url: this.options.screendoorBase + "/api/form_renderer/save",
         type: 'post',
         contentType: 'application/json',
         dataType: 'json',
@@ -6361,22 +6361,22 @@ rivets.configure({
         })(this),
         success: (function(_this) {
           return function(data) {
-            var _ref;
+            var ref;
             _this.state.set({
               hasChanges: _this.changedWhileSaving,
               hasServerErrors: false
             });
             _this.options.response.id = data.response_id;
-            return (_ref = options.cb) != null ? _ref.apply(_this, arguments) : void 0;
+            return (ref = options.cb) != null ? ref.apply(_this, arguments) : void 0;
           };
         })(this),
         error: (function(_this) {
           return function(xhr) {
-            var _ref, _ref1;
+            var ref, ref1;
             return _this.state.set({
               hasServerErrors: true,
-              serverErrorText: (_ref = xhr.responseJSON) != null ? _ref.error : void 0,
-              serverErrorKey: (_ref1 = xhr.responseJSON) != null ? _ref1.error_key : void 0,
+              serverErrorText: (ref = xhr.responseJSON) != null ? ref.error : void 0,
+              serverErrorKey: (ref1 = xhr.responseJSON) != null ? ref1.error_key : void 0,
               submitting: false
             });
           };
@@ -6448,13 +6448,13 @@ rivets.configure({
       }
     },
     reflectConditions: function() {
-      var page, _, _ref, _ref1;
-      _ref = this.subviews.pages;
-      for (_ in _ref) {
-        page = _ref[_];
+      var _, page, ref, ref1;
+      ref = this.subviews.pages;
+      for (_ in ref) {
+        page = ref[_];
         page.reflectConditions();
       }
-      return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
+      return (ref1 = this.subviews.pagination) != null ? ref1.render() : void 0;
     }
   });
 
@@ -6629,16 +6629,16 @@ rivets.configure({
 
 (function() {
   var presenceMethods,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   presenceMethods = ['present', 'blank'];
 
   FormRenderer.ConditionChecker = (function() {
     function ConditionChecker(responseField, condition) {
-      var _ref;
+      var ref;
       this.responseField = responseField;
       this.condition = condition;
-      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
+      this.value = ((ref = this.responseField) != null ? ref.toText() : void 0) || '';
     }
 
     ConditionChecker.prototype.method_eq = function() {
@@ -6686,23 +6686,23 @@ rivets.configure({
     };
 
     ConditionChecker.prototype.isValid = function() {
-      var _ref;
+      var ref;
       return this.responseField && _.all(['response_field_id', 'method'], ((function(_this) {
         return function(x) {
           return _this.condition[x];
         };
-      })(this))) && ((_ref = this.condition.method, __indexOf.call(presenceMethods, _ref) >= 0) || this.condition['value']);
+      })(this))) && ((ref = this.condition.method, indexOf.call(presenceMethods, ref) >= 0) || this.condition['value']);
     };
 
     ConditionChecker.prototype.isVisible = function() {
-      var _ref, _ref1, _ref2, _ref3;
-      if ((_ref = this.responseField) != null ? (_ref1 = _ref.fr) != null ? (_ref2 = _ref1.options) != null ? _ref2.skipConditions : void 0 : void 0 : void 0) {
+      var ref, ref1, ref2, ref3;
+      if ((ref = this.responseField) != null ? (ref1 = ref.fr) != null ? (ref2 = ref1.options) != null ? ref2.skipConditions : void 0 : void 0 : void 0) {
         return true;
       }
       if (!this.isValid()) {
         return true;
       }
-      if (_ref3 = this.condition.method, __indexOf.call(presenceMethods, _ref3) >= 0) {
+      if (ref3 = this.condition.method, indexOf.call(presenceMethods, ref3) >= 0) {
         return this["method_" + this.condition.method]();
       } else {
         return this.method_present() && this["method_" + this.condition.method]();
@@ -6783,7 +6783,7 @@ rivets.configure({
 
 (function() {
   var _isPageButton,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   _isPageButton = function(el) {
     return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
@@ -6840,7 +6840,7 @@ rivets.configure({
       if (this.valueType === 'hash') {
         return _.some(this.get('value') || {}, (function(_this) {
           return function(v, k) {
-            return !(__indexOf.call(_this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
+            return !(indexOf.call(_this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
           };
         })(this));
       } else {
@@ -6935,14 +6935,14 @@ rivets.configure({
       }
     },
     render: function() {
-      var _ref;
+      var ref;
       this.$el.html(JST["partials/" + (this.partialName())](this));
       rivets.bind(this.$el, {
         model: this.model
       });
       this.auditLength();
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
+      if ((ref = this.form_renderer) != null) {
+        ref.trigger('viewRendered', this);
       }
       return this;
     }
@@ -6967,14 +6967,14 @@ rivets.configure({
       return this.entries = [];
     },
     validateComponent: function() {
-      var entry, _i, _len, _ref, _results;
-      _ref = this.entries;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        entry = _ref[_i];
-        _results.push(entry.formComponents.invoke('validateComponent'));
+      var entry, i, len, ref, results;
+      ref = this.entries;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        entry = ref[i];
+        results.push(entry.formComponents.invoke('validateComponent'));
       }
-      return _results;
+      return results;
     },
     setExistingValue: function(entryValues) {
       if (this.isRequired()) {
@@ -7069,26 +7069,26 @@ rivets.configure({
       this._sharedInitialize(options);
       this.on('shown', (function(_this) {
         return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('shown'));
+          var i, len, ref, results, view;
+          ref = _this.views;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            view = ref[i];
+            results.push(view.trigger('shown'));
           }
-          return _results;
+          return results;
         };
       })(this));
       return this.on('hidden', (function(_this) {
         return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('hidden'));
+          var i, len, ref, results, view;
+          ref = _this.views;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            view = ref[i];
+            results.push(view.trigger('hidden'));
           }
-          return _results;
+          return results;
         };
       })(this));
     },
@@ -7112,12 +7112,12 @@ rivets.configure({
       return this.render();
     },
     render: function() {
-      var $els, entry, idx, view, _i, _len, _ref, _ref1;
+      var $els, entry, i, idx, len, ref, ref1, view;
       this.views = [];
       $els = $();
-      _ref = this.model.entries || [];
-      for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-        entry = _ref[idx];
+      ref = this.model.entries || [];
+      for (idx = i = 0, len = ref.length; i < len; idx = ++i) {
+        entry = ref[idx];
         view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({
           entry: entry,
           form_renderer: this.form_renderer,
@@ -7136,8 +7136,8 @@ rivets.configure({
         model: this.model
       });
       this.$el.find('.fr_group_entries').append($els);
-      if ((_ref1 = this.form_renderer) != null) {
-        _ref1.trigger('viewRendered', this);
+      if ((ref1 = this.form_renderer) != null) {
+        ref1.trigger('viewRendered', this);
       }
       return this;
     }
@@ -7152,34 +7152,34 @@ rivets.configure({
       this.views = [];
       this.on('shown', (function(_this) {
         return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('shown'));
+          var i, len, ref, results, view;
+          ref = _this.views;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            view = ref[i];
+            results.push(view.trigger('shown'));
           }
-          return _results;
+          return results;
         };
       })(this));
       return this.on('hidden', (function(_this) {
         return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('hidden'));
+          var i, len, ref, results, view;
+          ref = _this.views;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            view = ref[i];
+            results.push(view.trigger('hidden'));
           }
-          return _results;
+          return results;
         };
       })(this));
     },
     render: function() {
-      var $children, _ref;
+      var $children, ref;
       this.$el.html(JST['partials/repeating_group_entry'](this));
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
+      if ((ref = this.form_renderer) != null) {
+        ref.trigger('viewRendered', this);
       }
       $children = this.$el.find('.fr_group_entry_fields');
       this.entry.formComponents.each((function(_this) {
@@ -7194,14 +7194,14 @@ rivets.configure({
       return this;
     },
     reflectConditions: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.reflectConditions());
+      var i, len, ref, results, view;
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.reflectConditions());
       }
-      return _results;
+      return results;
     },
     focus: function() {
       return this.views[0].focus();
@@ -7258,14 +7258,14 @@ rivets.configure({
     field_type: 'checkboxes',
     wrapper: 'fieldset',
     setExistingValue: function(x) {
-      var h, option, _i, _len, _ref;
+      var h, i, len, option, ref;
       if (x == null) {
         h = {
           checked: []
         };
-        _ref = this.getOptions();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          option = _ref[_i];
+        ref = this.getOptions();
+        for (i = 0, len = ref.length; i < len; i++) {
+          option = ref[i];
           if (FormRenderer.toBoolean(option.checked)) {
             h.checked.push(option.label);
           }
@@ -7276,16 +7276,16 @@ rivets.configure({
       }
     },
     toText: function() {
-      var arr, _ref;
-      arr = ((_ref = this.get('value.checked')) != null ? _ref.slice(0) : void 0) || [];
+      var arr, ref;
+      arr = ((ref = this.get('value.checked')) != null ? ref.slice(0) : void 0) || [];
       if (this.get('value.other_checked') === true) {
         arr.push(this.get('value.other_text'));
       }
       return arr.join(' ');
     },
     hasValue: function() {
-      var _ref;
-      return ((_ref = this.get('value.checked')) != null ? _ref.length : void 0) > 0 || this.get('value.other_checked');
+      var ref;
+      return ((ref = this.get('value.checked')) != null ? ref.length : void 0) > 0 || this.get('value.other_checked');
     }
   });
 
@@ -7473,7 +7473,7 @@ rivets.configure({
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',
-          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          action: this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
           ajaxOpts: {
             headers: this.form_renderer.serverHeaders
           },
@@ -7492,7 +7492,7 @@ rivets.configure({
           })(this),
           progress: (function(_this) {
             return function(data) {
-              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
+              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : FormRenderer.t.uploading + " (" + data.percent + "%)");
             };
           })(this),
           complete: (function(_this) {
@@ -7508,9 +7508,9 @@ rivets.configure({
           })(this),
           error: (function(_this) {
             return function(data) {
-              var errorText, _ref;
+              var errorText, ref;
               _this.render();
-              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
+              errorText = (ref = data.xhr.responseJSON) != null ? ref.errors : void 0;
               _this.$error.text(errorText || FormRenderer.t.error).show();
               return setTimeout(function() {
                 return _this.$error.hide();
@@ -7546,16 +7546,16 @@ rivets.configure({
       }
     },
     shouldPersistValue: function() {
-      var _ref;
-      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+      var ref;
+      if ((ref = this.fr) != null ? ref.isRenderingFollowUpForm() : void 0) {
         return false;
       } else {
         return FormRenderer.Models.ResponseField.prototype.shouldPersistValue.apply(this, arguments);
       }
     },
     getValue: function() {
-      var _ref;
-      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+      var ref;
+      if ((ref = this.fr) != null ? ref.isRenderingFollowUpForm() : void 0) {
         return null;
       } else {
         return FormRenderer.Models.ResponseField.prototype.getValue.apply(this, arguments);
@@ -7569,8 +7569,8 @@ rivets.configure({
       return this.isInputDisabled = true;
     },
     dontRenderInputs: function() {
-      var _ref;
-      return !!this.isInputDisabled || ((_ref = this.form_renderer) != null ? _ref.isRenderingFollowUpForm() : void 0);
+      var ref;
+      return !!this.isInputDisabled || ((ref = this.form_renderer) != null ? ref.isRenderingFollowUpForm() : void 0);
     }
   });
 
@@ -7611,10 +7611,10 @@ rivets.configure({
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
-        var _ref;
+        var ref;
         this.refreshing = true;
-        if ((_ref = this.map) != null) {
-          _ref._onResize();
+        if ((ref = this.map) != null) {
+          ref._onResize();
         }
         return setTimeout((function(_this) {
           return function() {
@@ -7736,10 +7736,10 @@ rivets.configure({
     field_type: 'phone',
     valueType: 'string',
     validateType: function() {
-      var digitsOnly, isUs, minDigits, _ref;
+      var digitsOnly, isUs, minDigits, ref;
       isUs = this.get('phone_format') === 'us';
       minDigits = isUs ? 10 : 7;
-      digitsOnly = ((_ref = this.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      digitsOnly = ((ref = this.get('value').match(/\d/g)) != null ? ref.join('') : void 0) || '';
       if (!(digitsOnly.length >= minDigits)) {
         if (isUs) {
           return 'us_phone';
@@ -7766,7 +7766,7 @@ rivets.configure({
     field_type: 'price',
     valueType: 'hash',
     toText: function() {
-      return "" + (this.getValue().dollars || '0') + "." + (this.getValue().cents || '00');
+      return (this.getValue().dollars || '0') + "." + (this.getValue().cents || '00');
     },
     validateType: function() {
       var values;
@@ -7847,26 +7847,26 @@ rivets.configure({
       }
     },
     setExistingValue: function(x) {
-      var existingNumRows, _ref;
-      existingNumRows = Math.max(this.minRows(), ((_ref = _.values(x)[0]) != null ? _ref.length : void 0) || 0, 1);
+      var existingNumRows, ref;
+      existingNumRows = Math.max(this.minRows(), ((ref = _.values(x)[0]) != null ? ref.length : void 0) || 0, 1);
       return this.set('value', _.tap([], (function(_this) {
         return function(arr) {
-          var colArr, column, _i, _j, _len, _ref1, _ref2, _results, _results1;
-          _ref1 = _this.getColumns();
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            column = _ref1[_i];
+          var colArr, column, k, l, len, ref1, ref2, results, results1;
+          ref1 = _this.getColumns();
+          results = [];
+          for (k = 0, len = ref1.length; k < len; k++) {
+            column = ref1[k];
             colArr = _.map((function() {
-              _results1 = [];
-              for (var _j = 0, _ref2 = existingNumRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; 0 <= _ref2 ? _j++ : _j--){ _results1.push(_j); }
-              return _results1;
+              results1 = [];
+              for (var l = 0, ref2 = existingNumRows - 1; 0 <= ref2 ? l <= ref2 : l >= ref2; 0 <= ref2 ? l++ : l--){ results1.push(l); }
+              return results1;
             }).apply(this), function(i) {
-              var _ref3;
-              return _this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0);
+              var ref3;
+              return _this.getPresetValue(column.label, i) || (x != null ? (ref3 = x[column.label]) != null ? ref3[i] : void 0 : void 0);
             });
-            _results.push(arr.push(colArr));
+            results.push(arr.push(colArr));
           }
-          return _results;
+          return results;
         };
       })(this)));
     },
@@ -7889,28 +7889,28 @@ rivets.configure({
       })(this));
     },
     getPresetValue: function(columnLabel, row) {
-      var _ref, _ref1;
-      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
+      var ref, ref1;
+      return (ref = this.get('preset_values')) != null ? (ref1 = ref[columnLabel]) != null ? ref1[row] : void 0 : void 0;
     },
     getValue: function() {
       return _.tap({}, (function(_this) {
         return function(h) {
-          var column, i, j, _i, _len, _ref, _results;
-          _ref = _this.getColumns();
-          _results = [];
-          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-            column = _ref[j];
+          var column, i, j, k, len, ref, results;
+          ref = _this.getColumns();
+          results = [];
+          for (j = k = 0, len = ref.length; k < len; j = ++k) {
+            column = ref[j];
             h[column.label] = [];
-            _results.push((function() {
-              var _j, _ref1, _results1;
-              _results1 = [];
-              for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
+            results.push((function() {
+              var l, ref1, results1;
+              results1 = [];
+              for (i = l = 0, ref1 = this.numRows() - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
+                results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
               }
-              return _results1;
+              return results1;
             }).call(_this));
           }
-          return _results;
+          return results;
         };
       })(this));
     },
@@ -7918,13 +7918,13 @@ rivets.configure({
       return _.flatten(_.values(this.getValue())).join(' ');
     },
     calculateColumnTotals: function() {
-      var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
-      _ref = this.getColumns();
-      _results = [];
-      for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-        column = _ref[j];
+      var column, columnSum, columnVals, i, j, k, l, len, ref, ref1, results;
+      ref = this.getColumns();
+      results = [];
+      for (j = k = 0, len = ref.length; k < len; j = ++k) {
+        column = ref[j];
         columnVals = [];
-        for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        for (i = l = 0, ref1 = this.numRows() - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
           columnVals.push(parseFloat((this.get("value." + j + "." + i) || '').replace(/\$?,?/g, '')));
         }
         columnSum = _.reduce(columnVals, function(memo, num) {
@@ -7934,15 +7934,15 @@ rivets.configure({
             return memo + num;
           }
         }, 0);
-        _results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
+        results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
       }
-      return _results;
+      return results;
     },
     formatColumnSum: function(num) {
-      var parsed, precision, _ref;
+      var parsed, precision, ref;
       if (num > 0) {
         parsed = parseFloat(num.toFixed(10));
-        precision = ((_ref = ("" + parsed).split('.')[1]) != null ? _ref.length : void 0) || 0;
+        precision = ((ref = ("" + parsed).split('.')[1]) != null ? ref.length : void 0) || 0;
         return _str.numberFormat(parsed, precision, '.', ',');
       } else {
         return '';
@@ -7961,37 +7961,37 @@ rivets.configure({
       return rowIdx > (min - 1);
     },
     addRow: function(e) {
-      var col, newVal, vals, _ref;
+      var col, newVal, ref, vals;
       e.preventDefault();
       newVal = {};
-      _ref = this.model.get('value');
-      for (col in _ref) {
-        vals = _ref[col];
+      ref = this.model.get('value');
+      for (col in ref) {
+        vals = ref[col];
         newVal[col] = vals.concat('');
       }
       this.model.set('value', newVal);
       return this.render();
     },
     removeRow: function(e) {
-      var col, idx, newVal, vals, _ref;
+      var col, idx, newVal, ref, vals;
       e.preventDefault();
       idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
       newVal = {};
-      _ref = this.model.get('value');
-      for (col in _ref) {
-        vals = _ref[col];
+      ref = this.model.get('value');
+      for (col in ref) {
+        vals = ref[col];
         newVal[col] = _.tap([], function(arr) {
-          var i, val, _results;
-          _results = [];
+          var i, results, val;
+          results = [];
           for (i in vals) {
             val = vals[i];
             if (parseInt(i, 10) !== idx) {
-              _results.push(arr.push(val));
+              results.push(arr.push(val));
             } else {
-              _results.push(void 0);
+              results.push(void 0);
             }
           }
-          return _results;
+          return results;
         });
       }
       this.model.set('value', newVal);
@@ -8028,7 +8028,7 @@ rivets.configure({
       }
     },
     toText: function() {
-      return "" + (this.getValue().hours || '00') + ":" + (this.getValue().minutes || '00') + ":" + (this.getValue().seconds || '00') + " " + (this.getValue().am_pm);
+      return (this.getValue().hours || '00') + ":" + (this.getValue().minutes || '00') + ":" + (this.getValue().seconds || '00') + " " + (this.getValue().am_pm);
     },
     validateType: function() {
       var hours, minutes, seconds;
@@ -8067,7 +8067,7 @@ rivets.configure({
     validateType: function() {},
     validationFns: ['validateType', 'validateInteger', 'validateLength', 'validateMinMax'],
     validateComponent: function(opts) {
-      var errorIs, errorKey, errorWas, validationFn, _i, _len, _ref;
+      var errorIs, errorKey, errorWas, i, len, ref, validationFn;
       if (opts == null) {
         opts = {};
       }
@@ -8081,9 +8081,9 @@ rivets.configure({
           this.errors.push(FormRenderer.t.errors.blank);
         }
       } else {
-        _ref = this.validationFns;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          validationFn = _ref[_i];
+        ref = this.validationFns;
+        for (i = 0, len = ref.length; i < len; i++) {
+          validationFn = ref[i];
           errorKey = this[validationFn]();
           if (errorKey) {
             this.errors.push(FormRenderer.t.errors[errorKey]);
@@ -8112,8 +8112,8 @@ rivets.configure({
       }
     },
     hasLengthValidation: function() {
-      var _ref;
-      return ((_ref = this.field_type) === 'text' || _ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
+      var ref;
+      return ((ref = this.field_type) === 'text' || ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
     },
     validateLength: function() {
       var count, max, min;
@@ -8130,8 +8130,8 @@ rivets.configure({
       }
     },
     hasMinMaxValidation: function() {
-      var _ref;
-      return ((_ref = this.field_type) === 'number' || _ref === 'price') && (this.get('min') || this.get('max'));
+      var ref;
+      return ((ref = this.field_type) === 'number' || ref === 'price') && (this.get('min') || this.get('max'));
     },
     validateMinMax: function() {
       var max, min, value;
@@ -8140,7 +8140,7 @@ rivets.configure({
       }
       min = this.get('min') && parseFloat(this.get('min'));
       max = this.get('max') && parseFloat(this.get('max'));
-      value = this.field_type === 'price' ? parseFloat("" + (this.get('value.dollars') || 0) + "." + (this.get('value.cents') || 0)) : parseFloat(this.get('value').replace(/,/g, ''));
+      value = this.field_type === 'price' ? parseFloat((this.get('value.dollars') || 0) + "." + (this.get('value.cents') || 0)) : parseFloat(this.get('value').replace(/,/g, ''));
       if (min && value < min) {
         return 'small';
       } else if (max && value > max) {
@@ -8201,11 +8201,11 @@ rivets.configure({
       })(this));
     },
     initFormComponents: function(fieldData, responseData) {
-      var field, model, _i, _len;
+      var field, i, len, model;
       this.formComponents = new Backbone.Collection;
       this.response_fields = this.formComponents;
-      for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
-        field = fieldData[_i];
+      for (i = 0, len = fieldData.length; i < len; i++) {
+        field = fieldData[i];
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
@@ -8263,11 +8263,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.Autosave = (function(_super) {
-    __extends(Autosave, _super);
+  FormRenderer.Plugins.Autosave = (function(superClass) {
+    extend(Autosave, superClass);
 
     function Autosave() {
       return Autosave.__super__.constructor.apply(this, arguments);
@@ -8291,8 +8291,8 @@ rivets.configure({
 
 (function() {
   var getUrlParam, paramName,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
   paramName = 'frDraft';
 
@@ -8311,8 +8311,8 @@ rivets.configure({
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   };
 
-  FormRenderer.Plugins.BookmarkDraft = (function(_super) {
-    __extends(BookmarkDraft, _super);
+  FormRenderer.Plugins.BookmarkDraft = (function(superClass) {
+    extend(BookmarkDraft, superClass);
 
     function BookmarkDraft() {
       return BookmarkDraft.__super__.constructor.apply(this, arguments);
@@ -8388,11 +8388,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.BottomBar = (function(_super) {
-    __extends(BottomBar, _super);
+  FormRenderer.Plugins.BottomBar = (function(superClass) {
+    extend(BottomBar, superClass);
 
     function BottomBar() {
       return BottomBar.__super__.constructor.apply(this, arguments);
@@ -8434,11 +8434,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.ErrorBar = (function(_super) {
-    __extends(ErrorBar, _super);
+  FormRenderer.Plugins.ErrorBar = (function(superClass) {
+    extend(ErrorBar, superClass);
 
     function ErrorBar() {
       return ErrorBar.__super__.constructor.apply(this, arguments);
@@ -8489,19 +8489,19 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.PageState = (function(_super) {
-    __extends(PageState, _super);
+  FormRenderer.Plugins.PageState = (function(superClass) {
+    extend(PageState, superClass);
 
     function PageState() {
       return PageState.__super__.constructor.apply(this, arguments);
     }
 
     PageState.prototype.afterFormLoad = function() {
-      var num, page, _ref;
-      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
+      var num, page, ref;
+      if (num = (ref = window.location.hash.match(/page([0-9]+)/)) != null ? ref[1] : void 0) {
         page = parseInt(num, 10);
         if (this.fr.isPageVisible(page)) {
           this.fr.activatePage(page);
@@ -8519,25 +8519,25 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.SavedSession = (function(_super) {
-    __extends(SavedSession, _super);
+  FormRenderer.Plugins.SavedSession = (function(superClass) {
+    extend(SavedSession, superClass);
 
     function SavedSession() {
       return SavedSession.__super__.constructor.apply(this, arguments);
     }
 
     SavedSession.prototype.beforeFormLoad = function() {
-      var cookieKey, draftKey, _base;
+      var base, cookieKey, draftKey;
       draftKey = "project-" + this.fr.options.project_id + "-response-id";
       if (this.fr.options.response.id == null) {
         cookieKey = Cookies.get(draftKey);
       }
       if (cookieKey != null) {
         if (cookieKey.indexOf(',') !== -1) {
-          (_base = this.fr.options.response).id || (_base.id = cookieKey);
+          (base = this.fr.options.response).id || (base.id = cookieKey);
         } else {
           Cookies.remove(draftKey);
         }
@@ -8562,11 +8562,11 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
 
-  FormRenderer.Plugins.WarnBeforeUnload = (function(_super) {
-    __extends(WarnBeforeUnload, _super);
+  FormRenderer.Plugins.WarnBeforeUnload = (function(superClass) {
+    extend(WarnBeforeUnload, superClass);
 
     function WarnBeforeUnload() {
       return WarnBeforeUnload.__super__.constructor.apply(this, arguments);
@@ -8597,11 +8597,11 @@ rivets.configure({
       return this.views = [];
     },
     render: function() {
-      var rf, view, _i, _len, _ref;
+      var i, len, ref, rf, view;
       this.hide();
-      _ref = this.models;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
+      ref = this.models;
+      for (i = 0, len = ref.length; i < len; i++) {
+        rf = ref[i];
         view = FormRenderer.buildFormComponentView(rf, this.form_renderer);
         this.$el.append(view.render().el);
         view.reflectConditions();
@@ -8610,84 +8610,84 @@ rivets.configure({
       return this;
     },
     hide: function() {
-      var view, _i, _len, _ref, _results;
+      var i, len, ref, results, view;
       this.$el.hide();
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.trigger('hidden'));
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.trigger('hidden'));
       }
-      return _results;
+      return results;
     },
     show: function() {
-      var view, _i, _len, _ref, _results;
+      var i, len, ref, results, view;
       this.$el.show();
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.trigger('shown'));
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.trigger('shown'));
       }
-      return _results;
+      return results;
     },
     reflectConditions: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.reflectConditions());
+      var i, len, ref, results, view;
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.reflectConditions());
       }
-      return _results;
+      return results;
     },
     validate: function() {
-      var component, _i, _len, _ref, _results;
-      _ref = this.models;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        component = _ref[_i];
-        _results.push(component.validateComponent());
+      var component, i, len, ref, results;
+      ref = this.models;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        component = ref[i];
+        results.push(component.validateComponent());
       }
-      return _results;
+      return results;
     },
     fieldViews: function() {
       return _.tap([], (function(_this) {
         return function(arr) {
-          var entry, fieldView, view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
+          var entry, fieldView, i, len, ref, results, view;
+          ref = _this.views;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            view = ref[i];
             if (view.model.group) {
               if (!view.model.isSkipped()) {
-                _results.push((function() {
-                  var _j, _len1, _ref1, _results1;
-                  _ref1 = view.model.entries;
-                  _results1 = [];
-                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                    entry = _ref1[_j];
-                    _results1.push((function() {
-                      var _k, _len2, _ref2, _results2;
-                      _ref2 = entry.view.views;
-                      _results2 = [];
-                      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-                        fieldView = _ref2[_k];
-                        _results2.push(arr.push(fieldView));
+                results.push((function() {
+                  var j, len1, ref1, results1;
+                  ref1 = view.model.entries;
+                  results1 = [];
+                  for (j = 0, len1 = ref1.length; j < len1; j++) {
+                    entry = ref1[j];
+                    results1.push((function() {
+                      var k, len2, ref2, results2;
+                      ref2 = entry.view.views;
+                      results2 = [];
+                      for (k = 0, len2 = ref2.length; k < len2; k++) {
+                        fieldView = ref2[k];
+                        results2.push(arr.push(fieldView));
                       }
-                      return _results2;
+                      return results2;
                     })());
                   }
-                  return _results1;
+                  return results1;
                 })());
               } else {
-                _results.push(void 0);
+                results.push(void 0);
               }
             } else {
-              _results.push(arr.push(view));
+              results.push(arr.push(view));
             }
           }
-          return _results;
+          return results;
         };
       })(this));
     },

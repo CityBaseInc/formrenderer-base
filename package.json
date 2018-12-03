@@ -34,6 +34,7 @@
     "karma-mocha": "^0.1.8",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-safari-launcher": "^0.1.1",
+    "mime": "^2.4.0",
     "mocha": "^5.2.0"
   }
 }

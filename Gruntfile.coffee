@@ -6,6 +6,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-cssmin')
   grunt.loadNpmTasks('grunt-eco')
   grunt.loadNpmTasks('grunt-contrib-sass')
+  grunt.loadNpmTasks('grunt-babel')
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
@@ -116,6 +117,20 @@ module.exports = (grunt) ->
     clean:
       compiled:
         ['<%= compiledFolder %>']
+
+    babel:
+      options:
+        sourceMaps: true
+      dist:
+        files:
+          '<%= distFolder %>/formrenderer.standalone.uncompressed.js.es5': '<%= distFolder %>/formrenderer.standalone.uncompressed.js'
+          '<%= distFolder %>/formrenderer.uncompressed.js.es5': '<%= distFolder %>/formrenderer.uncompressed.js'
+
+    #uglify:
+    #  dist:
+    #    files:
+    #      '<%= distFolder %>/formrenderer.standalone.js': '<%= distFolder %>/formrenderer.standalone.uncompressed.js.es5'
+    #      '<%= distFolder %>/formrenderer.js': '<%= distFolder %>/formrenderer.uncompressed.js.es5'
 
     uglify:
       dist:

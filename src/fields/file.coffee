@@ -25,7 +25,7 @@ FormRenderer.Models.ResponseFieldFile = FormRenderer.Models.ResponseField.extend
     @getFiles()
   maxFiles: ->
     if @get('allow_multiple_files')
-      10
+      50
     else
       1
 

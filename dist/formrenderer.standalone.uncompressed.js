@@ -1502,7 +1502,7 @@ rivets.configure({
     },
     maxFiles: function() {
       if (this.get('allow_multiple_files')) {
-        return 10;
+        return 50;
       } else {
         return 1;
       }

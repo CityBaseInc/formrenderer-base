@@ -871,7 +871,7 @@ rivets.configure({
       return this.get('min_max_length_units') || 'characters';
     },
     setExistingValue: function(x) {
-      if (x) {
+      if (x != null) {
         this.set('value', x);
       }
       if (this.hasLengthValidation()) {
@@ -1359,7 +1359,9 @@ rivets.configure({
       return this.get('value') || false;
     },
     setExistingValue: function(x) {
-      return this.set('value', !!x);
+      if (x != null) {
+        return this.set('value', x);
+      }
     },
     toText: function() {
       if (this.get('value')) {

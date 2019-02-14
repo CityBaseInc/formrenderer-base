@@ -4,7 +4,7 @@ FormRenderer.Models.ResponseFieldConfirm = FormRenderer.Models.ResponseField.ext
   getValue: ->
     @get('value') || false # Send `false` instead of null
   setExistingValue: (x) ->
-    @set('value', !!x)
+    @set('value', x) if x?
   toText: ->
     # These act as constants
     if @get('value')

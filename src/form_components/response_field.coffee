@@ -31,7 +31,7 @@ FormRenderer.Models.ResponseField = FormRenderer.Models.BaseFormComponent.extend
     @get('min_max_length_units') || 'characters'
 
   setExistingValue: (x) ->
-    @set('value', x) if x
+    @set('value', x) if x?
     @calculateLength() if @hasLengthValidation()
 
   getValue: ->

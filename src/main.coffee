@@ -68,6 +68,17 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   projectUrl: ->
     "#{@options.screendoorBase}/projects/#{@options.project_id}"
 
+  authorizationHeader: ->
+    if window.localStorage.jwtToken
+      { 'Authorization': 'Bearer jwt_token=' + window.localStorage.jwtToken }
+    else
+      {}
+
+  tokenlessQueryParams: (queryString) ->
+    params = queryString.split('?')[1].split('&')
+    queryParams = _.filter(params, (pair) -> !pair.match(/respondent_auth_token/))
+    '?' + queryParams.join('&')
+
   # Fetch the details of this form from the Screendoor API
   loadFromServer: (cb) ->
     return cb() if @options.response_fields? && @options.response.responses?
@@ -77,8 +88,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       type: 'get'
       dataType: 'json'
       data: @loadParams()
-      headers: @serverHeaders
-      success: (data) =>
+      headers: _.extend @serverHeaders, @authorizationHeader()
+      success: (data, status, xhr) =>
+        if xhr.getResponseHeader('jwt_token')?
+          window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token')
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
 
@@ -88,6 +101,10 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             html: data.project.after_response_page_html || "<p>#{FormRenderer.t.thanks}</p>"
 
         cb()
+
+        if document.location.search.match(/respondent_auth_token/)
+          document.location.search = @tokenlessQueryParams(document.location.search)
+
       error: (xhr) =>
         if !@corsSupported()
           @$el.
@@ -255,12 +272,14 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           submit: if options.submit then true else undefined
         }
       )
-      headers: @serverHeaders
+      headers: _.extend @serverHeaders, @authorizationHeader()
       complete: =>
         @requests -= 1
         @isSaving = false
         @trigger 'afterSave'
-      success: (data) =>
+      success: (data, state, xhr) =>
+        if xhr.getResponseHeader('jwt_token')?
+          window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token')
         @state.set
           hasChanges: @changedWhileSaving
           hasServerErrors: false

@@ -17,6 +17,46 @@ describe '#formatCents', ->
     expect($cents.val()).to.equal('03')
     expect(price.get('value.cents')).to.equal('03')
 
+describe '#authorizationHelper', ->
+  before ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+
+  it 'returns empty hash if there is no token in localStorage', ->
+    expect(@fr.authorizationHeader()).to.eql({})
+
+  it 'returns an object with an "Authorization" key', ->
+    window.localStorage.jwtToken = 'token'
+    expect(@fr.authorizationHeader()).to.eql({
+      'Authorization': 'Bearer jwt_token=token'
+    })
+
+describe '#tokenlessQueryParams', ->
+  before ->
+    @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
+
+  describe 'with single param', ->
+    it 'removes the respondent_auth_token from the query params', ->
+      string = '?respondent_auth_token=token'
+      expect(@fr.tokenlessQueryParams(string)).to.eql('?')
+
+  describe 'with token as the first param', ->
+    it 'removes the respondent_auth_token from the query params', ->
+      string = '?respondent_auth_token=token&another_params=something'
+      expect(@fr.tokenlessQueryParams(string))
+        .to.eql('?another_params=something')
+
+  describe 'with token as the last param', ->
+    it 'removes the respondent_auth_token from the query params', ->
+      string = '?another_params=something&respondent_auth_token=token'
+      expect(@fr.tokenlessQueryParams(string))
+        .to.eql('?another_params=something')
+
+  describe 'with token as the mid param', ->
+    it 'removes the respondent_auth_token from the query params', ->
+      string = '?another_params=something&respondent_auth_token=token&day=monday'
+      expect(@fr.tokenlessQueryParams(string))
+        .to.eql('?another_params=something&day=monday')
+
 describe 'adding and removing rows', ->
   before ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()

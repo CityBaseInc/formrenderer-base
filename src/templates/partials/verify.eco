@@ -1,0 +1,7 @@
+<div>
+  <p><%= @safe @.template %></p>
+  <div>
+    <a id='screendoor-verify-identity' href='#' data-href='<%= @.href %>'>Verify</button>
+  </div>
+</div>
+

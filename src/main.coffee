@@ -20,6 +20,19 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       'SavedSession'
     ]
 
+  events: {
+    "click a#screendoor-verify-identity" : 'verifyIdentity'
+  }
+
+  verifyIdentity: (event) ->
+    event.preventDefault()
+    endpoint = $(event.currentTarget).data('href')
+    $.ajax
+      url: endpoint
+      type: 'get'
+      success: (data) ->
+        alert(data.message)
+
   ## Initialization logic
 
   constructor: (options) ->
@@ -110,6 +123,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           @$el.
             find('.fr_loading').
             html(FormRenderer.t.not_supported.replace(/\:url/g, @projectUrl()))
+        else if xhr.responseJSON?.error == 'Token expired. Verify identity.'
+          @$el.find('.fr_loading').html(JST["partials/verify"]({
+            'template': xhr.responseJSON?.template
+            'href': xhr.responseJSON?.verify_api_endpoint
+          }))
         else
           @$el.find('.fr_loading').text(
             "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""

@@ -124,7 +124,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             find('.fr_loading').
             html(FormRenderer.t.not_supported.replace(/\:url/g, @projectUrl()))
         else if xhr.responseJSON?.error == 'Token expired. Verify identity.'
-          @$el.find('.fr_loading').html(JST["partials/verify"]({
+          @$el.html(JST["partials/verify"]({
             'template': xhr.responseJSON?.template
             'href': xhr.responseJSON?.verify_api_endpoint
           }))
@@ -309,6 +309,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           serverErrorText: xhr.responseJSON?.error
           serverErrorKey: xhr.responseJSON?.error_key
           submitting: false
+        if xhr.responseJSON?.error == 'Token expired. Verify identity.'
+          @$el.html(JST["partials/verify"]({
+            'template': xhr.responseJSON?.template
+            'href': xhr.responseJSON?.verify_api_endpoint
+          }))
 
   waitForRequests: (cb) ->
     if @requests > 0

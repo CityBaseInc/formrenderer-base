@@ -21,7 +21,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     ]
 
   events: {
-    "click a#screendoor-verify-identity" : 'verifyIdentity'
+    "click button#screendoor-verify-identity" : 'verifyIdentity'
   }
 
   verifyIdentity: (event) ->
@@ -127,6 +127,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           @$el.html(JST["partials/verify"]({
             'template': xhr.responseJSON?.template
             'href': xhr.responseJSON?.verify_api_endpoint
+            'button': xhr.responseJSON?.verify_email_button
           }))
         else
           @$el.find('.fr_loading').text(
@@ -313,6 +314,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
           @$el.html(JST["partials/verify"]({
             'template': xhr.responseJSON?.template
             'href': xhr.responseJSON?.verify_api_endpoint
+            'button': xhr.responseJSON?.verify_email_button
           }))
 
   waitForRequests: (cb) ->

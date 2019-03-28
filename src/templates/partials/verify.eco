@@ -1,7 +1,7 @@
-<div>
+<div class='fr_loading'>
   <p><%= @safe @.template %></p>
   <div>
-    <a id='screendoor-verify-identity' href='#' data-href='<%= @.href %>'>Verify</button>
+    <button id='screendoor-verify-identity' href='#' data-href='<%= @.href %>'><%= @.button %></button>
   </div>
 </div>
 

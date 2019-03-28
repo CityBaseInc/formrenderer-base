@@ -213,11 +213,14 @@
     box-shadow: none; }
   .fr_button:hover, .fr_button:focus {
     text-decoration: none; }
-  .fr_button:focus {
-    outline: 0; }
   .fr_button.disabled, .fr_button[disabled] {
     opacity: 0.65;
     cursor: default; }
+  .fr_button.highlight {
+    outline: none;
+    border: 2px solid #4d90fe;
+    -webkit-box-shadow: 0px 0px 5px #4d90fe;
+    box-shadow: 0px 0px 5px #4d90fe; }
 
 .fr_group_entry_idx {
   color: #888; }

@@ -43,6 +43,13 @@ FormRenderer.Views.ResponseFieldFile = FormRenderer.Views.ResponseField.extend
     @$label.on 'click', (e) ->
       e.preventDefault() if $(@).hasClass('disabled')
 
+    # When the input is tabbed to, highlight the label so it's visible
+    @$input.on 'focus', () =>
+      @$label.addClass('highlight')
+
+    @$input.on 'blur', () =>
+      @$label.removeClass('highlight')
+
     if @form_renderer
       @$input.inlineFileUpload
         method: 'post'

@@ -1527,6 +1527,16 @@ rivets.configure({
           return e.preventDefault();
         }
       });
+      this.$input.on('focus', (function(_this) {
+        return function() {
+          return _this.$label.addClass('highlight');
+        };
+      })(this));
+      this.$input.on('blur', (function(_this) {
+        return function() {
+          return _this.$label.removeClass('highlight');
+        };
+      })(this));
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',

@@ -1,7 +1,9 @@
 <div class='fr_loading'>
   <p><%= @safe @.template %></p>
-  <div>
-    <button id='screendoor-verify-identity' href='#' data-href='<%= @.href %>'><%= @.button %></button>
-  </div>
+  <% if @.href?: %>
+    <div>
+      <button id='screendoor-verify-identity' href='#' data-href='<%= @.href %>'><%= @.button %></button>
+    </div>
+  <% end %>
 </div>
 

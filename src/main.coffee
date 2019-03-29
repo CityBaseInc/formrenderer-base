@@ -76,6 +76,11 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
 
     @ # explicitly return self
 
+  maybe_delete_jwt_token: (xhr) ->
+    # We can't verify anonymous responses.
+    if xhr.responseJSON?.template == 'Submission time has expired.'
+      delete window.localStorage['jwtToken'] 
+
   corsSupported: ->
     'withCredentials' of new XMLHttpRequest()
 
@@ -130,6 +135,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             'href': xhr.responseJSON?.verify_api_endpoint
             'button': xhr.responseJSON?.verify_email_button
           }))
+          @maybe_delete_jwt_token(xhr)
         else
           @$el.find('.fr_loading').text(
             "#{FormRenderer.t.error_loading}: \"#{xhr.responseJSON?.error || 'Unknown'}\""
@@ -317,6 +323,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
             'href': xhr.responseJSON?.verify_api_endpoint
             'button': xhr.responseJSON?.verify_email_button
           }))
+          @maybe_delete_jwt_token(xhr)
 
   waitForRequests: (cb) ->
     if @requests > 0

@@ -31,8 +31,9 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       url: endpoint
       type: 'get'
       success: (data) ->
-        alert(data.message)
-
+        $('div.fr_loading').html(JST["partials/email_sent"]({
+          'message': data.message
+        }))
   ## Initialization logic
 
   constructor: (options) ->

@@ -105,6 +105,23 @@ rivets.configure({
       scrollToPadding: 0,
       plugins: ['Autosave', 'WarnBeforeUnload', 'BottomBar', 'ErrorBar', 'SavedSession']
     },
+    events: {
+      "click button#screendoor-verify-identity": 'verifyIdentity'
+    },
+    verifyIdentity: function(event) {
+      var endpoint;
+      event.preventDefault();
+      endpoint = $(event.currentTarget).data('href');
+      return $.ajax({
+        url: endpoint,
+        type: 'get',
+        success: function(data) {
+          return $('div.fr_loading').html(JST["partials/email_sent"]({
+            'message': data.message
+          }));
+        }
+      });
+    },
     constructor: function(options) {
       var p, _i, _len, _ref;
       this.fr = this;
@@ -167,11 +184,34 @@ rivets.configure({
       });
       return this;
     },
+    maybe_delete_jwt_token: function(xhr) {
+      var _ref;
+      if (((_ref = xhr.responseJSON) != null ? _ref.template : void 0) === 'Submission time has expired.') {
+        return delete window.localStorage['jwtToken'];
+      }
+    },
     corsSupported: function() {
       return 'withCredentials' in new XMLHttpRequest();
     },
     projectUrl: function() {
       return "" + this.options.screendoorBase + "/projects/" + this.options.project_id;
+    },
+    authorizationHeader: function() {
+      if (window.localStorage.jwtToken) {
+        return {
+          'Authorization': 'Bearer jwt_token=' + window.localStorage.jwtToken
+        };
+      } else {
+        return {};
+      }
+    },
+    tokenlessQueryParams: function(queryString) {
+      var params, queryParams;
+      params = queryString.split('?')[1].split('&');
+      queryParams = _.filter(params, function(pair) {
+        return !pair.match(/respondent_auth_token/);
+      });
+      return '?' + queryParams.join('&');
     },
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
@@ -182,10 +222,13 @@ rivets.configure({
         type: 'get',
         dataType: 'json',
         data: this.loadParams(),
-        headers: this.serverHeaders,
+        headers: _.extend(this.serverHeaders, this.authorizationHeader()),
         success: (function(_this) {
-          return function(data) {
+          return function(data, status, xhr) {
             var _base, _base1, _ref;
+            if (xhr.getResponseHeader('jwt_token') != null) {
+              window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+            }
             (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
             (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
             if (_this.options.afterSubmit == null) {
@@ -194,16 +237,26 @@ rivets.configure({
                 html: data.project.after_response_page_html || ("<p>" + FormRenderer.t.thanks + "</p>")
               };
             }
-            return cb();
+            cb();
+            if (document.location.search.match(/respondent_auth_token/)) {
+              return document.location.search = _this.tokenlessQueryParams(document.location.search);
+            }
           };
         })(this),
         error: (function(_this) {
           return function(xhr) {
-            var _ref;
+            var _ref, _ref1, _ref2, _ref3, _ref4;
             if (!_this.corsSupported()) {
               return _this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(/\:url/g, _this.projectUrl()));
+            } else if (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) === 'Token expired. Verify identity.') {
+              _this.$el.html(JST["partials/verify"]({
+                'template': (_ref1 = xhr.responseJSON) != null ? _ref1.template : void 0,
+                'href': (_ref2 = xhr.responseJSON) != null ? _ref2.verify_api_endpoint : void 0,
+                'button': (_ref3 = xhr.responseJSON) != null ? _ref3.verify_email_button : void 0
+              }));
+              return _this.maybe_delete_jwt_token(xhr);
             } else {
-              _this.$el.find('.fr_loading').text("" + FormRenderer.t.error_loading + ": \"" + (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) || 'Unknown') + "\"");
+              _this.$el.find('.fr_loading').text("" + FormRenderer.t.error_loading + ": \"" + (((_ref4 = xhr.responseJSON) != null ? _ref4.error : void 0) || 'Unknown') + "\"");
               return _this.trigger('errorSaving', xhr);
             }
           };
@@ -406,7 +459,7 @@ rivets.configure({
           raw_responses: this.getValue(),
           submit: options.submit ? true : void 0
         })),
-        headers: this.serverHeaders,
+        headers: _.extend(this.serverHeaders, this.authorizationHeader()),
         complete: (function(_this) {
           return function() {
             _this.requests -= 1;
@@ -415,8 +468,11 @@ rivets.configure({
           };
         })(this),
         success: (function(_this) {
-          return function(data) {
+          return function(data, state, xhr) {
             var _ref;
+            if (xhr.getResponseHeader('jwt_token') != null) {
+              window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+            }
             _this.state.set({
               hasChanges: _this.changedWhileSaving,
               hasServerErrors: false
@@ -427,13 +483,21 @@ rivets.configure({
         })(this),
         error: (function(_this) {
           return function(xhr) {
-            var _ref, _ref1;
-            return _this.state.set({
+            var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+            _this.state.set({
               hasServerErrors: true,
               serverErrorText: (_ref = xhr.responseJSON) != null ? _ref.error : void 0,
               serverErrorKey: (_ref1 = xhr.responseJSON) != null ? _ref1.error_key : void 0,
               submitting: false
             });
+            if (((_ref2 = xhr.responseJSON) != null ? _ref2.error : void 0) === 'Token expired. Verify identity.') {
+              _this.$el.html(JST["partials/verify"]({
+                'template': (_ref3 = xhr.responseJSON) != null ? _ref3.template : void 0,
+                'href': (_ref4 = xhr.responseJSON) != null ? _ref4.verify_api_endpoint : void 0,
+                'button': (_ref5 = xhr.responseJSON) != null ? _ref5.verify_email_button : void 0
+              }));
+              return _this.maybe_delete_jwt_token(xhr);
+            }
           };
         })(this)
       });
@@ -665,7 +729,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.3.15';
+  FormRenderer.VERSION = '1.3.16';
 
 }).call(this);
 
@@ -4395,6 +4459,55 @@ window.JST["partials/description"] = function(__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["partials/email_sent"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<p>'));
+    
+      _print(this.message);
+    
+      _print(_safe('</p>\n\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["partials/error"] = function(__obj) {
   var _safe = function(value) {
     if (typeof value === 'undefined' && value == null)
@@ -5158,6 +5271,65 @@ window.JST["partials/response_field"] = function(__obj) {
       _print(_safe(JST["partials/description"](this)));
     
       _print(_safe('\n'));
+    
+    }).call(this);
+    
+    return __out.join('');
+  }).call((function() {
+    var obj = {
+      escape: function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      },
+      safe: _safe
+    }, key;
+    for (key in __obj) obj[key] = __obj[key];
+    return obj;
+  })());
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/verify"] = function(__obj) {
+  var _safe = function(value) {
+    if (typeof value === 'undefined' && value == null)
+      value = '';
+    var result = new String(value);
+    result.ecoSafe = true;
+    return result;
+  };
+  return (function() {
+    var __out = [], __self = this, _print = function(value) {
+      if (typeof value !== 'undefined' && value != null)
+        __out.push(value.ecoSafe ? value : __self.escape(value));
+    }, _capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return _safe(result);
+    };
+    (function() {
+      _print(_safe('<div class=\'fr_loading\'>\n  <p>'));
+    
+      _print(this.safe(this.template));
+    
+      _print(_safe('</p>\n  '));
+    
+      if (this.href != null) {
+        _print(_safe('\n    <div>\n      <button id=\'screendoor-verify-identity\' href=\'#\' data-href=\''));
+        _print(this.href);
+        _print(_safe('\'>'));
+        _print(this.button);
+        _print(_safe('</button>\n    </div>\n  '));
+      }
+    
+      _print(_safe('\n</div>\n\n'));
     
     }).call(this);
     

@@ -6132,7 +6132,7 @@ rivets.configure({
     maybe_delete_jwt_token: function(xhr) {
       var _ref;
       if (((_ref = xhr.responseJSON) != null ? _ref.template : void 0) === 'Submission time has expired.') {
-        return delete window.localStorage['jwtToken'];
+        return delete window.sessionStorage['jwtToken'];
       }
     },
     corsSupported: function() {
@@ -6142,9 +6142,9 @@ rivets.configure({
       return "" + this.options.screendoorBase + "/projects/" + this.options.project_id;
     },
     authorizationHeader: function() {
-      if (window.localStorage.jwtToken) {
+      if (window.sessionStorage.jwtToken) {
         return {
-          'Authorization': 'Bearer jwt_token=' + window.localStorage.jwtToken
+          'Authorization': 'Bearer jwt_token=' + window.sessionStorage.jwtToken
         };
       } else {
         return {};
@@ -6172,7 +6172,7 @@ rivets.configure({
           return function(data, status, xhr) {
             var _base, _base1, _ref;
             if (xhr.getResponseHeader('jwt_token') != null) {
-              window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+              window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
             }
             (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
             (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
@@ -6416,7 +6416,7 @@ rivets.configure({
           return function(data, state, xhr) {
             var _ref;
             if (xhr.getResponseHeader('jwt_token') != null) {
-              window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+              window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
             }
             _this.state.set({
               hasChanges: _this.changedWhileSaving,

@@ -21,11 +21,11 @@ describe '#authorizationHelper', ->
   before ->
     @fr = new FormRenderer Fixtures.FormRendererOptions.KITCHEN_SINK()
 
-  it 'returns empty hash if there is no token in localStorage', ->
+  it 'returns empty hash if there is no token in sessionStorage', ->
     expect(@fr.authorizationHeader()).to.eql({})
 
   it 'returns an object with an "Authorization" key', ->
-    window.localStorage.jwtToken = 'token'
+    window.sessionStorage.jwtToken = 'token'
     expect(@fr.authorizationHeader()).to.eql({
       'Authorization': 'Bearer jwt_token=token'
     })

@@ -79,7 +79,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
   maybe_delete_jwt_token: (xhr) ->
     # We can't verify anonymous responses.
     if xhr.responseJSON?.template == 'Submission time has expired.'
-      delete window.localStorage['jwtToken'] 
+      delete window.sessionStorage['jwtToken']
 
   corsSupported: ->
     'withCredentials' of new XMLHttpRequest()
@@ -88,8 +88,8 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
     "#{@options.screendoorBase}/projects/#{@options.project_id}"
 
   authorizationHeader: ->
-    if window.localStorage.jwtToken
-      { 'Authorization': 'Bearer jwt_token=' + window.localStorage.jwtToken }
+    if window.sessionStorage.jwtToken
+      { 'Authorization': 'Bearer jwt_token=' + window.sessionStorage.jwtToken }
     else
       {}
 
@@ -110,7 +110,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
       headers: _.extend @serverHeaders, @authorizationHeader()
       success: (data, status, xhr) =>
         if xhr.getResponseHeader('jwt_token')?
-          window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token')
+          window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token')
         @options.response_fields ||= data.project.response_fields
         @options.response.responses ||= (data.response?.responses || {})
 
@@ -305,7 +305,7 @@ window.FormRenderer = FormRenderer = Backbone.View.extend
         @trigger 'afterSave'
       success: (data, state, xhr) =>
         if xhr.getResponseHeader('jwt_token')?
-          window.localStorage.jwtToken = xhr.getResponseHeader('jwt_token')
+          window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token')
         @state.set
           hasChanges: @changedWhileSaving
           hasServerErrors: false

@@ -78,7 +78,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
   describe 'without allow multiple', ->
     beforeEach ->
       @fr = new FormRenderer Fixtures.FormRendererOptions.FILE()
-      @ifu = $('input[type=file]').data('inline-file-upload')
+      @ifu = $('input[type=file]').data('inlineFileUpload')
 
     it 'disables the button when starting the upload', ->
       expect($('.fr_add_file label').hasClass('disabled')).to.eql false
@@ -113,7 +113,7 @@ describe 'FormRenderer.Views.ResponseFieldFile', ->
       fix = Fixtures.FormRendererOptions.FILE()
       fix.response_fields[0].allow_multiple_files = true
       @fr = new FormRenderer fix
-      @ifu = $('input[type=file]').data('inline-file-upload')
+      @ifu = $('input[type=file]').data('inlineFileUpload')
 
     it 'uploads multiple files', ->
       @ifu.options.start(filename: 'filename yo')

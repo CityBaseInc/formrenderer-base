@@ -2106,7 +2106,7 @@ rivets.configure({
     removeRow: function(e) {
       var col, idx, newVal, vals, _ref;
       e.preventDefault();
-      idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
+      idx = $(e.currentTarget).closest('[data-row-index]').data('rowIndex');
       newVal = {};
       _ref = this.model.get('value');
       for (col in _ref) {
@@ -2844,7 +2844,7 @@ rivets.configure({
     events: {
       'click [data-activate-page]': function(e) {
         e.preventDefault();
-        return this.form_renderer.activatePage($(e.currentTarget).data('activate-page'));
+        return this.form_renderer.activatePage($(e.currentTarget).data('activatePage'));
       }
     },
     initialize: function(options) {

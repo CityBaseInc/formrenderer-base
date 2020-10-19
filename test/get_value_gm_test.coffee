@@ -157,7 +157,7 @@ describe '#getValue', ->
     $('.fr_response_field_group').first().find('[type=text]').val('Large Round Son').trigger('input')
 
     # File
-    inlineFileUpload = $('input[type=file]').data('inline-file-upload')
+    inlineFileUpload = $('input[type=file]').data('inlineFileUpload')
     inlineFileUpload.options.success(data: { file_id: 123 })
 
     expect(JSON.stringify(@fr.getValue())).to.equal(JSON.stringify(EXPECTED_PRESENT_VALUES))

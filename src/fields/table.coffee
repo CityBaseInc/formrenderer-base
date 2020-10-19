@@ -110,7 +110,7 @@ FormRenderer.Views.ResponseFieldTable = FormRenderer.Views.ResponseField.extend
   # Loop through rows, decreasing index for rows above the current row
   removeRow: (e) ->
     e.preventDefault()
-    idx = $(e.currentTarget).closest('[data-row-index]').data('row-index')
+    idx = $(e.currentTarget).closest('[data-row-index]').data('rowIndex')
     newVal = {}
 
     for col, vals of @model.get('value')

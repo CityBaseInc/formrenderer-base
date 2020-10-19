@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "coffee-script": "^1.9.0",
-    "deep-extend": "^0.4.0",
+    "deep-extend": "^0.6.0",
     "grunt": "^0.4.5",
     "grunt-aws": "^0.4.0",
     "grunt-contrib-clean": "^0.6.0",

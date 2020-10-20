@@ -1,4 +1,4 @@
-name: Check Branch
+name: Test
 on: [push]
 jobs:
   deploy:

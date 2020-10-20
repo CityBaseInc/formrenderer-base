@@ -102,7 +102,7 @@ module.exports = (grunt) ->
           footer: '})(window);'
 
     sass:
-      all:
+      dist:
         options:
           sourcemap: 'none'
         files:
@@ -206,3 +206,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'test', ['karma:main']
   grunt.registerTask 'build', ['default', 'dist']
   grunt.registerTask 'all', ['build', 'test']
+  grunt.registerTask('default', ['sass'])

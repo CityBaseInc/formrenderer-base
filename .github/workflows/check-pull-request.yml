@@ -1,0 +1,26 @@
+name: Check Branch
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.3.1
+    - name: Install sass
+      run: gem install sass
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 6.11.4
+    - name: Install grunt-cli
+      run: npm install grunt-cli
+    - name: Install bower
+      run: npm install bower
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: script/bootstrap
+    - name: Test 
+      run: npm test
+

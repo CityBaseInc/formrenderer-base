@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+  curl -H "Content-Type: application/json" \
+    -X POST \
+    -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$1\" } }" \
+    "https://rails-assets.org/components"
+else
+  echo "Please provide version number as the first argument."
+  exit 22
+fi

@@ -21,7 +21,9 @@
               <textarea data-rv-input='model.value.<%= j %>.<%= i %>'
                         rows='1'
                         aria-label="<%= column.translated_label || column.label %> #<%= i + 1 %>"
-                        <% if j == 0 && i == 0: %>id='<%= @domId() %>'<% end %> />
+                        <% if j == 0 && i == 0: %>id='<%= @domId() %>'<% end %> 
+              >
+              </textarea>
           <% end %>
           </td>
         <% end %>

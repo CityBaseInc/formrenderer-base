@@ -1,6 +1,6 @@
 {
   "name": "formrenderer-base",
-  "version": "0.0.1",
+  "version": "1.3.17",
   "description": "Base components of DOBT's form renderer.",
   "main": "Gruntfile.coffee",
   "scripts": {

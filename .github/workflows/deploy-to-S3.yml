@@ -45,6 +45,9 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
+    - name: fetch latest branch version
+      run: |
+            git pull
     - name: get-npm-version
       id: package-version
       uses: martinbeentjes/npm-get-version-action@master

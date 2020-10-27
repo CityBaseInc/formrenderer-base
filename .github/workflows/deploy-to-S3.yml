@@ -21,9 +21,6 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
-    - name: Deploy
-      run: |
-            bundle exec jekyll build --config _config.yml,_config-production.yml
     - uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete

@@ -15,6 +15,12 @@ jobs:
         node-version: 6.11.4
     - name: script/bootstrap
       run: script/bootstrap
+    - name: Get version
+      run: |
+            curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
+            "https://rails-assets.org/components"
     - name: Deploy
       run: |
             bundle exec jekyll build --config _config.yml,_config-production.yml

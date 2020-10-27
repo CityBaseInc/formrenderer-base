@@ -21,6 +21,12 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
+    - name: test print package version
+      run: |
+            echo "version is ${{ steps.package-version.outputs.current-version}}"
     - uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete
@@ -30,3 +36,5 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DOBT_FORM_RENDERER_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'
         SOURCE_DIR: './dist'
+        DEST_DIR: ${{ steps.package-version.outputs.current-version}}
+

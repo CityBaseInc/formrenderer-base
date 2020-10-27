@@ -1,0 +1,29 @@
+name: Deploy to S3
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.3.1
+    - name: Install sass
+      run: gem install sass
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 6.11.4
+    - name: script/bootstrap
+      run: script/bootstrap
+    - name: Deploy
+      run: |
+            bundle exec jekyll build --config _config.yml,_config-production.yml
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: staging-formrenderer-base
+        AWS_ACCESS_KEY_ID: ${{ secrets.DOBT_FORM_RENDERER_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.DOBT_FORM_RENDERER_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-west-2'
+        SOURCE_DIR: './dist'

@@ -1,4 +1,4 @@
-name: Bump Version and Deploy to S3
+name: Deploy to S3
 on: [push]
 jobs:
   deploy:
@@ -21,15 +21,12 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
-    - name: fetch latest branch version
+    - name: Fetch version bump
       run: |
             git pull
     - name: get-npm-version
       id: package-version
       uses: martinbeentjes/npm-get-version-action@master
-    - name: test print package version
-      run: |
-            echo "version is ${{ steps.package-version.outputs.current-version}}"
     - uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete

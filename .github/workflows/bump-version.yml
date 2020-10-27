@@ -1,27 +1,27 @@
-name: Bump Package Version
-on: [push]
-jobs:
-  bump-version:
-    name: Bump version on master
-    runs-on: ubuntu-latest
+# name: Bump Package Version
+# on: [push]
+# jobs:
+#   bump-version:
+#     name: Bump version on master
+#     runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      - name: "cat package.json"
-        run: cat ./package.json
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Automated version bump
-        uses: phips28/gh-action-bump-version@v8.0.12
-        with:
-          tag-prefix: ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-      - name: "cat package.json"
-        run: cat ./package.json
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+#         with:
+#           ref: ${{ github.ref }}
+#       - name: "cat package.json"
+#         run: cat ./package.json
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: 12
+#       - name: Automated version bump
+#         uses: phips28/gh-action-bump-version@v8.0.12
+#         with:
+#           tag-prefix: ''
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+#       - name: "cat package.json"
+#         run: cat ./package.json
   

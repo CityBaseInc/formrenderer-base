@@ -1,8 +1,35 @@
-name: Deploy to S3
+name: Bump Package Version and Deploy to S3
 on: [push]
 jobs:
+  bump-version:
+    name: Bump version on master
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: "cat package.json"
+        run: cat ./package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Automated version bump
+        uses: phips28/gh-action-bump-version@v8.0.12
+        with:
+          tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: "cat package.json"
+        run: cat ./package.json
+  
   deploy:
     runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.repository }}
+      TAG: ${{ github.ref }}
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
@@ -21,12 +48,13 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
-    - name: Fetch version bump
-      run: |
-            git pull
+    - name: Fetch branches
+      run: git fetch --all --prune --unshallow
     - name: get-npm-version
       id: package-version
       uses: martinbeentjes/npm-get-version-action@master
+    - name: test version
+      run: echo "version is ${{ steps.package-version.outputs.current-version}}"
     - uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --delete
@@ -37,4 +65,3 @@ jobs:
         AWS_REGION: 'us-west-2'
         SOURCE_DIR: './dist'
         DEST_DIR: ${{ steps.package-version.outputs.current-version}}
-

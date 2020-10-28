@@ -36,6 +36,8 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
+      - name: test version
+        run: echo "test version = ${{ steps.package-version.outputs.current-version}}"
       - name: Get version
         run: |
               curl -H "Content-Type: application/json" \

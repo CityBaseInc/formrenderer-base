@@ -31,10 +31,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
       - name: "cat package.json"
         run: cat ./package.json
-      - name: Checkout source code
-        uses: actions/checkout@v2
-      - name: Pull latest vesion
-        run: git pull
+      # - name: Pull latest vesion
+      #   run: git pull origin master
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master

@@ -27,9 +27,6 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    env:
-      REPO: ${{ github.repository }}
-      TAG: ${{ github.ref }}
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
@@ -48,8 +45,8 @@ jobs:
             -X POST \
             -d "{ \"component\": { \"name\": \"formrenderer-base\", \"version\": \"$version\" } }" \
             "https://rails-assets.org/components"
-    - name: Fetch branches
-      run: git fetch --all --prune --unshallow
+    - name: Pull latest vesion
+      run: git pull
     - name: get-npm-version
       id: package-version
       uses: martinbeentjes/npm-get-version-action@master

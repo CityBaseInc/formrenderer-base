@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
         run: cat ./package.json
       - uses: ruby/setup-ruby@v1
@@ -43,13 +44,9 @@ jobs:
       - name: Bump version version.coffee
         run: |
           sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v5
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
-          add: "src/version.coffee"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
       - name: apply version bump
         run: script/bootstrap
       - name: Notify Rails Assets

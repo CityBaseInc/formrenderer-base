@@ -1,8 +1,5 @@
 name: Bump Package Version and Deploy
-on:
-  push:
-    branches:
-      - master
+on: [push]
 jobs:
   bump-version-and-deploy:
     name: Bump version on master

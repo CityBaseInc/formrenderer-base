@@ -47,7 +47,7 @@ jobs:
       - name: Bump version version.coffee
         run: |
           git add src/version.coffee
-          git commit -m"Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+         
       # - name: Commit changes
       #   uses: EndBug/add-and-commit@v4.4.0
       #   with:

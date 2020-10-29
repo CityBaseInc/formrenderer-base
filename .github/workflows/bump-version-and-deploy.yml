@@ -47,8 +47,6 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v5
         with:
-          author_name: Your Name
-          author_email: mail@example.com
           message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
           add: "src/version.coffee"
         env:

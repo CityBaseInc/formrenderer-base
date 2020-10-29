@@ -44,17 +44,13 @@ jobs:
       - name: Bump version version.coffee
         run: |
           sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - name: Bump version version.coffee
-        run: |
-          git add src/version.coffee
-         
-      # - name: Commit changes
-      #   uses: EndBug/add-and-commit@v4.4.0
-      #   with:
-      #     message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
-      #     add: "src/version.coffee"
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v4.4.0
+        with:
+          message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+          add: "src/version.coffee"
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
       # - uses: stefanzweifel/git-auto-commit-action@v4.4.0
       #   with:
       #     commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"

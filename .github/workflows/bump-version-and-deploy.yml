@@ -43,9 +43,16 @@ jobs:
       - name: Bump version version.coffee
         run: |
           sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+      - run: |
+          git add src/version.coffee
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+          git push
+      # - uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
       - name: apply version bump
         run: script/bootstrap
       - name: Notify Rails Assets

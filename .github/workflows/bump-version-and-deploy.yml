@@ -51,7 +51,7 @@ jobs:
       #     add: "src/version.coffee"
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v4.4.0
         with:
           commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
           file_pattern: src/version.coffee

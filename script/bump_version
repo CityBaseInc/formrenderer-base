@@ -4,10 +4,6 @@ version=$1
 
 if [ -n "$version" ]; then
   echo "FormRenderer.VERSION = '$version'" > src/version.coffee
-  git config --local user.email "$(git log --format='%ae' HEAD^!)"
-  git config --local user.name "$(git log --format='%an' HEAD^!)"
-  git add src/version.coffee
-  git commit -m "Bump version in version.coffee to $version"
   
 else
   echo "Please provide version number as the first argument."

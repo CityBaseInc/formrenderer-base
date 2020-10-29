@@ -16,7 +16,7 @@ jobs:
     - name: Install grunt-cli
       run: npm install grunt-cli
     - name: Install bower
-      run: npm install bower
+      run: npm install -g bower
     - name: Install dependencies
       run: npm install
     - name: Build

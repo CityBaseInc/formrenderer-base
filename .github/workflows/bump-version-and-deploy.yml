@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
-          # token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
         run: cat ./package.json
       - uses: ruby/setup-ruby@v1
@@ -44,17 +44,17 @@ jobs:
       - name: Bump version version.coffee
         run: |
           sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v4.4.0
-        with:
-          message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
-          add: "src/version.coffee"
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-      # - uses: stefanzweifel/git-auto-commit-action@v4.4.0
+      # - name: Commit changes
+      #   uses: EndBug/add-and-commit@v4.4.0
       #   with:
-      #     commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
-      #     file_pattern: src/version.coffee
+      #     message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+      #     add: "src/version.coffee"
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - uses: stefanzweifel/git-auto-commit-action@v4.4.0
+        with:
+          commit_message: "Bump version in version.coffee to ${{ steps.package-version.outputs.current-version}}"
+          file_pattern: src/version.coffee
       - name: apply version bump
         run: script/bootstrap
       - name: Notify Rails Assets

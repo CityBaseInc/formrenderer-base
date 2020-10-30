@@ -66,7 +66,6 @@ if ($('#screendoor_project_id').val()) {
     this.state.set({
       hasChanges: false
     });
-    console.log(this.getValue());
   };
 }
 

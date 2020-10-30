@@ -729,7 +729,7 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.VERSION = '1.3.18';
+  FormRenderer.VERSION = '1.3.20';
 
 }).call(this);
 
@@ -3598,7 +3598,7 @@ window.JST["fields/map_marker"] = function(__obj) {
       return _safe(result);
     };
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\' />\n\n  <div class=\'fr_map_cover\'>\n    '));
+      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\'>\n  \n  </div>\n\n  <div class=\'fr_map_cover\'>\n    '));
     
       _print(FormRenderer.t.click_to_set);
     
@@ -3606,7 +3606,7 @@ window.JST["fields/map_marker"] = function(__obj) {
     
       _print(FormRenderer.t.coordinates);
     
-      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\' />,\n        <span data-rv-text=\'model.value.1\' />\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
+      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\'></span>,\n        <span data-rv-text=\'model.value.1\'></span>\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
     
       _print(FormRenderer.t.na);
     
@@ -3773,7 +3773,7 @@ window.JST["fields/paragraph"] = function(__obj) {
     
       _print(this.model.getSize());
     
-      _print(_safe('"\n   data-rv-input=\'model.value\' />\n'));
+      _print(_safe('"\n   data-rv-input=\'model.value\'\n>\n</textarea>\n'));
     
     }).call(this);
     
@@ -4125,7 +4125,7 @@ window.JST["fields/table"] = function(__obj) {
               _print(this.domId());
               _print(_safe('\''));
             }
-            _print(_safe(' />\n          '));
+            _print(_safe(' \n              >\n              </textarea>\n          '));
           }
           _print(_safe('\n          </td>\n        '));
         }

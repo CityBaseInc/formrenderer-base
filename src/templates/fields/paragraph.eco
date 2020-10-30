@@ -1,4 +1,6 @@
 <textarea
    id="<%= @domId() %>"
    class="size_<%= @model.getSize() %>"
-   data-rv-input='model.value' />
+   data-rv-input='model.value'
+>
+</textarea>

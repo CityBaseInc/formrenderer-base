@@ -1,5 +1,7 @@
 <div class='fr_map_wrapper'>
-  <div class='fr_map_map' />
+  <div class='fr_map_map'>
+  
+  </div>
 
   <div class='fr_map_cover'>
     <%= FormRenderer.t.click_to_set %>
@@ -9,8 +11,8 @@
     <div class='fr_map_coord'>
       <strong><%= FormRenderer.t.coordinates %>:</strong>
       <span data-rv-show='model.value'>
-        <span data-rv-text='model.value.0' />,
-        <span data-rv-text='model.value.1' />
+        <span data-rv-text='model.value.0'></span>,
+        <span data-rv-text='model.value.1'></span>
       </span>
       <span data-rv-hide='model.value' class='fr_map_no_location'><%= FormRenderer.t.na %></span>
     </div>

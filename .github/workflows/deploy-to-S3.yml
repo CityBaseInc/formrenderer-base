@@ -1,5 +1,8 @@
 name: Bump Package Version and Deploy
-on: [push]
+on:   
+  push:
+    branches:
+      - master
 jobs:
   deploy:
     name: Deploy
@@ -22,9 +25,9 @@ jobs:
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
-          AWS_S3_BUCKET: staging-formrenderer-base
+          AWS_S3_BUCKET: formrenderer-base
           AWS_ACCESS_KEY_ID: ${{ secrets.DOBT_FORM_RENDERER_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DOBT_FORM_RENDERER_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-west-2'
+          AWS_REGION: 'us-east-1'
           SOURCE_DIR: './dist'
           DEST_DIR: ${{ steps.package-version.outputs.current-version}}

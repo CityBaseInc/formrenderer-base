@@ -7,8 +7,10 @@ if [ -n "$version" ]; then
   git config --global user.name "Automated Version Bump"
   git config --global user.email gh-action-bump-version@users.noreply.github.com
   git add src/version.coffee
+  ls -la .git/COMMIT_EDITMSG
   rm .git/COMMIT_EDITMSG
   git commit -m "Bump version in version.coffee to $version"
+  git push
 else
   echo "Please provide version number as the first argument."
   exit 22

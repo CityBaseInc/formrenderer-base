@@ -39,15 +39,18 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - name: test version
-        run: echo "test version = ${{ steps.package-version.outputs.current-version}}"
+      - name: Bump version version.coffee
+        run: |
+          sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
+      - name: apply version bump
+        run: script/bootstrap
       - name: Install grunt-cli
         run: npm install grunt-cli
       - name: Install bower
         run: npm install -g bower
-      - name: Notify Rails Assets
-        run: |
-          sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}
+      # - name: Notify Rails Assets
+      #   run: |
+      #     sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}
       - uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete

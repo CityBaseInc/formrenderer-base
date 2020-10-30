@@ -23,6 +23,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 6.11.4
+      - name: Bump version version.coffee
+        run: |
+          sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
+      - name: apply version bump
+        run: script/bootstrap
       - name: Automated version bump
         uses: phips28/gh-action-bump-version@v8.0.12
         with:
@@ -40,11 +45,6 @@ jobs:
         run: npm install grunt-cli
       - name: Install bower
         run: npm install -g bower
-      - name: Bump version version.coffee
-        run: |
-          sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - name: apply version bump
-        run: script/bootstrap
       - name: Notify Rails Assets
         run: |
           sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}

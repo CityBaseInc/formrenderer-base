@@ -1,11 +1,8 @@
 name: Bump Package Version and Deploy
-on:   
-  push:
-    branches:
-      - master
+on: [push]
 jobs:
-  bump-version-and-deploy:
-    name: Bump version on master
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     env:
       REPO: ${{ github.repository }}
@@ -15,40 +12,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
-      - name: "cat package.json"
-        run: cat ./package.json
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.2
-      - name: Install sass
-        run: gem install sass
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 6.11.4
-      - name: Automated version bump
-        uses: phips28/gh-action-bump-version@v8.0.12
-        with:
-          tag-prefix: ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-      - name: "cat package.json"
-        run: cat ./package.json
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - name: Bump version version.coffee
-        run: |
-          sh ./script/bump_version ${{ steps.package-version.outputs.current-version}}
-      - name: Install grunt-cli
-        run: npm install grunt-cli
-      - name: Install bower
-        run: npm install -g bower
-      - name: apply version bump
-        run: script/bootstrap
-      - name: Commit version bump version.coffee
-        run: |
-          sh ./script/commit_version_bump ${{ steps.package-version.outputs.current-version}}
       - name: Notify Rails Assets
         run: |
           sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}
@@ -56,9 +22,9 @@ jobs:
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
-          AWS_S3_BUCKET: formrenderer-base
+          AWS_S3_BUCKET: staging-formrenderer-base
           AWS_ACCESS_KEY_ID: ${{ secrets.DOBT_FORM_RENDERER_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DOBT_FORM_RENDERER_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-1'
+          AWS_REGION: 'us-west-2'
           SOURCE_DIR: './dist'
           DEST_DIR: ${{ steps.package-version.outputs.current-version}}

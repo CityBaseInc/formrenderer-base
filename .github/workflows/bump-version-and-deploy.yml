@@ -43,6 +43,9 @@ jobs:
         run: npm install -g bower
       - name: apply version bump
         run: script/bootstrap
+      - name: Commit version bump version.coffee
+        run: |
+          sh ./script/commit_version_bump ${{ steps.package-version.outputs.current-version}}
       - name: Notify Rails Assets
         run: |
           sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}

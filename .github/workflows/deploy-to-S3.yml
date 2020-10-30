@@ -1,0 +1,33 @@
+name: Bump Package Version and Deploy
+on:   
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.repository }}
+      TAG: ${{ github.ref }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Notify Rails Assets
+        run: |
+          sh ./script/notify_rails_assets ${{ steps.package-version.outputs.current-version}}
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: formrenderer-base
+          AWS_ACCESS_KEY_ID: ${{ secrets.DOBT_FORM_RENDERER_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DOBT_FORM_RENDERER_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-1'
+          SOURCE_DIR: './dist'
+          DEST_DIR: ${{ steps.package-version.outputs.current-version}}

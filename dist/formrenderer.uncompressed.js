@@ -4474,75 +4474,73 @@ var slice = [].slice;
 }));
 
 !function(e,n){"use strict";function r(e,n){var r,t,u=e.toLowerCase();for(n=[].concat(n),r=0;n.length>r;r+=1)if(t=n[r]){if(t.test&&t.test(e))return!0;if(t.toLowerCase()===u)return!0}}var t=n.prototype.trim,u=n.prototype.trimRight,i=n.prototype.trimLeft,l=function(e){return 1*e||0},o=function(e,n){if(1>n)return"";for(var r="";n>0;)1&n&&(r+=e),n>>=1,e+=e;return r},a=[].slice,c=function(e){return null==e?"\\s":e.source?e.source:"["+g.escapeRegExp(e)+"]"},s={lt:"<",gt:">",quot:'"',amp:"&",apos:"'"},f={};for(var p in s)f[s[p]]=p;f["'"]="#39";var h=function(){function e(e){return Object.prototype.toString.call(e).slice(8,-1).toLowerCase()}var r=o,t=function(){return t.cache.hasOwnProperty(arguments[0])||(t.cache[arguments[0]]=t.parse(arguments[0])),t.format.call(null,t.cache[arguments[0]],arguments)};return t.format=function(t,u){var i,l,o,a,c,s,f,p=1,g=t.length,d="",m=[];for(l=0;g>l;l++)if(d=e(t[l]),"string"===d)m.push(t[l]);else if("array"===d){if(a=t[l],a[2])for(i=u[p],o=0;a[2].length>o;o++){if(!i.hasOwnProperty(a[2][o]))throw new Error(h('[_.sprintf] property "%s" does not exist',a[2][o]));i=i[a[2][o]]}else i=a[1]?u[a[1]]:u[p++];if(/[^s]/.test(a[8])&&"number"!=e(i))throw new Error(h("[_.sprintf] expecting number but found %s",e(i)));switch(a[8]){case"b":i=i.toString(2);break;case"c":i=n.fromCharCode(i);break;case"d":i=parseInt(i,10);break;case"e":i=a[7]?i.toExponential(a[7]):i.toExponential();break;case"f":i=a[7]?parseFloat(i).toFixed(a[7]):parseFloat(i);break;case"o":i=i.toString(8);break;case"s":i=(i=n(i))&&a[7]?i.substring(0,a[7]):i;break;case"u":i=Math.abs(i);break;case"x":i=i.toString(16);break;case"X":i=i.toString(16).toUpperCase()}i=/[def]/.test(a[8])&&a[3]&&i>=0?"+"+i:i,s=a[4]?"0"==a[4]?"0":a[4].charAt(1):" ",f=a[6]-n(i).length,c=a[6]?r(s,f):"",m.push(a[5]?i+c:c+i)}return m.join("")},t.cache={},t.parse=function(e){for(var n=e,r=[],t=[],u=0;n;){if(null!==(r=/^[^\x25]+/.exec(n)))t.push(r[0]);else if(null!==(r=/^\x25{2}/.exec(n)))t.push("%");else{if(null===(r=/^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(n)))throw new Error("[_.sprintf] huh?");if(r[2]){u|=1;var i=[],l=r[2],o=[];if(null===(o=/^([a-z_][a-z_\d]*)/i.exec(l)))throw new Error("[_.sprintf] huh?");for(i.push(o[1]);""!==(l=l.substring(o[0].length));)if(null!==(o=/^\.([a-z_][a-z_\d]*)/i.exec(l)))i.push(o[1]);else{if(null===(o=/^\[(\d+)\]/.exec(l)))throw new Error("[_.sprintf] huh?");i.push(o[1])}r[2]=i}else u|=2;if(3===u)throw new Error("[_.sprintf] mixing positional and named placeholders is not (yet) supported");t.push(r)}n=n.substring(r[0].length)}return t},t}(),g={VERSION:"2.3.0",isBlank:function(e){return null==e&&(e=""),/^\s*$/.test(e)},stripTags:function(e){return null==e?"":n(e).replace(/<\/?[^>]+>/g,"")},capitalize:function(e){return e=null==e?"":n(e),e.charAt(0).toUpperCase()+e.slice(1)},chop:function(e,r){return null==e?[]:(e=n(e),r=~~r,r>0?e.match(new RegExp(".{1,"+r+"}","g")):[e])},clean:function(e){return g.strip(e).replace(/\s+/g," ")},count:function(e,r){if(null==e||null==r)return 0;e=n(e),r=n(r);for(var t=0,u=0,i=r.length;;){if(u=e.indexOf(r,u),-1===u)break;t++,u+=i}return t},chars:function(e){return null==e?[]:n(e).split("")},swapCase:function(e){return null==e?"":n(e).replace(/\S/g,function(e){return e===e.toUpperCase()?e.toLowerCase():e.toUpperCase()})},escapeHTML:function(e){return null==e?"":n(e).replace(/[&<>"']/g,function(e){return"&"+f[e]+";"})},unescapeHTML:function(e){return null==e?"":n(e).replace(/\&([^;]+);/g,function(e,r){var t;return r in s?s[r]:(t=r.match(/^#x([\da-fA-F]+)$/))?n.fromCharCode(parseInt(t[1],16)):(t=r.match(/^#(\d+)$/))?n.fromCharCode(~~t[1]):e})},escapeRegExp:function(e){return null==e?"":n(e).replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")},splice:function(e,n,r,t){var u=g.chars(e);return u.splice(~~n,~~r,t),u.join("")},insert:function(e,n,r){return g.splice(e,n,0,r)},include:function(e,r){return""===r?!0:null==e?!1:-1!==n(e).indexOf(r)},join:function(){var e=a.call(arguments),n=e.shift();return null==n&&(n=""),e.join(n)},lines:function(e){return null==e?[]:n(e).split("\n")},reverse:function(e){return g.chars(e).reverse().join("")},startsWith:function(e,r){return""===r?!0:null==e||null==r?!1:(e=n(e),r=n(r),e.length>=r.length&&e.slice(0,r.length)===r)},endsWith:function(e,r){return""===r?!0:null==e||null==r?!1:(e=n(e),r=n(r),e.length>=r.length&&e.slice(e.length-r.length)===r)},succ:function(e){return null==e?"":(e=n(e),e.slice(0,-1)+n.fromCharCode(e.charCodeAt(e.length-1)+1))},titleize:function(e){return null==e?"":(e=n(e).toLowerCase(),e.replace(/(?:^|\s|-)\S/g,function(e){return e.toUpperCase()}))},camelize:function(e){return g.trim(e).replace(/[-_\s]+(.)?/g,function(e,n){return n?n.toUpperCase():""})},underscored:function(e){return g.trim(e).replace(/([a-z\d])([A-Z]+)/g,"$1_$2").replace(/[-\s]+/g,"_").toLowerCase()},dasherize:function(e){return g.trim(e).replace(/([A-Z])/g,"-$1").replace(/[-_\s]+/g,"-").toLowerCase()},classify:function(e){return g.titleize(n(e).replace(/[\W_]/g," ")).replace(/\s/g,"")},humanize:function(e){return g.capitalize(g.underscored(e).replace(/_id$/,"").replace(/_/g," "))},trim:function(e,r){return null==e?"":!r&&t?t.call(e):(r=c(r),n(e).replace(new RegExp("^"+r+"+|"+r+"+$","g"),""))},ltrim:function(e,r){return null==e?"":!r&&i?i.call(e):(r=c(r),n(e).replace(new RegExp("^"+r+"+"),""))},rtrim:function(e,r){return null==e?"":!r&&u?u.call(e):(r=c(r),n(e).replace(new RegExp(r+"+$"),""))},truncate:function(e,r,t){return null==e?"":(e=n(e),t=t||"...",r=~~r,e.length>r?e.slice(0,r)+t:e)},prune:function(e,r,t){if(null==e)return"";if(e=n(e),r=~~r,t=null!=t?n(t):"...",r>=e.length)return e;var u=function(e){return e.toUpperCase()!==e.toLowerCase()?"A":" "},i=e.slice(0,r+1).replace(/.(?=\W*\w*$)/g,u);return i=i.slice(i.length-2).match(/\w\w/)?i.replace(/\s*\S+$/,""):g.rtrim(i.slice(0,i.length-1)),(i+t).length>e.length?e:e.slice(0,i.length)+t},words:function(e,n){return g.isBlank(e)?[]:g.trim(e,n).split(n||/\s+/)},pad:function(e,r,t,u){e=null==e?"":n(e),r=~~r;var i=0;switch(t?t.length>1&&(t=t.charAt(0)):t=" ",u){case"right":return i=r-e.length,e+o(t,i);case"both":return i=r-e.length,o(t,Math.ceil(i/2))+e+o(t,Math.floor(i/2));default:return i=r-e.length,o(t,i)+e}},lpad:function(e,n,r){return g.pad(e,n,r)},rpad:function(e,n,r){return g.pad(e,n,r,"right")},lrpad:function(e,n,r){return g.pad(e,n,r,"both")},sprintf:h,vsprintf:function(e,n){return n.unshift(e),h.apply(null,n)},toNumber:function(e,n){return e?(e=g.trim(e),e.match(/^-?\d+(?:\.\d+)?$/)?l(l(e).toFixed(~~n)):0/0):0},numberFormat:function(e,n,r,t){if(isNaN(e)||null==e)return"";e=e.toFixed(~~n),t="string"==typeof t?t:",";var u=e.split("."),i=u[0],l=u[1]?(r||".")+u[1]:"";return i.replace(/(\d)(?=(?:\d{3})+$)/g,"$1"+t)+l},strRight:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.indexOf(r):-1;return~t?e.slice(t+r.length,e.length):e},strRightBack:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.lastIndexOf(r):-1;return~t?e.slice(t+r.length,e.length):e},strLeft:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.indexOf(r):-1;return~t?e.slice(0,t):e},strLeftBack:function(e,n){if(null==e)return"";e+="",n=null!=n?""+n:n;var r=e.lastIndexOf(n);return~r?e.slice(0,r):e},toSentence:function(e,n,r,t){n=n||", ",r=r||" and ";var u=e.slice(),i=u.pop();return e.length>2&&t&&(r=g.rtrim(n)+r),u.length?u.join(n)+r+i:i},toSentenceSerial:function(){var e=a.call(arguments);return e[3]=!0,g.toSentence.apply(g,e)},slugify:function(e){if(null==e)return"";var r="ąàáäâãåæăćęèéëêìíïîłńòóöôõøśșțùúüûñçżź",t="aaaaaaaaaceeeeeiiiilnoooooosstuuuunczz",u=new RegExp(c(r),"g");return e=n(e).toLowerCase().replace(u,function(e){var n=r.indexOf(e);return t.charAt(n)||"-"}),g.dasherize(e.replace(/[^\w\s-]/g,""))},surround:function(e,n){return[n,e,n].join("")},quote:function(e,n){return g.surround(e,n||'"')},unquote:function(e,n){return n=n||'"',e[0]===n&&e[e.length-1]===n?e.slice(1,e.length-1):e},exports:function(){var e={};for(var n in this)this.hasOwnProperty(n)&&!n.match(/^(?:include|contains|reverse)$/)&&(e[n]=this[n]);return e},repeat:function(e,r,t){if(null==e)return"";if(r=~~r,null==t)return o(n(e),r);for(var u=[];r>0;u[--r]=e);return u.join(t)},naturalCmp:function(e,r){if(e==r)return 0;if(!e)return-1;if(!r)return 1;for(var t=/(\.\d+)|(\d+)|(\D+)/g,u=n(e).toLowerCase().match(t),i=n(r).toLowerCase().match(t),l=Math.min(u.length,i.length),o=0;l>o;o++){var a=u[o],c=i[o];if(a!==c){var s=parseInt(a,10);if(!isNaN(s)){var f=parseInt(c,10);if(!isNaN(f)&&s-f)return s-f}return c>a?-1:1}}return u.length===i.length?u.length-i.length:r>e?-1:1},levenshtein:function(e,r){if(null==e&&null==r)return 0;if(null==e)return n(r).length;if(null==r)return n(e).length;e=n(e),r=n(r);for(var t,u,i=[],l=0;r.length>=l;l++)for(var o=0;e.length>=o;o++)u=l&&o?e.charAt(o-1)===r.charAt(l-1)?t:Math.min(i[o],i[o-1],t)+1:l+o,t=i[o],i[o]=u;return i.pop()},toBoolean:function(e,n,t){return"number"==typeof e&&(e=""+e),"string"!=typeof e?!!e:(e=g.trim(e),r(e,n||["true","1"])?!0:r(e,t||["false","0"])?!1:void 0)}};g.strip=g.trim,g.lstrip=g.ltrim,g.rstrip=g.rtrim,g.center=g.lrpad,g.rjust=g.lpad,g.ljust=g.rpad,g.contains=g.include,g.q=g.quote,g.toBool=g.toBoolean,"undefined"!=typeof exports&&("undefined"!=typeof module&&module.exports&&(module.exports=g),exports._s=g),"function"==typeof define&&define.amd&&define("underscore.string",[],function(){return g}),e._=e._||{},e._.string=e._.str=g}(this,String);
-// Generated by CoffeeScript 1.9.1
 (function() {
-  var BeforeUnload;
-
-  BeforeUnload = (function() {
-    function BeforeUnload() {}
-
-    BeforeUnload.footerText = 'Are you sure you want to leave this page?';
-
-    BeforeUnload.defaults = {
-      "if": function() {
-        return true;
-      },
-      message: 'You have unsaved changes.'
-    };
-
-    BeforeUnload.enable = function(opts) {
-      this.opts = {
-        "if": opts["if"] || this.defaults["if"],
-        message: opts.message || this.defaults.message,
-        cb: opts.cb
+    var BeforeUnload;
+  
+    BeforeUnload = (function() {
+      function BeforeUnload() {}
+  
+      BeforeUnload.footerText = 'Are you sure you want to leave this page?';
+  
+      BeforeUnload.defaults = {
+        "if": function() {
+          return true;
+        },
+        message: 'You have unsaved changes.'
       };
-      this._onTurbolinksUnload = (function(_this) {
-        return function(e) {
-          if (!_this._willPrevent()) {
-            return _this.disable();
-          }
-          if (_this.opts.cb) {
-            if (_this.opts.cb(e.data.url) !== false) {
+  
+      BeforeUnload.enable = function(opts) {
+        this.opts = {
+          "if": opts["if"] || this.defaults["if"],
+          message: opts.message || this.defaults.message,
+          cb: opts.cb
+        };
+        this._onTurbolinksUnload = (function(_this) {
+          return function(e) {
+            if (!_this._willPrevent()) {
+              return _this.disable();
+            }
+            if (_this.opts.cb) {
+              if (_this.opts.cb(e.data.url) !== false) {
+                return e.preventDefault();
+              }
+            }
+            if (confirm(_this.opts.message + "\n\n" + _this.footerText)) {
+              return _this.disable();
+            } else {
               return e.preventDefault();
             }
-          }
-          if (confirm(_this.opts.message + "\n\n" + _this.footerText)) {
-            return _this.disable();
-          } else {
-            return e.preventDefault();
-          }
-        };
-      })(this);
-      document.body.beforeunload = this;
-      window.onbeforeunload = (function(_this) {
-        return function() {
-          if (_this._willPrevent()) {
-            return _this.opts.message;
-          } else {
-            return void 0;
-          }
-        };
-      })(this);
-      return document.addEventListener('page:before-change', this._onTurbolinksUnload, false);
-    };
-
-    BeforeUnload.disable = function() {
-      window.onbeforeunload = null;
-      return document.removeEventListener('page:before-change', this._onTurbolinksUnload);
-    };
-
-    BeforeUnload._willPrevent = function() {
-      return document.body.beforeunload === this && this.opts["if"]();
-    };
-
-    return BeforeUnload;
-
-  })();
-
-  window.BeforeUnload = BeforeUnload;
-
-}).call(this);
-
+          };
+        })(this);
+        document.body.beforeunload = this;
+        window.onbeforeunload = (function(_this) {
+          return function() {
+            if (_this._willPrevent()) {
+              return _this.opts.message;
+            } else {
+              return void 0;
+            }
+          };
+        })(this);
+        return document.addEventListener('page:before-change', this._onTurbolinksUnload, false);
+      };
+  
+      BeforeUnload.disable = function() {
+        window.onbeforeunload = null;
+        return document.removeEventListener('page:before-change', this._onTurbolinksUnload);
+      };
+  
+      BeforeUnload._willPrevent = function() {
+        return document.body.beforeunload === this && this.opts["if"]();
+      };
+  
+      return BeforeUnload;
+  
+    })();
+  
+    window.BeforeUnload = BeforeUnload;
+  
+  }).call(this);
 /*jshint expr:true eqnull:true */
 /**
  *
@@ -5688,257 +5686,274 @@ var slice = [].slice;
 }).call(this);
 
 var ISOCountryNames = {
-  "AF": "Afghanistan",
-  "AX": "Åland Islands",
-  "AL": "Albania",
-  "DZ": "Algeria",
-  "AS": "American Samoa",
-  "AD": "Andorra",
-  "AO": "Angola",
-  "AI": "Anguilla",
-  "AQ": "Antarctica",
-  "AG": "Antigua and Barbuda",
-  "AR": "Argentina",
-  "AM": "Armenia",
-  "AW": "Aruba",
-  "AU": "Australia",
-  "AT": "Austria",
-  "AZ": "Azerbaijan",
-  "BS": "Bahamas",
-  "BH": "Bahrain",
-  "BD": "Bangladesh",
-  "BB": "Barbados",
-  "BY": "Belarus",
-  "BE": "Belgium",
-  "BZ": "Belize",
-  "BJ": "Benin",
-  "BM": "Bermuda",
-  "BT": "Bhutan",
-  "BO": "Bolivia, Plurinational State of",
-  "BQ": "Bonaire, Sint Eustatius and Saba",
-  "BA": "Bosnia and Herzegovina",
-  "BW": "Botswana",
-  "BV": "Bouvet Island",
-  "BR": "Brazil",
-  "IO": "British Indian Ocean Territory",
-  "BN": "Brunei Darussalam",
-  "BG": "Bulgaria",
-  "BF": "Burkina Faso",
-  "BI": "Burundi",
-  "KH": "Cambodia",
-  "CM": "Cameroon",
-  "CA": "Canada",
-  "CV": "Cape Verde",
-  "KY": "Cayman Islands",
-  "CF": "Central African Republic",
-  "TD": "Chad",
-  "CL": "Chile",
-  "CN": "China",
-  "CX": "Christmas Island",
-  "CC": "Cocos (Keeling) Islands",
-  "CO": "Colombia",
-  "KM": "Comoros",
-  "CG": "Congo",
-  "CD": "Congo, the Democratic Republic of the",
-  "CK": "Cook Islands",
-  "CR": "Costa Rica",
-  "CI": "Côte d'Ivoire",
-  "HR": "Croatia",
-  "CU": "Cuba",
-  "CW": "Curaçao",
-  "CY": "Cyprus",
-  "CZ": "Czech Republic",
-  "DK": "Denmark",
-  "DJ": "Djibouti",
-  "DM": "Dominica",
-  "DO": "Dominican Republic",
-  "EC": "Ecuador",
-  "EG": "Egypt",
-  "SV": "El Salvador",
-  "GQ": "Equatorial Guinea",
-  "ER": "Eritrea",
-  "EE": "Estonia",
-  "ET": "Ethiopia",
-  "FK": "Falkland Islands (Malvinas)",
-  "FO": "Faroe Islands",
-  "FJ": "Fiji",
-  "FI": "Finland",
-  "FR": "France",
-  "GF": "French Guiana",
-  "PF": "French Polynesia",
-  "TF": "French Southern Territories",
-  "GA": "Gabon",
-  "GM": "Gambia",
-  "GE": "Georgia",
-  "DE": "Germany",
-  "GH": "Ghana",
-  "GI": "Gibraltar",
-  "GR": "Greece",
-  "GL": "Greenland",
-  "GD": "Grenada",
-  "GP": "Guadeloupe",
-  "GU": "Guam",
-  "GT": "Guatemala",
-  "GG": "Guernsey",
-  "GN": "Guinea",
-  "GW": "Guinea-Bissau",
-  "GY": "Guyana",
-  "HT": "Haiti",
-  "HM": "Heard Island and McDonald Mcdonald Islands",
-  "VA": "Holy See (Vatican City State)",
-  "HN": "Honduras",
-  "HK": "Hong Kong",
-  "HU": "Hungary",
-  "IS": "Iceland",
-  "IN": "India",
-  "ID": "Indonesia",
-  "IR": "Iran, Islamic Republic of",
-  "IQ": "Iraq",
-  "IE": "Ireland",
-  "IM": "Isle of Man",
-  "IL": "Israel",
-  "IT": "Italy",
-  "JM": "Jamaica",
-  "JP": "Japan",
-  "JE": "Jersey",
-  "JO": "Jordan",
-  "KZ": "Kazakhstan",
-  "KE": "Kenya",
-  "KI": "Kiribati",
-  "KP": "Korea, Democratic People's Republic of",
-  "KR": "Korea, Republic of",
-  "KW": "Kuwait",
-  "KG": "Kyrgyzstan",
-  "LA": "Lao People's Democratic Republic",
-  "LV": "Latvia",
-  "LB": "Lebanon",
-  "LS": "Lesotho",
-  "LR": "Liberia",
-  "LY": "Libya",
-  "LI": "Liechtenstein",
-  "LT": "Lithuania",
-  "LU": "Luxembourg",
-  "MO": "Macao",
-  "MK": "Macedonia, the Former Yugoslav Republic of",
-  "MG": "Madagascar",
-  "MW": "Malawi",
-  "MY": "Malaysia",
-  "MV": "Maldives",
-  "ML": "Mali",
-  "MT": "Malta",
-  "MH": "Marshall Islands",
-  "MQ": "Martinique",
-  "MR": "Mauritania",
-  "MU": "Mauritius",
-  "YT": "Mayotte",
-  "MX": "Mexico",
-  "FM": "Micronesia, Federated States of",
-  "MD": "Moldova, Republic of",
-  "MC": "Monaco",
-  "MN": "Mongolia",
-  "ME": "Montenegro",
-  "MS": "Montserrat",
-  "MA": "Morocco",
-  "MZ": "Mozambique",
-  "MM": "Myanmar",
-  "NA": "Namibia",
-  "NR": "Nauru",
-  "NP": "Nepal",
-  "NL": "Netherlands",
-  "NC": "New Caledonia",
-  "NZ": "New Zealand",
-  "NI": "Nicaragua",
-  "NE": "Niger",
-  "NG": "Nigeria",
-  "NU": "Niue",
-  "NF": "Norfolk Island",
-  "MP": "Northern Mariana Islands",
-  "NO": "Norway",
-  "OM": "Oman",
-  "PK": "Pakistan",
-  "PW": "Palau",
-  "PS": "Palestine, State of",
-  "PA": "Panama",
-  "PG": "Papua New Guinea",
-  "PY": "Paraguay",
-  "PE": "Peru",
-  "PH": "Philippines",
-  "PN": "Pitcairn",
-  "PL": "Poland",
-  "PT": "Portugal",
-  "PR": "Puerto Rico",
-  "QA": "Qatar",
-  "RE": "Réunion",
-  "RO": "Romania",
-  "RU": "Russian Federation",
-  "RW": "Rwanda",
-  "BL": "Saint Barthélemy",
-  "SH": "Saint Helena, Ascension and Tristan da Cunha",
-  "KN": "Saint Kitts and Nevis",
-  "LC": "Saint Lucia",
-  "MF": "Saint Martin (French part)",
-  "PM": "Saint Pierre and Miquelon",
-  "VC": "Saint Vincent and the Grenadines",
-  "WS": "Samoa",
-  "SM": "San Marino",
-  "ST": "Sao Tome and Principe",
-  "SA": "Saudi Arabia",
-  "SN": "Senegal",
-  "RS": "Serbia",
-  "SC": "Seychelles",
-  "SL": "Sierra Leone",
-  "SG": "Singapore",
-  "SX": "Sint Maarten (Dutch part)",
-  "SK": "Slovakia",
-  "SI": "Slovenia",
-  "SB": "Solomon Islands",
-  "SO": "Somalia",
-  "ZA": "South Africa",
-  "GS": "South Georgia and the South Sandwich Islands",
-  "SS": "South Sudan",
-  "ES": "Spain",
-  "LK": "Sri Lanka",
-  "SD": "Sudan",
-  "SR": "Suriname",
-  "SJ": "Svalbard and Jan Mayen",
-  "SZ": "Swaziland",
-  "SE": "Sweden",
-  "CH": "Switzerland",
-  "SY": "Syrian Arab Republic",
-  "TW": "Taiwan, Province of China",
-  "TJ": "Tajikistan",
-  "TZ": "Tanzania, United Republic of",
-  "TH": "Thailand",
-  "TL": "Timor-Leste",
-  "TG": "Togo",
-  "TK": "Tokelau",
-  "TO": "Tonga",
-  "TT": "Trinidad and Tobago",
-  "TN": "Tunisia",
-  "TR": "Turkey",
-  "TM": "Turkmenistan",
-  "TC": "Turks and Caicos Islands",
-  "TV": "Tuvalu",
-  "UG": "Uganda",
-  "UA": "Ukraine",
-  "AE": "United Arab Emirates",
-  "GB": "United Kingdom",
-  "US": "United States",
-  "UM": "United States Minor Outlying Islands",
-  "UY": "Uruguay",
-  "UZ": "Uzbekistan",
-  "VU": "Vanuatu",
-  "VE": "Venezuela, Bolivarian Republic of",
-  "VN": "Viet Nam",
-  "VG": "Virgin Islands, British",
-  "VI": "Virgin Islands, U.S.",
-  "WF": "Wallis and Futuna",
-  "EH": "Western Sahara",
-  "YE": "Yemen",
-  "ZM": "Zambia",
-  "ZW": "Zimbabwe",
+    "AF": "Afghanistan",
+    "AX": "Åland Islands",
+    "AL": "Albania",
+    "DZ": "Algeria",
+    "AS": "American Samoa",
+    "AD": "Andorra",
+    "AO": "Angola",
+    "AI": "Anguilla",
+    "AQ": "Antarctica",
+    "AG": "Antigua and Barbuda",
+    "AR": "Argentina",
+    "AM": "Armenia",
+    "AW": "Aruba",
+    "AU": "Australia",
+    "AT": "Austria",
+    "AZ": "Azerbaijan",
+    "BS": "Bahamas",
+    "BH": "Bahrain",
+    "BD": "Bangladesh",
+    "BB": "Barbados",
+    "BY": "Belarus",
+    "BE": "Belgium",
+    "BZ": "Belize",
+    "BJ": "Benin",
+    "BM": "Bermuda",
+    "BT": "Bhutan",
+    "BO": "Bolivia, Plurinational State of",
+    "BQ": "Bonaire, Sint Eustatius and Saba",
+    "BA": "Bosnia and Herzegovina",
+    "BW": "Botswana",
+    "BV": "Bouvet Island",
+    "BR": "Brazil",
+    "IO": "British Indian Ocean Territory",
+    "BN": "Brunei Darussalam",
+    "BG": "Bulgaria",
+    "BF": "Burkina Faso",
+    "BI": "Burundi",
+    "KH": "Cambodia",
+    "CM": "Cameroon",
+    "CA": "Canada",
+    "CV": "Cape Verde",
+    "KY": "Cayman Islands",
+    "CF": "Central African Republic",
+    "TD": "Chad",
+    "CL": "Chile",
+    "CN": "China",
+    "CX": "Christmas Island",
+    "CC": "Cocos (Keeling) Islands",
+    "CO": "Colombia",
+    "KM": "Comoros",
+    "CG": "Congo",
+    "CD": "Congo, the Democratic Republic of the",
+    "CK": "Cook Islands",
+    "CR": "Costa Rica",
+    "CI": "Côte d'Ivoire",
+    "HR": "Croatia",
+    "CU": "Cuba",
+    "CW": "Curaçao",
+    "CY": "Cyprus",
+    "CZ": "Czech Republic",
+    "DK": "Denmark",
+    "DJ": "Djibouti",
+    "DM": "Dominica",
+    "DO": "Dominican Republic",
+    "EC": "Ecuador",
+    "EG": "Egypt",
+    "SV": "El Salvador",
+    "GQ": "Equatorial Guinea",
+    "ER": "Eritrea",
+    "EE": "Estonia",
+    "ET": "Ethiopia",
+    "FK": "Falkland Islands (Malvinas)",
+    "FO": "Faroe Islands",
+    "FJ": "Fiji",
+    "FI": "Finland",
+    "FR": "France",
+    "GF": "French Guiana",
+    "PF": "French Polynesia",
+    "TF": "French Southern Territories",
+    "GA": "Gabon",
+    "GM": "Gambia",
+    "GE": "Georgia",
+    "DE": "Germany",
+    "GH": "Ghana",
+    "GI": "Gibraltar",
+    "GR": "Greece",
+    "GL": "Greenland",
+    "GD": "Grenada",
+    "GP": "Guadeloupe",
+    "GU": "Guam",
+    "GT": "Guatemala",
+    "GG": "Guernsey",
+    "GN": "Guinea",
+    "GW": "Guinea-Bissau",
+    "GY": "Guyana",
+    "HT": "Haiti",
+    "HM": "Heard Island and McDonald Mcdonald Islands",
+    "VA": "Holy See (Vatican City State)",
+    "HN": "Honduras",
+    "HK": "Hong Kong",
+    "HU": "Hungary",
+    "IS": "Iceland",
+    "IN": "India",
+    "ID": "Indonesia",
+    "IR": "Iran, Islamic Republic of",
+    "IQ": "Iraq",
+    "IE": "Ireland",
+    "IM": "Isle of Man",
+    "IL": "Israel",
+    "IT": "Italy",
+    "JM": "Jamaica",
+    "JP": "Japan",
+    "JE": "Jersey",
+    "JO": "Jordan",
+    "KZ": "Kazakhstan",
+    "KE": "Kenya",
+    "KI": "Kiribati",
+    "KP": "Korea, Democratic People's Republic of",
+    "KR": "Korea, Republic of",
+    "KW": "Kuwait",
+    "KG": "Kyrgyzstan",
+    "LA": "Lao People's Democratic Republic",
+    "LV": "Latvia",
+    "LB": "Lebanon",
+    "LS": "Lesotho",
+    "LR": "Liberia",
+    "LY": "Libya",
+    "LI": "Liechtenstein",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "MO": "Macao",
+    "MK": "Macedonia, the Former Yugoslav Republic of",
+    "MG": "Madagascar",
+    "MW": "Malawi",
+    "MY": "Malaysia",
+    "MV": "Maldives",
+    "ML": "Mali",
+    "MT": "Malta",
+    "MH": "Marshall Islands",
+    "MQ": "Martinique",
+    "MR": "Mauritania",
+    "MU": "Mauritius",
+    "YT": "Mayotte",
+    "MX": "Mexico",
+    "FM": "Micronesia, Federated States of",
+    "MD": "Moldova, Republic of",
+    "MC": "Monaco",
+    "MN": "Mongolia",
+    "ME": "Montenegro",
+    "MS": "Montserrat",
+    "MA": "Morocco",
+    "MZ": "Mozambique",
+    "MM": "Myanmar",
+    "NA": "Namibia",
+    "NR": "Nauru",
+    "NP": "Nepal",
+    "NL": "Netherlands",
+    "NC": "New Caledonia",
+    "NZ": "New Zealand",
+    "NI": "Nicaragua",
+    "NE": "Niger",
+    "NG": "Nigeria",
+    "NU": "Niue",
+    "NF": "Norfolk Island",
+    "MP": "Northern Mariana Islands",
+    "NO": "Norway",
+    "OM": "Oman",
+    "PK": "Pakistan",
+    "PW": "Palau",
+    "PS": "Palestine, State of",
+    "PA": "Panama",
+    "PG": "Papua New Guinea",
+    "PY": "Paraguay",
+    "PE": "Peru",
+    "PH": "Philippines",
+    "PN": "Pitcairn",
+    "PL": "Poland",
+    "PT": "Portugal",
+    "PR": "Puerto Rico",
+    "QA": "Qatar",
+    "RE": "Réunion",
+    "RO": "Romania",
+    "RU": "Russian Federation",
+    "RW": "Rwanda",
+    "BL": "Saint Barthélemy",
+    "SH": "Saint Helena, Ascension and Tristan da Cunha",
+    "KN": "Saint Kitts and Nevis",
+    "LC": "Saint Lucia",
+    "MF": "Saint Martin (French part)",
+    "PM": "Saint Pierre and Miquelon",
+    "VC": "Saint Vincent and the Grenadines",
+    "WS": "Samoa",
+    "SM": "San Marino",
+    "ST": "Sao Tome and Principe",
+    "SA": "Saudi Arabia",
+    "SN": "Senegal",
+    "RS": "Serbia",
+    "SC": "Seychelles",
+    "SL": "Sierra Leone",
+    "SG": "Singapore",
+    "SX": "Sint Maarten (Dutch part)",
+    "SK": "Slovakia",
+    "SI": "Slovenia",
+    "SB": "Solomon Islands",
+    "SO": "Somalia",
+    "ZA": "South Africa",
+    "GS": "South Georgia and the South Sandwich Islands",
+    "SS": "South Sudan",
+    "ES": "Spain",
+    "LK": "Sri Lanka",
+    "SD": "Sudan",
+    "SR": "Suriname",
+    "SJ": "Svalbard and Jan Mayen",
+    "SZ": "Swaziland",
+    "SE": "Sweden",
+    "CH": "Switzerland",
+    "SY": "Syrian Arab Republic",
+    "TW": "Taiwan, Province of China",
+    "TJ": "Tajikistan",
+    "TZ": "Tanzania, United Republic of",
+    "TH": "Thailand",
+    "TL": "Timor-Leste",
+    "TG": "Togo",
+    "TK": "Tokelau",
+    "TO": "Tonga",
+    "TT": "Trinidad and Tobago",
+    "TN": "Tunisia",
+    "TR": "Turkey",
+    "TM": "Turkmenistan",
+    "TC": "Turks and Caicos Islands",
+    "TV": "Tuvalu",
+    "UG": "Uganda",
+    "UA": "Ukraine",
+    "AE": "United Arab Emirates",
+    "GB": "United Kingdom",
+    "US": "United States",
+    "UM": "United States Minor Outlying Islands",
+    "UY": "Uruguay",
+    "UZ": "Uzbekistan",
+    "VU": "Vanuatu",
+    "VE": "Venezuela, Bolivarian Republic of",
+    "VN": "Viet Nam",
+    "VG": "Virgin Islands, British",
+    "VI": "Virgin Islands, U.S.",
+    "WF": "Wallis and Futuna",
+    "EH": "Western Sahara",
+    "YE": "Yemen",
+    "ZM": "Zambia",
+    "ZW": "Zimbabwe",
+  };
+window.requireOnce = function (a, b) {
+  return "undefined" == typeof scripts[a]
+    ? ((scripts[a] = []),
+      null != b && scripts[a].push(b),
+      $.getScript(a, function () {
+        var c, d, e;
+        for (e = scripts[a], c = 0, d = e.length; d > c; c++) (b = e[c]), b();
+        return (scripts[a] = !0);
+      }))
+    : scripts[a] === !0
+    ? "function" == typeof b
+      ? b()
+      : void 0
+    : null != b
+    ? scripts[a].push(b)
+    : void 0;
 };
-var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
+
 !function(t){"use strict";function r(t){var r={path:!0,query:!0,hash:!0};return t?(/^[a-z]+:/.test(t)&&(r.protocol=!0,r.host=!0,/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i.test(t)&&(r.port=!0),/\/\/(.*?)(?::(.*?))?@/.test(t)&&(r.user=!0,r.pass=!0)),r):r}function e(t,e,o){var u,f,l,y=h?"file://"+(process.platform.match(/^win/i)?"/":"")+p("fs").realpathSync("."):document.location.href;e||(e=y),h?u=p("url").parse(e):(u=document.createElement("a"),u.href=e);var d=r(e);l=e.match(/\/\/(.*?)(?::(.*?))?@/)||[];for(f in a)t[f]=d[f]?u[a[f]]||"":"";if(t.protocol=t.protocol.replace(/:$/,""),t.query=t.query.replace(/^\?/,""),t.hash=s(t.hash.replace(/^#/,"")),t.user=s(l[1]||""),t.pass=s(l[2]||""),t.port=c[t.protocol]==t.port||0==t.port?"":t.port,!d.protocol&&/[^\/#?]/.test(e.charAt(0))&&(t.path=e.split("?")[0].split("#")[0]),!d.protocol&&o){var g=new n(y.match(/(.*\/)/)[0]),m=g.path.split("/"),v=t.path.split("/"),q=["protocol","user","pass","host","port"],w=q.length;for(m.pop(),f=0;w>f;f++)t[q[f]]=g[q[f]];for(;".."===v[0];)m.pop(),v.shift();t.path=("/"!==e.charAt(0)?m.join("/"):"")+"/"+v.join("/")}t.path=t.path.replace(/^\/{2,}/,"/"),t.paths(("/"===t.path.charAt(0)?t.path.slice(1):t.path).split("/")),t.query=new i(t.query)}function o(t){return encodeURIComponent(t).replace(/'/g,"%27")}function s(t){return t=t.replace(/\+/g," "),t=t.replace(/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e,o){var s=parseInt(r,16)-224,i=parseInt(e,16)-128;if(0===s&&32>i)return t;var n=parseInt(o,16)-128,h=(s<<12)+(i<<6)+n;return h>65535?t:String.fromCharCode(h)}),t=t.replace(/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e){var o=parseInt(r,16)-192;if(2>o)return t;var s=parseInt(e,16)-128;return String.fromCharCode((o<<6)+s)}),t.replace(/%([0-7][0-9a-f])/gi,function(t,r){return String.fromCharCode(parseInt(r,16))})}function i(t){for(var r,e=/([^=&]+)(=([^&]*))?/g;r=e.exec(t);){var o=decodeURIComponent(r[1].replace(/\+/g," ")),i=r[3]?s(r[3]):"";void 0!==this[o]&&null!==this[o]?(this[o]instanceof Array||(this[o]=[this[o]]),this[o].push(i)):this[o]=i}}function n(t,r){e(this,t,!r)}var h="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,p=h?t.require:null,a={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},c={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};i.prototype.toString=function(){var t,r,e="",s=o;for(t in this)if(!(this[t]instanceof Function||null===this[t]))if(this[t]instanceof Array){var i=this[t].length;if(i)for(r=0;i>r;r++)e+=e?"&":"",e+=s(t)+"="+s(this[t][r]);else e+=(e?"&":"")+s(t)+"="}else e+=e?"&":"",e+=s(t)+"="+s(this[t]);return e},n.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},n.prototype.queryLength=function(){var t,r=0;for(t in this)this[t]instanceof Function||r++;return r},n.prototype.isEmptyQuery=function(){return 0===this.queryLength()},n.prototype.paths=function(t){var r,e="",i=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(e="/"),r=t.length;r>i;i++)t[i]=!i&&t[i].match(/^\w:$/)?t[i]:o(t[i]);this.path=e+t.join("/")}for(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/"),i=0,r=t.length;r>i;i++)t[i]=s(t[i]);return t},n.prototype.encode=o,n.prototype.decode=s,n.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},n.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&o(this.user)+(this.pass&&":"+o(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+o(this.hash))},t[t.exports?"exports":"Url"]=n}("undefined"!=typeof module&&module.exports?module:window);
 !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.DOMPurify=t()}(this,function(){"use strict";function e(e,t){y&&y(e,null);for(var n=t.length;n--;){var r=t[n];if("string"==typeof r){var o=r.toLowerCase();o!==r&&(Object.isFrozen(t)||(t[n]=o),r=o)}e[r]=!0}return e}function t(e){var t={},n=void 0;for(n in e)g(h,e,[n])&&(t[n]=e[n]);return t}function n(e){if(Array.isArray(e)){for(var t=0,n=Array(e.length);t<e.length;t++)n[t]=e[t];return n}return Array.from(e)}function r(){var o=arguments.length>0&&void 0!==arguments[0]?arguments[0]:_(),u=function(e){return r(e)};if(u.version="1.0.11",u.removed=[],!o||!o.document||9!==o.document.nodeType)return u.isSupported=!1,u;var h=o.document,y=!1,g=!1,v=o.document,D=o.DocumentFragment,R=o.HTMLTemplateElement,C=o.Node,H=o.NodeFilter,F=o.NamedNodeMap,z=void 0===F?o.NamedNodeMap||o.MozNamedAttrMap:F,I=o.Text,j=o.Comment,P=o.DOMParser,U=o.TrustedTypes;if("function"==typeof R){var W=v.createElement("template");W.content&&W.content.ownerDocument&&(v=W.content.ownerDocument)}var B=N(U,h),G=B?B.createHTML(""):"",q=v,V=q.implementation,Y=q.createNodeIterator,K=q.getElementsByTagName,X=q.createDocumentFragment,$=h.importNode,J={};u.isSupported=V&&void 0!==V.createHTMLDocument&&9!==v.documentMode;var Q=b,Z=T,ee=A,te=x,ne=S,re=M,oe=L,ie=null,ae=e({},[].concat(n(i),n(a),n(l),n(c),n(s))),le=null,ce=e({},[].concat(n(d),n(f),n(p),n(m))),se=null,ue=null,de=!0,fe=!0,pe=!1,me=!1,he=!1,ye=!1,ge=!1,ve=!1,be=!1,Te=!1,Ae=!1,xe=!0,Le=!0,Se=!1,Me={},ke=e({},["audio","head","math","script","style","template","svg","video"]),we=e({},["audio","video","img","source","image"]),Ee=null,Oe=e({},["alt","class","for","id","label","name","pattern","placeholder","summary","title","value","style","xmlns"]),_e=null,Ne=v.createElement("form"),De=function(r){_e&&_e===r||(r&&"object"===(void 0===r?"undefined":k(r))||(r={}),ie="ALLOWED_TAGS"in r?e({},r.ALLOWED_TAGS):ae,le="ALLOWED_ATTR"in r?e({},r.ALLOWED_ATTR):ce,Ee="ADD_URI_SAFE_ATTR"in r?e({},r.ADD_URI_SAFE_ATTR):Oe,se="FORBID_TAGS"in r?e({},r.FORBID_TAGS):{},ue="FORBID_ATTR"in r?e({},r.FORBID_ATTR):{},Me="USE_PROFILES"in r&&r.USE_PROFILES,de=!1!==r.ALLOW_ARIA_ATTR,fe=!1!==r.ALLOW_DATA_ATTR,pe=r.ALLOW_UNKNOWN_PROTOCOLS||!1,me=r.SAFE_FOR_JQUERY||!1,he=r.SAFE_FOR_TEMPLATES||!1,ye=r.WHOLE_DOCUMENT||!1,be=r.RETURN_DOM||!1,Te=r.RETURN_DOM_FRAGMENT||!1,Ae=r.RETURN_DOM_IMPORT||!1,ve=r.FORCE_BODY||!1,xe=!1!==r.SANITIZE_DOM,Le=!1!==r.KEEP_CONTENT,Se=r.IN_PLACE||!1,oe=r.ALLOWED_URI_REGEXP||oe,he&&(fe=!1),Te&&(be=!0),Me&&(ie=e({},[].concat(n(s))),le=[],!0===Me.html&&(e(ie,i),e(le,d)),!0===Me.svg&&(e(ie,a),e(le,f),e(le,m)),!0===Me.svgFilters&&(e(ie,l),e(le,f),e(le,m)),!0===Me.mathMl&&(e(ie,c),e(le,p),e(le,m))),r.ADD_TAGS&&(ie===ae&&(ie=t(ie)),e(ie,r.ADD_TAGS)),r.ADD_ATTR&&(le===ce&&(le=t(le)),e(le,r.ADD_ATTR)),r.ADD_URI_SAFE_ATTR&&e(Ee,r.ADD_URI_SAFE_ATTR),Le&&(ie["#text"]=!0),ye&&e(ie,["html","head","body"]),ie.table&&e(ie,["tbody"]),O&&O(r),_e=r)},Re=function(e){u.removed.push({element:e});try{e.parentNode.removeChild(e)}catch(t){e.outerHTML=G}},Ce=function(e,t){try{u.removed.push({attribute:t.getAttributeNode(e),from:t})}catch(e){u.removed.push({attribute:null,from:t})}t.removeAttribute(e)},He=function(t){var n=void 0,r=void 0;if(ve)t="<remove></remove>"+t;else{var o=t.match(/^[\s]+/);(r=o&&o[0])&&(t=t.slice(r.length))}if(y)try{n=(new P).parseFromString(t,"text/html")}catch(e){}if(g&&e(se,["title"]),!n||!n.documentElement){var i=(n=V.createHTMLDocument("")).body;i.parentNode.removeChild(i.parentNode.firstElementChild),i.outerHTML=B?B.createHTML(t):t}return r&&n.body.insertBefore(v.createTextNode(r),n.body.childNodes[0]||null),K.call(n,ye?"html":"body")[0]};u.isSupported&&(function(){try{He('<svg><p><style><img src="</style><img src=x onerror=1//">').querySelector("svg img")&&(y=!0)}catch(e){}}(),function(){try{He("<x/><title>&lt;/title&gt;&lt;img&gt;").querySelector("title").innerHTML.match(/<\/title/)&&(g=!0)}catch(e){}}());var Fe=function(e){return Y.call(e.ownerDocument||e,e,H.SHOW_ELEMENT|H.SHOW_COMMENT|H.SHOW_TEXT,function(){return H.FILTER_ACCEPT},!1)},ze=function(e){return!(e instanceof I||e instanceof j)&&!("string"==typeof e.nodeName&&"string"==typeof e.textContent&&"function"==typeof e.removeChild&&e.attributes instanceof z&&"function"==typeof e.removeAttribute&&"function"==typeof e.setAttribute)},Ie=function(e){return"object"===(void 0===C?"undefined":k(C))?e instanceof C:e&&"object"===(void 0===e?"undefined":k(e))&&"number"==typeof e.nodeType&&"string"==typeof e.nodeName},je=function(e,t,n){J[e]&&J[e].forEach(function(e){e.call(u,t,n,_e)})},Pe=function(e){var t=void 0;if(je("beforeSanitizeElements",e,null),ze(e))return Re(e),!0;var n=e.nodeName.toLowerCase();if(je("uponSanitizeElement",e,{tagName:n,allowedTags:ie}),!ie[n]||se[n]){if(Le&&!ke[n]&&"function"==typeof e.insertAdjacentHTML)try{var r=e.innerHTML;e.insertAdjacentHTML("AfterEnd",B?B.createHTML(r):r)}catch(e){}return Re(e),!0}return"noscript"===n&&e.innerHTML.match(/<\/noscript/i)?(Re(e),!0):"noembed"===n&&e.innerHTML.match(/<\/noembed/i)?(Re(e),!0):(!me||e.firstElementChild||e.content&&e.content.firstElementChild||!/</g.test(e.textContent)||(u.removed.push({element:e.cloneNode()}),e.innerHTML?e.innerHTML=e.innerHTML.replace(/</g,"&lt;"):e.innerHTML=e.textContent.replace(/</g,"&lt;")),he&&3===e.nodeType&&(t=(t=(t=e.textContent).replace(Q," ")).replace(Z," "),e.textContent!==t&&(u.removed.push({element:e.cloneNode()}),e.textContent=t)),je("afterSanitizeElements",e,null),!1)},Ue=function(e,t,n){if(xe&&("id"===t||"name"===t)&&(n in v||n in Ne))return!1;if(fe&&ee.test(t));else if(de&&te.test(t));else{if(!le[t]||ue[t])return!1;if(Ee[t]);else if(oe.test(n.replace(re,"")));else if("src"!==t&&"xlink:href"!==t||"script"===e||0!==n.indexOf("data:")||!we[e]){if(pe&&!ne.test(n.replace(re,"")));else if(n)return!1}else;}return!0},We=function(e){var t=void 0,n=void 0,r=void 0,o=void 0,i=void 0;je("beforeSanitizeAttributes",e,null);var a=e.attributes;if(a){var l={attrName:"",attrValue:"",keepAttr:!0,allowedAttributes:le};for(i=a.length;i--;){var c=t=a[i],s=c.name,d=c.namespaceURI;if(n=t.value.trim(),r=s.toLowerCase(),l.attrName=r,l.attrValue=n,l.keepAttr=!0,je("uponSanitizeAttribute",e,l),n=l.attrValue,"name"===r&&"IMG"===e.nodeName&&a.id)o=a.id,a=w(E,a,[]),Ce("id",e),Ce(s,e),a.indexOf(o)>i&&e.setAttribute("id",o.value);else{if("INPUT"===e.nodeName&&"type"===r&&"file"===n&&l.keepAttr&&(le[r]||!ue[r]))continue;"id"===s&&e.setAttribute(s,""),Ce(s,e)}if(l.keepAttr){he&&(n=(n=n.replace(Q," ")).replace(Z," "));var f=e.nodeName.toLowerCase();if(Ue(f,r,n))try{d?e.setAttributeNS(d,s,n):e.setAttribute(s,n),u.removed.pop()}catch(e){}}}je("afterSanitizeAttributes",e,null)}},Be=function e(t){var n=void 0,r=Fe(t);for(je("beforeSanitizeShadowDOM",t,null);n=r.nextNode();)je("uponSanitizeShadowNode",n,null),Pe(n)||(n.content instanceof D&&e(n.content),We(n));je("afterSanitizeShadowDOM",t,null)};return u.sanitize=function(e,t){var n=void 0,r=void 0,i=void 0,a=void 0,l=void 0;if(e||(e="\x3c!--\x3e"),"string"!=typeof e&&!Ie(e)){if("function"!=typeof e.toString)throw new TypeError("toString is not a function");if("string"!=typeof(e=e.toString()))throw new TypeError("dirty is not a string, aborting")}if(!u.isSupported){if("object"===k(o.toStaticHTML)||"function"==typeof o.toStaticHTML){if("string"==typeof e)return o.toStaticHTML(e);if(Ie(e))return o.toStaticHTML(e.outerHTML)}return e}if(ge||De(t),u.removed=[],Se);else if(e instanceof C)1===(r=(n=He("\x3c!--\x3e")).ownerDocument.importNode(e,!0)).nodeType&&"BODY"===r.nodeName?n=r:"HTML"===r.nodeName?n=r:n.appendChild(r);else{if(!be&&!he&&!ye&&-1===e.indexOf("<"))return B?B.createHTML(e):e;if(!(n=He(e)))return be?null:G}n&&ve&&Re(n.firstChild);for(var c=Fe(Se?e:n);i=c.nextNode();)3===i.nodeType&&i===a||Pe(i)||(i.content instanceof D&&Be(i.content),We(i),a=i);if(a=null,Se)return e;if(be){if(Te)for(l=X.call(n.ownerDocument);n.firstChild;)l.appendChild(n.firstChild);else l=n;return Ae&&(l=$.call(h,l,!0)),l}var s=ye?n.outerHTML:n.innerHTML;return he&&(s=(s=s.replace(Q," ")).replace(Z," ")),B?B.createHTML(s):s},u.setConfig=function(e){De(e),ge=!0},u.clearConfig=function(){_e=null,ge=!1},u.isValidAttribute=function(e,t,n){_e||De({});var r=e.toLowerCase(),o=t.toLowerCase();return Ue(r,o,n)},u.addHook=function(e,t){"function"==typeof t&&(J[e]=J[e]||[],J[e].push(t))},u.removeHook=function(e){J[e]&&J[e].pop()},u.removeHooks=function(e){J[e]&&(J[e]=[])},u.removeAllHooks=function(){J={}},u}var o=Object.freeze||function(e){return e},i=o(["a","abbr","acronym","address","area","article","aside","audio","b","bdi","bdo","big","blink","blockquote","body","br","button","canvas","caption","center","cite","code","col","colgroup","content","data","datalist","dd","decorator","del","details","dfn","dir","div","dl","dt","element","em","fieldset","figcaption","figure","font","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","img","input","ins","kbd","label","legend","li","main","map","mark","marquee","menu","menuitem","meter","nav","nobr","ol","optgroup","option","output","p","pre","progress","q","rp","rt","ruby","s","samp","section","select","shadow","small","source","spacer","span","strike","strong","style","sub","summary","sup","table","tbody","td","template","textarea","tfoot","th","thead","time","tr","track","tt","u","ul","var","video","wbr"]),a=o(["svg","a","altglyph","altglyphdef","altglyphitem","animatecolor","animatemotion","animatetransform","audio","canvas","circle","clippath","defs","desc","ellipse","filter","font","g","glyph","glyphref","hkern","image","line","lineargradient","marker","mask","metadata","mpath","path","pattern","polygon","polyline","radialgradient","rect","stop","style","switch","symbol","text","textpath","title","tref","tspan","video","view","vkern"]),l=o(["feBlend","feColorMatrix","feComponentTransfer","feComposite","feConvolveMatrix","feDiffuseLighting","feDisplacementMap","feDistantLight","feFlood","feFuncA","feFuncB","feFuncG","feFuncR","feGaussianBlur","feMerge","feMergeNode","feMorphology","feOffset","fePointLight","feSpecularLighting","feSpotLight","feTile","feTurbulence"]),c=o(["math","menclose","merror","mfenced","mfrac","mglyph","mi","mlabeledtr","mmultiscripts","mn","mo","mover","mpadded","mphantom","mroot","mrow","ms","mspace","msqrt","mstyle","msub","msup","msubsup","mtable","mtd","mtext","mtr","munder","munderover"]),s=o(["#text"]),u=Object.freeze||function(e){return e},d=u(["accept","action","align","alt","autocomplete","background","bgcolor","border","cellpadding","cellspacing","checked","cite","class","clear","color","cols","colspan","controls","coords","crossorigin","datetime","default","dir","disabled","download","enctype","face","for","headers","height","hidden","high","href","hreflang","id","integrity","ismap","label","lang","list","loop","low","max","maxlength","media","method","min","multiple","name","noshade","novalidate","nowrap","open","optimum","pattern","placeholder","poster","preload","pubdate","radiogroup","readonly","rel","required","rev","reversed","role","rows","rowspan","spellcheck","scope","selected","shape","size","sizes","span","srclang","start","src","srcset","step","style","summary","tabindex","title","type","usemap","valign","value","width","xmlns"]),f=u(["accent-height","accumulate","additive","alignment-baseline","ascent","attributename","attributetype","azimuth","basefrequency","baseline-shift","begin","bias","by","class","clip","clip-path","clip-rule","color","color-interpolation","color-interpolation-filters","color-profile","color-rendering","cx","cy","d","dx","dy","diffuseconstant","direction","display","divisor","dur","edgemode","elevation","end","fill","fill-opacity","fill-rule","filter","filterunits","flood-color","flood-opacity","font-family","font-size","font-size-adjust","font-stretch","font-style","font-variant","font-weight","fx","fy","g1","g2","glyph-name","glyphref","gradientunits","gradienttransform","height","href","id","image-rendering","in","in2","k","k1","k2","k3","k4","kerning","keypoints","keysplines","keytimes","lang","lengthadjust","letter-spacing","kernelmatrix","kernelunitlength","lighting-color","local","marker-end","marker-mid","marker-start","markerheight","markerunits","markerwidth","maskcontentunits","maskunits","max","mask","media","method","mode","min","name","numoctaves","offset","operator","opacity","order","orient","orientation","origin","overflow","paint-order","path","pathlength","patterncontentunits","patterntransform","patternunits","points","preservealpha","preserveaspectratio","primitiveunits","r","rx","ry","radius","refx","refy","repeatcount","repeatdur","restart","result","rotate","scale","seed","shape-rendering","specularconstant","specularexponent","spreadmethod","stddeviation","stitchtiles","stop-color","stop-opacity","stroke-dasharray","stroke-dashoffset","stroke-linecap","stroke-linejoin","stroke-miterlimit","stroke-opacity","stroke","stroke-width","style","surfacescale","tabindex","targetx","targety","transform","text-anchor","text-decoration","text-rendering","textlength","type","u1","u2","unicode","values","viewbox","visibility","version","vert-adv-y","vert-origin-x","vert-origin-y","width","word-spacing","wrap","writing-mode","xchannelselector","ychannelselector","x","x1","x2","xmlns","y","y1","y2","z","zoomandpan"]),p=u(["accent","accentunder","align","bevelled","close","columnsalign","columnlines","columnspan","denomalign","depth","dir","display","displaystyle","fence","frame","height","href","id","largeop","length","linethickness","lspace","lquote","mathbackground","mathcolor","mathsize","mathvariant","maxsize","minsize","movablelimits","notation","numalign","open","rowalign","rowlines","rowspacing","rowspan","rspace","rquote","scriptlevel","scriptminsize","scriptsizemultiplier","selection","separator","separators","stretchy","subscriptshift","supscriptshift","symmetric","voffset","width","xmlns"]),m=u(["xlink:href","xml:id","xlink:title","xml:space","xmlns:xlink"]),h=Object.hasOwnProperty,y=Object.setPrototypeOf,g=("undefined"!=typeof Reflect&&Reflect).apply;g||(g=function(e,t,n){return e.apply(t,n)});var v=Object.seal||function(e){return e},b=v(/\{\{[\s\S]*|[\s\S]*\}\}/gm),T=v(/<%[\s\S]*|[\s\S]*%>/gm),A=v(/^data-[\-\w.\u00B7-\uFFFF]/),x=v(/^aria-[\-\w]+$/),L=v(/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i),S=v(/^(?:\w+script|data):/i),M=v(/[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g),k="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},w=("undefined"!=typeof Reflect&&Reflect).apply,E=Array.prototype.slice,O=Object.freeze,_=function(){return"undefined"==typeof window?null:window};w||(w=function(e,t,n){return e.apply(t,n)});var N=function(e,t){if("object"!==(void 0===e?"undefined":k(e))||"function"!=typeof e.createPolicy)return null;var n=null;t.currentScript&&t.currentScript.hasAttribute("data-tt-policy-suffix")&&(n=t.currentScript.getAttribute("data-tt-policy-suffix"));var r="dompurify"+(n?"#"+n:"");try{return e.createPolicy(r,{createHTML:function(e){return e}})}catch(e){return console.warn("TrustedTypes policy "+r+" could not be created."),null}};return r()});
 //# sourceMappingURL=purify.min.js.map

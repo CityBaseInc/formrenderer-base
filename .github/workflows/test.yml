@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".tool-versions"
+          cache: "npm"
       - name: Install grunt-cli
         run: npm install grunt-cli
       - name: Install bower

@@ -11,9 +11,9 @@ jobs:
           rubygems: 3.3.22
       - name: Install sass
         run: gem install sass
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: 6.11.4
+          node-version-file: ".tool-versions"
       - name: Install grunt-cli
         run: npm install grunt-cli
       - name: Install bower

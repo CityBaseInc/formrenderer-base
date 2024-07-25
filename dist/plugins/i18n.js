@@ -1,21 +1,11 @@
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.I18n = (function(_super) {
-    __extends(I18n, _super);
-
-    function I18n() {
-      return I18n.__super__.constructor.apply(this, arguments);
-    }
-
-    I18n.prototype.beforeFormLoad = function() {
+  // Requires https://github.com/padolsey/findAndReplaceDOMText/
+  FormRenderer.Plugins.I18n = class I18n extends FormRenderer.Plugins.Base {
+    beforeFormLoad() {
       var translate;
-      translate = (function(_this) {
-        return function(k) {
-          return window.frTranslations[_this.fr.options.lang][k];
-        };
-      })(this);
+      translate = (k) => {
+        return window.frTranslations[this.fr.options.lang][k];
+      };
       return this.fr.on('viewRendered', function(view) {
         return findAndReplaceDOMText(view.el, {
           find: /{(.*?)}/g,
@@ -24,10 +14,8 @@
           }
         });
       });
-    };
+    }
 
-    return I18n;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
 }).call(this);

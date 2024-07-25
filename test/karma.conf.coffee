@@ -21,6 +21,8 @@ module.exports = (config) ->
         'test/fixtures/internal.js'
         'test/fixtures/converted.js'
 
+        'test/karma.conf.coffee'
+
         'test/**/*_test.coffee'
       ]
 
@@ -31,14 +33,14 @@ module.exports = (config) ->
     runnerPort: 9100
 
     # enable / disable colors in the output (reporters and logs)
-    colors: yes
+    colors: true
 
     # level of logging
     # possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
     logLevel: config.LOG_ERROR
 
     # enable / disable watching file and executing tests whenever any file changes
-    autoWatch: no
+    autoWatch: false
 
     # Start these browsers, currently available:
     # - Chrome
@@ -47,7 +49,7 @@ module.exports = (config) ->
     # - Opera
     # - Safari
     # - PhantomJS
-    browsers: ['PhantomJS']
+    browsers: ['ChromeHeadless']
 
     # compile coffee scripts
     preprocessors: '**/*.coffee': 'coffee'

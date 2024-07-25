@@ -4474,75 +4474,73 @@ var slice = [].slice;
 }));
 
 !function(e,n){"use strict";function r(e,n){var r,t,u=e.toLowerCase();for(n=[].concat(n),r=0;n.length>r;r+=1)if(t=n[r]){if(t.test&&t.test(e))return!0;if(t.toLowerCase()===u)return!0}}var t=n.prototype.trim,u=n.prototype.trimRight,i=n.prototype.trimLeft,l=function(e){return 1*e||0},o=function(e,n){if(1>n)return"";for(var r="";n>0;)1&n&&(r+=e),n>>=1,e+=e;return r},a=[].slice,c=function(e){return null==e?"\\s":e.source?e.source:"["+g.escapeRegExp(e)+"]"},s={lt:"<",gt:">",quot:'"',amp:"&",apos:"'"},f={};for(var p in s)f[s[p]]=p;f["'"]="#39";var h=function(){function e(e){return Object.prototype.toString.call(e).slice(8,-1).toLowerCase()}var r=o,t=function(){return t.cache.hasOwnProperty(arguments[0])||(t.cache[arguments[0]]=t.parse(arguments[0])),t.format.call(null,t.cache[arguments[0]],arguments)};return t.format=function(t,u){var i,l,o,a,c,s,f,p=1,g=t.length,d="",m=[];for(l=0;g>l;l++)if(d=e(t[l]),"string"===d)m.push(t[l]);else if("array"===d){if(a=t[l],a[2])for(i=u[p],o=0;a[2].length>o;o++){if(!i.hasOwnProperty(a[2][o]))throw new Error(h('[_.sprintf] property "%s" does not exist',a[2][o]));i=i[a[2][o]]}else i=a[1]?u[a[1]]:u[p++];if(/[^s]/.test(a[8])&&"number"!=e(i))throw new Error(h("[_.sprintf] expecting number but found %s",e(i)));switch(a[8]){case"b":i=i.toString(2);break;case"c":i=n.fromCharCode(i);break;case"d":i=parseInt(i,10);break;case"e":i=a[7]?i.toExponential(a[7]):i.toExponential();break;case"f":i=a[7]?parseFloat(i).toFixed(a[7]):parseFloat(i);break;case"o":i=i.toString(8);break;case"s":i=(i=n(i))&&a[7]?i.substring(0,a[7]):i;break;case"u":i=Math.abs(i);break;case"x":i=i.toString(16);break;case"X":i=i.toString(16).toUpperCase()}i=/[def]/.test(a[8])&&a[3]&&i>=0?"+"+i:i,s=a[4]?"0"==a[4]?"0":a[4].charAt(1):" ",f=a[6]-n(i).length,c=a[6]?r(s,f):"",m.push(a[5]?i+c:c+i)}return m.join("")},t.cache={},t.parse=function(e){for(var n=e,r=[],t=[],u=0;n;){if(null!==(r=/^[^\x25]+/.exec(n)))t.push(r[0]);else if(null!==(r=/^\x25{2}/.exec(n)))t.push("%");else{if(null===(r=/^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(n)))throw new Error("[_.sprintf] huh?");if(r[2]){u|=1;var i=[],l=r[2],o=[];if(null===(o=/^([a-z_][a-z_\d]*)/i.exec(l)))throw new Error("[_.sprintf] huh?");for(i.push(o[1]);""!==(l=l.substring(o[0].length));)if(null!==(o=/^\.([a-z_][a-z_\d]*)/i.exec(l)))i.push(o[1]);else{if(null===(o=/^\[(\d+)\]/.exec(l)))throw new Error("[_.sprintf] huh?");i.push(o[1])}r[2]=i}else u|=2;if(3===u)throw new Error("[_.sprintf] mixing positional and named placeholders is not (yet) supported");t.push(r)}n=n.substring(r[0].length)}return t},t}(),g={VERSION:"2.3.0",isBlank:function(e){return null==e&&(e=""),/^\s*$/.test(e)},stripTags:function(e){return null==e?"":n(e).replace(/<\/?[^>]+>/g,"")},capitalize:function(e){return e=null==e?"":n(e),e.charAt(0).toUpperCase()+e.slice(1)},chop:function(e,r){return null==e?[]:(e=n(e),r=~~r,r>0?e.match(new RegExp(".{1,"+r+"}","g")):[e])},clean:function(e){return g.strip(e).replace(/\s+/g," ")},count:function(e,r){if(null==e||null==r)return 0;e=n(e),r=n(r);for(var t=0,u=0,i=r.length;;){if(u=e.indexOf(r,u),-1===u)break;t++,u+=i}return t},chars:function(e){return null==e?[]:n(e).split("")},swapCase:function(e){return null==e?"":n(e).replace(/\S/g,function(e){return e===e.toUpperCase()?e.toLowerCase():e.toUpperCase()})},escapeHTML:function(e){return null==e?"":n(e).replace(/[&<>"']/g,function(e){return"&"+f[e]+";"})},unescapeHTML:function(e){return null==e?"":n(e).replace(/\&([^;]+);/g,function(e,r){var t;return r in s?s[r]:(t=r.match(/^#x([\da-fA-F]+)$/))?n.fromCharCode(parseInt(t[1],16)):(t=r.match(/^#(\d+)$/))?n.fromCharCode(~~t[1]):e})},escapeRegExp:function(e){return null==e?"":n(e).replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")},splice:function(e,n,r,t){var u=g.chars(e);return u.splice(~~n,~~r,t),u.join("")},insert:function(e,n,r){return g.splice(e,n,0,r)},include:function(e,r){return""===r?!0:null==e?!1:-1!==n(e).indexOf(r)},join:function(){var e=a.call(arguments),n=e.shift();return null==n&&(n=""),e.join(n)},lines:function(e){return null==e?[]:n(e).split("\n")},reverse:function(e){return g.chars(e).reverse().join("")},startsWith:function(e,r){return""===r?!0:null==e||null==r?!1:(e=n(e),r=n(r),e.length>=r.length&&e.slice(0,r.length)===r)},endsWith:function(e,r){return""===r?!0:null==e||null==r?!1:(e=n(e),r=n(r),e.length>=r.length&&e.slice(e.length-r.length)===r)},succ:function(e){return null==e?"":(e=n(e),e.slice(0,-1)+n.fromCharCode(e.charCodeAt(e.length-1)+1))},titleize:function(e){return null==e?"":(e=n(e).toLowerCase(),e.replace(/(?:^|\s|-)\S/g,function(e){return e.toUpperCase()}))},camelize:function(e){return g.trim(e).replace(/[-_\s]+(.)?/g,function(e,n){return n?n.toUpperCase():""})},underscored:function(e){return g.trim(e).replace(/([a-z\d])([A-Z]+)/g,"$1_$2").replace(/[-\s]+/g,"_").toLowerCase()},dasherize:function(e){return g.trim(e).replace(/([A-Z])/g,"-$1").replace(/[-_\s]+/g,"-").toLowerCase()},classify:function(e){return g.titleize(n(e).replace(/[\W_]/g," ")).replace(/\s/g,"")},humanize:function(e){return g.capitalize(g.underscored(e).replace(/_id$/,"").replace(/_/g," "))},trim:function(e,r){return null==e?"":!r&&t?t.call(e):(r=c(r),n(e).replace(new RegExp("^"+r+"+|"+r+"+$","g"),""))},ltrim:function(e,r){return null==e?"":!r&&i?i.call(e):(r=c(r),n(e).replace(new RegExp("^"+r+"+"),""))},rtrim:function(e,r){return null==e?"":!r&&u?u.call(e):(r=c(r),n(e).replace(new RegExp(r+"+$"),""))},truncate:function(e,r,t){return null==e?"":(e=n(e),t=t||"...",r=~~r,e.length>r?e.slice(0,r)+t:e)},prune:function(e,r,t){if(null==e)return"";if(e=n(e),r=~~r,t=null!=t?n(t):"...",r>=e.length)return e;var u=function(e){return e.toUpperCase()!==e.toLowerCase()?"A":" "},i=e.slice(0,r+1).replace(/.(?=\W*\w*$)/g,u);return i=i.slice(i.length-2).match(/\w\w/)?i.replace(/\s*\S+$/,""):g.rtrim(i.slice(0,i.length-1)),(i+t).length>e.length?e:e.slice(0,i.length)+t},words:function(e,n){return g.isBlank(e)?[]:g.trim(e,n).split(n||/\s+/)},pad:function(e,r,t,u){e=null==e?"":n(e),r=~~r;var i=0;switch(t?t.length>1&&(t=t.charAt(0)):t=" ",u){case"right":return i=r-e.length,e+o(t,i);case"both":return i=r-e.length,o(t,Math.ceil(i/2))+e+o(t,Math.floor(i/2));default:return i=r-e.length,o(t,i)+e}},lpad:function(e,n,r){return g.pad(e,n,r)},rpad:function(e,n,r){return g.pad(e,n,r,"right")},lrpad:function(e,n,r){return g.pad(e,n,r,"both")},sprintf:h,vsprintf:function(e,n){return n.unshift(e),h.apply(null,n)},toNumber:function(e,n){return e?(e=g.trim(e),e.match(/^-?\d+(?:\.\d+)?$/)?l(l(e).toFixed(~~n)):0/0):0},numberFormat:function(e,n,r,t){if(isNaN(e)||null==e)return"";e=e.toFixed(~~n),t="string"==typeof t?t:",";var u=e.split("."),i=u[0],l=u[1]?(r||".")+u[1]:"";return i.replace(/(\d)(?=(?:\d{3})+$)/g,"$1"+t)+l},strRight:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.indexOf(r):-1;return~t?e.slice(t+r.length,e.length):e},strRightBack:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.lastIndexOf(r):-1;return~t?e.slice(t+r.length,e.length):e},strLeft:function(e,r){if(null==e)return"";e=n(e),r=null!=r?n(r):r;var t=r?e.indexOf(r):-1;return~t?e.slice(0,t):e},strLeftBack:function(e,n){if(null==e)return"";e+="",n=null!=n?""+n:n;var r=e.lastIndexOf(n);return~r?e.slice(0,r):e},toSentence:function(e,n,r,t){n=n||", ",r=r||" and ";var u=e.slice(),i=u.pop();return e.length>2&&t&&(r=g.rtrim(n)+r),u.length?u.join(n)+r+i:i},toSentenceSerial:function(){var e=a.call(arguments);return e[3]=!0,g.toSentence.apply(g,e)},slugify:function(e){if(null==e)return"";var r="ąàáäâãåæăćęèéëêìíïîłńòóöôõøśșțùúüûñçżź",t="aaaaaaaaaceeeeeiiiilnoooooosstuuuunczz",u=new RegExp(c(r),"g");return e=n(e).toLowerCase().replace(u,function(e){var n=r.indexOf(e);return t.charAt(n)||"-"}),g.dasherize(e.replace(/[^\w\s-]/g,""))},surround:function(e,n){return[n,e,n].join("")},quote:function(e,n){return g.surround(e,n||'"')},unquote:function(e,n){return n=n||'"',e[0]===n&&e[e.length-1]===n?e.slice(1,e.length-1):e},exports:function(){var e={};for(var n in this)this.hasOwnProperty(n)&&!n.match(/^(?:include|contains|reverse)$/)&&(e[n]=this[n]);return e},repeat:function(e,r,t){if(null==e)return"";if(r=~~r,null==t)return o(n(e),r);for(var u=[];r>0;u[--r]=e);return u.join(t)},naturalCmp:function(e,r){if(e==r)return 0;if(!e)return-1;if(!r)return 1;for(var t=/(\.\d+)|(\d+)|(\D+)/g,u=n(e).toLowerCase().match(t),i=n(r).toLowerCase().match(t),l=Math.min(u.length,i.length),o=0;l>o;o++){var a=u[o],c=i[o];if(a!==c){var s=parseInt(a,10);if(!isNaN(s)){var f=parseInt(c,10);if(!isNaN(f)&&s-f)return s-f}return c>a?-1:1}}return u.length===i.length?u.length-i.length:r>e?-1:1},levenshtein:function(e,r){if(null==e&&null==r)return 0;if(null==e)return n(r).length;if(null==r)return n(e).length;e=n(e),r=n(r);for(var t,u,i=[],l=0;r.length>=l;l++)for(var o=0;e.length>=o;o++)u=l&&o?e.charAt(o-1)===r.charAt(l-1)?t:Math.min(i[o],i[o-1],t)+1:l+o,t=i[o],i[o]=u;return i.pop()},toBoolean:function(e,n,t){return"number"==typeof e&&(e=""+e),"string"!=typeof e?!!e:(e=g.trim(e),r(e,n||["true","1"])?!0:r(e,t||["false","0"])?!1:void 0)}};g.strip=g.trim,g.lstrip=g.ltrim,g.rstrip=g.rtrim,g.center=g.lrpad,g.rjust=g.lpad,g.ljust=g.rpad,g.contains=g.include,g.q=g.quote,g.toBool=g.toBoolean,"undefined"!=typeof exports&&("undefined"!=typeof module&&module.exports&&(module.exports=g),exports._s=g),"function"==typeof define&&define.amd&&define("underscore.string",[],function(){return g}),e._=e._||{},e._.string=e._.str=g}(this,String);
-// Generated by CoffeeScript 1.9.1
 (function() {
-  var BeforeUnload;
-
-  BeforeUnload = (function() {
-    function BeforeUnload() {}
-
-    BeforeUnload.footerText = 'Are you sure you want to leave this page?';
-
-    BeforeUnload.defaults = {
-      "if": function() {
-        return true;
-      },
-      message: 'You have unsaved changes.'
-    };
-
-    BeforeUnload.enable = function(opts) {
-      this.opts = {
-        "if": opts["if"] || this.defaults["if"],
-        message: opts.message || this.defaults.message,
-        cb: opts.cb
+    var BeforeUnload;
+  
+    BeforeUnload = (function() {
+      function BeforeUnload() {}
+  
+      BeforeUnload.footerText = 'Are you sure you want to leave this page?';
+  
+      BeforeUnload.defaults = {
+        "if": function() {
+          return true;
+        },
+        message: 'You have unsaved changes.'
       };
-      this._onTurbolinksUnload = (function(_this) {
-        return function(e) {
-          if (!_this._willPrevent()) {
-            return _this.disable();
-          }
-          if (_this.opts.cb) {
-            if (_this.opts.cb(e.data.url) !== false) {
+  
+      BeforeUnload.enable = function(opts) {
+        this.opts = {
+          "if": opts["if"] || this.defaults["if"],
+          message: opts.message || this.defaults.message,
+          cb: opts.cb
+        };
+        this._onTurbolinksUnload = (function(_this) {
+          return function(e) {
+            if (!_this._willPrevent()) {
+              return _this.disable();
+            }
+            if (_this.opts.cb) {
+              if (_this.opts.cb(e.data.url) !== false) {
+                return e.preventDefault();
+              }
+            }
+            if (confirm(_this.opts.message + "\n\n" + _this.footerText)) {
+              return _this.disable();
+            } else {
               return e.preventDefault();
             }
-          }
-          if (confirm(_this.opts.message + "\n\n" + _this.footerText)) {
-            return _this.disable();
-          } else {
-            return e.preventDefault();
-          }
-        };
-      })(this);
-      document.body.beforeunload = this;
-      window.onbeforeunload = (function(_this) {
-        return function() {
-          if (_this._willPrevent()) {
-            return _this.opts.message;
-          } else {
-            return void 0;
-          }
-        };
-      })(this);
-      return document.addEventListener('page:before-change', this._onTurbolinksUnload, false);
-    };
-
-    BeforeUnload.disable = function() {
-      window.onbeforeunload = null;
-      return document.removeEventListener('page:before-change', this._onTurbolinksUnload);
-    };
-
-    BeforeUnload._willPrevent = function() {
-      return document.body.beforeunload === this && this.opts["if"]();
-    };
-
-    return BeforeUnload;
-
-  })();
-
-  window.BeforeUnload = BeforeUnload;
-
-}).call(this);
-
+          };
+        })(this);
+        document.body.beforeunload = this;
+        window.onbeforeunload = (function(_this) {
+          return function() {
+            if (_this._willPrevent()) {
+              return _this.opts.message;
+            } else {
+              return void 0;
+            }
+          };
+        })(this);
+        return document.addEventListener('page:before-change', this._onTurbolinksUnload, false);
+      };
+  
+      BeforeUnload.disable = function() {
+        window.onbeforeunload = null;
+        return document.removeEventListener('page:before-change', this._onTurbolinksUnload);
+      };
+  
+      BeforeUnload._willPrevent = function() {
+        return document.body.beforeunload === this && this.opts["if"]();
+      };
+  
+      return BeforeUnload;
+  
+    })();
+  
+    window.BeforeUnload = BeforeUnload;
+  
+  }).call(this);
 /*jshint expr:true eqnull:true */
 /**
  *
@@ -5688,277 +5686,297 @@ var slice = [].slice;
 }).call(this);
 
 var ISOCountryNames = {
-  "AF": "Afghanistan",
-  "AX": "Åland Islands",
-  "AL": "Albania",
-  "DZ": "Algeria",
-  "AS": "American Samoa",
-  "AD": "Andorra",
-  "AO": "Angola",
-  "AI": "Anguilla",
-  "AQ": "Antarctica",
-  "AG": "Antigua and Barbuda",
-  "AR": "Argentina",
-  "AM": "Armenia",
-  "AW": "Aruba",
-  "AU": "Australia",
-  "AT": "Austria",
-  "AZ": "Azerbaijan",
-  "BS": "Bahamas",
-  "BH": "Bahrain",
-  "BD": "Bangladesh",
-  "BB": "Barbados",
-  "BY": "Belarus",
-  "BE": "Belgium",
-  "BZ": "Belize",
-  "BJ": "Benin",
-  "BM": "Bermuda",
-  "BT": "Bhutan",
-  "BO": "Bolivia, Plurinational State of",
-  "BQ": "Bonaire, Sint Eustatius and Saba",
-  "BA": "Bosnia and Herzegovina",
-  "BW": "Botswana",
-  "BV": "Bouvet Island",
-  "BR": "Brazil",
-  "IO": "British Indian Ocean Territory",
-  "BN": "Brunei Darussalam",
-  "BG": "Bulgaria",
-  "BF": "Burkina Faso",
-  "BI": "Burundi",
-  "KH": "Cambodia",
-  "CM": "Cameroon",
-  "CA": "Canada",
-  "CV": "Cape Verde",
-  "KY": "Cayman Islands",
-  "CF": "Central African Republic",
-  "TD": "Chad",
-  "CL": "Chile",
-  "CN": "China",
-  "CX": "Christmas Island",
-  "CC": "Cocos (Keeling) Islands",
-  "CO": "Colombia",
-  "KM": "Comoros",
-  "CG": "Congo",
-  "CD": "Congo, the Democratic Republic of the",
-  "CK": "Cook Islands",
-  "CR": "Costa Rica",
-  "CI": "Côte d'Ivoire",
-  "HR": "Croatia",
-  "CU": "Cuba",
-  "CW": "Curaçao",
-  "CY": "Cyprus",
-  "CZ": "Czech Republic",
-  "DK": "Denmark",
-  "DJ": "Djibouti",
-  "DM": "Dominica",
-  "DO": "Dominican Republic",
-  "EC": "Ecuador",
-  "EG": "Egypt",
-  "SV": "El Salvador",
-  "GQ": "Equatorial Guinea",
-  "ER": "Eritrea",
-  "EE": "Estonia",
-  "ET": "Ethiopia",
-  "FK": "Falkland Islands (Malvinas)",
-  "FO": "Faroe Islands",
-  "FJ": "Fiji",
-  "FI": "Finland",
-  "FR": "France",
-  "GF": "French Guiana",
-  "PF": "French Polynesia",
-  "TF": "French Southern Territories",
-  "GA": "Gabon",
-  "GM": "Gambia",
-  "GE": "Georgia",
-  "DE": "Germany",
-  "GH": "Ghana",
-  "GI": "Gibraltar",
-  "GR": "Greece",
-  "GL": "Greenland",
-  "GD": "Grenada",
-  "GP": "Guadeloupe",
-  "GU": "Guam",
-  "GT": "Guatemala",
-  "GG": "Guernsey",
-  "GN": "Guinea",
-  "GW": "Guinea-Bissau",
-  "GY": "Guyana",
-  "HT": "Haiti",
-  "HM": "Heard Island and McDonald Mcdonald Islands",
-  "VA": "Holy See (Vatican City State)",
-  "HN": "Honduras",
-  "HK": "Hong Kong",
-  "HU": "Hungary",
-  "IS": "Iceland",
-  "IN": "India",
-  "ID": "Indonesia",
-  "IR": "Iran, Islamic Republic of",
-  "IQ": "Iraq",
-  "IE": "Ireland",
-  "IM": "Isle of Man",
-  "IL": "Israel",
-  "IT": "Italy",
-  "JM": "Jamaica",
-  "JP": "Japan",
-  "JE": "Jersey",
-  "JO": "Jordan",
-  "KZ": "Kazakhstan",
-  "KE": "Kenya",
-  "KI": "Kiribati",
-  "KP": "Korea, Democratic People's Republic of",
-  "KR": "Korea, Republic of",
-  "KW": "Kuwait",
-  "KG": "Kyrgyzstan",
-  "LA": "Lao People's Democratic Republic",
-  "LV": "Latvia",
-  "LB": "Lebanon",
-  "LS": "Lesotho",
-  "LR": "Liberia",
-  "LY": "Libya",
-  "LI": "Liechtenstein",
-  "LT": "Lithuania",
-  "LU": "Luxembourg",
-  "MO": "Macao",
-  "MK": "Macedonia, the Former Yugoslav Republic of",
-  "MG": "Madagascar",
-  "MW": "Malawi",
-  "MY": "Malaysia",
-  "MV": "Maldives",
-  "ML": "Mali",
-  "MT": "Malta",
-  "MH": "Marshall Islands",
-  "MQ": "Martinique",
-  "MR": "Mauritania",
-  "MU": "Mauritius",
-  "YT": "Mayotte",
-  "MX": "Mexico",
-  "FM": "Micronesia, Federated States of",
-  "MD": "Moldova, Republic of",
-  "MC": "Monaco",
-  "MN": "Mongolia",
-  "ME": "Montenegro",
-  "MS": "Montserrat",
-  "MA": "Morocco",
-  "MZ": "Mozambique",
-  "MM": "Myanmar",
-  "NA": "Namibia",
-  "NR": "Nauru",
-  "NP": "Nepal",
-  "NL": "Netherlands",
-  "NC": "New Caledonia",
-  "NZ": "New Zealand",
-  "NI": "Nicaragua",
-  "NE": "Niger",
-  "NG": "Nigeria",
-  "NU": "Niue",
-  "NF": "Norfolk Island",
-  "MP": "Northern Mariana Islands",
-  "NO": "Norway",
-  "OM": "Oman",
-  "PK": "Pakistan",
-  "PW": "Palau",
-  "PS": "Palestine, State of",
-  "PA": "Panama",
-  "PG": "Papua New Guinea",
-  "PY": "Paraguay",
-  "PE": "Peru",
-  "PH": "Philippines",
-  "PN": "Pitcairn",
-  "PL": "Poland",
-  "PT": "Portugal",
-  "PR": "Puerto Rico",
-  "QA": "Qatar",
-  "RE": "Réunion",
-  "RO": "Romania",
-  "RU": "Russian Federation",
-  "RW": "Rwanda",
-  "BL": "Saint Barthélemy",
-  "SH": "Saint Helena, Ascension and Tristan da Cunha",
-  "KN": "Saint Kitts and Nevis",
-  "LC": "Saint Lucia",
-  "MF": "Saint Martin (French part)",
-  "PM": "Saint Pierre and Miquelon",
-  "VC": "Saint Vincent and the Grenadines",
-  "WS": "Samoa",
-  "SM": "San Marino",
-  "ST": "Sao Tome and Principe",
-  "SA": "Saudi Arabia",
-  "SN": "Senegal",
-  "RS": "Serbia",
-  "SC": "Seychelles",
-  "SL": "Sierra Leone",
-  "SG": "Singapore",
-  "SX": "Sint Maarten (Dutch part)",
-  "SK": "Slovakia",
-  "SI": "Slovenia",
-  "SB": "Solomon Islands",
-  "SO": "Somalia",
-  "ZA": "South Africa",
-  "GS": "South Georgia and the South Sandwich Islands",
-  "SS": "South Sudan",
-  "ES": "Spain",
-  "LK": "Sri Lanka",
-  "SD": "Sudan",
-  "SR": "Suriname",
-  "SJ": "Svalbard and Jan Mayen",
-  "SZ": "Swaziland",
-  "SE": "Sweden",
-  "CH": "Switzerland",
-  "SY": "Syrian Arab Republic",
-  "TW": "Taiwan, Province of China",
-  "TJ": "Tajikistan",
-  "TZ": "Tanzania, United Republic of",
-  "TH": "Thailand",
-  "TL": "Timor-Leste",
-  "TG": "Togo",
-  "TK": "Tokelau",
-  "TO": "Tonga",
-  "TT": "Trinidad and Tobago",
-  "TN": "Tunisia",
-  "TR": "Turkey",
-  "TM": "Turkmenistan",
-  "TC": "Turks and Caicos Islands",
-  "TV": "Tuvalu",
-  "UG": "Uganda",
-  "UA": "Ukraine",
-  "AE": "United Arab Emirates",
-  "GB": "United Kingdom",
-  "US": "United States",
-  "UM": "United States Minor Outlying Islands",
-  "UY": "Uruguay",
-  "UZ": "Uzbekistan",
-  "VU": "Vanuatu",
-  "VE": "Venezuela, Bolivarian Republic of",
-  "VN": "Viet Nam",
-  "VG": "Virgin Islands, British",
-  "VI": "Virgin Islands, U.S.",
-  "WF": "Wallis and Futuna",
-  "EH": "Western Sahara",
-  "YE": "Yemen",
-  "ZM": "Zambia",
-  "ZW": "Zimbabwe",
+    "AF": "Afghanistan",
+    "AX": "Åland Islands",
+    "AL": "Albania",
+    "DZ": "Algeria",
+    "AS": "American Samoa",
+    "AD": "Andorra",
+    "AO": "Angola",
+    "AI": "Anguilla",
+    "AQ": "Antarctica",
+    "AG": "Antigua and Barbuda",
+    "AR": "Argentina",
+    "AM": "Armenia",
+    "AW": "Aruba",
+    "AU": "Australia",
+    "AT": "Austria",
+    "AZ": "Azerbaijan",
+    "BS": "Bahamas",
+    "BH": "Bahrain",
+    "BD": "Bangladesh",
+    "BB": "Barbados",
+    "BY": "Belarus",
+    "BE": "Belgium",
+    "BZ": "Belize",
+    "BJ": "Benin",
+    "BM": "Bermuda",
+    "BT": "Bhutan",
+    "BO": "Bolivia, Plurinational State of",
+    "BQ": "Bonaire, Sint Eustatius and Saba",
+    "BA": "Bosnia and Herzegovina",
+    "BW": "Botswana",
+    "BV": "Bouvet Island",
+    "BR": "Brazil",
+    "IO": "British Indian Ocean Territory",
+    "BN": "Brunei Darussalam",
+    "BG": "Bulgaria",
+    "BF": "Burkina Faso",
+    "BI": "Burundi",
+    "KH": "Cambodia",
+    "CM": "Cameroon",
+    "CA": "Canada",
+    "CV": "Cape Verde",
+    "KY": "Cayman Islands",
+    "CF": "Central African Republic",
+    "TD": "Chad",
+    "CL": "Chile",
+    "CN": "China",
+    "CX": "Christmas Island",
+    "CC": "Cocos (Keeling) Islands",
+    "CO": "Colombia",
+    "KM": "Comoros",
+    "CG": "Congo",
+    "CD": "Congo, the Democratic Republic of the",
+    "CK": "Cook Islands",
+    "CR": "Costa Rica",
+    "CI": "Côte d'Ivoire",
+    "HR": "Croatia",
+    "CU": "Cuba",
+    "CW": "Curaçao",
+    "CY": "Cyprus",
+    "CZ": "Czech Republic",
+    "DK": "Denmark",
+    "DJ": "Djibouti",
+    "DM": "Dominica",
+    "DO": "Dominican Republic",
+    "EC": "Ecuador",
+    "EG": "Egypt",
+    "SV": "El Salvador",
+    "GQ": "Equatorial Guinea",
+    "ER": "Eritrea",
+    "EE": "Estonia",
+    "ET": "Ethiopia",
+    "FK": "Falkland Islands (Malvinas)",
+    "FO": "Faroe Islands",
+    "FJ": "Fiji",
+    "FI": "Finland",
+    "FR": "France",
+    "GF": "French Guiana",
+    "PF": "French Polynesia",
+    "TF": "French Southern Territories",
+    "GA": "Gabon",
+    "GM": "Gambia",
+    "GE": "Georgia",
+    "DE": "Germany",
+    "GH": "Ghana",
+    "GI": "Gibraltar",
+    "GR": "Greece",
+    "GL": "Greenland",
+    "GD": "Grenada",
+    "GP": "Guadeloupe",
+    "GU": "Guam",
+    "GT": "Guatemala",
+    "GG": "Guernsey",
+    "GN": "Guinea",
+    "GW": "Guinea-Bissau",
+    "GY": "Guyana",
+    "HT": "Haiti",
+    "HM": "Heard Island and McDonald Mcdonald Islands",
+    "VA": "Holy See (Vatican City State)",
+    "HN": "Honduras",
+    "HK": "Hong Kong",
+    "HU": "Hungary",
+    "IS": "Iceland",
+    "IN": "India",
+    "ID": "Indonesia",
+    "IR": "Iran, Islamic Republic of",
+    "IQ": "Iraq",
+    "IE": "Ireland",
+    "IM": "Isle of Man",
+    "IL": "Israel",
+    "IT": "Italy",
+    "JM": "Jamaica",
+    "JP": "Japan",
+    "JE": "Jersey",
+    "JO": "Jordan",
+    "KZ": "Kazakhstan",
+    "KE": "Kenya",
+    "KI": "Kiribati",
+    "KP": "Korea, Democratic People's Republic of",
+    "KR": "Korea, Republic of",
+    "KW": "Kuwait",
+    "KG": "Kyrgyzstan",
+    "LA": "Lao People's Democratic Republic",
+    "LV": "Latvia",
+    "LB": "Lebanon",
+    "LS": "Lesotho",
+    "LR": "Liberia",
+    "LY": "Libya",
+    "LI": "Liechtenstein",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "MO": "Macao",
+    "MK": "Macedonia, the Former Yugoslav Republic of",
+    "MG": "Madagascar",
+    "MW": "Malawi",
+    "MY": "Malaysia",
+    "MV": "Maldives",
+    "ML": "Mali",
+    "MT": "Malta",
+    "MH": "Marshall Islands",
+    "MQ": "Martinique",
+    "MR": "Mauritania",
+    "MU": "Mauritius",
+    "YT": "Mayotte",
+    "MX": "Mexico",
+    "FM": "Micronesia, Federated States of",
+    "MD": "Moldova, Republic of",
+    "MC": "Monaco",
+    "MN": "Mongolia",
+    "ME": "Montenegro",
+    "MS": "Montserrat",
+    "MA": "Morocco",
+    "MZ": "Mozambique",
+    "MM": "Myanmar",
+    "NA": "Namibia",
+    "NR": "Nauru",
+    "NP": "Nepal",
+    "NL": "Netherlands",
+    "NC": "New Caledonia",
+    "NZ": "New Zealand",
+    "NI": "Nicaragua",
+    "NE": "Niger",
+    "NG": "Nigeria",
+    "NU": "Niue",
+    "NF": "Norfolk Island",
+    "MP": "Northern Mariana Islands",
+    "NO": "Norway",
+    "OM": "Oman",
+    "PK": "Pakistan",
+    "PW": "Palau",
+    "PS": "Palestine, State of",
+    "PA": "Panama",
+    "PG": "Papua New Guinea",
+    "PY": "Paraguay",
+    "PE": "Peru",
+    "PH": "Philippines",
+    "PN": "Pitcairn",
+    "PL": "Poland",
+    "PT": "Portugal",
+    "PR": "Puerto Rico",
+    "QA": "Qatar",
+    "RE": "Réunion",
+    "RO": "Romania",
+    "RU": "Russian Federation",
+    "RW": "Rwanda",
+    "BL": "Saint Barthélemy",
+    "SH": "Saint Helena, Ascension and Tristan da Cunha",
+    "KN": "Saint Kitts and Nevis",
+    "LC": "Saint Lucia",
+    "MF": "Saint Martin (French part)",
+    "PM": "Saint Pierre and Miquelon",
+    "VC": "Saint Vincent and the Grenadines",
+    "WS": "Samoa",
+    "SM": "San Marino",
+    "ST": "Sao Tome and Principe",
+    "SA": "Saudi Arabia",
+    "SN": "Senegal",
+    "RS": "Serbia",
+    "SC": "Seychelles",
+    "SL": "Sierra Leone",
+    "SG": "Singapore",
+    "SX": "Sint Maarten (Dutch part)",
+    "SK": "Slovakia",
+    "SI": "Slovenia",
+    "SB": "Solomon Islands",
+    "SO": "Somalia",
+    "ZA": "South Africa",
+    "GS": "South Georgia and the South Sandwich Islands",
+    "SS": "South Sudan",
+    "ES": "Spain",
+    "LK": "Sri Lanka",
+    "SD": "Sudan",
+    "SR": "Suriname",
+    "SJ": "Svalbard and Jan Mayen",
+    "SZ": "Swaziland",
+    "SE": "Sweden",
+    "CH": "Switzerland",
+    "SY": "Syrian Arab Republic",
+    "TW": "Taiwan, Province of China",
+    "TJ": "Tajikistan",
+    "TZ": "Tanzania, United Republic of",
+    "TH": "Thailand",
+    "TL": "Timor-Leste",
+    "TG": "Togo",
+    "TK": "Tokelau",
+    "TO": "Tonga",
+    "TT": "Trinidad and Tobago",
+    "TN": "Tunisia",
+    "TR": "Turkey",
+    "TM": "Turkmenistan",
+    "TC": "Turks and Caicos Islands",
+    "TV": "Tuvalu",
+    "UG": "Uganda",
+    "UA": "Ukraine",
+    "AE": "United Arab Emirates",
+    "GB": "United Kingdom",
+    "US": "United States",
+    "UM": "United States Minor Outlying Islands",
+    "UY": "Uruguay",
+    "UZ": "Uzbekistan",
+    "VU": "Vanuatu",
+    "VE": "Venezuela, Bolivarian Republic of",
+    "VN": "Viet Nam",
+    "VG": "Virgin Islands, British",
+    "VI": "Virgin Islands, U.S.",
+    "WF": "Wallis and Futuna",
+    "EH": "Western Sahara",
+    "YE": "Yemen",
+    "ZM": "Zambia",
+    "ZW": "Zimbabwe",
+  };
+window.requireOnce = function (a, b) {
+  return "undefined" == typeof scripts[a]
+    ? ((scripts[a] = []),
+      null != b && scripts[a].push(b),
+      $.getScript(a, function () {
+        var c, d, e;
+        for (e = scripts[a], c = 0, d = e.length; d > c; c++) (b = e[c]), b();
+        return (scripts[a] = !0);
+      }))
+    : scripts[a] === !0
+    ? "function" == typeof b
+      ? b()
+      : void 0
+    : null != b
+    ? scripts[a].push(b)
+    : void 0;
 };
-var scripts;scripts={},window.requireOnce=function(a,b){return"undefined"==typeof scripts[a]?(scripts[a]=[],null!=b&&scripts[a].push(b),$.getScript(a,function(){var c,d,e;for(e=scripts[a],c=0,d=e.length;d>c;c++)b=e[c],b();return scripts[a]=!0})):scripts[a]===!0?"function"==typeof b?b():void 0:null!=b?scripts[a].push(b):void 0};
+
 !function(t){"use strict";function r(t){var r={path:!0,query:!0,hash:!0};return t?(/^[a-z]+:/.test(t)&&(r.protocol=!0,r.host=!0,/[-a-z0-9]+(\.[-a-z0-9])*:\d+/i.test(t)&&(r.port=!0),/\/\/(.*?)(?::(.*?))?@/.test(t)&&(r.user=!0,r.pass=!0)),r):r}function e(t,e,o){var u,f,l,y=h?"file://"+(process.platform.match(/^win/i)?"/":"")+p("fs").realpathSync("."):document.location.href;e||(e=y),h?u=p("url").parse(e):(u=document.createElement("a"),u.href=e);var d=r(e);l=e.match(/\/\/(.*?)(?::(.*?))?@/)||[];for(f in a)t[f]=d[f]?u[a[f]]||"":"";if(t.protocol=t.protocol.replace(/:$/,""),t.query=t.query.replace(/^\?/,""),t.hash=s(t.hash.replace(/^#/,"")),t.user=s(l[1]||""),t.pass=s(l[2]||""),t.port=c[t.protocol]==t.port||0==t.port?"":t.port,!d.protocol&&/[^\/#?]/.test(e.charAt(0))&&(t.path=e.split("?")[0].split("#")[0]),!d.protocol&&o){var g=new n(y.match(/(.*\/)/)[0]),m=g.path.split("/"),v=t.path.split("/"),q=["protocol","user","pass","host","port"],w=q.length;for(m.pop(),f=0;w>f;f++)t[q[f]]=g[q[f]];for(;".."===v[0];)m.pop(),v.shift();t.path=("/"!==e.charAt(0)?m.join("/"):"")+"/"+v.join("/")}t.path=t.path.replace(/^\/{2,}/,"/"),t.paths(("/"===t.path.charAt(0)?t.path.slice(1):t.path).split("/")),t.query=new i(t.query)}function o(t){return encodeURIComponent(t).replace(/'/g,"%27")}function s(t){return t=t.replace(/\+/g," "),t=t.replace(/%([ef][0-9a-f])%([89ab][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e,o){var s=parseInt(r,16)-224,i=parseInt(e,16)-128;if(0===s&&32>i)return t;var n=parseInt(o,16)-128,h=(s<<12)+(i<<6)+n;return h>65535?t:String.fromCharCode(h)}),t=t.replace(/%([cd][0-9a-f])%([89ab][0-9a-f])/gi,function(t,r,e){var o=parseInt(r,16)-192;if(2>o)return t;var s=parseInt(e,16)-128;return String.fromCharCode((o<<6)+s)}),t.replace(/%([0-7][0-9a-f])/gi,function(t,r){return String.fromCharCode(parseInt(r,16))})}function i(t){for(var r,e=/([^=&]+)(=([^&]*))?/g;r=e.exec(t);){var o=decodeURIComponent(r[1].replace(/\+/g," ")),i=r[3]?s(r[3]):"";void 0!==this[o]&&null!==this[o]?(this[o]instanceof Array||(this[o]=[this[o]]),this[o].push(i)):this[o]=i}}function n(t,r){e(this,t,!r)}var h="undefined"==typeof window&&"undefined"!=typeof global&&"function"==typeof require,p=h?t.require:null,a={protocol:"protocol",host:"hostname",port:"port",path:"pathname",query:"search",hash:"hash"},c={ftp:21,gopher:70,http:80,https:443,ws:80,wss:443};i.prototype.toString=function(){var t,r,e="",s=o;for(t in this)if(!(this[t]instanceof Function||null===this[t]))if(this[t]instanceof Array){var i=this[t].length;if(i)for(r=0;i>r;r++)e+=e?"&":"",e+=s(t)+"="+s(this[t][r]);else e+=(e?"&":"")+s(t)+"="}else e+=e?"&":"",e+=s(t)+"="+s(this[t]);return e},n.prototype.clearQuery=function(){for(var t in this.query)this.query[t]instanceof Function||delete this.query[t];return this},n.prototype.queryLength=function(){var t,r=0;for(t in this)this[t]instanceof Function||r++;return r},n.prototype.isEmptyQuery=function(){return 0===this.queryLength()},n.prototype.paths=function(t){var r,e="",i=0;if(t&&t.length&&t+""!==t){for(this.isAbsolute()&&(e="/"),r=t.length;r>i;i++)t[i]=!i&&t[i].match(/^\w:$/)?t[i]:o(t[i]);this.path=e+t.join("/")}for(t=("/"===this.path.charAt(0)?this.path.slice(1):this.path).split("/"),i=0,r=t.length;r>i;i++)t[i]=s(t[i]);return t},n.prototype.encode=o,n.prototype.decode=s,n.prototype.isAbsolute=function(){return this.protocol||"/"===this.path.charAt(0)},n.prototype.toString=function(){return(this.protocol&&this.protocol+"://")+(this.user&&o(this.user)+(this.pass&&":"+o(this.pass))+"@")+(this.host&&this.host)+(this.port&&":"+this.port)+(this.path&&this.path)+(this.query.toString()&&"?"+this.query)+(this.hash&&"#"+o(this.hash))},t[t.exports?"exports":"Url"]=n}("undefined"!=typeof module&&module.exports?module:window);
 !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.DOMPurify=t()}(this,function(){"use strict";function e(e,t){y&&y(e,null);for(var n=t.length;n--;){var r=t[n];if("string"==typeof r){var o=r.toLowerCase();o!==r&&(Object.isFrozen(t)||(t[n]=o),r=o)}e[r]=!0}return e}function t(e){var t={},n=void 0;for(n in e)g(h,e,[n])&&(t[n]=e[n]);return t}function n(e){if(Array.isArray(e)){for(var t=0,n=Array(e.length);t<e.length;t++)n[t]=e[t];return n}return Array.from(e)}function r(){var o=arguments.length>0&&void 0!==arguments[0]?arguments[0]:_(),u=function(e){return r(e)};if(u.version="1.0.11",u.removed=[],!o||!o.document||9!==o.document.nodeType)return u.isSupported=!1,u;var h=o.document,y=!1,g=!1,v=o.document,D=o.DocumentFragment,R=o.HTMLTemplateElement,C=o.Node,H=o.NodeFilter,F=o.NamedNodeMap,z=void 0===F?o.NamedNodeMap||o.MozNamedAttrMap:F,I=o.Text,j=o.Comment,P=o.DOMParser,U=o.TrustedTypes;if("function"==typeof R){var W=v.createElement("template");W.content&&W.content.ownerDocument&&(v=W.content.ownerDocument)}var B=N(U,h),G=B?B.createHTML(""):"",q=v,V=q.implementation,Y=q.createNodeIterator,K=q.getElementsByTagName,X=q.createDocumentFragment,$=h.importNode,J={};u.isSupported=V&&void 0!==V.createHTMLDocument&&9!==v.documentMode;var Q=b,Z=T,ee=A,te=x,ne=S,re=M,oe=L,ie=null,ae=e({},[].concat(n(i),n(a),n(l),n(c),n(s))),le=null,ce=e({},[].concat(n(d),n(f),n(p),n(m))),se=null,ue=null,de=!0,fe=!0,pe=!1,me=!1,he=!1,ye=!1,ge=!1,ve=!1,be=!1,Te=!1,Ae=!1,xe=!0,Le=!0,Se=!1,Me={},ke=e({},["audio","head","math","script","style","template","svg","video"]),we=e({},["audio","video","img","source","image"]),Ee=null,Oe=e({},["alt","class","for","id","label","name","pattern","placeholder","summary","title","value","style","xmlns"]),_e=null,Ne=v.createElement("form"),De=function(r){_e&&_e===r||(r&&"object"===(void 0===r?"undefined":k(r))||(r={}),ie="ALLOWED_TAGS"in r?e({},r.ALLOWED_TAGS):ae,le="ALLOWED_ATTR"in r?e({},r.ALLOWED_ATTR):ce,Ee="ADD_URI_SAFE_ATTR"in r?e({},r.ADD_URI_SAFE_ATTR):Oe,se="FORBID_TAGS"in r?e({},r.FORBID_TAGS):{},ue="FORBID_ATTR"in r?e({},r.FORBID_ATTR):{},Me="USE_PROFILES"in r&&r.USE_PROFILES,de=!1!==r.ALLOW_ARIA_ATTR,fe=!1!==r.ALLOW_DATA_ATTR,pe=r.ALLOW_UNKNOWN_PROTOCOLS||!1,me=r.SAFE_FOR_JQUERY||!1,he=r.SAFE_FOR_TEMPLATES||!1,ye=r.WHOLE_DOCUMENT||!1,be=r.RETURN_DOM||!1,Te=r.RETURN_DOM_FRAGMENT||!1,Ae=r.RETURN_DOM_IMPORT||!1,ve=r.FORCE_BODY||!1,xe=!1!==r.SANITIZE_DOM,Le=!1!==r.KEEP_CONTENT,Se=r.IN_PLACE||!1,oe=r.ALLOWED_URI_REGEXP||oe,he&&(fe=!1),Te&&(be=!0),Me&&(ie=e({},[].concat(n(s))),le=[],!0===Me.html&&(e(ie,i),e(le,d)),!0===Me.svg&&(e(ie,a),e(le,f),e(le,m)),!0===Me.svgFilters&&(e(ie,l),e(le,f),e(le,m)),!0===Me.mathMl&&(e(ie,c),e(le,p),e(le,m))),r.ADD_TAGS&&(ie===ae&&(ie=t(ie)),e(ie,r.ADD_TAGS)),r.ADD_ATTR&&(le===ce&&(le=t(le)),e(le,r.ADD_ATTR)),r.ADD_URI_SAFE_ATTR&&e(Ee,r.ADD_URI_SAFE_ATTR),Le&&(ie["#text"]=!0),ye&&e(ie,["html","head","body"]),ie.table&&e(ie,["tbody"]),O&&O(r),_e=r)},Re=function(e){u.removed.push({element:e});try{e.parentNode.removeChild(e)}catch(t){e.outerHTML=G}},Ce=function(e,t){try{u.removed.push({attribute:t.getAttributeNode(e),from:t})}catch(e){u.removed.push({attribute:null,from:t})}t.removeAttribute(e)},He=function(t){var n=void 0,r=void 0;if(ve)t="<remove></remove>"+t;else{var o=t.match(/^[\s]+/);(r=o&&o[0])&&(t=t.slice(r.length))}if(y)try{n=(new P).parseFromString(t,"text/html")}catch(e){}if(g&&e(se,["title"]),!n||!n.documentElement){var i=(n=V.createHTMLDocument("")).body;i.parentNode.removeChild(i.parentNode.firstElementChild),i.outerHTML=B?B.createHTML(t):t}return r&&n.body.insertBefore(v.createTextNode(r),n.body.childNodes[0]||null),K.call(n,ye?"html":"body")[0]};u.isSupported&&(function(){try{He('<svg><p><style><img src="</style><img src=x onerror=1//">').querySelector("svg img")&&(y=!0)}catch(e){}}(),function(){try{He("<x/><title>&lt;/title&gt;&lt;img&gt;").querySelector("title").innerHTML.match(/<\/title/)&&(g=!0)}catch(e){}}());var Fe=function(e){return Y.call(e.ownerDocument||e,e,H.SHOW_ELEMENT|H.SHOW_COMMENT|H.SHOW_TEXT,function(){return H.FILTER_ACCEPT},!1)},ze=function(e){return!(e instanceof I||e instanceof j)&&!("string"==typeof e.nodeName&&"string"==typeof e.textContent&&"function"==typeof e.removeChild&&e.attributes instanceof z&&"function"==typeof e.removeAttribute&&"function"==typeof e.setAttribute)},Ie=function(e){return"object"===(void 0===C?"undefined":k(C))?e instanceof C:e&&"object"===(void 0===e?"undefined":k(e))&&"number"==typeof e.nodeType&&"string"==typeof e.nodeName},je=function(e,t,n){J[e]&&J[e].forEach(function(e){e.call(u,t,n,_e)})},Pe=function(e){var t=void 0;if(je("beforeSanitizeElements",e,null),ze(e))return Re(e),!0;var n=e.nodeName.toLowerCase();if(je("uponSanitizeElement",e,{tagName:n,allowedTags:ie}),!ie[n]||se[n]){if(Le&&!ke[n]&&"function"==typeof e.insertAdjacentHTML)try{var r=e.innerHTML;e.insertAdjacentHTML("AfterEnd",B?B.createHTML(r):r)}catch(e){}return Re(e),!0}return"noscript"===n&&e.innerHTML.match(/<\/noscript/i)?(Re(e),!0):"noembed"===n&&e.innerHTML.match(/<\/noembed/i)?(Re(e),!0):(!me||e.firstElementChild||e.content&&e.content.firstElementChild||!/</g.test(e.textContent)||(u.removed.push({element:e.cloneNode()}),e.innerHTML?e.innerHTML=e.innerHTML.replace(/</g,"&lt;"):e.innerHTML=e.textContent.replace(/</g,"&lt;")),he&&3===e.nodeType&&(t=(t=(t=e.textContent).replace(Q," ")).replace(Z," "),e.textContent!==t&&(u.removed.push({element:e.cloneNode()}),e.textContent=t)),je("afterSanitizeElements",e,null),!1)},Ue=function(e,t,n){if(xe&&("id"===t||"name"===t)&&(n in v||n in Ne))return!1;if(fe&&ee.test(t));else if(de&&te.test(t));else{if(!le[t]||ue[t])return!1;if(Ee[t]);else if(oe.test(n.replace(re,"")));else if("src"!==t&&"xlink:href"!==t||"script"===e||0!==n.indexOf("data:")||!we[e]){if(pe&&!ne.test(n.replace(re,"")));else if(n)return!1}else;}return!0},We=function(e){var t=void 0,n=void 0,r=void 0,o=void 0,i=void 0;je("beforeSanitizeAttributes",e,null);var a=e.attributes;if(a){var l={attrName:"",attrValue:"",keepAttr:!0,allowedAttributes:le};for(i=a.length;i--;){var c=t=a[i],s=c.name,d=c.namespaceURI;if(n=t.value.trim(),r=s.toLowerCase(),l.attrName=r,l.attrValue=n,l.keepAttr=!0,je("uponSanitizeAttribute",e,l),n=l.attrValue,"name"===r&&"IMG"===e.nodeName&&a.id)o=a.id,a=w(E,a,[]),Ce("id",e),Ce(s,e),a.indexOf(o)>i&&e.setAttribute("id",o.value);else{if("INPUT"===e.nodeName&&"type"===r&&"file"===n&&l.keepAttr&&(le[r]||!ue[r]))continue;"id"===s&&e.setAttribute(s,""),Ce(s,e)}if(l.keepAttr){he&&(n=(n=n.replace(Q," ")).replace(Z," "));var f=e.nodeName.toLowerCase();if(Ue(f,r,n))try{d?e.setAttributeNS(d,s,n):e.setAttribute(s,n),u.removed.pop()}catch(e){}}}je("afterSanitizeAttributes",e,null)}},Be=function e(t){var n=void 0,r=Fe(t);for(je("beforeSanitizeShadowDOM",t,null);n=r.nextNode();)je("uponSanitizeShadowNode",n,null),Pe(n)||(n.content instanceof D&&e(n.content),We(n));je("afterSanitizeShadowDOM",t,null)};return u.sanitize=function(e,t){var n=void 0,r=void 0,i=void 0,a=void 0,l=void 0;if(e||(e="\x3c!--\x3e"),"string"!=typeof e&&!Ie(e)){if("function"!=typeof e.toString)throw new TypeError("toString is not a function");if("string"!=typeof(e=e.toString()))throw new TypeError("dirty is not a string, aborting")}if(!u.isSupported){if("object"===k(o.toStaticHTML)||"function"==typeof o.toStaticHTML){if("string"==typeof e)return o.toStaticHTML(e);if(Ie(e))return o.toStaticHTML(e.outerHTML)}return e}if(ge||De(t),u.removed=[],Se);else if(e instanceof C)1===(r=(n=He("\x3c!--\x3e")).ownerDocument.importNode(e,!0)).nodeType&&"BODY"===r.nodeName?n=r:"HTML"===r.nodeName?n=r:n.appendChild(r);else{if(!be&&!he&&!ye&&-1===e.indexOf("<"))return B?B.createHTML(e):e;if(!(n=He(e)))return be?null:G}n&&ve&&Re(n.firstChild);for(var c=Fe(Se?e:n);i=c.nextNode();)3===i.nodeType&&i===a||Pe(i)||(i.content instanceof D&&Be(i.content),We(i),a=i);if(a=null,Se)return e;if(be){if(Te)for(l=X.call(n.ownerDocument);n.firstChild;)l.appendChild(n.firstChild);else l=n;return Ae&&(l=$.call(h,l,!0)),l}var s=ye?n.outerHTML:n.innerHTML;return he&&(s=(s=s.replace(Q," ")).replace(Z," ")),B?B.createHTML(s):s},u.setConfig=function(e){De(e),ge=!0},u.clearConfig=function(){_e=null,ge=!1},u.isValidAttribute=function(e,t,n){_e||De({});var r=e.toLowerCase(),o=t.toLowerCase();return Ue(r,o,n)},u.addHook=function(e,t){"function"==typeof t&&(J[e]=J[e]||[],J[e].push(t))},u.removeHook=function(e){J[e]&&J[e].pop()},u.removeHooks=function(e){J[e]&&(J[e]=[])},u.removeAllHooks=function(){J={}},u}var o=Object.freeze||function(e){return e},i=o(["a","abbr","acronym","address","area","article","aside","audio","b","bdi","bdo","big","blink","blockquote","body","br","button","canvas","caption","center","cite","code","col","colgroup","content","data","datalist","dd","decorator","del","details","dfn","dir","div","dl","dt","element","em","fieldset","figcaption","figure","font","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","img","input","ins","kbd","label","legend","li","main","map","mark","marquee","menu","menuitem","meter","nav","nobr","ol","optgroup","option","output","p","pre","progress","q","rp","rt","ruby","s","samp","section","select","shadow","small","source","spacer","span","strike","strong","style","sub","summary","sup","table","tbody","td","template","textarea","tfoot","th","thead","time","tr","track","tt","u","ul","var","video","wbr"]),a=o(["svg","a","altglyph","altglyphdef","altglyphitem","animatecolor","animatemotion","animatetransform","audio","canvas","circle","clippath","defs","desc","ellipse","filter","font","g","glyph","glyphref","hkern","image","line","lineargradient","marker","mask","metadata","mpath","path","pattern","polygon","polyline","radialgradient","rect","stop","style","switch","symbol","text","textpath","title","tref","tspan","video","view","vkern"]),l=o(["feBlend","feColorMatrix","feComponentTransfer","feComposite","feConvolveMatrix","feDiffuseLighting","feDisplacementMap","feDistantLight","feFlood","feFuncA","feFuncB","feFuncG","feFuncR","feGaussianBlur","feMerge","feMergeNode","feMorphology","feOffset","fePointLight","feSpecularLighting","feSpotLight","feTile","feTurbulence"]),c=o(["math","menclose","merror","mfenced","mfrac","mglyph","mi","mlabeledtr","mmultiscripts","mn","mo","mover","mpadded","mphantom","mroot","mrow","ms","mspace","msqrt","mstyle","msub","msup","msubsup","mtable","mtd","mtext","mtr","munder","munderover"]),s=o(["#text"]),u=Object.freeze||function(e){return e},d=u(["accept","action","align","alt","autocomplete","background","bgcolor","border","cellpadding","cellspacing","checked","cite","class","clear","color","cols","colspan","controls","coords","crossorigin","datetime","default","dir","disabled","download","enctype","face","for","headers","height","hidden","high","href","hreflang","id","integrity","ismap","label","lang","list","loop","low","max","maxlength","media","method","min","multiple","name","noshade","novalidate","nowrap","open","optimum","pattern","placeholder","poster","preload","pubdate","radiogroup","readonly","rel","required","rev","reversed","role","rows","rowspan","spellcheck","scope","selected","shape","size","sizes","span","srclang","start","src","srcset","step","style","summary","tabindex","title","type","usemap","valign","value","width","xmlns"]),f=u(["accent-height","accumulate","additive","alignment-baseline","ascent","attributename","attributetype","azimuth","basefrequency","baseline-shift","begin","bias","by","class","clip","clip-path","clip-rule","color","color-interpolation","color-interpolation-filters","color-profile","color-rendering","cx","cy","d","dx","dy","diffuseconstant","direction","display","divisor","dur","edgemode","elevation","end","fill","fill-opacity","fill-rule","filter","filterunits","flood-color","flood-opacity","font-family","font-size","font-size-adjust","font-stretch","font-style","font-variant","font-weight","fx","fy","g1","g2","glyph-name","glyphref","gradientunits","gradienttransform","height","href","id","image-rendering","in","in2","k","k1","k2","k3","k4","kerning","keypoints","keysplines","keytimes","lang","lengthadjust","letter-spacing","kernelmatrix","kernelunitlength","lighting-color","local","marker-end","marker-mid","marker-start","markerheight","markerunits","markerwidth","maskcontentunits","maskunits","max","mask","media","method","mode","min","name","numoctaves","offset","operator","opacity","order","orient","orientation","origin","overflow","paint-order","path","pathlength","patterncontentunits","patterntransform","patternunits","points","preservealpha","preserveaspectratio","primitiveunits","r","rx","ry","radius","refx","refy","repeatcount","repeatdur","restart","result","rotate","scale","seed","shape-rendering","specularconstant","specularexponent","spreadmethod","stddeviation","stitchtiles","stop-color","stop-opacity","stroke-dasharray","stroke-dashoffset","stroke-linecap","stroke-linejoin","stroke-miterlimit","stroke-opacity","stroke","stroke-width","style","surfacescale","tabindex","targetx","targety","transform","text-anchor","text-decoration","text-rendering","textlength","type","u1","u2","unicode","values","viewbox","visibility","version","vert-adv-y","vert-origin-x","vert-origin-y","width","word-spacing","wrap","writing-mode","xchannelselector","ychannelselector","x","x1","x2","xmlns","y","y1","y2","z","zoomandpan"]),p=u(["accent","accentunder","align","bevelled","close","columnsalign","columnlines","columnspan","denomalign","depth","dir","display","displaystyle","fence","frame","height","href","id","largeop","length","linethickness","lspace","lquote","mathbackground","mathcolor","mathsize","mathvariant","maxsize","minsize","movablelimits","notation","numalign","open","rowalign","rowlines","rowspacing","rowspan","rspace","rquote","scriptlevel","scriptminsize","scriptsizemultiplier","selection","separator","separators","stretchy","subscriptshift","supscriptshift","symmetric","voffset","width","xmlns"]),m=u(["xlink:href","xml:id","xlink:title","xml:space","xmlns:xlink"]),h=Object.hasOwnProperty,y=Object.setPrototypeOf,g=("undefined"!=typeof Reflect&&Reflect).apply;g||(g=function(e,t,n){return e.apply(t,n)});var v=Object.seal||function(e){return e},b=v(/\{\{[\s\S]*|[\s\S]*\}\}/gm),T=v(/<%[\s\S]*|[\s\S]*%>/gm),A=v(/^data-[\-\w.\u00B7-\uFFFF]/),x=v(/^aria-[\-\w]+$/),L=v(/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i),S=v(/^(?:\w+script|data):/i),M=v(/[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g),k="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},w=("undefined"!=typeof Reflect&&Reflect).apply,E=Array.prototype.slice,O=Object.freeze,_=function(){return"undefined"==typeof window?null:window};w||(w=function(e,t,n){return e.apply(t,n)});var N=function(e,t){if("object"!==(void 0===e?"undefined":k(e))||"function"!=typeof e.createPolicy)return null;var n=null;t.currentScript&&t.currentScript.hasAttribute("data-tt-policy-suffix")&&(n=t.currentScript.getAttribute("data-tt-policy-suffix"));var r="dompurify"+(n?"#"+n:"");try{return e.createPolicy(r,{createHTML:function(e){return e}})}catch(e){return console.warn("TrustedTypes policy "+r+" could not be created."),null}};return r()});
 //# sourceMappingURL=purify.min.js.map
 
+//# Ensure jQuery isn't in noConflict mode
 var $, _str;
 
 $ = jQuery;
 
+// Alias underscore.string in case underscore gets overriden...
 _str = _.str;
 
+//# Rivets
 rivets.inputEvent = document.addEventListener ? 'input' : 'keyup';
 
 rivets.binders.input = {
   publishes: true,
   routine: rivets.binders.value.routine,
   bind: function(el) {
-    return $(el).bind("" + rivets.inputEvent + ".rivets", this.publish);
+    return $(el).bind(`${rivets.inputEvent}.rivets`, this.publish);
   },
   unbind: function(el) {
-    return $(el).unbind("" + rivets.inputEvent + ".rivets");
+    return $(el).unbind(`${rivets.inputEvent}.rivets`);
   }
 };
 
@@ -5968,14 +5986,12 @@ rivets.binders.checkedarray = {
     return el.checked = _.contains(value, el.value);
   },
   bind: function(el) {
-    return $(el).bind('change.rivets', (function(_this) {
-      return function() {
-        var newVal, val;
-        val = _this.model.get(_this.keypath) || [];
-        newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
-        return _this.model.set(_this.keypath, newVal);
-      };
-    })(this));
+    return $(el).bind('change.rivets', () => {
+      var newVal, val;
+      val = this.model.get(this.keypath) || [];
+      newVal = el.checked ? _.uniq(val.concat(el.value)) : _.without(val, el.value);
+      return this.model.set(this.keypath, newVal);
+    });
   },
   unbind: function(el) {
     return $(el).unbind('change.rivets');
@@ -5988,18 +6004,16 @@ rivets.binders.dobtradiogroup = {
     return el.checked = $(el).hasClass('js_other_option') ? this.model.get('value.other_checked') : _.contains(value, el.value);
   },
   bind: function(el) {
-    return $(el).bind('change.rivets', (function(_this) {
-      return function() {
-        if ($(el).hasClass('js_other_option')) {
-          _this.model.set('value.other_checked', true);
-          return _this.model.set(_this.keypath, []);
-        } else {
-          _this.model.unset('value.other_checked');
-          _this.model.unset('value.other_text');
-          return _this.model.set(_this.keypath, [el.value]);
-        }
-      };
-    })(this));
+    return $(el).bind('change.rivets', () => {
+      if ($(el).hasClass('js_other_option')) {
+        this.model.set('value.other_checked', true);
+        return this.model.set(this.keypath, []);
+      } else {
+        this.model.unset('value.other_checked');
+        this.model.unset('value.other_text');
+        return this.model.set(this.keypath, [el.value]);
+      }
+    });
   }
 };
 
@@ -6067,8 +6081,9 @@ rivets.configure({
         }
       });
     },
+    //# Initialization logic
     constructor: function(options) {
-      var p, _i, _len, _ref;
+      var i, len, p, ref;
       this.fr = this;
       this.options = $.extend({}, this.defaults, options);
       this.requests = 0;
@@ -6085,53 +6100,52 @@ rivets.configure({
         'X-FR-Version': FormRenderer.VERSION,
         'X-FR-URL': document.URL
       };
-      this.plugins = _.map(this.options.plugins, (function(_this) {
-        return function(pluginName) {
-          return new FormRenderer.Plugins[pluginName](_this);
-        };
-      })(this));
-      _ref = this.plugins;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        p = _ref[_i];
+      this.plugins = _.map(this.options.plugins, (pluginName) => {
+        return new FormRenderer.Plugins[pluginName](this);
+      });
+      ref = this.plugins;
+      for (i = 0, len = ref.length; i < len; i++) {
+        p = ref[i];
         if (typeof p.beforeFormLoad === "function") {
           p.beforeFormLoad();
         }
       }
+      // Loading state
       this.$el.html(JST['main'](this));
       this.trigger('viewRendered', this);
-      this.loadFromServer((function(_this) {
-        return function() {
-          var _base, _j, _len1, _ref1;
-          _this.$el.find('.fr_loading').remove();
-          _this.initFormComponents(_this.options.response_fields, _this.options.response.responses);
-          _this.initPages();
-          if (_this.options.enablePages) {
-            _this.initPagination();
-          } else {
-            _this.initNoPagination();
+      this.loadFromServer(() => {
+        var base, j, len1, ref1;
+        this.$el.find('.fr_loading').remove();
+        this.initFormComponents(this.options.response_fields, this.options.response.responses);
+        this.initPages();
+        if (this.options.enablePages) {
+          this.initPagination();
+        } else {
+          this.initNoPagination();
+        }
+        ref1 = this.plugins;
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          p = ref1[j];
+          if (typeof p.afterFormLoad === "function") {
+            p.afterFormLoad();
           }
-          _ref1 = _this.plugins;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            p = _ref1[_j];
-            if (typeof p.afterFormLoad === "function") {
-              p.afterFormLoad();
-            }
-          }
-          if (_this.options.validateImmediately) {
-            _this.validate();
-          }
-          _this.trigger('ready');
-          return typeof (_base = _this.options).onReady === "function" ? _base.onReady() : void 0;
-        };
-      })(this));
+        }
+        if (this.options.validateImmediately) {
+          this.validate();
+        }
+        this.trigger('ready');
+        return typeof (base = this.options).onReady === "function" ? base.onReady() : void 0;
+      });
+      // If @$el is a <form>, make extra-sure that it can't be submitted natively
       this.$el.on('submit', function(e) {
         return e.preventDefault();
       });
       return this;
     },
     maybe_delete_jwt_token: function(xhr) {
-      var _ref;
-      if (((_ref = xhr.responseJSON) != null ? _ref.template : void 0) === 'Submission time has expired.') {
+      var ref;
+      // We can't verify anonymous responses.
+      if (((ref = xhr.responseJSON) != null ? ref.template : void 0) === 'Submission time has expired.') {
         return delete window.sessionStorage['jwtToken'];
       }
     },
@@ -6139,7 +6153,7 @@ rivets.configure({
       return 'withCredentials' in new XMLHttpRequest();
     },
     projectUrl: function() {
-      return "" + this.options.screendoorBase + "/projects/" + this.options.project_id;
+      return `${this.options.screendoorBase}/projects/${this.options.project_id}`;
     },
     authorizationHeader: function() {
       if (window.sessionStorage.jwtToken) {
@@ -6158,88 +6172,82 @@ rivets.configure({
       });
       return '?' + queryParams.join('&');
     },
+    // Fetch the details of this form from the Screendoor API
     loadFromServer: function(cb) {
       if ((this.options.response_fields != null) && (this.options.response.responses != null)) {
         return cb();
       }
       return $.ajax({
-        url: "" + this.options.screendoorBase + "/api/form_renderer/load",
+        url: `${this.options.screendoorBase}/api/form_renderer/load`,
         type: 'get',
         dataType: 'json',
         data: this.loadParams(),
         headers: _.extend(this.serverHeaders, this.authorizationHeader()),
-        success: (function(_this) {
-          return function(data, status, xhr) {
-            var _base, _base1, _ref;
-            if (xhr.getResponseHeader('jwt_token') != null) {
-              window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
-            }
-            (_base = _this.options).response_fields || (_base.response_fields = data.project.response_fields);
-            (_base1 = _this.options.response).responses || (_base1.responses = ((_ref = data.response) != null ? _ref.responses : void 0) || {});
-            if (_this.options.afterSubmit == null) {
-              _this.options.afterSubmit = {
-                method: 'page',
-                html: data.project.after_response_page_html || ("<p>" + FormRenderer.t.thanks + "</p>")
-              };
-            }
-            cb();
-            if (document.location.search.match(/respondent_auth_token/)) {
-              return document.location.search = _this.tokenlessQueryParams(document.location.search);
-            }
-          };
-        })(this),
-        error: (function(_this) {
-          return function(xhr) {
-            var _ref, _ref1, _ref2, _ref3, _ref4;
-            if (!_this.corsSupported()) {
-              return _this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(/\:url/g, _this.projectUrl()));
-            } else if (((_ref = xhr.responseJSON) != null ? _ref.error : void 0) === 'Token expired. Verify identity.') {
-              _this.$el.html(JST["partials/verify"]({
-                'template': (_ref1 = xhr.responseJSON) != null ? _ref1.template : void 0,
-                'href': (_ref2 = xhr.responseJSON) != null ? _ref2.verify_api_endpoint : void 0,
-                'button': (_ref3 = xhr.responseJSON) != null ? _ref3.verify_email_button : void 0
-              }));
-              return _this.maybe_delete_jwt_token(xhr);
-            } else {
-              _this.$el.find('.fr_loading').text("" + FormRenderer.t.error_loading + ": \"" + (((_ref4 = xhr.responseJSON) != null ? _ref4.error : void 0) || 'Unknown') + "\"");
-              return _this.trigger('errorSaving', xhr);
-            }
-          };
-        })(this)
+        success: (data, status, xhr) => {
+          var base, base1, ref;
+          if (xhr.getResponseHeader('jwt_token') != null) {
+            window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+          }
+          (base = this.options).response_fields || (base.response_fields = data.project.response_fields);
+          (base1 = this.options.response).responses || (base1.responses = ((ref = data.response) != null ? ref.responses : void 0) || {});
+          if (this.options.afterSubmit == null) {
+            this.options.afterSubmit = {
+              method: 'page',
+              html: data.project.after_response_page_html || `<p>${FormRenderer.t.thanks}</p>`
+            };
+          }
+          cb();
+          if (document.location.search.match(/respondent_auth_token/)) {
+            return document.location.search = this.tokenlessQueryParams(document.location.search);
+          }
+        },
+        error: (xhr) => {
+          var ref, ref1, ref2, ref3, ref4;
+          if (!this.corsSupported()) {
+            return this.$el.find('.fr_loading').html(FormRenderer.t.not_supported.replace(/\:url/g, this.projectUrl()));
+          } else if (((ref = xhr.responseJSON) != null ? ref.error : void 0) === 'Token expired. Verify identity.') {
+            this.$el.html(JST["partials/verify"]({
+              'template': (ref1 = xhr.responseJSON) != null ? ref1.template : void 0,
+              'href': (ref2 = xhr.responseJSON) != null ? ref2.verify_api_endpoint : void 0,
+              'button': (ref3 = xhr.responseJSON) != null ? ref3.verify_email_button : void 0
+            }));
+            return this.maybe_delete_jwt_token(xhr);
+          } else {
+            this.$el.find('.fr_loading').text(`${FormRenderer.t.error_loading}: \"${((ref4 = xhr.responseJSON) != null ? ref4.error : void 0) || 'Unknown'}\"`);
+            return this.trigger('errorSaving', xhr);
+          }
+        }
       });
     },
+    // Build pages, which contain the response fields views.
     initPages: function() {
-      var addPage, currentPageInLoop, page, pageNumber, _ref, _results;
-      addPage = (function(_this) {
-        return function() {
-          return _this.subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page({
-            form_renderer: _this
-          });
-        };
-      })(this);
+      var addPage, currentPageInLoop, page, pageNumber, ref, results;
+      addPage = () => {
+        return this.subviews.pages[currentPageInLoop] = new FormRenderer.Views.Page({
+          form_renderer: this
+        });
+      };
       this.numPages = this.formComponents.where({
         field_type: 'page_break'
       }).length + 1;
       this.state.set('activePage', 1);
       currentPageInLoop = 1;
       addPage();
-      this.formComponents.each((function(_this) {
-        return function(rf) {
-          if (rf.get('field_type') === 'page_break') {
-            currentPageInLoop++;
-            return addPage();
-          } else {
-            return _this.subviews.pages[currentPageInLoop].models.push(rf);
-          }
-        };
-      })(this));
-      _ref = this.subviews.pages;
-      _results = [];
-      for (pageNumber in _ref) {
-        page = _ref[pageNumber];
-        _results.push(this.$el.append(page.render().el));
+      this.formComponents.each((rf) => {
+        if (rf.get('field_type') === 'page_break') {
+          currentPageInLoop++;
+          return addPage();
+        } else {
+          return this.subviews.pages[currentPageInLoop].models.push(rf);
+        }
+      });
+      ref = this.subviews.pages;
+      results = [];
+      for (pageNumber in ref) {
+        page = ref[pageNumber];
+        results.push(this.$el.append(page.render().el));
       }
-      return _results;
+      return results;
     },
     initPagination: function() {
       this.subviews.pagination = new FormRenderer.Views.Pagination({
@@ -6249,15 +6257,16 @@ rivets.configure({
       return this.subviews.pages[this.state.get('activePage')].show();
     },
     initNoPagination: function() {
-      var page, pageNumber, _ref, _results;
-      _ref = this.subviews.pages;
-      _results = [];
-      for (pageNumber in _ref) {
-        page = _ref[pageNumber];
-        _results.push(page.show());
+      var page, pageNumber, ref, results;
+      ref = this.subviews.pages;
+      results = [];
+      for (pageNumber in ref) {
+        page = ref[pageNumber];
+        results.push(page.show());
       }
-      return _results;
+      return results;
     },
+    //# Pages / Validation
     activatePage: function(newPageNumber) {
       this.subviews.pages[this.state.get('activePage')].hide();
       this.subviews.pages[newPageNumber].show();
@@ -6265,22 +6274,22 @@ rivets.configure({
       return this.state.set('activePage', newPageNumber);
     },
     validate: function() {
-      var page, _, _ref;
-      _ref = this.subviews.pages;
-      for (_ in _ref) {
-        page = _ref[_];
+      var _, page, ref;
+      ref = this.subviews.pages;
+      for (_ in ref) {
+        page = ref[_];
         page.validate();
       }
       this.trigger('afterValidate afterValidate:all');
       return this.areAllPagesValid();
     },
     isPageVisible: function(pageNumber) {
-      var _ref;
-      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isVisible() : void 0;
+      var ref;
+      return (ref = this.subviews.pages[pageNumber]) != null ? ref.isVisible() : void 0;
     },
     isPageValid: function(pageNumber) {
-      var _ref;
-      return (_ref = this.subviews.pages[pageNumber]) != null ? _ref.isValid() : void 0;
+      var ref;
+      return (ref = this.subviews.pages[pageNumber]) != null ? ref.isValid() : void 0;
     },
     focusFirstError: function() {
       var page, view;
@@ -6291,37 +6300,33 @@ rivets.configure({
       return view.focus();
     },
     invalidPages: function() {
-      var _i, _ref, _results;
+      var ref;
       return _.filter((function() {
-        _results = [];
-        for (var _i = 1, _ref = this.numPages; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--){ _results.push(_i); }
-        return _results;
-      }).apply(this), (function(_this) {
-        return function(x) {
-          return _this.isPageValid(x) === false;
-        };
-      })(this));
+        var results = [];
+        for (var i = 1, ref = this.numPages; 1 <= ref ? i <= ref : i >= ref; 1 <= ref ? i++ : i--){ results.push(i); }
+        return results;
+      }).apply(this), (x) => {
+        return this.isPageValid(x) === false;
+      });
     },
     areAllPagesValid: function() {
       return this.invalidPages().length === 0;
     },
     visiblePages: function() {
-      return _.tap([], (function(_this) {
-        return function(a) {
-          var num, _, _ref, _results;
-          _ref = _this.subviews.pages;
-          _results = [];
-          for (num in _ref) {
-            _ = _ref[num];
-            if (_this.isPageVisible(num)) {
-              _results.push(a.push(parseInt(num, 10)));
-            } else {
-              _results.push(void 0);
-            }
+      return _.tap([], (a) => {
+        var _, num, ref, results;
+        ref = this.subviews.pages;
+        results = [];
+        for (num in ref) {
+          _ = ref[num];
+          if (this.isPageVisible(num)) {
+            results.push(a.push(parseInt(num, 10)));
+          } else {
+            results.push(void 0);
           }
-          return _results;
-        };
-      })(this));
+        }
+        return results;
+      });
     },
     isFirstPage: function() {
       var first;
@@ -6352,6 +6357,7 @@ rivets.configure({
     queryParams: function() {
       return FormRenderer.queryParams(document.location.search);
     },
+    //# Saving
     loadParams: function() {
       return _.extend({
         v: 0,
@@ -6381,14 +6387,16 @@ rivets.configure({
     },
     responsesChanged: function() {
       this.state.set('hasChanges', true);
+      // Handle the edge case when the form is saved while there's an AJAX
+      // request pending.
       if (this.isSaving) {
         return this.changedWhileSaving = true;
       }
     },
-    save: function(options) {
-      if (options == null) {
-        options = {};
-      }
+    // Options:
+    //   submit (boolean) if true, tell the server to submit the response
+    //   cb (function) a callback that will be called on success
+    save: function(options = {}) {
       if (this.isSaving) {
         return;
       }
@@ -6396,7 +6404,7 @@ rivets.configure({
       this.isSaving = true;
       this.changedWhileSaving = false;
       return $.ajax({
-        url: "" + this.options.screendoorBase + "/api/form_renderer/save",
+        url: `${this.options.screendoorBase}/api/form_renderer/save`,
         type: 'post',
         contentType: 'application/json',
         dataType: 'json',
@@ -6405,82 +6413,69 @@ rivets.configure({
           submit: options.submit ? true : void 0
         })),
         headers: _.extend(this.serverHeaders, this.authorizationHeader()),
-        complete: (function(_this) {
-          return function() {
-            _this.requests -= 1;
-            _this.isSaving = false;
-            return _this.trigger('afterSave');
-          };
-        })(this),
-        success: (function(_this) {
-          return function(data, state, xhr) {
-            var _ref;
-            if (xhr.getResponseHeader('jwt_token') != null) {
-              window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
-            }
-            _this.state.set({
-              hasChanges: _this.changedWhileSaving,
-              hasServerErrors: false
-            });
-            _this.options.response.id = data.response_id;
-            return (_ref = options.cb) != null ? _ref.apply(_this, arguments) : void 0;
-          };
-        })(this),
-        error: (function(_this) {
-          return function(xhr) {
-            var _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-            _this.state.set({
-              hasServerErrors: true,
-              serverErrorText: (_ref = xhr.responseJSON) != null ? _ref.error : void 0,
-              serverErrorKey: (_ref1 = xhr.responseJSON) != null ? _ref1.error_key : void 0,
-              submitting: false
-            });
-            if (((_ref2 = xhr.responseJSON) != null ? _ref2.error : void 0) === 'Token expired. Verify identity.') {
-              _this.$el.html(JST["partials/verify"]({
-                'template': (_ref3 = xhr.responseJSON) != null ? _ref3.template : void 0,
-                'href': (_ref4 = xhr.responseJSON) != null ? _ref4.verify_api_endpoint : void 0,
-                'button': (_ref5 = xhr.responseJSON) != null ? _ref5.verify_email_button : void 0
-              }));
-              return _this.maybe_delete_jwt_token(xhr);
-            }
-          };
-        })(this)
+        complete: () => {
+          this.requests -= 1;
+          this.isSaving = false;
+          return this.trigger('afterSave');
+        },
+        success: (data, state, xhr) => {
+          var ref;
+          if (xhr.getResponseHeader('jwt_token') != null) {
+            window.sessionStorage.jwtToken = xhr.getResponseHeader('jwt_token');
+          }
+          this.state.set({
+            hasChanges: this.changedWhileSaving,
+            hasServerErrors: false
+          });
+          this.options.response.id = data.response_id;
+          return (ref = options.cb) != null ? ref.apply(this, arguments) : void 0;
+        },
+        error: (xhr) => {
+          var ref, ref1, ref2, ref3, ref4, ref5;
+          this.state.set({
+            hasServerErrors: true,
+            serverErrorText: (ref = xhr.responseJSON) != null ? ref.error : void 0,
+            serverErrorKey: (ref1 = xhr.responseJSON) != null ? ref1.error_key : void 0,
+            submitting: false
+          });
+          if (((ref2 = xhr.responseJSON) != null ? ref2.error : void 0) === 'Token expired. Verify identity.') {
+            this.$el.html(JST["partials/verify"]({
+              'template': (ref3 = xhr.responseJSON) != null ? ref3.template : void 0,
+              'href': (ref4 = xhr.responseJSON) != null ? ref4.verify_api_endpoint : void 0,
+              'button': (ref5 = xhr.responseJSON) != null ? ref5.verify_email_button : void 0
+            }));
+            return this.maybe_delete_jwt_token(xhr);
+          }
+        }
       });
     },
     waitForRequests: function(cb) {
       if (this.requests > 0) {
-        return setTimeout(((function(_this) {
-          return function() {
-            return _this.waitForRequests(cb);
-          };
-        })(this)), 100);
+        return setTimeout((() => {
+          return this.waitForRequests(cb);
+        }), 100);
       } else {
         return cb();
       }
     },
-    submit: function(opts) {
-      if (opts == null) {
-        opts = {};
-      }
+    submit: function(opts = {}) {
       if (!(opts.skipValidation || this.options.skipValidation || this.validate())) {
         return;
       }
       this.state.set('submitting', true);
-      return this.waitForRequests((function(_this) {
-        return function() {
-          if (_this.options.preview) {
-            return _this._preview();
-          } else {
-            return _this.save({
-              submit: true,
-              cb: function() {
-                _this.trigger('afterSubmit');
-                return _this._afterSubmit();
-              }
-            });
-          }
-        };
-      })(this));
+      return this.waitForRequests(() => {
+        if (this.options.preview) {
+          return this._preview();
+        } else {
+          return this.save({
+            submit: true,
+            cb: () => {
+              this.trigger('afterSubmit');
+              return this._afterSubmit();
+            }
+          });
+        }
+      });
     },
     _afterSubmit: function() {
       var $page, as;
@@ -6490,7 +6485,7 @@ rivets.configure({
       } else if (typeof as === 'string') {
         return window.location = as.replace(':id', this.options.response.id.split(',')[0]);
       } else if (typeof as === 'object' && as.method === 'page') {
-        $page = $("<div class='fr_after_submit_page'>" + as.html + "</div>");
+        $page = $(`<div class='fr_after_submit_page'>${as.html}</div>`);
         return this.$el.replaceWith($page);
       } else {
         return console.log('[FormRenderer] Not sure what to do...');
@@ -6498,11 +6493,9 @@ rivets.configure({
     },
     _preview: function() {
       var cb;
-      cb = (function(_this) {
-        return function() {
-          return window.location = _this.options.preview.replace(':id', _this.options.response.id.split(',')[0]);
-        };
-      })(this);
+      cb = () => {
+        return window.location = this.options.preview.replace(':id', this.options.response.id.split(',')[0]);
+      };
       if (!this.state.get('hasChanges') && this.options.response.id) {
         return cb();
       } else {
@@ -6512,22 +6505,24 @@ rivets.configure({
       }
     },
     reflectConditions: function() {
-      var page, _, _ref, _ref1;
-      _ref = this.subviews.pages;
-      for (_ in _ref) {
-        page = _ref[_];
+      var _, page, ref, ref1;
+      ref = this.subviews.pages;
+      for (_ in ref) {
+        page = ref[_];
         page.reflectConditions();
       }
-      return (_ref1 = this.subviews.pagination) != null ? _ref1.render() : void 0;
+      return (ref1 = this.subviews.pagination) != null ? ref1.render() : void 0;
     }
   });
 
+  //# Class-level configs
   FormRenderer.BUTTON_CLASS = 'fr_button';
 
   FormRenderer.DEFAULT_LAT_LNG = [40.7700118, -73.9800453];
 
   FormRenderer.MAPBOX_URL = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js';
 
+  // Keep in-sync with Screendoor
   FormRenderer.EMAIL_REGEX = /^\s*([^@\s]{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*$/i;
 
   FormRenderer.ADD_ROW_ICON = '+';
@@ -6538,12 +6533,14 @@ rivets.configure({
 
   FormRenderer.REMOVE_ENTRY_LINK_HTML = 'Remove';
 
+  //# Settin' these up for later
   FormRenderer.Views = {};
 
   FormRenderer.Models = {};
 
   FormRenderer.Plugins = {};
 
+  //# Validators have been deprecated, but are kept here for backwards-compatibility.
   FormRenderer.Validators = {
     EmailValidator: {
       VALID_REGEX: FormRenderer.EMAIL_REGEX
@@ -6565,7 +6562,7 @@ rivets.configure({
     var foundKlass;
     if (field.group) {
       return FormRenderer.Views.ResponseFieldRepeatingGroup;
-    } else if ((foundKlass = FormRenderer.Views["ResponseField" + (_str.classify(field.field_type))])) {
+    } else if ((foundKlass = FormRenderer.Views[`ResponseField${_str.classify(field.field_type)}`])) {
       return foundKlass;
     } else {
       return FormRenderer.Views.ResponseField;
@@ -6582,7 +6579,7 @@ rivets.configure({
   };
 
   FormRenderer.formComponentModelClass = function(field) {
-    return FormRenderer.Models["ResponseField" + (_str.classify(field.field_type))];
+    return FormRenderer.Models[`ResponseField${_str.classify(field.field_type)}`];
   };
 
   FormRenderer.buildFormComponentModel = function(field, fr, parent) {
@@ -6602,15 +6599,15 @@ rivets.configure({
 
   autoLink = function(str) {
     var pattern;
-    pattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi;
+    pattern = /(^|[\s\n]|<br\/?>)((?:https?|ftp):\/\/[\-A-Z0-9+\u0026\u2019@#\/%?=()~_|!:,.;]*[\-A-Z0-9+\u0026@#\/%=~()_|])/gi; // Capture the beginning of string or line or leading whitespace
+    // Look for a valid URL protocol (non-captured)
+    // Valid URL characters (any number of times)
+    // String must end in a valid URL character
     return str.replace(pattern, "$1<a href='$2' target='_blank'>$2</a>");
   };
 
-  simpleFormat = function(str) {
-    if (str == null) {
-      str = '';
-    }
-    return ("" + str).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
+  simpleFormat = function(str = '') {
+    return `${str}`.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2');
   };
 
   sanitize = function(str) {
@@ -6685,6 +6682,8 @@ rivets.configure({
 
   FormRenderer.ORDERED_COUNTRIES = _.uniq(_.union(commonCountries, [void 0], _.keys(ISOCountryNames)));
 
+  // Provinces are hardcoded for now, since they're way less likely to change
+  // than the country names list.
   FormRenderer.PROVINCES_CA = ['Alberta', 'British Columbia', 'Labrador', 'Manitoba', 'New Brunswick', 'Newfoundland', 'Nova Scotia', 'Nunavut', 'Northwest Territories', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewen', 'Yukon'];
 
   FormRenderer.PROVINCES_US = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
@@ -6693,100 +6692,100 @@ rivets.configure({
 
 (function() {
   var presenceMethods,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf;
 
   presenceMethods = ['present', 'blank'];
 
-  FormRenderer.ConditionChecker = (function() {
-    function ConditionChecker(responseField, condition) {
-      var _ref;
+  FormRenderer.ConditionChecker = class ConditionChecker {
+    constructor(responseField, condition) {
+      var ref;
       this.responseField = responseField;
       this.condition = condition;
-      this.value = ((_ref = this.responseField) != null ? _ref.toText() : void 0) || '';
+      this.value = ((ref = this.responseField) != null ? ref.toText() : void 0) || '';
     }
 
-    ConditionChecker.prototype.method_eq = function() {
+    method_eq() {
       return this.value.toLowerCase() === this.condition.value.toLowerCase();
-    };
+    }
 
-    ConditionChecker.prototype.method_contains = function() {
+    method_contains() {
       return this.value.toLowerCase().indexOf(this.condition.value.toLowerCase()) > -1;
-    };
+    }
 
-    ConditionChecker.prototype.method_not = function() {
+    method_not() {
       return !this.method_eq();
-    };
+    }
 
-    ConditionChecker.prototype.method_does_not_contain = function() {
+    method_does_not_contain() {
       return !this.method_contains();
-    };
+    }
 
-    ConditionChecker.prototype.method_gt = function() {
+    method_gt() {
       return parseFloat(this.value) > parseFloat(this.condition.value);
-    };
+    }
 
-    ConditionChecker.prototype.method_lt = function() {
+    method_lt() {
       return parseFloat(this.value) < parseFloat(this.condition.value);
-    };
+    }
 
-    ConditionChecker.prototype.method_shorter = function() {
+    method_shorter() {
       return this.length() < parseInt(this.condition.value, 10);
-    };
+    }
 
-    ConditionChecker.prototype.method_longer = function() {
+    method_longer() {
       return this.length() > parseInt(this.condition.value, 10);
-    };
+    }
 
-    ConditionChecker.prototype.method_present = function() {
+    method_present() {
       return !!this.value.match(/\S/);
-    };
+    }
 
-    ConditionChecker.prototype.method_blank = function() {
+    method_blank() {
       return !this.method_present();
-    };
+    }
 
-    ConditionChecker.prototype.length = function() {
+    length() {
       return FormRenderer.getLength(this.responseField.getLengthValidationUnits(), this.value);
-    };
+    }
 
-    ConditionChecker.prototype.isValid = function() {
-      var _ref;
-      return this.responseField && _.all(['response_field_id', 'method'], ((function(_this) {
-        return function(x) {
-          return _this.condition[x];
-        };
-      })(this))) && ((_ref = this.condition.method, __indexOf.call(presenceMethods, _ref) >= 0) || this.condition['value']);
-    };
+    isValid() {
+      var ref;
+      return this.responseField && _.all(['response_field_id', 'method'], ((x) => {
+        return this.condition[x];
+      })) && ((ref = this.condition.method, indexOf.call(presenceMethods, ref) >= 0) || this.condition['value']);
+    }
 
-    ConditionChecker.prototype.isVisible = function() {
-      var _ref, _ref1, _ref2, _ref3;
-      if ((_ref = this.responseField) != null ? (_ref1 = _ref.fr) != null ? (_ref2 = _ref1.options) != null ? _ref2.skipConditions : void 0 : void 0 : void 0) {
+    isVisible() {
+      var ref, ref1, ref2, ref3;
+      if ((ref = this.responseField) != null ? (ref1 = ref.fr) != null ? (ref2 = ref1.options) != null ? ref2.skipConditions : void 0 : void 0 : void 0) {
         return true;
       }
       if (!this.isValid()) {
         return true;
       }
-      if (_ref3 = this.condition.method, __indexOf.call(presenceMethods, _ref3) >= 0) {
-        return this["method_" + this.condition.method]();
+      if (ref3 = this.condition.method, indexOf.call(presenceMethods, ref3) >= 0) {
+        return this[`method_${this.condition.method}`]();
       } else {
-        return this.method_present() && this["method_" + this.condition.method]();
+        return this.method_present() && this[`method_${this.condition.method}`]();
       }
-    };
+    }
 
-    return ConditionChecker;
-
-  })();
+  };
 
 }).call(this);
 
 (function() {
   FormRenderer.Models.BaseFormComponent = Backbone.DeepModel.extend({
+    // @param @fr the fr instance
+    // @param @parent either the fr instance, or the RepeatingGroupEntry
+    // that this field belongs to.
     initialize: function(_, fr, parent) {
       this.fr = fr;
       this.parent = parent;
       return this.calculateVisibility();
     },
     sync: function() {},
+    // Not named `validate` beacuse that conflicts with Backbone
     validateComponent: function() {},
     setExistingValue: function() {},
     shouldPersistValue: function() {
@@ -6804,6 +6803,7 @@ rivets.configure({
     parentGroupIsHidden: function() {
       return (this.parent.repeatingGroup != null) && !this.parent.repeatingGroup.isVisible;
     },
+    // @return [Boolean] true if the new value is different than the old value
     calculateVisibilityIsChanged: function() {
       var prevValue;
       prevValue = !!this.isVisible;
@@ -6815,21 +6815,23 @@ rivets.configure({
     },
     _calculateIsVisible: function() {
       if (!this.renderingRespondentForm()) {
+        // If we're not in a form_renderer context, this field is visible
         return true;
       }
+      // Otherwise, it's only visible if it satisfies its conditions of visibility.
       return this.satisfiesConditions(this.parent.formComponents);
     },
+    // NOTE: this method is called directly from FormBuilder
     satisfiesConditions: function(formComponents) {
       if (!this.isConditional()) {
+        // If no conditions, it's visible
         return true;
       }
-      return _[this.conditionMethod()](this.getConditions(), (function(_this) {
-        return function(conditionHash) {
-          var conditionChecker;
-          conditionChecker = new FormRenderer.ConditionChecker(formComponents.get(conditionHash.response_field_id), conditionHash);
-          return conditionChecker.isVisible();
-        };
-      })(this));
+      return _[this.conditionMethod()](this.getConditions(), (conditionHash) => {
+        var conditionChecker;
+        conditionChecker = new FormRenderer.ConditionChecker(formComponents.get(conditionHash.response_field_id), conditionHash);
+        return conditionChecker.isVisible();
+      });
     },
     conditionMethod: function() {
       if (this.get('condition_method') === 'any') {
@@ -6847,7 +6849,7 @@ rivets.configure({
 
 (function() {
   var _isPageButton,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf;
 
   _isPageButton = function(el) {
     return el && (el.hasAttribute('data-fr-next-page') || el.hasAttribute('data-fr-previous-page'));
@@ -6897,16 +6899,15 @@ rivets.configure({
         return "";
       }
     },
+    // used for conditionals
     toText: function() {
       return this.getValue();
     },
     hasValue: function() {
       if (this.valueType === 'hash') {
-        return _.some(this.get('value') || {}, (function(_this) {
-          return function(v, k) {
-            return !(__indexOf.call(_this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
-          };
-        })(this));
+        return _.some(this.get('value') || {}, (v, k) => {
+          return !(indexOf.call(this.ignoreKeysWhenCheckingPresence(), k) >= 0) && !!v;
+        });
       } else {
         return !!this.get('value');
       }
@@ -6940,27 +6941,29 @@ rivets.configure({
       this.listenTo(this.model, 'change', this._onInput);
       this.listenTo(this.model, 'change:currentLength', this.auditLength);
       this.listenTo(this.model, 'change:error', this.toggleErrorModifier);
-      return this.$el.addClass("fr_response_field_" + this.model.field_type);
+      return this.$el.addClass(`fr_response_field_${this.model.field_type}`);
     },
     _onBlur: function(e) {
+      // Only run if the value is present
       if (this.model.hasValue()) {
-        return setTimeout((function(_this) {
-          return function() {
-            var newActive;
-            newActive = document.activeElement;
-            if (!$.contains(_this.el, newActive)) {
-              if (_isPageButton(newActive)) {
-                return $(document).one('mouseup', function() {
-                  return _this.model.validateComponent();
-                });
-              } else {
-                return _this.model.validateComponent();
-              }
+        // This is the best method we have for getting the new active element.
+        // See http://stackoverflow.com/questions/121499/
+        return setTimeout(() => {
+          var newActive;
+          newActive = document.activeElement;
+          if (!$.contains(this.el, newActive)) {
+            if (_isPageButton(newActive)) {
+              return $(document).one('mouseup', () => {
+                return this.model.validateComponent();
+              });
+            } else {
+              return this.model.validateComponent();
             }
-          };
-        })(this), 1);
+          }
+        }, 1);
       }
     },
+    // Run validations on change if there are errors
     _onInput: function() {
       if (this.model.errors.length > 0) {
         return this.model.validateComponent({
@@ -6999,14 +7002,14 @@ rivets.configure({
       }
     },
     render: function() {
-      var _ref;
-      this.$el.html(JST["partials/" + (this.partialName())](this));
+      var ref;
+      this.$el.html(JST[`partials/${this.partialName()}`](this));
       rivets.bind(this.$el, {
         model: this.model
       });
       this.auditLength();
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
+      if ((ref = this.form_renderer) != null) {
+        ref.trigger('viewRendered', this);
       }
       return this;
     }
@@ -7031,34 +7034,31 @@ rivets.configure({
       return this.entries = [];
     },
     validateComponent: function() {
-      var entry, _i, _len, _ref, _results;
-      _ref = this.entries;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        entry = _ref[_i];
-        _results.push(entry.formComponents.invoke('validateComponent'));
+      var entry, i, len, ref, results;
+      ref = this.entries;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        entry = ref[i];
+        results.push(entry.formComponents.invoke('validateComponent'));
       }
-      return _results;
+      return results;
     },
     setExistingValue: function(entryValues) {
       if (this.isRequired()) {
         if (!entryValues || entryValues.length === 0) {
-          entryValues = [{}];
+          entryValues = [{}]; // Field is optional...
         }
       } else {
         if (!entryValues) {
           entryValues = [{}];
+        // If entryValues is an empty array, the field is skipped.
         } else if (_.isArray(entryValues) && _.isEmpty(entryValues)) {
           this.set('skipped', true);
         }
       }
-      return this.entries = _.map(entryValues, (function(_this) {
-        return function(value) {
-          return new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({
-            value: value
-          }, _this.fr, _this);
-        };
-      })(this));
+      return this.entries = _.map(entryValues, (value) => {
+        return new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({value}, this.fr, this);
+      });
     },
     addEntry: function() {
       this.entries.push(new FormRenderer.Models.ResponseFieldRepeatingGroupEntry({}, this.fr, this));
@@ -7092,9 +7092,9 @@ rivets.configure({
     },
     maxEntries: function() {
       if (this.get('maxentries')) {
-        return parseInt(this.get('maxentries'), 10) || Infinity;
+        return parseInt(this.get('maxentries'), 10) || 2e308;
       } else {
-        return Infinity;
+        return 2e308;
       }
     },
     canAdd: function() {
@@ -7131,30 +7131,27 @@ rivets.configure({
     },
     initialize: function(options) {
       this._sharedInitialize(options);
-      this.on('shown', (function(_this) {
-        return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('shown'));
-          }
-          return _results;
-        };
-      })(this));
-      return this.on('hidden', (function(_this) {
-        return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('hidden'));
-          }
-          return _results;
-        };
-      })(this));
+      // Forward `shown` and `hidden` events to subviews
+      this.on('shown', () => {
+        var i, len, ref, results, view;
+        ref = this.views;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          view = ref[i];
+          results.push(view.trigger('shown'));
+        }
+        return results;
+      });
+      return this.on('hidden', () => {
+        var i, len, ref, results, view;
+        ref = this.views;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          view = ref[i];
+          results.push(view.trigger('hidden'));
+        }
+        return results;
+      });
     },
     toggleSkip: function() {
       this.model.set('skipped', !this.model.isSkipped());
@@ -7176,12 +7173,12 @@ rivets.configure({
       return this.render();
     },
     render: function() {
-      var $els, entry, idx, view, _i, _len, _ref, _ref1;
+      var $els, entry, i, idx, len, ref, ref1, view;
       this.views = [];
       $els = $();
-      _ref = this.model.entries || [];
-      for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-        entry = _ref[idx];
+      ref = this.model.entries || [];
+      for (idx = i = 0, len = ref.length; i < len; idx = ++i) {
+        entry = ref[idx];
         view = new FormRenderer.Views.ResponseFieldRepeatingGroupEntry({
           entry: entry,
           form_renderer: this.form_renderer,
@@ -7196,12 +7193,10 @@ rivets.configure({
       if (this.model.entries.length && this.model.entries[0].formComponents.length > 0) {
         this.$el.addClass('is_truncated');
       }
-      rivets.bind(this.$el, {
-        model: this.model
-      });
+      rivets.bind(this.$el, {model: this.model});
       this.$el.find('.fr_group_entries').append($els);
-      if ((_ref1 = this.form_renderer) != null) {
-        _ref1.trigger('viewRendered', this);
+      if ((ref1 = this.form_renderer) != null) {
+        ref1.trigger('viewRendered', this);
       }
       return this;
     }
@@ -7214,58 +7209,53 @@ rivets.configure({
       this.form_renderer = options.form_renderer;
       this.idx = options.idx;
       this.views = [];
-      this.on('shown', (function(_this) {
-        return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('shown'));
-          }
-          return _results;
-        };
-      })(this));
-      return this.on('hidden', (function(_this) {
-        return function() {
-          var view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            _results.push(view.trigger('hidden'));
-          }
-          return _results;
-        };
-      })(this));
+      // Forward `shown` and `hidden` events to subviews
+      this.on('shown', () => {
+        var i, len, ref, results, view;
+        ref = this.views;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          view = ref[i];
+          results.push(view.trigger('shown'));
+        }
+        return results;
+      });
+      return this.on('hidden', () => {
+        var i, len, ref, results, view;
+        ref = this.views;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          view = ref[i];
+          results.push(view.trigger('hidden'));
+        }
+        return results;
+      });
     },
     render: function() {
-      var $children, _ref;
+      var $children, ref;
       this.$el.html(JST['partials/repeating_group_entry'](this));
-      if ((_ref = this.form_renderer) != null) {
-        _ref.trigger('viewRendered', this);
+      if ((ref = this.form_renderer) != null) {
+        ref.trigger('viewRendered', this);
       }
       $children = this.$el.find('.fr_group_entry_fields');
-      this.entry.formComponents.each((function(_this) {
-        return function(rf) {
-          var view;
-          view = FormRenderer.buildFormComponentView(rf, _this.form_renderer);
-          $children.append(view.render().el);
-          view.reflectConditions();
-          return _this.views.push(view);
-        };
-      })(this));
+      this.entry.formComponents.each((rf) => {
+        var view;
+        view = FormRenderer.buildFormComponentView(rf, this.form_renderer);
+        $children.append(view.render().el);
+        view.reflectConditions();
+        return this.views.push(view);
+      });
       return this;
     },
     reflectConditions: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.reflectConditions());
+      var i, len, ref, results, view;
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.reflectConditions());
       }
-      return _results;
+      return results;
     },
     focus: function() {
       return this.views[0].focus();
@@ -7322,14 +7312,15 @@ rivets.configure({
     field_type: 'checkboxes',
     wrapper: 'fieldset',
     setExistingValue: function(x) {
-      var h, option, _i, _len, _ref;
+      var h, i, len, option, ref;
       if (x == null) {
         h = {
           checked: []
         };
-        _ref = this.getOptions();
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          option = _ref[_i];
+        ref = this.getOptions();
+        // Set default values
+        for (i = 0, len = ref.length; i < len; i++) {
+          option = ref[i];
           if (FormRenderer.toBoolean(option.checked)) {
             h.checked.push(option.label);
           }
@@ -7340,16 +7331,16 @@ rivets.configure({
       }
     },
     toText: function() {
-      var arr, _ref;
-      arr = ((_ref = this.get('value.checked')) != null ? _ref.slice(0) : void 0) || [];
+      var arr, ref;
+      arr = ((ref = this.get('value.checked')) != null ? ref.slice(0) : void 0) || [];
       if (this.get('value.other_checked') === true) {
         arr.push(this.get('value.other_text'));
       }
       return arr.join(' ');
     },
     hasValue: function() {
-      var _ref;
-      return ((_ref = this.get('value.checked')) != null ? _ref.length : void 0) > 0 || this.get('value.other_checked');
+      var ref;
+      return ((ref = this.get('value.checked')) != null ? ref.length : void 0) > 0 || this.get('value.other_checked');
     }
   });
 
@@ -7365,7 +7356,7 @@ rivets.configure({
     field_type: 'confirm',
     wrapper: 'none',
     getValue: function() {
-      return this.get('value') || false;
+      return this.get('value') || false; // Send `false` instead of null
     },
     setExistingValue: function(x) {
       if (x != null) {
@@ -7373,6 +7364,7 @@ rivets.configure({
       }
     },
     toText: function() {
+      // These act as constants
       if (this.get('value')) {
         return 'Yes';
       } else {
@@ -7399,7 +7391,7 @@ rivets.configure({
     validateType: function() {
       var day, daysPerMonth, febDays, maxDays, month, year;
       if (this.get('disable_year')) {
-        year = 2000;
+        year = 2000; // Just a dummy constant
       } else {
         year = parseInt(this.get('value.year'), 10) || 0;
       }
@@ -7504,7 +7496,7 @@ rivets.configure({
       var x;
       if ((x = FormRenderer.FILE_TYPES[this.get('file_types')])) {
         return _.map(x, function(x) {
-          return "." + x;
+          return `.${x}`;
         });
       }
     },
@@ -7531,25 +7523,23 @@ rivets.configure({
       this.$label = this.$el.find('.fr_add_file label');
       this.$error = this.$el.find('.fr_add_file .fr_error');
       uploadingFilename = void 0;
+      // While label is "disabled", don't open the filepicker
       this.$label.on('click', function(e) {
         if ($(this).hasClass('disabled')) {
           return e.preventDefault();
         }
       });
-      this.$input.on('focus', (function(_this) {
-        return function() {
-          return _this.$label.addClass('highlight');
-        };
-      })(this));
-      this.$input.on('blur', (function(_this) {
-        return function() {
-          return _this.$label.removeClass('highlight');
-        };
-      })(this));
+      // When the input is tabbed to, highlight the label so it's visible
+      this.$input.on('focus', () => {
+        return this.$label.addClass('highlight');
+      });
+      this.$input.on('blur', () => {
+        return this.$label.removeClass('highlight');
+      });
       if (this.form_renderer) {
         this.$input.inlineFileUpload({
           method: 'post',
-          action: "" + this.form_renderer.options.screendoorBase + "/api/form_renderer/file",
+          action: `${this.form_renderer.options.screendoorBase}/api/form_renderer/file`,
           ajaxOpts: {
             headers: this.form_renderer.serverHeaders
           },
@@ -7558,41 +7548,31 @@ rivets.configure({
             response_field_id: this.model.get('id'),
             v: 0
           },
-          start: (function(_this) {
-            return function(data) {
-              uploadingFilename = data.filename;
-              _this.$label.addClass('disabled');
-              _this.$label.text(FormRenderer.t.uploading);
-              return _this.form_renderer.requests += 1;
-            };
-          })(this),
-          progress: (function(_this) {
-            return function(data) {
-              return _this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : "" + FormRenderer.t.uploading + " (" + data.percent + "%)");
-            };
-          })(this),
-          complete: (function(_this) {
-            return function() {
-              return _this.form_renderer.requests -= 1;
-            };
-          })(this),
-          success: (function(_this) {
-            return function(data) {
-              _this.model.addFile(data.data.file_id, uploadingFilename);
-              return _this.render();
-            };
-          })(this),
-          error: (function(_this) {
-            return function(data) {
-              var errorText, _ref;
-              _this.render();
-              errorText = (_ref = data.xhr.responseJSON) != null ? _ref.errors : void 0;
-              _this.$error.text(errorText || FormRenderer.t.error).show();
-              return setTimeout(function() {
-                return _this.$error.hide();
-              }, 2000);
-            };
-          })(this)
+          start: (data) => {
+            uploadingFilename = data.filename;
+            this.$label.addClass('disabled');
+            this.$label.text(FormRenderer.t.uploading);
+            return this.form_renderer.requests += 1;
+          },
+          progress: (data) => {
+            return this.$label.text(data.percent === 100 ? FormRenderer.t.finishing_up : `${FormRenderer.t.uploading} (${data.percent}%)`);
+          },
+          complete: () => {
+            return this.form_renderer.requests -= 1;
+          },
+          success: (data) => {
+            this.model.addFile(data.data.file_id, uploadingFilename);
+            return this.render();
+          },
+          error: (data) => {
+            var errorText, ref;
+            this.render();
+            errorText = (ref = data.xhr.responseJSON) != null ? ref.errors : void 0;
+            this.$error.text(errorText || FormRenderer.t.error).show();
+            return setTimeout(() => {
+              return this.$error.hide();
+            }, 2000);
+          }
         });
       }
       return this;
@@ -7622,16 +7602,16 @@ rivets.configure({
       }
     },
     shouldPersistValue: function() {
-      var _ref;
-      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+      var ref;
+      if ((ref = this.fr) != null ? ref.isRenderingFollowUpForm() : void 0) {
         return false;
       } else {
         return FormRenderer.Models.ResponseField.prototype.shouldPersistValue.apply(this, arguments);
       }
     },
     getValue: function() {
-      var _ref;
-      if ((_ref = this.fr) != null ? _ref.isRenderingFollowUpForm() : void 0) {
+      var ref;
+      if ((ref = this.fr) != null ? ref.isRenderingFollowUpForm() : void 0) {
         return null;
       } else {
         return FormRenderer.Models.ResponseField.prototype.getValue.apply(this, arguments);
@@ -7641,12 +7621,13 @@ rivets.configure({
 
   FormRenderer.Views.ResponseFieldIdentification = FormRenderer.Views.ResponseField.extend({
     field_type: 'identification',
+    // Used internally by the Screendoor Formbuilder
     disableInput: function() {
       return this.isInputDisabled = true;
     },
     dontRenderInputs: function() {
-      var _ref;
-      return !!this.isInputDisabled || ((_ref = this.form_renderer) != null ? _ref.isRenderingFollowUpForm() : void 0);
+      var ref;
+      return !!this.isInputDisabled || ((ref = this.form_renderer) != null ? ref.isRenderingFollowUpForm() : void 0);
     }
   });
 
@@ -7687,29 +7668,25 @@ rivets.configure({
     initialize: function() {
       FormRenderer.Views.ResponseField.prototype.initialize.apply(this, arguments);
       return this.on('shown', function() {
-        var _ref;
+        var ref;
         this.refreshing = true;
-        if ((_ref = this.map) != null) {
-          _ref._onResize();
+        if ((ref = this.map) != null) {
+          ref._onResize();
         }
-        return setTimeout((function(_this) {
-          return function() {
-            return _this.refreshing = false;
-          };
-        })(this), 0);
+        return setTimeout(() => {
+          return this.refreshing = false;
+        }, 0);
       });
     },
     render: function() {
       FormRenderer.Views.ResponseField.prototype.render.apply(this, arguments);
       this.$cover = this.$el.find('.fr_map_cover');
-      FormRenderer.loadLeaflet((function(_this) {
-        return function() {
-          _this.initMap();
-          if (_this.model.latLng()) {
-            return _this.enable();
-          }
-        };
-      })(this));
+      FormRenderer.loadLeaflet(() => {
+        this.initMap();
+        if (this.model.latLng()) {
+          return this.enable();
+        }
+      });
       return this;
     },
     initMap: function() {
@@ -7721,6 +7698,7 @@ rivets.configure({
     },
     _onMove: function() {
       var center;
+      // We're just refreshing the leaflet map, not actually saving anything
       if (this.refreshing) {
         return;
       }
@@ -7729,6 +7707,7 @@ rivets.configure({
       this.model.set({
         value: [center.lat.toFixed(7), center.lng.toFixed(7)]
       });
+      // Rivets doesn't bind to arrays properly
       return this.model.trigger('change:value.0 change:value.1');
     },
     enable: function() {
@@ -7766,7 +7745,7 @@ rivets.configure({
     calculateSize: function() {
       var digits, digitsInt;
       if ((digitsInt = parseInt(this.model.get('max'), 10))) {
-        digits = ("" + digitsInt).length;
+        digits = `${digitsInt}`.length;
       } else {
         digits = 6;
       }
@@ -7812,10 +7791,12 @@ rivets.configure({
     field_type: 'phone',
     valueType: 'string',
     validateType: function() {
-      var digitsOnly, isUs, minDigits, _ref;
+      var digitsOnly, isUs, minDigits, ref;
       isUs = this.get('phone_format') === 'us';
+      // For US phone numbers, we validate the full 10-digit number.
+      // For international numbers, our validation errs on relaxation :D
       minDigits = isUs ? 10 : 7;
-      digitsOnly = ((_ref = this.get('value').match(/\d/g)) != null ? _ref.join('') : void 0) || '';
+      digitsOnly = ((ref = this.get('value').match(/\d/g)) != null ? ref.join('') : void 0) || '';
       if (!(digitsOnly.length >= minDigits)) {
         if (isUs) {
           return 'us_phone';
@@ -7842,16 +7823,16 @@ rivets.configure({
     field_type: 'price',
     valueType: 'hash',
     toText: function() {
-      return "" + (this.getValue().dollars || '0') + "." + (this.getValue().cents || '00');
+      return `${this.getValue().dollars || '0'}.${this.getValue().cents || '00'}`;
     },
     validateType: function() {
       var values;
       values = [];
       if (this.get('value.dollars')) {
-        values.push(("" + (this.get('value.dollars'))).replace(/,/g, '').replace(/^\$/, ''));
+        values.push(`${this.get('value.dollars')}`.replace(/,/g, '').replace(/^\$/, ''));
       }
       if (this.get('value.cents')) {
-        values.push("" + (this.get('value.cents')));
+        values.push(`${this.get('value.cents')}`);
       }
       if (!_.every(values, function(x) {
         return x.match(/^-?\d+$/);
@@ -7869,7 +7850,7 @@ rivets.configure({
       var cents;
       cents = $(e.target).val();
       if (cents && cents.match(/^\d$/)) {
-        return this.model.set('value.cents', "0" + cents);
+        return this.model.set('value.cents', `0${cents}`);
       }
     }
   });
@@ -7917,34 +7898,38 @@ rivets.configure({
     },
     maxRows: function() {
       if (this.get('maxrows')) {
-        return parseInt(this.get('maxrows'), 10) || Infinity;
+        return parseInt(this.get('maxrows'), 10) || 2e308;
       } else {
-        return Infinity;
+        return 2e308;
       }
     },
+    // The server sends us data like this:
+    //   { 'column' => ['a', 'b'], 'column two' => ['c', 'd'] }
+
+    // Transform it to this:
+    //   [['a', 'b'], ['c', 'd']]
     setExistingValue: function(x) {
-      var existingNumRows, _ref;
-      existingNumRows = Math.max(this.minRows(), ((_ref = _.values(x)[0]) != null ? _ref.length : void 0) || 0, 1);
-      return this.set('value', _.tap([], (function(_this) {
-        return function(arr) {
-          var colArr, column, _i, _j, _len, _ref1, _ref2, _results, _results1;
-          _ref1 = _this.getColumns();
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            column = _ref1[_i];
-            colArr = _.map((function() {
-              _results1 = [];
-              for (var _j = 0, _ref2 = existingNumRows - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; 0 <= _ref2 ? _j++ : _j--){ _results1.push(_j); }
-              return _results1;
-            }).apply(this), function(i) {
-              var _ref3;
-              return _this.getPresetValue(column.label, i) || (x != null ? (_ref3 = x[column.label]) != null ? _ref3[i] : void 0 : void 0);
-            });
-            _results.push(arr.push(colArr));
-          }
-          return _results;
-        };
-      })(this)));
+      var existingNumRows, ref;
+      existingNumRows = Math.max(this.minRows(), ((ref = _.values(x)[0]) != null ? ref.length : void 0) || 0, 1);
+      return this.set('value', _.tap([], (arr) => {
+        var colArr, column, k, len, ref1, ref2, results;
+        ref1 = this.getColumns();
+        results = [];
+        for (k = 0, len = ref1.length; k < len; k++) {
+          column = ref1[k];
+          // Copy preset value *or* existing value to model
+          colArr = _.map((function() {
+            var results1 = [];
+            for (var l = 0, ref2 = existingNumRows - 1; 0 <= ref2 ? l <= ref2 : l >= ref2; 0 <= ref2 ? l++ : l--){ results1.push(l); }
+            return results1;
+          }).apply(this), (i) => {
+            var ref3;
+            return this.getPresetValue(column.label, i) || (x != null ? (ref3 = x[column.label]) != null ? ref3[i] : void 0 : void 0);
+          });
+          results.push(arr.push(colArr));
+        }
+        return results;
+      }));
     },
     numRows: function() {
       var value;
@@ -7955,53 +7940,55 @@ rivets.configure({
         return 0;
       }
     },
+    // Ignore preset values when calculating hasValue
     hasValue: function() {
-      return _.some(this.getValue(), (function(_this) {
-        return function(colVals, colLabel) {
-          return _.some(colVals, function(v, idx) {
-            return !_this.getPresetValue(colLabel, idx) && !!v;
-          });
-        };
-      })(this));
+      return _.some(this.getValue(), (colVals, colLabel) => {
+        return _.some(colVals, (v, idx) => {
+          return !this.getPresetValue(colLabel, idx) && !!v;
+        });
+      });
     },
     getPresetValue: function(columnLabel, row) {
-      var _ref, _ref1;
-      return (_ref = this.get('preset_values')) != null ? (_ref1 = _ref[columnLabel]) != null ? _ref1[row] : void 0 : void 0;
+      var ref, ref1;
+      return (ref = this.get('preset_values')) != null ? (ref1 = ref[columnLabel]) != null ? ref1[row] : void 0 : void 0;
     },
+    // We have data like this:
+    //   [['a', 'b'], ['c', 'd']]
+
+    // The server wants data like this:
+    //   { 'column' => ['a', 'b'], 'column two' => ['c', 'd'] }
     getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          var column, i, j, _i, _len, _ref, _results;
-          _ref = _this.getColumns();
-          _results = [];
-          for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-            column = _ref[j];
-            h[column.label] = [];
-            _results.push((function() {
-              var _j, _ref1, _results1;
-              _results1 = [];
-              for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-                _results1.push(h[column.label].push(this.get("value." + j + "." + i) || ''));
-              }
-              return _results1;
-            }).call(_this));
-          }
-          return _results;
-        };
-      })(this));
+      return _.tap({}, (h) => {
+        var column, i, j, k, len, ref, results;
+        ref = this.getColumns();
+        results = [];
+        for (j = k = 0, len = ref.length; k < len; j = ++k) {
+          column = ref[j];
+          h[column.label] = [];
+          results.push((function() {
+            var l, ref1, results1;
+            results1 = [];
+            for (i = l = 0, ref1 = this.numRows() - 1; (0 <= ref1 ? l <= ref1 : l >= ref1); i = 0 <= ref1 ? ++l : --l) {
+              results1.push(h[column.label].push(this.get(`value.${j}.${i}`) || ''));
+            }
+            return results1;
+          }).call(this));
+        }
+        return results;
+      });
     },
     toText: function() {
       return _.flatten(_.values(this.getValue())).join(' ');
     },
     calculateColumnTotals: function() {
-      var column, columnSum, columnVals, i, j, _i, _j, _len, _ref, _ref1, _results;
-      _ref = this.getColumns();
-      _results = [];
-      for (j = _i = 0, _len = _ref.length; _i < _len; j = ++_i) {
-        column = _ref[j];
+      var column, columnSum, columnVals, i, j, k, l, len, ref, ref1, results;
+      ref = this.getColumns();
+      results = [];
+      for (j = k = 0, len = ref.length; k < len; j = ++k) {
+        column = ref[j];
         columnVals = [];
-        for (i = _j = 0, _ref1 = this.numRows() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          columnVals.push(parseFloat((this.get("value." + j + "." + i) || '').replace(/\$?,?/g, '')));
+        for (i = l = 0, ref1 = this.numRows() - 1; (0 <= ref1 ? l <= ref1 : l >= ref1); i = 0 <= ref1 ? ++l : --l) {
+          columnVals.push(parseFloat((this.get(`value.${j}.${i}`) || '').replace(/\$?,?/g, '')));
         }
         columnSum = _.reduce(columnVals, function(memo, num) {
           if (_.isNaN(num)) {
@@ -8010,15 +7997,15 @@ rivets.configure({
             return memo + num;
           }
         }, 0);
-        _results.push(this.set("columnTotals." + j, this.formatColumnSum(columnSum)));
+        results.push(this.set(`columnTotals.${j}`, this.formatColumnSum(columnSum)));
       }
-      return _results;
+      return results;
     },
     formatColumnSum: function(num) {
-      var parsed, precision, _ref;
+      var parsed, precision, ref;
       if (num > 0) {
         parsed = parseFloat(num.toFixed(10));
-        precision = ((_ref = ("" + parsed).split('.')[1]) != null ? _ref.length : void 0) || 0;
+        precision = ((ref = `${parsed}`.split('.')[1]) != null ? ref.length : void 0) || 0;
         return _str.numberFormat(parsed, precision, '.', ',');
       } else {
         return '';
@@ -8037,37 +8024,39 @@ rivets.configure({
       return rowIdx > (min - 1);
     },
     addRow: function(e) {
-      var col, newVal, vals, _ref;
+      var col, newVal, ref, vals;
       e.preventDefault();
       newVal = {};
-      _ref = this.model.get('value');
-      for (col in _ref) {
-        vals = _ref[col];
+      ref = this.model.get('value');
+      for (col in ref) {
+        vals = ref[col];
         newVal[col] = vals.concat('');
       }
       this.model.set('value', newVal);
       return this.render();
     },
+    // Loop through rows, decreasing index for rows above the current row
     removeRow: function(e) {
-      var col, idx, newVal, vals, _ref;
+      var col, idx, newVal, ref, vals;
       e.preventDefault();
       idx = $(e.currentTarget).closest('[data-row-index]').data('row-index');
       newVal = {};
-      _ref = this.model.get('value');
-      for (col in _ref) {
-        vals = _ref[col];
+      ref = this.model.get('value');
+      for (col in ref) {
+        vals = ref[col];
         newVal[col] = _.tap([], function(arr) {
-          var i, val, _results;
-          _results = [];
+          var i, results, val;
+          results = [];
           for (i in vals) {
             val = vals[i];
             if (parseInt(i, 10) !== idx) {
-              _results.push(arr.push(val));
+              // if i == idx, this is the row being removed
+              results.push(arr.push(val));
             } else {
-              _results.push(void 0);
+              results.push(void 0);
             }
           }
-          return _results;
+          return results;
         });
       }
       this.model.set('value', newVal);
@@ -8104,7 +8093,7 @@ rivets.configure({
       }
     },
     toText: function() {
-      return "" + (this.getValue().hours || '00') + ":" + (this.getValue().minutes || '00') + ":" + (this.getValue().seconds || '00') + " " + (this.getValue().am_pm);
+      return `${this.getValue().hours || '00'}:${this.getValue().minutes || '00'}:${this.getValue().seconds || '00'} ${this.getValue().am_pm}`;
     },
     validateType: function() {
       var hours, minutes, seconds;
@@ -8142,11 +8131,8 @@ rivets.configure({
   FieldValidation = {
     validateType: function() {},
     validationFns: ['validateType', 'validateInteger', 'validateLength', 'validateMinMax'],
-    validateComponent: function(opts) {
-      var errorIs, errorKey, errorWas, validationFn, _i, _len, _ref;
-      if (opts == null) {
-        opts = {};
-      }
+    validateComponent: function(opts = {}) {
+      var errorIs, errorKey, errorWas, i, len, ref, validationFn;
       errorWas = this.get('error');
       this.errors = [];
       if (!(this.isVisible && !this.parentGroupIsHidden())) {
@@ -8157,9 +8143,10 @@ rivets.configure({
           this.errors.push(FormRenderer.t.errors.blank);
         }
       } else {
-        _ref = this.validationFns;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          validationFn = _ref[_i];
+        ref = this.validationFns;
+        // If value is present, run all the other validators
+        for (i = 0, len = ref.length; i < len; i++) {
+          validationFn = ref[i];
           errorKey = this[validationFn]();
           if (errorKey) {
             this.errors.push(FormRenderer.t.errors[errorKey]);
@@ -8188,8 +8175,8 @@ rivets.configure({
       }
     },
     hasLengthValidation: function() {
-      var _ref;
-      return ((_ref = this.field_type) === 'text' || _ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
+      var ref;
+      return ((ref = this.field_type) === 'text' || ref === 'paragraph') && (this.get('minlength') || this.get('maxlength'));
     },
     validateLength: function() {
       var count, max, min;
@@ -8206,8 +8193,8 @@ rivets.configure({
       }
     },
     hasMinMaxValidation: function() {
-      var _ref;
-      return ((_ref = this.field_type) === 'number' || _ref === 'price') && (this.get('min') || this.get('max'));
+      var ref;
+      return ((ref = this.field_type) === 'number' || ref === 'price') && (this.get('min') || this.get('max'));
     },
     validateMinMax: function() {
       var max, min, value;
@@ -8216,7 +8203,7 @@ rivets.configure({
       }
       min = this.get('min') && parseFloat(this.get('min'));
       max = this.get('max') && parseFloat(this.get('max'));
-      value = this.field_type === 'price' ? parseFloat("" + (this.get('value.dollars') || 0) + "." + (this.get('value.cents') || 0)) : parseFloat(this.get('value').replace(/,/g, ''));
+      value = this.field_type === 'price' ? parseFloat(`${this.get('value.dollars') || 0}.${this.get('value.cents') || 0}`) : parseFloat(this.get('value').replace(/,/g, ''));
       if (min && value < min) {
         return 'small';
       } else if (max && value > max) {
@@ -8234,9 +8221,9 @@ rivets.configure({
 
   FieldView = {
     _sharedInitialize: function(options) {
-      this.form_renderer = options.form_renderer, this.model = options.model;
+      ({form_renderer: this.form_renderer, model: this.model} = options);
       if (this.model.id) {
-        this.$el.addClass("fr_response_field_" + this.model.id);
+        this.$el.addClass(`fr_response_field_${this.model.id}`);
       }
       return this.showLabels = this.form_renderer ? this.form_renderer.options.showLabels : this.showLabels = options.showLabels;
     },
@@ -8250,6 +8237,7 @@ rivets.configure({
     domId: function() {
       return this.model.cid;
     },
+    // This method has been deprecated and is only around to alias to domId() for backwards-compatibility.
     getDomId: function() {
       return domId;
     }
@@ -8262,26 +8250,29 @@ rivets.configure({
 }).call(this);
 
 (function() {
+  // Must implement:
+  //  - reflectConditions()
   var HasComponents;
 
   HasComponents = {
     getValue: function() {
-      return _.tap({}, (function(_this) {
-        return function(h) {
-          return _this.formComponents.each(function(c) {
-            if (c.shouldPersistValue()) {
-              return h[c.get('id')] = c.getValue();
-            }
-          });
-        };
-      })(this));
+      return _.tap({}, (h) => {
+        return this.formComponents.each(function(c) {
+          if (c.shouldPersistValue()) {
+            return h[c.get('id')] = c.getValue();
+          }
+        });
+      });
     },
     initFormComponents: function(fieldData, responseData) {
-      var field, model, _i, _len;
-      this.formComponents = new Backbone.Collection;
+      var field, i, len, model;
+      this.formComponents = new Backbone.Collection();
+      // @response_fields has been deprecated as of October 2017 in favor of using
+      // @formComponents instead, but is still temporarily included for the sake of
+      // backwards-compatibility.
       this.response_fields = this.formComponents;
-      for (_i = 0, _len = fieldData.length; _i < _len; _i++) {
-        field = fieldData[_i];
+      for (i = 0, len = fieldData.length; i < len; i++) {
+        field = fieldData[i];
         model = FormRenderer.buildFormComponentModel(field, this.fr, this);
         model.setExistingValue(responseData[model.get('id')]);
         this.formComponents.add(model);
@@ -8303,7 +8294,7 @@ rivets.configure({
     },
     conditionsForResponseField: function(rf) {
       return _.filter(this.allConditions, function(condition) {
-        return ("" + condition.response_field_id) === ("" + rf.id);
+        return `${condition.response_field_id}` === `${rf.id}`;
       });
     },
     runConditions: function(rf) {
@@ -8327,48 +8318,31 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  FormRenderer.Plugins.Base = (function() {
-    function Base(fr) {
+  FormRenderer.Plugins.Base = class Base {
+    constructor(fr) {
       this.fr = fr;
     }
 
-    return Base;
-
-  })();
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.Autosave = (function(_super) {
-    __extends(Autosave, _super);
-
-    function Autosave() {
-      return Autosave.__super__.constructor.apply(this, arguments);
+  FormRenderer.Plugins.Autosave = class Autosave extends FormRenderer.Plugins.Base {
+    afterFormLoad() {
+      return setInterval(() => {
+        if (this.fr.state.get('hasChanges')) {
+          return this.fr.save();
+        }
+      }, 5000);
     }
 
-    Autosave.prototype.afterFormLoad = function() {
-      return setInterval((function(_this) {
-        return function() {
-          if (_this.fr.state.get('hasChanges')) {
-            return _this.fr.save();
-          }
-        };
-      })(this), 5000);
-    };
-
-    return Autosave;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
 }).call(this);
 
 (function() {
-  var getUrlParam, paramName,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var getUrlParam, paramName;
 
   paramName = 'frDraft';
 
@@ -8387,30 +8361,22 @@ rivets.configure({
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   };
 
-  FormRenderer.Plugins.BookmarkDraft = (function(_super) {
-    __extends(BookmarkDraft, _super);
-
-    function BookmarkDraft() {
-      return BookmarkDraft.__super__.constructor.apply(this, arguments);
-    }
-
-    BookmarkDraft.prototype.beforeFormLoad = function() {
+  FormRenderer.Plugins.BookmarkDraft = class BookmarkDraft extends FormRenderer.Plugins.Base {
+    beforeFormLoad() {
       var id;
       if ((id = getUrlParam(paramName))) {
         return this.fr.options.response.id = id;
       }
-    };
+    }
 
-    BookmarkDraft.prototype.afterFormLoad = function() {
+    afterFormLoad() {
       this.fr.subviews.bookmarkDraft = new FormRenderer.Plugins.BookmarkDraft.View({
         form_renderer: this.fr
       });
       return this.fr.$el.append(this.fr.subviews.bookmarkDraft.render().el);
-    };
+    }
 
-    return BookmarkDraft;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
   FormRenderer.Plugins.BookmarkDraft.View = Backbone.View.extend({
     events: {
@@ -8429,34 +8395,30 @@ rivets.configure({
     },
     getUrl: function() {
       var u;
-      u = new Url;
+      u = new Url();
       u.query[paramName] = this.form_renderer.options.response.id;
       return u.toString();
     },
     requestBookmark: function(e) {
       var cb;
       e.preventDefault();
-      cb = (function(_this) {
-        return function() {
-          _this.render();
-          return _this.showBookmark(_this.getUrl());
-        };
-      })(this);
+      cb = () => {
+        this.render();
+        return this.showBookmark(this.getUrl());
+      };
       if (this.form_renderer.options.response.id) {
         return cb();
       } else {
         this.$el.find('a').text(FormRenderer.t.saving);
-        return this.form_renderer.waitForRequests((function(_this) {
-          return function() {
-            if (_this.form_renderer.options.response.id) {
-              return cb();
-            } else {
-              return _this.form_renderer.save({
-                cb: cb
-              });
-            }
-          };
-        })(this));
+        return this.form_renderer.waitForRequests(() => {
+          if (this.form_renderer.options.response.id) {
+            return cb();
+          } else {
+            return this.form_renderer.save({
+              cb: cb
+            });
+          }
+        });
       }
     }
   });
@@ -8464,26 +8426,15 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.BottomBar = (function(_super) {
-    __extends(BottomBar, _super);
-
-    function BottomBar() {
-      return BottomBar.__super__.constructor.apply(this, arguments);
-    }
-
-    BottomBar.prototype.afterFormLoad = function() {
+  FormRenderer.Plugins.BottomBar = class BottomBar extends FormRenderer.Plugins.Base {
+    afterFormLoad() {
       this.fr.subviews.bottomBar = new FormRenderer.Plugins.BottomBar.View({
         form_renderer: this.fr
       });
       return this.fr.$el.append(this.fr.subviews.bottomBar.render().el);
-    };
+    }
 
-    return BottomBar;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
   FormRenderer.Plugins.BottomBar.View = Backbone.View.extend({
     events: {
@@ -8510,26 +8461,15 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.ErrorBar = (function(_super) {
-    __extends(ErrorBar, _super);
-
-    function ErrorBar() {
-      return ErrorBar.__super__.constructor.apply(this, arguments);
-    }
-
-    ErrorBar.prototype.afterFormLoad = function() {
+  FormRenderer.Plugins.ErrorBar = class ErrorBar extends FormRenderer.Plugins.Base {
+    afterFormLoad() {
       this.fr.subviews.errorBar = new FormRenderer.Plugins.ErrorBar.View({
         form_renderer: this.fr
       });
       return this.fr.$el.prepend(this.fr.subviews.errorBar.render().el);
-    };
+    }
 
-    return ErrorBar;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
   FormRenderer.Plugins.ErrorBar.View = Backbone.View.extend({
     events: {
@@ -8540,12 +8480,11 @@ rivets.configure({
     },
     initialize: function(options) {
       this.form_renderer = options.form_renderer;
-      this.listenTo(this.form_renderer, 'afterValidate:all', (function(_this) {
-        return function() {
-          _this.render();
-          return _this.$el.find('.fr_error_alert_bar a').focus();
-        };
-      })(this));
+      this.listenTo(this.form_renderer, 'afterValidate:all', () => {
+        this.render();
+        return this.$el.find('.fr_error_alert_bar a').focus();
+      });
+      // When validating a single field, we only go from shown -> hidden
       return this.listenTo(this.form_renderer, 'afterValidate:one', function() {
         if (this.form_renderer.areAllPagesValid()) {
           return this.render();
@@ -8565,55 +8504,42 @@ rivets.configure({
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.PageState = (function(_super) {
-    __extends(PageState, _super);
-
-    function PageState() {
-      return PageState.__super__.constructor.apply(this, arguments);
-    }
-
-    PageState.prototype.afterFormLoad = function() {
-      var num, page, _ref;
-      if (num = (_ref = window.location.hash.match(/page([0-9]+)/)) != null ? _ref[1] : void 0) {
+  FormRenderer.Plugins.PageState = class PageState extends FormRenderer.Plugins.Base {
+    afterFormLoad() {
+      var num, page, ref;
+      if (num = (ref = window.location.hash.match(/page([0-9]+)/)) != null ? ref[1] : void 0) {
         page = parseInt(num, 10);
         if (this.fr.isPageVisible(page)) {
           this.fr.activatePage(page);
         }
       }
       return this.fr.state.on('change:activePage', function(_, num) {
-        return window.location.hash = "page" + num;
+        return window.location.hash = `page${num}`;
       });
-    };
+    }
 
-    return PageState;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.SavedSession = (function(_super) {
-    __extends(SavedSession, _super);
-
-    function SavedSession() {
-      return SavedSession.__super__.constructor.apply(this, arguments);
-    }
-
-    SavedSession.prototype.beforeFormLoad = function() {
-      var cookieKey, draftKey, _base;
-      draftKey = "project-" + this.fr.options.project_id + "-response-id";
+  FormRenderer.Plugins.SavedSession = class SavedSession extends FormRenderer.Plugins.Base {
+    beforeFormLoad() {
+      var base, cookieKey, draftKey;
+      draftKey = `project-${this.fr.options.project_id}-response-id`;
+      // We only want to grab a response ID from the cookie if we haven't already
+      // generated one from within FormRenderer (i.e. on a first-time page load).
+      // In this situation, the Cookies object is actually an object that only
+      // contains a `remove` method, and calling `get` on it throws an exception.
       if (this.fr.options.response.id == null) {
         cookieKey = Cookies.get(draftKey);
       }
+      // If we got a key from the cookie, we want to make sure it's a valid one
+      // before setting it as our response ID. If it's invalid, we clear the cookie
+      // and leave the response ID unset so we can generate one within FormRenderer.
       if (cookieKey != null) {
         if (cookieKey.indexOf(',') !== -1) {
-          (_base = this.fr.options.response).id || (_base.id = cookieKey);
+          (base = this.fr.options.response).id || (base.id = cookieKey);
         } else {
           Cookies.remove(draftKey);
         }
@@ -8629,38 +8555,23 @@ rivets.configure({
       return this.fr.on('errorSaving', function() {
         return Cookies.remove(draftKey);
       });
-    };
+    }
 
-    return SavedSession;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  FormRenderer.Plugins.WarnBeforeUnload = (function(_super) {
-    __extends(WarnBeforeUnload, _super);
-
-    function WarnBeforeUnload() {
-      return WarnBeforeUnload.__super__.constructor.apply(this, arguments);
+  FormRenderer.Plugins.WarnBeforeUnload = class WarnBeforeUnload extends FormRenderer.Plugins.Base {
+    afterFormLoad() {
+      return BeforeUnload.enable({
+        if: () => {
+          return this.fr.state.get('hasChanges');
+        }
+      });
     }
 
-    WarnBeforeUnload.prototype.afterFormLoad = function() {
-      return BeforeUnload.enable({
-        "if": (function(_this) {
-          return function() {
-            return _this.fr.state.get('hasChanges');
-          };
-        })(this)
-      });
-    };
-
-    return WarnBeforeUnload;
-
-  })(FormRenderer.Plugins.Base);
+  };
 
 }).call(this);
 
@@ -8673,11 +8584,11 @@ rivets.configure({
       return this.views = [];
     },
     render: function() {
-      var rf, view, _i, _len, _ref;
+      var i, len, ref, rf, view;
       this.hide();
-      _ref = this.models;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        rf = _ref[_i];
+      ref = this.models;
+      for (i = 0, len = ref.length; i < len; i++) {
+        rf = ref[i];
         view = FormRenderer.buildFormComponentView(rf, this.form_renderer);
         this.$el.append(view.render().el);
         view.reflectConditions();
@@ -8686,86 +8597,84 @@ rivets.configure({
       return this;
     },
     hide: function() {
-      var view, _i, _len, _ref, _results;
+      var i, len, ref, results, view;
       this.$el.hide();
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.trigger('hidden'));
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.trigger('hidden'));
       }
-      return _results;
+      return results;
     },
     show: function() {
-      var view, _i, _len, _ref, _results;
+      var i, len, ref, results, view;
       this.$el.show();
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.trigger('shown'));
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.trigger('shown'));
       }
-      return _results;
+      return results;
     },
     reflectConditions: function() {
-      var view, _i, _len, _ref, _results;
-      _ref = this.views;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        _results.push(view.reflectConditions());
+      var i, len, ref, results, view;
+      ref = this.views;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        view = ref[i];
+        results.push(view.reflectConditions());
       }
-      return _results;
+      return results;
     },
     validate: function() {
-      var component, _i, _len, _ref, _results;
-      _ref = this.models;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        component = _ref[_i];
-        _results.push(component.validateComponent());
+      var component, i, len, ref, results;
+      ref = this.models;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        component = ref[i];
+        results.push(component.validateComponent());
       }
-      return _results;
+      return results;
     },
     fieldViews: function() {
-      return _.tap([], (function(_this) {
-        return function(arr) {
-          var entry, fieldView, view, _i, _len, _ref, _results;
-          _ref = _this.views;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            view = _ref[_i];
-            if (view.model.group) {
-              if (!view.model.isSkipped()) {
-                _results.push((function() {
-                  var _j, _len1, _ref1, _results1;
-                  _ref1 = view.model.entries;
-                  _results1 = [];
-                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                    entry = _ref1[_j];
-                    _results1.push((function() {
-                      var _k, _len2, _ref2, _results2;
-                      _ref2 = entry.view.views;
-                      _results2 = [];
-                      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-                        fieldView = _ref2[_k];
-                        _results2.push(arr.push(fieldView));
-                      }
-                      return _results2;
-                    })());
-                  }
-                  return _results1;
-                })());
-              } else {
-                _results.push(void 0);
-              }
+      return _.tap([], (arr) => {
+        var entry, fieldView, i, len, ref, results, view;
+        ref = this.views;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          view = ref[i];
+          if (view.model.group) {
+            if (!view.model.isSkipped()) {
+              results.push((function() {
+                var j, len1, ref1, results1;
+                ref1 = view.model.entries;
+                results1 = [];
+                for (j = 0, len1 = ref1.length; j < len1; j++) {
+                  entry = ref1[j];
+                  results1.push((function() {
+                    var k, len2, ref2, results2;
+                    ref2 = entry.view.views;
+                    results2 = [];
+                    for (k = 0, len2 = ref2.length; k < len2; k++) {
+                      fieldView = ref2[k];
+                      results2.push(arr.push(fieldView));
+                    }
+                    return results2;
+                  })());
+                }
+                return results1;
+              })());
             } else {
-              _results.push(arr.push(view));
+              results.push(void 0);
             }
+          } else {
+            results.push(arr.push(view));
           }
-          return _results;
-        };
-      })(this));
+        }
+        return results;
+      });
     },
     firstViewWithError: function() {
       return _.find(this.fieldViews(), function(view) {
@@ -8793,7 +8702,7 @@ rivets.configure({
       }
     },
     initialize: function(options) {
-      this.form_renderer = options.form_renderer;
+      ({form_renderer: this.form_renderer} = options);
       this.listenTo(this.form_renderer.state, 'change:activePage', this.render);
       return this.listenTo(this.form_renderer, 'afterValidate', this.render);
     },
@@ -8822,2673 +8731,2913 @@ if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/address"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var format, i, j, len, len1, ref, ref1, ref2, x;
     
       format = this.model.get('address_format');
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       if (format !== 'city_state' && format !== 'city_state_zip' && format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.domId());
-        _print(_safe('_street\'>'));
-        _print(FormRenderer.t.address);
-        _print(_safe('</label>\n      <input type="text"\n             id="'));
-        _print(this.domId());
-        _print(_safe('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_full has_sub_label\'>\n      <label class="fr_sub_label" for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_street\'>');
+        __out.push(__sanitize(FormRenderer.t.address));
+        __out.push('</label>\n      <input type="text"\n             id="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_street"\n             data-rv-input=\'model.value.street\' />\n    </div>\n  </div>\n');
       }
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       if (format !== 'country') {
-        _print(_safe('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.domId());
-        _print(_safe('_city\'>'));
-        _print(FormRenderer.t.city);
-        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\'\n             id=\''));
-        _print(this.domId());
-        _print(_safe('_city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.domId());
-        _print(_safe('_state\'>\n        '));
+        __out.push('\n  <div class=\'fr_grid\'>\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_city\'>');
+        __out.push(__sanitize(FormRenderer.t.city));
+        __out.push('</label>\n      <input type="text"\n             data-rv-input=\'model.value.city\'\n             id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_city\' />\n    </div>\n\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_state\'>\n        ');
         if (this.model.get('value.country') === 'US') {
-          _print(_safe('\n          '));
-          _print(FormRenderer.t.state);
-          _print(_safe('\n        '));
+          __out.push('\n          ');
+          __out.push(__sanitize(FormRenderer.t.state));
+          __out.push('\n        ');
         } else if (this.model.get('value.country') === 'CA') {
-          _print(_safe('\n          '));
-          _print(FormRenderer.t.province);
-          _print(_safe('\n        '));
+          __out.push('\n          ');
+          __out.push(__sanitize(FormRenderer.t.province));
+          __out.push('\n        ');
         } else {
-          _print(_safe('\n          '));
-          _print(FormRenderer.t.state_province_region);
-          _print(_safe('\n        '));
+          __out.push('\n          ');
+          __out.push(__sanitize(FormRenderer.t.state_province_region));
+          __out.push('\n        ');
         }
-        _print(_safe('\n      </label>\n\n      '));
+        __out.push('\n      </label>\n\n      ');
         if ((ref = this.model.get('value.country')) === 'US' || ref === 'CA') {
-          _print(_safe('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\''));
-          _print(this.domId());
-          _print(_safe('_state\'>\n          <option></option>\n          '));
+          __out.push('\n        <select data-rv-value=\'model.value.state\' data-width=\'100%\' id=\'');
+          __out.push(__sanitize(this.domId()));
+          __out.push('_state\'>\n          <option></option>\n          ');
           ref1 = FormRenderer["PROVINCES_" + (this.model.get('value.country'))];
           for (i = 0, len = ref1.length; i < len; i++) {
             x = ref1[i];
-            _print(_safe('\n            <option value=\''));
-            _print(x);
-            _print(_safe('\'>'));
-            _print(x);
-            _print(_safe('</option>\n          '));
+            __out.push('\n            <option value=\'');
+            __out.push(__sanitize(x));
+            __out.push('\'>');
+            __out.push(__sanitize(x));
+            __out.push('</option>\n          ');
           }
-          _print(_safe('\n        </select>\n      '));
+          __out.push('\n        </select>\n      ');
         } else {
-          _print(_safe('\n        <input type="text" data-rv-input=\'model.value.state\' id=\''));
-          _print(this.domId());
-          _print(_safe('_state\' />\n      '));
+          __out.push('\n        <input type="text" data-rv-input=\'model.value.state\' id=\'');
+          __out.push(__sanitize(this.domId()));
+          __out.push('_state\' />\n      ');
         }
-        _print(_safe('\n    </div>\n  </div>\n'));
+        __out.push('\n    </div>\n  </div>\n');
       }
     
-      _print(_safe('\n\n<div class=\'fr_grid\'>\n  '));
+      __out.push('\n\n<div class=\'fr_grid\'>\n  ');
     
       if (format !== 'city_state' && format !== 'country') {
-        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.domId());
-        _print(_safe('_zipcode\'>\n        '));
+        __out.push('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_zipcode\'>\n        ');
         if (this.model.get('value.country') === 'US') {
-          _print(_safe('\n          '));
-          _print(FormRenderer.t.zip_code);
-          _print(_safe('\n        '));
+          __out.push('\n          ');
+          __out.push(__sanitize(FormRenderer.t.zip_code));
+          __out.push('\n        ');
         } else {
-          _print(_safe('\n          '));
-          _print(FormRenderer.t.postal_code);
-          _print(_safe('\n        '));
+          __out.push('\n          ');
+          __out.push(__sanitize(FormRenderer.t.postal_code));
+          __out.push('\n        ');
         }
-        _print(_safe('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\'\n             id=\''));
-        _print(this.domId());
-        _print(_safe('_zipcode\' />\n    </div>\n  '));
+        __out.push('\n      </label>\n      <input type="text"\n             data-rv-input=\'model.value.zipcode\'\n             id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_zipcode\' />\n    </div>\n  ');
       }
     
-      _print(_safe('\n\n  '));
+      __out.push('\n\n  ');
     
       if (format !== 'city_state' && format !== 'city_state_zip') {
-        _print(_safe('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\''));
-        _print(this.domId());
-        _print(_safe('_country\'>'));
-        _print(FormRenderer.t.country);
-        _print(_safe('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\''));
-        _print(this.domId());
-        _print(_safe('_country\'>\n        '));
+        __out.push('\n    <div class=\'fr_half has_sub_label\'>\n      <label class="fr_sub_label" for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_country\'>');
+        __out.push(__sanitize(FormRenderer.t.country));
+        __out.push('</label>\n      <select data-rv-value=\'model.value.country\' data-width=\'100%\' id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_country\'>\n        ');
         ref2 = FormRenderer.ORDERED_COUNTRIES;
         for (j = 0, len1 = ref2.length; j < len1; j++) {
           x = ref2[j];
-          _print(_safe('\n          <option value=\''));
-          _print(x);
-          _print(_safe('\'>'));
-          _print(ISOCountryNames[x] || '---');
-          _print(_safe('</option>\n        '));
+          __out.push('\n          <option value=\'');
+          __out.push(__sanitize(x));
+          __out.push('\'>');
+          __out.push(__sanitize(ISOCountryNames[x] || '---'));
+          __out.push('</option>\n        ');
         }
-        _print(_safe('\n      </select>\n    </div>\n  '));
+        __out.push('\n      </select>\n    </div>\n  ');
       }
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/block_of_text"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe(JST["partials/labels"](this)));
+      __out.push(JST["partials/labels"](this));
     
-      _print(_safe('\n\n<div class=\'fr_text size_'));
+      __out.push('\n\n<div class=\'fr_text size_');
     
-      _print(this.model.getSize());
+      __out.push(__sanitize(this.model.getSize()));
     
-      _print(_safe('\'>\n  '));
+      __out.push('\'>\n  ');
     
-      _print(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description'))));
+      __out.push(__sanitize(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description')))));
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/checkboxes"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var i, len, option, ref;
     
       ref = this.model.getOptions();
       for (i = 0, len = ref.length; i < len; i++) {
         option = ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="'));
-        _print(option.label);
-        _print(_safe('" />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
+        __out.push('\n  <label class=\'fr_option control\'>\n    <input type=\'checkbox\' data-rv-checkedarray=\'model.value.checked\' value="');
+        __out.push(__sanitize(option.label));
+        __out.push('" />\n    ');
+        __out.push(__sanitize(option.translated_label || option.label));
+        __out.push('\n  </label>\n');
       }
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\' />\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'checkbox\' data-rv-checked=\'model.value.other_checked\' />\n      ');
+        __out.push(__sanitize(FormRenderer.t.other));
+        __out.push('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\'');
+        __out.push(__sanitize(FormRenderer.t.write_here));
+        __out.push('\' />\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/confirm"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<label class=\'fr_option control\'>\n  <input type=\'checkbox\' data-rv-checked=\'model.value\' />\n  '));
+      __out.push('<label class=\'fr_option control\'>\n  <input type=\'checkbox\' data-rv-checked=\'model.value\' />\n  ');
     
-      _print(this.model.get('label'));
+      __out.push(__sanitize(this.model.get('label')));
     
-      _print(_safe(JST["partials/required"](this)));
+      __out.push(JST["partials/required"](this));
     
-      _print(_safe('\n</label>\n'));
+      __out.push('\n</label>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/date"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+      __out.push('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_month">MM</label>\n    <input type="text"\n           id="'));
+      __out.push('_month">MM</label>\n    <input type="text"\n           id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+      __out.push('_month"\n           data-rv-input=\'model.value.month\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>/</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
+      __out.push('_day">DD</label>\n    <input type="text"\n           data-rv-input=\'model.value.day\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_day" />\n  </div>\n\n  '));
+      __out.push('_day" />\n  </div>\n\n  ');
     
       if (!this.model.get('disable_year')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.domId());
-        _print(_safe('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="'));
-        _print(this.domId());
-        _print(_safe('_year" />\n    </div>\n  '));
+        __out.push('\n    <div class=\'fr_spacer\'>/</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_year">YYYY</label>\n      <input type="text"\n             data-rv-input=\'model.value.year\'\n             maxlength=\'4\'\n             size=\'4\'\n             id="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_year" />\n    </div>\n  ');
       }
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/dropdown"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var i, len, option, ref;
     
-      _print(_safe('<select id="'));
+      __out.push('<select id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('" data-rv-value=\'model.value\'>\n  '));
+      __out.push('" data-rv-value=\'model.value\'>\n  ');
     
       if (this.model.get('include_blank_option')) {
-        _print(_safe('\n    <option selected value="">\n      '));
-        _print(FormRenderer.t.choose_an_option);
-        _print(_safe('\n    </option>\n  '));
+        __out.push('\n    <option selected value="">\n      ');
+        __out.push(__sanitize(FormRenderer.t.choose_an_option));
+        __out.push('\n    </option>\n  ');
       }
     
-      _print(_safe('\n\n  '));
+      __out.push('\n\n  ');
     
       ref = this.model.getOptions();
       for (i = 0, len = ref.length; i < len; i++) {
         option = ref[i];
-        _print(_safe('\n    <option value="'));
-        _print(option.label);
-        _print(_safe('">\n      '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n    </option>\n  '));
+        __out.push('\n    <option value="');
+        __out.push(__sanitize(option.label));
+        __out.push('">\n      ');
+        __out.push(__sanitize(option.translated_label || option.label));
+        __out.push('\n    </option>\n  ');
       }
     
-      _print(_safe('\n</select>\n'));
+      __out.push('\n</select>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/email"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<input type="text" inputmode="email"\n       id="'));
+      __out.push('<input type="text" inputmode="email"\n       id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
+      __out.push('"\n       data-rv-input=\'model.value\' />\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/file"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var attachment, exts, i, len, ref;
     
-      _print(_safe('<div class=\'fr_files\'>\n  '));
+      __out.push('<div class=\'fr_files\'>\n  ');
     
       ref = this.model.getFiles();
       for (i = 0, len = ref.length; i < len; i++) {
         attachment = ref[i];
-        _print(_safe('\n    <div class=\'fr_file\'>\n      <span>'));
-        _print(attachment.filename);
-        _print(_safe('</span>\n      <button data-fr-remove-file class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>'));
-        _print(FormRenderer.t.remove);
-        _print(_safe('</button>\n    </div>\n  '));
+        __out.push('\n    <div class=\'fr_file\'>\n      <span>');
+        __out.push(__sanitize(attachment.filename));
+        __out.push('</span>\n      <button data-fr-remove-file class=\'');
+        __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+        __out.push('\'>');
+        __out.push(__sanitize(FormRenderer.t.remove));
+        __out.push('</button>\n    </div>\n  ');
       }
     
-      _print(_safe('\n</div>\n\n'));
+      __out.push('\n</div>\n\n');
     
       if (this.model.canAddFile()) {
-        _print(_safe('\n  <div class=\'fr_add_file\'>\n    <label for=\''));
-        _print(this.domId());
-        _print(_safe('\' class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n      '));
-        _print(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload);
-        _print(_safe('\n    </label>\n\n    <input type=\'file\'\n           id=\''));
-        _print(this.domId());
-        _print(_safe('\'\n           '));
+        __out.push('\n  <div class=\'fr_add_file\'>\n    <label for=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('\' class=\'');
+        __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+        __out.push('\'>\n      ');
+        __out.push(__sanitize(this.model.getFiles().length ? FormRenderer.t.upload_another : FormRenderer.t.upload));
+        __out.push('\n    </label>\n\n    <input type=\'file\'\n           id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('\'\n           ');
         if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n            accept=\''));
-          _print(exts.join(','));
-          _print(_safe('\'\n           '));
+          __out.push('\n            accept=\'');
+          __out.push(__sanitize(exts.join(',')));
+          __out.push('\'\n           ');
         }
-        _print(_safe('\n           />\n\n    <span class=\'fr_error\' style=\'display:none\'></span>\n\n    '));
+        __out.push('\n           />\n\n    <span class=\'fr_error\' style=\'display:none\'></span>\n\n    ');
         if ((exts = this.model.getAcceptedExtensions())) {
-          _print(_safe('\n      <div class=\'fr_description\'>\n        '));
-          _print(FormRenderer.t.we_accept);
-          _print(_safe(' '));
-          _print(_str.toSentence(exts));
-          _print(_safe('\n      </div>\n    '));
+          __out.push('\n      <div class=\'fr_description\'>\n        ');
+          __out.push(__sanitize(FormRenderer.t.we_accept));
+          __out.push(' ');
+          __out.push(__sanitize(_str.toSentence(exts)));
+          __out.push('\n      </div>\n    ');
         }
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/identification"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\''));
+      __out.push('<div class=\'fr_grid\'>\n  <div class=\'fr_half\'>\n    <label for=\'');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('-name\'>\n      '));
+      __out.push('-name\'>\n      ');
     
-      _print(FormRenderer.t.name);
+      __out.push(__sanitize(FormRenderer.t.name));
     
-      _print(_safe('\n\n      '));
-    
-      if (!this.dontRenderInputs()) {
-        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
-      }
-    
-      _print(_safe('\n    </label>\n\n    '));
-    
-      if (this.dontRenderInputs()) {
-        _print(_safe('\n      <span>'));
-        _print(this.model.get('value.name'));
-        _print(_safe('</span>\n    '));
-      } else {
-        _print(_safe('\n      <input type=\'text\'\n             id=\''));
-        _print(this.domId());
-        _print(_safe('-name\'\n             data-rv-input=\'model.value.name\' />\n    '));
-      }
-    
-      _print(_safe('\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\''));
-    
-      _print(this.domId());
-    
-      _print(_safe('-email\'>\n      '));
-    
-      _print(FormRenderer.t.email);
-    
-      _print(_safe('\n      '));
+      __out.push('\n\n      ');
     
       if (!this.dontRenderInputs()) {
-        _print(_safe('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      '));
+        __out.push('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      ');
       }
     
-      _print(_safe('\n    </label>\n\n    '));
+      __out.push('\n    </label>\n\n    ');
     
       if (this.dontRenderInputs()) {
-        _print(_safe('\n      <span>'));
-        _print(this.model.get('value.email'));
-        _print(_safe('</span>\n    '));
+        __out.push('\n      <span>');
+        __out.push(__sanitize(this.model.get('value.name')));
+        __out.push('</span>\n    ');
       } else {
-        _print(_safe('\n      <input type="text"\n             id=\''));
-        _print(this.domId());
-        _print(_safe('-email\'\n             data-rv-input=\'model.value.email\' />\n    '));
+        __out.push('\n      <input type=\'text\'\n             id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('-name\'\n             data-rv-input=\'model.value.name\' />\n    ');
       }
     
-      _print(_safe('\n  </div>\n</div>\n'));
+      __out.push('\n  </div>\n\n  <div class=\'fr_half\'>\n    <label for=\'');
+    
+      __out.push(__sanitize(this.domId()));
+    
+      __out.push('-email\'>\n      ');
+    
+      __out.push(__sanitize(FormRenderer.t.email));
+    
+      __out.push('\n      ');
+    
+      if (!this.dontRenderInputs()) {
+        __out.push('\n        <abbr class=\'fr_required\' title=\'required\'>*</abbr>\n      ');
+      }
+    
+      __out.push('\n    </label>\n\n    ');
+    
+      if (this.dontRenderInputs()) {
+        __out.push('\n      <span>');
+        __out.push(__sanitize(this.model.get('value.email')));
+        __out.push('</span>\n    ');
+      } else {
+        __out.push('\n      <input type="text"\n             id=\'');
+        __out.push(__sanitize(this.domId()));
+        __out.push('-email\'\n             data-rv-input=\'model.value.email\' />\n    ');
+      }
+    
+      __out.push('\n  </div>\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/map_marker"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\'>\n  \n  </div>\n\n  <div class=\'fr_map_cover\'>\n    '));
+      __out.push('<div class=\'fr_map_wrapper\'>\n  <div class=\'fr_map_map\'>\n  \n  </div>\n\n  <div class=\'fr_map_cover\'>\n    ');
     
-      _print(FormRenderer.t.click_to_set);
+      __out.push(__sanitize(FormRenderer.t.click_to_set));
     
-      _print(_safe('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>'));
+      __out.push('\n  </div>\n\n  <div class=\'fr_map_toolbar\'>\n    <div class=\'fr_map_coord\'>\n      <strong>');
     
-      _print(FormRenderer.t.coordinates);
+      __out.push(__sanitize(FormRenderer.t.coordinates));
     
-      _print(_safe(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\'></span>,\n        <span data-rv-text=\'model.value.1\'></span>\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>'));
+      __out.push(':</strong>\n      <span data-rv-show=\'model.value\'>\n        <span data-rv-text=\'model.value.0\'></span>,\n        <span data-rv-text=\'model.value.1\'></span>\n      </span>\n      <span data-rv-hide=\'model.value\' class=\'fr_map_no_location\'>');
     
-      _print(FormRenderer.t.na);
+      __out.push(__sanitize(FormRenderer.t.na));
     
-      _print(_safe('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>'));
+      __out.push('</span>\n    </div>\n    <a class=\'fr_map_clear\' data-fr-clear-map data-rv-show=\'model.value\' href=\'#\'>');
     
-      _print(FormRenderer.t.clear);
+      __out.push(__sanitize(FormRenderer.t.clear));
     
-      _print(_safe('</a>\n  </div>\n</div>\n'));
+      __out.push('</a>\n  </div>\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/number"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<input type="text"\n       id="'));
+      __out.push('<input type="text"\n       id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\'\n       class="size_'));
+      __out.push('"\n       data-rv-input=\'model.value\'\n       class="size_');
     
-      _print(this.calculateSize());
+      __out.push(__sanitize(this.calculateSize()));
     
-      _print(_safe('" />\n\n'));
+      __out.push('" />\n\n');
     
       if (this.model.get('units')) {
-        _print(_safe('\n  <span class=\'fr_units\'>\n    '));
-        _print(this.model.get('units'));
-        _print(_safe('\n  </span>\n'));
+        __out.push('\n  <span class=\'fr_units\'>\n    ');
+        __out.push(__sanitize(this.model.get('units')));
+        __out.push('\n  </span>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/page_break"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n'));
+      __out.push('<div class=\'fr_page_break_inner\'>\n  Page break\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/paragraph"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<textarea\n   id="'));
+      __out.push('<textarea\n   id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n   class="size_'));
+      __out.push('"\n   class="size_');
     
-      _print(this.model.getSize());
+      __out.push(__sanitize(this.model.getSize()));
     
-      _print(_safe('"\n   data-rv-input=\'model.value\'\n>\n</textarea>\n'));
+      __out.push('"\n   data-rv-input=\'model.value\'\n>\n</textarea>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/phone"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<input type="text"\n       inputmode="tel"\n       id="'));
+      __out.push('<input type="text"\n       inputmode="tel"\n       id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder="'));
+      __out.push('"\n       data-rv-input=\'model.value\'\n       placeholder="');
     
-      _print(this.phonePlaceholder());
+      __out.push(__sanitize(this.phonePlaceholder()));
     
-      _print(_safe('" />\n'));
+      __out.push('" />\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/price"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+      __out.push('<div class=\'fr_grid\'>\n  <div class=\'fr_spacer\'>$</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_dollars">'));
+      __out.push('_dollars">');
     
-      _print(FormRenderer.t.dollars);
+      __out.push(__sanitize(FormRenderer.t.dollars));
     
-      _print(_safe('</label>\n    <input type="text"\n           id="'));
+      __out.push('</label>\n    <input type="text"\n           id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  '));
+      __out.push('_dollars"\n           data-rv-input=\'model.value.dollars\'\n           size=\'6\' />\n  </div>\n\n  ');
     
       if (!this.model.get('disable_cents')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.domId());
-        _print(_safe('_cents">'));
-        _print(FormRenderer.t.cents);
-        _print(_safe('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.domId());
-        _print(_safe('_cents" />\n    </div>\n  '));
+        __out.push('\n    <div class=\'fr_spacer\'>.</div>\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_cents">');
+        __out.push(__sanitize(FormRenderer.t.cents));
+        __out.push('</label>\n      <input type="text"\n             data-rv-input=\'model.value.cents\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_cents" />\n    </div>\n  ');
       }
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/radio"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var i, len, option, ref;
     
       ref = this.model.getOptions();
       for (i = 0, len = ref.length; i < len; i++) {
         option = ref[i];
-        _print(_safe('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-dobtradiogroup=\'model.value.checked\'\n           value="'));
-        _print(option.label);
-        _print(_safe('"\n    />\n    '));
-        _print(option.translated_label || option.label);
-        _print(_safe('\n  </label>\n'));
+        __out.push('\n  <label class=\'fr_option control\'>\n    <input type=\'radio\'\n           data-rv-dobtradiogroup=\'model.value.checked\'\n           value="');
+        __out.push(__sanitize(option.label));
+        __out.push('"\n    />\n    ');
+        __out.push(__sanitize(option.translated_label || option.label));
+        __out.push('\n  </label>\n');
       }
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       if (this.model.get('include_other_option')) {
-        _print(_safe('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-dobtradiogroup=\'model.value.checked\'\n             class="js_other_option"\n      />\n      '));
-        _print(FormRenderer.t.other);
-        _print(_safe('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\''));
-        _print(FormRenderer.t.write_here);
-        _print(_safe('\'\n    />\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_option fr_other_option\'>\n    <label class=\'control\'>\n      <input type=\'radio\'\n             data-rv-dobtradiogroup=\'model.value.checked\'\n             class="js_other_option"\n      />\n      ');
+        __out.push(__sanitize(FormRenderer.t.other));
+        __out.push('\n    </label>\n\n    <input type=\'text\'\n           data-rv-show=\'model.value.other_checked\'\n           data-rv-input=\'model.value.other_text\'\n           placeholder=\'');
+        __out.push(__sanitize(FormRenderer.t.write_here));
+        __out.push('\'\n    />\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/section_break"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var formattedDescription;
     
-      _print(_safe(JST["partials/labels"](this)));
+      __out.push(JST["partials/labels"](this));
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       formattedDescription = FormRenderer.formatAndSanitizeHTML(this.model.get('description'));
     
-      _print(_safe('\n<'));
+      __out.push('\n<');
     
-      _print(this.model.sizeToHeaderTag());
+      __out.push(__sanitize(this.model.sizeToHeaderTag()));
     
-      _print(_safe('>'));
+      __out.push('>');
     
-      _print(this.model.get('label'));
+      __out.push(__sanitize(this.model.get('label')));
     
-      _print(_safe('</'));
+      __out.push('</');
     
-      _print(this.model.sizeToHeaderTag());
+      __out.push(__sanitize(this.model.sizeToHeaderTag()));
     
-      _print(_safe('>\n'));
+      __out.push('>\n');
     
       if (formattedDescription) {
-        _print(_safe('\n  <div class=\'fr_text size_'));
-        _print(this.model.getSize());
-        _print(_safe('\'>\n    '));
-        _print(this.safe(formattedDescription));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_text size_');
+        __out.push(__sanitize(this.model.getSize()));
+        __out.push('\'>\n    ');
+        __out.push(__sanitize(this.safe(formattedDescription)));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n\n<hr />\n'));
+      __out.push('\n\n<hr />\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/table"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var column, i, j, k, l, len, len1, len2, m, n, ref, ref1, ref2, ref3;
     
-      _print(_safe('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      '));
+      __out.push('<table class=\'fr_table\'>\n  <thead>\n    <tr>\n      ');
     
       ref = this.model.getColumns();
       for (k = 0, len = ref.length; k < len; k++) {
         column = ref[k];
-        _print(_safe('\n        <th>'));
-        _print(column.translated_label || column.label);
-        _print(_safe('</th>\n      '));
+        __out.push('\n        <th>');
+        __out.push(__sanitize(column.translated_label || column.label));
+        __out.push('</th>\n      ');
       }
     
-      _print(_safe('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    '));
+      __out.push('\n\n      <th class=\'fr_table_col_remove\'></th>\n    </tr>\n  </thead>\n\n  <tbody>\n    ');
     
       for (i = l = 0, ref1 = this.model.numRows() - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; i = 0 <= ref1 ? ++l : --l) {
-        _print(_safe('\n      <tr data-row-index="'));
-        _print(i);
-        _print(_safe('">\n        '));
+        __out.push('\n      <tr data-row-index="');
+        __out.push(__sanitize(i));
+        __out.push('">\n        ');
         ref2 = this.model.getColumns();
         for (j = m = 0, len1 = ref2.length; m < len1; j = ++m) {
           column = ref2[j];
-          _print(_safe('\n          '));
+          __out.push('\n          ');
           if (this.model.getPresetValue(column.label, i)) {
-            _print(_safe('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.'));
-            _print(j);
-            _print(_safe('.'));
-            _print(i);
-            _print(_safe('\'></span>\n          '));
+            __out.push('\n            <td class=\'fr_table_preset\'>\n              <span data-rv-text=\'model.value.');
+            __out.push(__sanitize(j));
+            __out.push('.');
+            __out.push(__sanitize(i));
+            __out.push('\'></span>\n          ');
           } else {
-            _print(_safe('\n            <td>\n              <textarea data-rv-input=\'model.value.'));
-            _print(j);
-            _print(_safe('.'));
-            _print(i);
-            _print(_safe('\'\n                        rows=\'1\'\n                        aria-label="'));
-            _print(column.translated_label || column.label);
-            _print(_safe(' #'));
-            _print(i + 1);
-            _print(_safe('"\n                        '));
+            __out.push('\n            <td>\n              <textarea data-rv-input=\'model.value.');
+            __out.push(__sanitize(j));
+            __out.push('.');
+            __out.push(__sanitize(i));
+            __out.push('\'\n                        rows=\'1\'\n                        aria-label="');
+            __out.push(__sanitize(column.translated_label || column.label));
+            __out.push(' #');
+            __out.push(__sanitize(i + 1));
+            __out.push('"\n                        ');
             if (j === 0 && i === 0) {
-              _print(_safe('id=\''));
-              _print(this.domId());
-              _print(_safe('\''));
+              __out.push('id=\'');
+              __out.push(__sanitize(this.domId()));
+              __out.push('\'');
             }
-            _print(_safe(' \n              >\n              </textarea>\n          '));
+            __out.push(' \n              >\n              </textarea>\n          ');
           }
-          _print(_safe('\n          </td>\n        '));
+          __out.push('\n          </td>\n        ');
         }
-        _print(_safe('\n\n        <td class=\'fr_table_col_remove\'>\n          '));
+        __out.push('\n\n        <td class=\'fr_table_col_remove\'>\n          ');
         if (this.canRemoveRow(i)) {
-          _print(_safe('\n            <a class=\'js-remove-row\' href=\'#\'>\n              '));
-          _print(_safe(FormRenderer.REMOVE_ROW_ICON));
-          _print(_safe('\n            </a>\n          '));
+          __out.push('\n            <a class=\'js-remove-row\' href=\'#\'>\n              ');
+          __out.push(FormRenderer.REMOVE_ROW_ICON);
+          __out.push('\n            </a>\n          ');
         }
-        _print(_safe('\n        </td>\n      </tr>\n    '));
+        __out.push('\n        </td>\n      </tr>\n    ');
       }
     
-      _print(_safe('\n  </tbody>\n\n  '));
+      __out.push('\n  </tbody>\n\n  ');
     
       if (this.model.get('column_totals')) {
-        _print(_safe('\n    <tfoot>\n      <tr>\n        '));
+        __out.push('\n    <tfoot>\n      <tr>\n        ');
         ref3 = this.model.getColumns();
         for (j = n = 0, len2 = ref3.length; n < len2; j = ++n) {
           column = ref3[j];
-          _print(_safe('\n          <td data-rv-text=\'model.columnTotals.'));
-          _print(j);
-          _print(_safe('\'></td>\n        '));
+          __out.push('\n          <td data-rv-text=\'model.columnTotals.');
+          __out.push(__sanitize(j));
+          __out.push('\'></td>\n        ');
         }
-        _print(_safe('\n        <td class="fr_table_col_remove"></td>\n      </tr>\n    </tfoot>\n  '));
+        __out.push('\n        <td class="fr_table_col_remove"></td>\n      </tr>\n    </tfoot>\n  ');
       }
     
-      _print(_safe('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  '));
+      __out.push('\n</table>\n\n<div class=\'fr_table_add_row_wrapper\'>\n  ');
     
       if (this.model.canAddRows()) {
-        _print(_safe('\n    <a class=\'js-add-row\' href=\'#\'>\n      '));
-        _print(_safe(FormRenderer.ADD_ROW_ICON));
-        _print(_safe('\n      '));
-        _print(FormRenderer.t.add_another);
-        _print(_safe('\n    </a>\n  '));
+        __out.push('\n    <a class=\'js-add-row\' href=\'#\'>\n      ');
+        __out.push(FormRenderer.ADD_ROW_ICON);
+        __out.push('\n      ');
+        __out.push(__sanitize(FormRenderer.t.add_another));
+        __out.push('\n    </a>\n  ');
       }
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/text"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<input type="text"\n       id="'));
+      __out.push('<input type="text"\n       id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n       class="size_'));
+      __out.push('"\n       class="size_');
     
-      _print(this.model.getSize());
+      __out.push(__sanitize(this.model.getSize()));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\' />\n'));
+      __out.push('"\n       data-rv-input=\'model.value\' />\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/time"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+      __out.push('<div class=\'fr_grid\'>\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_hours">HH</label>\n    <input type="text"\n           id="'));
+      __out.push('_hours">HH</label>\n    <input type="text"\n           id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="'));
+      __out.push('_hours"\n           data-rv-input=\'model.value.hours\'\n           maxlength=\'2\'\n           size=\'2\' />\n  </div>\n\n  <div class=\'fr_spacer\'>:</div>\n\n  <div class=\'has_sub_label\'>\n    <label class="fr_sub_label" for="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="'));
+      __out.push('_minutes">MM</label>\n    <input type="text"\n           data-rv-input=\'model.value.minutes\'\n           maxlength=\'2\'\n           size=\'2\'\n           id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('_minutes" />\n  </div>\n\n  '));
+      __out.push('_minutes" />\n  </div>\n\n  ');
     
       if (!this.model.get('disable_seconds')) {
-        _print(_safe('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="'));
-        _print(this.domId());
-        _print(_safe('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="'));
-        _print(this.domId());
-        _print(_safe('_seconds" />\n    </div>\n  '));
+        __out.push('\n    <div class=\'fr_spacer\'>:</div>\n\n    <div class=\'has_sub_label\'>\n      <label class="fr_sub_label" for="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_seconds">SS</label>\n      <input type="text"\n             data-rv-input=\'model.value.seconds\'\n             maxlength=\'2\'\n             size=\'2\'\n             id="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('_seconds" />\n    </div>\n  ');
       }
     
-      _print(_safe('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\' aria-label=\'AM/PM\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n'));
+      __out.push('\n\n  <div class=\'has_sub_label\'>\n    <select data-rv-value=\'model.value.am_pm\' data-width=\'auto\' aria-label=\'AM/PM\'>\n      <option value=\'AM\'>AM</option>\n      <option value=\'PM\'>PM</option>\n    </select>\n  </div>\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["fields/website"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<input type="text" inputmode="url"\n       id="'));
+      __out.push('<input type="text" inputmode="url"\n       id="');
     
-      _print(this.domId());
+      __out.push(__sanitize(this.domId()));
     
-      _print(_safe('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n'));
+      __out.push('"\n       data-rv-input=\'model.value\'\n       placeholder=\'http://\' />\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["main"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_loading\'>\n  '));
+      __out.push('<div class=\'fr_loading\'>\n  ');
     
-      _print(FormRenderer.t.loading_form);
+      __out.push(__sanitize(FormRenderer.t.loading_form));
     
-      _print(_safe('\n</div>\n'));
+      __out.push('\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/description"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       if (this.model.get('description')) {
-        _print(_safe('\n  <div class=\'fr_description\'>\n    '));
-        _print(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description'))));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_description\'>\n    ');
+        __out.push(__sanitize(this.safe(FormRenderer.formatAndSanitizeHTML(this.model.get('description')))));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/email_sent"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<p>'));
+      __out.push('<p>');
     
-      _print(this.message);
+      __out.push(__sanitize(this.message));
     
-      _print(_safe('</p>\n\n'));
+      __out.push('</p>\n\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/error"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_error\' data-rv-show=\'model.error\' data-rv-text=\'model.error\'></div>\n'));
+      __out.push('<div class=\'fr_error\' data-rv-show=\'model.error\' data-rv-text=\'model.error\'></div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/label"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<label '));
+      __out.push('<label ');
     
       if (this.model.group || this.model.wrapper === 'fieldset') {
-        _print(_safe('aria-hidden="true"'));
+        __out.push('aria-hidden="true"');
       } else {
-        _print(_safe('for="'));
-        _print(this.domId());
-        _print(_safe('"'));
+        __out.push('for="');
+        __out.push(__sanitize(this.domId()));
+        __out.push('"');
       }
     
-      _print(_safe('>\n  '));
+      __out.push('>\n  ');
     
-      _print(this.model.get('label'));
+      __out.push(__sanitize(this.model.get('label')));
     
-      _print(_safe(JST["partials/required"](this)));
+      __out.push(JST["partials/required"](this));
     
-      _print(_safe('\n  '));
+      __out.push('\n  ');
     
-      _print(_safe(JST["partials/labels"](this)));
+      __out.push(JST["partials/labels"](this));
     
-      _print(_safe('\n</label>\n'));
+      __out.push('\n</label>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/labels"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       if (this.showLabels) {
-        _print(_safe('\n  '));
+        __out.push('\n  ');
         if (this.model.get('admin_only')) {
-          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-lock\'></i>'));
-          _print(FormRenderer.t.hidden);
-          _print(_safe('</span>\n  '));
+          __out.push('\n    <span class=\'label label_fb\'><i class=\'fa fa-lock\'></i>');
+          __out.push(__sanitize(FormRenderer.t.hidden));
+          __out.push('</span>\n  ');
         }
-        _print(_safe('\n  '));
+        __out.push('\n  ');
         if (this.model.get('blind')) {
-          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-eye-slash\'></i> '));
-          _print(FormRenderer.t.blind);
-          _print(_safe('</span>\n  '));
+          __out.push('\n    <span class=\'label label_fb\'><i class=\'fa fa-eye-slash\'></i> ');
+          __out.push(__sanitize(FormRenderer.t.blind));
+          __out.push('</span>\n  ');
         }
-        _print(_safe('\n  '));
+        __out.push('\n  ');
         if (this.model.isConditional()) {
-          _print(_safe('\n    <span class=\'label label_fb\'><i class=\'fa fa-code-fork\'></i>'));
-          _print(FormRenderer.t.has_conditions);
-          _print(_safe('</span>\n  '));
+          __out.push('\n    <span class=\'label label_fb\'><i class=\'fa fa-code-fork\'></i>');
+          __out.push(__sanitize(FormRenderer.t.has_conditions));
+          __out.push('</span>\n  ');
         }
-        _print(_safe('\n'));
+        __out.push('\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/length_counter"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<span class=\'fr_length_counter\' data-rv-text=\'model.currentLength\'></span>\n'));
+      __out.push('<span class=\'fr_length_counter\' data-rv-text=\'model.currentLength\'></span>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/length_validations"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var max, min, units;
     
       min = this.model.get('minlength');
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
       max = this.model.get('maxlength');
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
       units = this.model.getLengthValidationUnits();
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
       if (this.model.hasLengthValidation()) {
-        _print(_safe('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      '));
+        __out.push('\n  <div class=\'fr_min_max\'>\n    <span class=\'fr_min_max_guide\'>\n      ');
         if (min && max) {
-          _print(_safe('\n        '));
+          __out.push('\n        ');
           if (min === max) {
-            _print(_safe('\n          '));
-            _print(FormRenderer.t.enter_exactly.replace(':num', min));
-            _print(_safe(' '));
-            _print(FormRenderer.t[units]);
-            _print(_safe('.\n        '));
+            __out.push('\n          ');
+            __out.push(__sanitize(FormRenderer.t.enter_exactly.replace(':num', min)));
+            __out.push(' ');
+            __out.push(__sanitize(FormRenderer.t[units]));
+            __out.push('.\n        ');
           } else {
-            _print(_safe('\n          '));
-            _print(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max));
-            _print(_safe(' '));
-            _print(FormRenderer.t[units]);
-            _print(_safe('.\n        '));
+            __out.push('\n          ');
+            __out.push(__sanitize(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max)));
+            __out.push(' ');
+            __out.push(__sanitize(FormRenderer.t[units]));
+            __out.push('.\n        ');
           }
-          _print(_safe('\n      '));
+          __out.push('\n      ');
         } else if (min) {
-          _print(_safe('\n        '));
-          _print(FormRenderer.t.enter_at_least.replace(':min', min));
-          _print(_safe(' '));
-          _print(FormRenderer.t[units]);
-          _print(_safe('.\n      '));
+          __out.push('\n        ');
+          __out.push(__sanitize(FormRenderer.t.enter_at_least.replace(':min', min)));
+          __out.push(' ');
+          __out.push(__sanitize(FormRenderer.t[units]));
+          __out.push('.\n      ');
         } else if (max) {
-          _print(_safe('\n        '));
-          _print(FormRenderer.t.enter_up_to.replace(':max', max));
-          _print(_safe(' '));
-          _print(FormRenderer.t[units]);
-          _print(_safe('.\n      '));
+          __out.push('\n        ');
+          __out.push(__sanitize(FormRenderer.t.enter_up_to.replace(':max', max)));
+          __out.push(' ');
+          __out.push(__sanitize(FormRenderer.t[units]));
+          __out.push('.\n      ');
         }
-        _print(_safe('\n    </span>\n\n    '));
-        _print(_safe(JST["partials/length_counter"](this)));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n    </span>\n\n    ');
+        __out.push(JST["partials/length_counter"](this));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/min_max_validations"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var max, min;
     
       if (this.model.hasMinMaxValidation()) {
-        _print(_safe('\n  '));
+        __out.push('\n  ');
         min = this.model.get('min');
-        _print(_safe('\n  '));
+        __out.push('\n  ');
         max = this.model.get('max');
-        _print(_safe('\n\n  <div class=\'fr_min_max\'>\n    '));
+        __out.push('\n\n  <div class=\'fr_min_max\'>\n    ');
         if (min && max) {
-          _print(_safe('\n      '));
-          _print(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max));
-          _print(_safe('.\n    '));
+          __out.push('\n      ');
+          __out.push(__sanitize(FormRenderer.t.enter_between.replace(':min', min).replace(':max', max)));
+          __out.push('.\n    ');
         } else if (min) {
-          _print(_safe('\n      '));
-          _print(FormRenderer.t.enter_at_least.replace(':min', min));
-          _print(_safe('.\n    '));
+          __out.push('\n      ');
+          __out.push(__sanitize(FormRenderer.t.enter_at_least.replace(':min', min)));
+          __out.push('.\n    ');
         } else if (max) {
-          _print(_safe('\n      '));
-          _print(FormRenderer.t.enter_up_to.replace(':max', max));
-          _print(_safe('.\n    '));
+          __out.push('\n      ');
+          __out.push(__sanitize(FormRenderer.t.enter_up_to.replace(':max', max)));
+          __out.push('.\n    ');
         }
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/non_input_response_field"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe(JST["fields/" + this.model.field_type](this)));
+      __out.push(JST["fields/" + this.model.field_type](this));
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/pagination"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var i, idx, j, len, ref;
     
       if (this.form_renderer.visiblePages().length > 1) {
-        _print(_safe('\n  <ul class=\'fr_pagination\'>\n    '));
+        __out.push('\n  <ul class=\'fr_pagination\'>\n    ');
         ref = this.form_renderer.visiblePages();
         for (idx = j = 0, len = ref.length; j < len; idx = ++j) {
           i = ref[idx];
-          _print(_safe('\n      <li class=\''));
+          __out.push('\n      <li class=\'');
           if (!this.form_renderer.isPageValid(i)) {
-            _print(_safe('has_errors'));
+            __out.push('has_errors');
           }
-          _print(_safe('\'>\n        '));
+          __out.push('\'>\n        ');
           if (i === this.form_renderer.state.get('activePage')) {
-            _print(_safe('\n          <span>'));
-            _print(idx + 1);
-            _print(_safe('</span>\n        </li>\n        '));
+            __out.push('\n          <span>');
+            __out.push(__sanitize(idx + 1));
+            __out.push('</span>\n        </li>\n        ');
           } else {
-            _print(_safe('\n          <a data-activate-page="'));
-            _print(i);
-            _print(_safe('" href=\'#\'>\n            '));
-            _print(idx + 1);
-            _print(_safe('\n          </a>\n        '));
+            __out.push('\n          <a data-activate-page="');
+            __out.push(__sanitize(i));
+            __out.push('" href=\'#\'>\n            ');
+            __out.push(__sanitize(idx + 1));
+            __out.push('\n          </a>\n        ');
           }
-          _print(_safe('\n      </li>\n    '));
+          __out.push('\n      </li>\n    ');
         }
-        _print(_safe('\n  </ul>\n'));
+        __out.push('\n  </ul>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
-
-if (!window.JST) {
-  window.JST = {};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
 }
-window.JST["partials/repeating_group"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
-  };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
-    };
-    (function() {
-      _print(_safe('<fieldset class=\'fr_fieldset\'>\n  <legend>'));
-    
-      _print(this.model.get('label'));
-    
-      _print(_safe('</legend>\n\n  '));
-    
-      _print(_safe(JST["partials/label"](this)));
-    
-      _print(_safe('\n\n  <div class="fr_description">\n    '));
-    
-      if (this.model.renderingRespondentForm()) {
-        _print(_safe('\n      '));
-        _print(this.model.get('description'));
-        _print(_safe('\n    '));
-      } else {
-        _print(_safe('\n      '));
-        _print(this.model.getTruncatedDescription());
-        _print(_safe('\n    '));
-      }
-    
-      _print(_safe('\n  </div>\n\n  '));
-    
-      if (this.model.isSkipped()) {
-        _print(_safe('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>'));
-        _print(FormRenderer.t.answer);
-        _print(_safe('</a>\n    <div class=\'fr_group_skipped\' style=\'clear: both\'>'));
-        _print(FormRenderer.t.skipped);
-        _print(_safe('</div>\n  '));
-      } else {
-        _print(_safe('\n    '));
-        if (!this.model.isRequired()) {
-          _print(_safe('\n      <a href=\'#\' class=\'js-skip fr_group_skip\'>'));
-          _print(FormRenderer.t.skip);
-          _print(_safe('</a>\n    '));
-        }
-        _print(_safe('\n\n    <div class=\'fr_group_entries\'>\n    </div>\n\n    '));
-        if (this.model.canAdd()) {
-          _print(_safe('\n      <a href=\'#\' class=\'js-add-entry '));
-          _print(FormRenderer.BUTTON_CLASS);
-          _print(_safe('\'>'));
-          _print(FormRenderer.t.add_another);
-          _print(_safe('</a>\n    '));
-        }
-        _print(_safe('\n  '));
-      }
-    
-      _print(_safe('\n</fieldset>\n'));
-    
-    }).call(this);
-    
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/repeating_group_entry"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_group_entry_idx\'><span>'));
+      __out.push('<div class=\'fr_group_entry_idx\'><span>');
     
-      _print(this.idx + 1);
+      __out.push(__sanitize(this.idx + 1));
     
-      _print(_safe('</span></div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n'));
+      __out.push('</span></div>\n\n<div class=\'fr_group_entry_fields\'>\n</div>\n\n');
     
       if (this.entry.canRemove()) {
-        _print(_safe('\n  <a href=\'#\' class=\'js-remove-entry '));
-        _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_CLASS));
-        _print(_safe('\'>'));
-        _print(_safe(FormRenderer.REMOVE_ENTRY_LINK_HTML));
-        _print(_safe('</a>\n'));
+        __out.push('\n  <a href=\'#\' class=\'js-remove-entry ');
+        __out.push(FormRenderer.REMOVE_ENTRY_LINK_CLASS);
+        __out.push('\'>');
+        __out.push(FormRenderer.REMOVE_ENTRY_LINK_HTML);
+        __out.push('</a>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["partials/repeating_group"] = function(__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<fieldset class=\'fr_fieldset\'>\n  <legend>');
+    
+      __out.push(__sanitize(this.model.get('label')));
+    
+      __out.push('</legend>\n\n  ');
+    
+      __out.push(JST["partials/label"](this));
+    
+      __out.push('\n\n  <div class="fr_description">\n    ');
+    
+      if (this.model.renderingRespondentForm()) {
+        __out.push('\n      ');
+        __out.push(__sanitize(this.model.get('description')));
+        __out.push('\n    ');
+      } else {
+        __out.push('\n      ');
+        __out.push(__sanitize(this.model.getTruncatedDescription()));
+        __out.push('\n    ');
+      }
+    
+      __out.push('\n  </div>\n\n  ');
+    
+      if (this.model.isSkipped()) {
+        __out.push('\n    <a href=\'#\' class=\'js-skip fr_group_answer\'>');
+        __out.push(__sanitize(FormRenderer.t.answer));
+        __out.push('</a>\n    <div class=\'fr_group_skipped\' style=\'clear: both\'>');
+        __out.push(__sanitize(FormRenderer.t.skipped));
+        __out.push('</div>\n  ');
+      } else {
+        __out.push('\n    ');
+        if (!this.model.isRequired()) {
+          __out.push('\n      <a href=\'#\' class=\'js-skip fr_group_skip\'>');
+          __out.push(__sanitize(FormRenderer.t.skip));
+          __out.push('</a>\n    ');
+        }
+        __out.push('\n\n    <div class=\'fr_group_entries\'>\n    </div>\n\n    ');
+        if (this.model.canAdd()) {
+          __out.push('\n      <a href=\'#\' class=\'js-add-entry ');
+          __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+          __out.push('\'>');
+          __out.push(__sanitize(FormRenderer.t.add_another));
+          __out.push('</a>\n    ');
+        }
+        __out.push('\n  ');
+      }
+    
+      __out.push('\n</fieldset>\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/required"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       if (this.model.get('required')) {
-        _print(_safe('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>'));
+        __out.push('&nbsp;<abbr class=\'fr_required\' title=\'required\'>*</abbr>');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/response_field"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       if (this.model.wrapper === 'fieldset') {
-        _print(_safe('\n  <fieldset class=\'fr_fieldset\'>\n    <legend>'));
-        _print(this.model.get('label'));
-        _print(_safe('</legend>\n    '));
-        _print(_safe(JST["partials/label"](this)));
-        _print(_safe('\n    <div class=\'fr_field_wrapper\'>\n      '));
-        _print(_safe(JST["fields/" + this.model.field_type](this)));
-        _print(_safe('\n    </div>\n  </fieldset>\n'));
+        __out.push('\n  <fieldset class=\'fr_fieldset\'>\n    <legend>');
+        __out.push(__sanitize(this.model.get('label')));
+        __out.push('</legend>\n    ');
+        __out.push(JST["partials/label"](this));
+        __out.push('\n    <div class=\'fr_field_wrapper\'>\n      ');
+        __out.push(JST["fields/" + this.model.field_type](this));
+        __out.push('\n    </div>\n  </fieldset>\n');
       } else if (this.model.wrapper === 'label') {
-        _print(_safe('\n  '));
-        _print(_safe(JST["partials/label"](this)));
-        _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
-        _print(_safe(JST["fields/" + this.model.field_type](this)));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  ');
+        __out.push(JST["partials/label"](this));
+        __out.push('\n  <div class=\'fr_field_wrapper\'>\n    ');
+        __out.push(JST["fields/" + this.model.field_type](this));
+        __out.push('\n  </div>\n');
       } else {
-        _print(_safe('\n  <div class=\'fr_field_wrapper\'>\n    '));
-        _print(_safe(JST["fields/" + this.model.field_type](this)));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_field_wrapper\'>\n    ');
+        __out.push(JST["fields/" + this.model.field_type](this));
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n\n'));
+      __out.push('\n\n');
     
-      _print(_safe(JST["partials/length_validations"](this)));
+      __out.push(JST["partials/length_validations"](this));
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
-      _print(_safe(JST["partials/min_max_validations"](this)));
+      __out.push(JST["partials/min_max_validations"](this));
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
-      _print(_safe(JST["partials/error"](this)));
+      __out.push(JST["partials/error"](this));
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
-      _print(_safe(JST["partials/description"](this)));
+      __out.push(JST["partials/description"](this));
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["partials/verify"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_loading\'>\n  <p>'));
+      __out.push('<div class=\'fr_loading\'>\n  <p>');
     
-      _print(this.safe(this.template));
+      __out.push(__sanitize(this.safe(this.template)));
     
-      _print(_safe('</p>\n  '));
+      __out.push('</p>\n  ');
     
       if (this.href != null) {
-        _print(_safe('\n    <div>\n      <button id=\'screendoor-verify-identity\' href=\'#\' data-href=\''));
-        _print(this.href);
-        _print(_safe('\'>'));
-        _print(this.button);
-        _print(_safe('</button>\n    </div>\n  '));
+        __out.push('\n    <div>\n      <button id=\'screendoor-verify-identity\' href=\'#\' data-href=\'');
+        __out.push(__sanitize(this.href));
+        __out.push('\'>');
+        __out.push(__sanitize(this.button));
+        __out.push('</button>\n    </div>\n  ');
       }
     
-      _print(_safe('\n</div>\n\n'));
+      __out.push('\n</div>\n\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["plugins/bookmark_draft"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
-      _print(_safe('<div class=\'fr_bookmark\'>\n  <a href=\'#\' class=\'js-fr-bookmark\'>'));
+      __out.push('<div class=\'fr_bookmark\'>\n  <a href=\'#\' class=\'js-fr-bookmark\'>');
     
-      _print(FormRenderer.t.finish_later);
+      __out.push(__sanitize(FormRenderer.t.finish_later));
     
-      _print(_safe('</a>\n</div>\n'));
+      __out.push('</a>\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["plugins/bottom_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
     
-      _print(_safe('<div class=\'fr_bottom\'>\n  '));
+      __out.push('<div class=\'fr_bottom\'>\n  ');
     
       if (indexOf.call(this.form_renderer.options.plugins, 'Autosave') >= 0) {
-        _print(_safe('\n    <div class=\'fr_bottom_l\'>\n      '));
+        __out.push('\n    <div class=\'fr_bottom_l\'>\n      ');
         if (this.form_renderer.state.get('hasServerErrors')) {
-          _print(_safe('\n        '));
-          _print(this.form_renderer.state.get('serverErrorText') || FormRenderer.t.error_saving);
-          _print(_safe('\n      '));
+          __out.push('\n        ');
+          __out.push(__sanitize(this.form_renderer.state.get('serverErrorText') || FormRenderer.t.error_saving));
+          __out.push('\n      ');
         } else if (this.form_renderer.state.get('hasChanges')) {
-          _print(_safe('\n        '));
-          _print(FormRenderer.t.saving);
-          _print(_safe('\n      '));
+          __out.push('\n        ');
+          __out.push(__sanitize(FormRenderer.t.saving));
+          __out.push('\n      ');
         } else {
-          _print(_safe('\n        '));
-          _print(FormRenderer.t.saved);
-          _print(_safe('\n      '));
+          __out.push('\n        ');
+          __out.push(__sanitize(FormRenderer.t.saved));
+          __out.push('\n      ');
         }
-        _print(_safe('\n    </div>\n  '));
+        __out.push('\n    </div>\n  ');
       }
     
-      _print(_safe('\n\n  <div class=\'fr_bottom_r\'>\n    '));
+      __out.push('\n\n  <div class=\'fr_bottom_r\'>\n    ');
     
       if (!this.form_renderer.isFirstPage()) {
-        _print(_safe('\n      <button data-fr-previous-page class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        '));
-        _print(FormRenderer.t.back_to_page.replace(':num', this.form_renderer.previousPage()));
-        _print(_safe('\n      </button>\n    '));
+        __out.push('\n      <button data-fr-previous-page class=\'');
+        __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+        __out.push('\'>\n        ');
+        __out.push(__sanitize(FormRenderer.t.back_to_page.replace(':num', this.form_renderer.previousPage())));
+        __out.push('\n      </button>\n    ');
       }
     
-      _print(_safe('\n\n    '));
+      __out.push('\n\n    ');
     
       if (this.form_renderer.state.get('submitting')) {
-        _print(_safe('\n      <button disabled class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        '));
-        _print(FormRenderer.t.submitting);
-        _print(_safe('\n      </button>\n    '));
+        __out.push('\n      <button disabled class=\'');
+        __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+        __out.push('\'>\n        ');
+        __out.push(__sanitize(FormRenderer.t.submitting));
+        __out.push('\n      </button>\n    ');
       } else {
-        _print(_safe('\n      <button data-fr-next-page class=\''));
-        _print(FormRenderer.BUTTON_CLASS);
-        _print(_safe('\'>\n        '));
+        __out.push('\n      <button data-fr-next-page class=\'');
+        __out.push(__sanitize(FormRenderer.BUTTON_CLASS));
+        __out.push('\'>\n        ');
         if (this.form_renderer.isLastPage() || !this.form_renderer.options.enablePages) {
-          _print(FormRenderer.t.submit);
+          __out.push(__sanitize(FormRenderer.t.submit));
         } else {
-          _print(FormRenderer.t.next_page);
+          __out.push(__sanitize(FormRenderer.t.next_page));
         }
-        _print(_safe('\n      </button>\n    '));
+        __out.push('\n      </button>\n    ');
       }
     
-      _print(_safe('\n  </div>\n</div>\n'));
+      __out.push('\n  </div>\n</div>\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 
 if (!window.JST) {
   window.JST = {};
 }
 window.JST["plugins/error_bar"] = function(__obj) {
-  var _safe = function(value) {
-    if (typeof value === 'undefined' && value == null)
-      value = '';
-    var result = new String(value);
-    result.ecoSafe = true;
-    return result;
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
   };
-  return (function() {
-    var __out = [], __self = this, _print = function(value) {
-      if (typeof value !== 'undefined' && value != null)
-        __out.push(value.ecoSafe ? value : __self.escape(value));
-    }, _capture = function(callback) {
-      var out = __out, result;
-      __out = [];
-      callback.call(this);
-      result = __out.join('');
-      __out = out;
-      return _safe(result);
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     };
+  }
+  (function() {
     (function() {
       if (!this.form_renderer.areAllPagesValid()) {
-        _print(_safe('\n  <div class=\'fr_error_alert_bar\' role=\'alert\'>\n    '));
-        _print(_safe(FormRenderer.t.error_bar.errors));
-        _print(_safe('\n  </div>\n'));
+        __out.push('\n  <div class=\'fr_error_alert_bar\' role=\'alert\'>\n    ');
+        __out.push(FormRenderer.t.error_bar.errors);
+        __out.push('\n  </div>\n');
       }
     
-      _print(_safe('\n'));
+      __out.push('\n');
     
     }).call(this);
     
-    return __out.join('');
-  }).call((function() {
-    var obj = {
-      escape: function(value) {
-        return ('' + value)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      },
-      safe: _safe
-    }, key;
-    for (key in __obj) obj[key] = __obj[key];
-    return obj;
-  })());
-};
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}
 })(window);

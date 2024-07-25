@@ -72,11 +72,11 @@ module.exports = (grunt) ->
             'bower_components/underscore/underscore.js'
             'bower_components/backbone/backbone.js'
             'bower_components/underscore.string/dist/underscore.string.min.js'
-            'bower_components/beforeunload.js/index.js'
+            'legacy_packages/beforeunload.js/index.js'
             'bower_components/backbone-deep-model/distribution/deep-model.js'
             'bower_components/rivets-dobt/dist/rivets.js'
-            'bower_components/iso-country-names/index.js'
-            'bower_components/require_once/require_once.js'
+            'legacy_packages/iso-country-names/index.js'
+            'legacy_packages/require_once/require_once.js'
             'bower_components/domurl/url.min.js',
             'bower_components/dompurify/dist/purify.min.js'
           ]

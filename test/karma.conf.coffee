@@ -49,7 +49,7 @@ module.exports = (config) ->
     # - Opera
     # - Safari
     # - PhantomJS
-    browsers: ['Chrome']
+    browsers: ['ChromeHeadless']
 
     # compile coffee scripts
     preprocessors: '**/*.coffee': 'coffee'
